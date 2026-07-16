@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "biz_mock_001",
+      "ownerEmail": "fatima.verified@naitrust.test",
+      "name": "Adaeze Fabrics Ltd",
+      "rcNumber": "RC-1948221",
+      "category": "Textiles & apparel supply",
+      "verified": true,
+      "createdAt": "2025-11-02T09:00:00Z"
+    },
+    {
+      "id": "biz_mock_002",
+      "ownerEmail": "emeka.2fa@naitrust.test",
+      "name": "Emeka Trade & Logistics",
+      "rcNumber": "RC-2211564",
+      "category": "Haulage & logistics",
+      "verified": true,
+      "createdAt": "2025-09-18T09:00:00Z"
+    },
+    {
+      "id": "biz_mock_003",
+      "ownerEmail": "new.biz@naitrust.test",
+      "name": "Balogun Ventures Ltd",
+      "rcNumber": "RC-3390877",
+      "category": "General trading",
+      "verified": false,
+      "createdAt": "2026-07-15T09:00:00Z"
+    }
+  ]
+}

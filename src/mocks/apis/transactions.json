@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "txn_mock_001",
+      "reference": "NT-2026-000182",
+      "counterpartyName": "Adaeze Fabrics Ltd",
+      "amountMinor": 45000000,
+      "currency": "NGN",
+      "status": "awaiting_funding",
+      "createdAt": "2026-07-10T09:15:00Z"
+    },
+    {
+      "id": "txn_mock_002",
+      "reference": "NT-2026-000179",
+      "counterpartyName": "Chinedu Okafor",
+      "amountMinor": 12000000,
+      "currency": "NGN",
+      "status": "funded",
+      "createdAt": "2026-07-08T14:30:00Z"
+    },
+    {
+      "id": "txn_mock_003",
+      "reference": "NT-2026-000171",
+      "counterpartyName": "Lagos Freight Movers",
+      "amountMinor": 89000000,
+      "currency": "NGN",
+      "status": "evidence_submitted",
+      "createdAt": "2026-07-05T11:00:00Z"
+    },
+    {
+      "id": "txn_mock_004",
+      "reference": "NT-2026-000160",
+      "counterpartyName": "Bright Homes Realty",
+      "amountMinor": 250000000,
+      "currency": "NGN",
+      "status": "disputed",
+      "createdAt": "2026-06-29T16:45:00Z"
+    },
+    {
+      "id": "txn_mock_005",
+      "reference": "NT-2026-000144",
+      "counterpartyName": "Zenith Office Supplies",
+      "amountMinor": 6300000,
+      "currency": "NGN",
+      "status": "completed",
+      "createdAt": "2026-06-20T10:05:00Z"
+    },
+    {
+      "id": "txn_mock_006",
+      "reference": "NT-2026-000138",
+      "counterpartyName": "Okonkwo & Sons Builders",
+      "amountMinor": 175000000,
+      "currency": "NGN",
+      "status": "in_progress",
+      "createdAt": "2026-06-15T08:20:00Z"
+    },
+    {
+      "id": "txn_mock_007",
+      "reference": "NT-2026-000129",
+      "counterpartyName": "Ibrahim Musa",
+      "amountMinor": 3200000,
+      "currency": "NGN",
+      "status": "terms_agreed",
+      "createdAt": "2026-06-10T13:50:00Z"
+    },
+    {
+      "id": "txn_mock_008",
+      "reference": "NT-2026-000117",
+      "counterpartyName": "Coastal Logistics Ltd",
+      "amountMinor": 54000000,
+      "currency": "NGN",
+      "status": "paid_out",
+      "createdAt": "2026-05-30T09:40:00Z"
+    }
+  ]
+}

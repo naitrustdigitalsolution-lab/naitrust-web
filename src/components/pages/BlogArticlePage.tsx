@@ -1,0 +1,10 @@
+import { ArrowLeft, Clock3 } from 'lucide-react';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { SEOHead } from '../utility/SEOHead';
+import { Badge } from '../ui/badge';
+import { blogArticles } from '../../mocks/screens/blog';
+
+export function BlogArticlePage() {
+  const { slug } = useParams(); const article = blogArticles.find((item) => item.slug === slug); if (!article) return <Navigate to="/blog" replace />;
+  return <article className="min-h-screen bg-background"><SEOHead title={article.title} description={article.summary} canonicalPath={`/blog/${article.slug}`} /><header className="bg-[#031335] px-4 py-14 text-white sm:px-6"><div className="mx-auto max-w-4xl"><Link to="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-200 hover:text-white"><ArrowLeft size={17} /> Back to blog</Link><Badge className="mt-9 block w-fit bg-white/10 text-white hover:bg-white/10">{article.category}</Badge><h1 className="mt-5 text-4xl font-bold leading-tight sm:text-5xl">{article.title}</h1><div className="mt-5 flex flex-wrap gap-4 text-sm text-blue-200"><span>{article.publishedAt}</span><span className="inline-flex items-center gap-1.5"><Clock3 size={15} /> {article.readTime}</span></div></div></header><div className="mx-auto max-w-5xl px-4 py-10 sm:px-6"><img src={article.image} alt={article.imageAlt} className="aspect-[16/8] w-full rounded-3xl object-cover shadow-lg" /><div className="mx-auto max-w-3xl py-10"><p className="text-xl leading-9 text-foreground">{article.intro}</p>{article.sections.map((section) => <section key={section.heading} className="mt-10"><h2 className="text-2xl font-bold">{section.heading}</h2>{section.paragraphs.map((paragraph) => <p key={paragraph} className="mt-4 leading-8 text-muted-foreground">{paragraph}</p>)}{section.points && <ul className="mt-5 space-y-3 rounded-2xl bg-muted/50 p-6">{section.points.map((point) => <li key={point} className="flex gap-3 text-sm leading-6"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />{point}</li>)}</ul>}</section>)}</div></div></article>;
+}

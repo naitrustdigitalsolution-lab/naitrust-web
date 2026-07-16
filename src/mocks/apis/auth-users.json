@@ -1,0 +1,107 @@
+{
+  "twoFactorCode": "123456",
+  "users": [
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_001",
+        "email": "amaka.new@naitrust.test",
+        "firstName": "Amaka",
+        "lastName": "Eze",
+        "name": "Amaka Eze",
+        "role": "customer",
+        "phone": "+2348011110001",
+        "kycLevel": 0,
+        "kycVerified": false,
+        "isEmailVerified": false,
+        "isPhoneVerified": false
+      }
+    },
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_002",
+        "email": "chidi.buyer@naitrust.test",
+        "firstName": "Chidi",
+        "lastName": "Okonkwo",
+        "name": "Chidi Okonkwo",
+        "role": "customer",
+        "phone": "+2348011110002",
+        "kycLevel": 1,
+        "kycVerified": false,
+        "isEmailVerified": true,
+        "isPhoneVerified": true
+      }
+    },
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_003",
+        "email": "fatima.verified@naitrust.test",
+        "firstName": "Fatima",
+        "lastName": "Bello",
+        "name": "Fatima Bello",
+        "role": "business",
+        "phone": "+2348011110003",
+        "kycLevel": 2,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true
+      }
+    },
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": true,
+      "user": {
+        "id": "usr_mock_004",
+        "email": "emeka.2fa@naitrust.test",
+        "firstName": "Emeka",
+        "lastName": "Nwosu",
+        "name": "Emeka Nwosu",
+        "role": "business",
+        "phone": "+2348011110004",
+        "kycLevel": 2,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true
+      }
+    },
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_005",
+        "email": "admin@naitrust.test",
+        "firstName": "Ngozi",
+        "lastName": "Adeyemi",
+        "name": "Ngozi Adeyemi",
+        "role": "admin",
+        "phone": "+2348011110005",
+        "kycLevel": 3,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true
+      }
+    },
+    {
+      "password": "Passw0rd!",
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_006",
+        "email": "new.biz@naitrust.test",
+        "firstName": "Tunde",
+        "lastName": "Balogun",
+        "name": "Tunde Balogun",
+        "role": "business",
+        "phone": "+2348011110006",
+        "kycLevel": 0,
+        "kycVerified": false,
+        "isEmailVerified": true,
+        "isPhoneVerified": false
+      }
+    }
+  ]
+}

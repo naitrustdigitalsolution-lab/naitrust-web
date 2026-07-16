@@ -1,0 +1,131 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "inv_mock_001",
+      "reference": "NT-2026-000195",
+      "fromName": "Damilola Interiors Ltd",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Custom furniture set — 3-seater and dining",
+      "amountMinor": 78000000,
+      "currency": "NGN",
+      "message": "Sharing the safe deal for the furniture order we discussed. Terms and delivery window are inside — please review and accept to lock it in.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This safe deal agreement is between you (the Buyer) and Damilola Interiors Ltd (the Seller) for \"Custom furniture set — 3-seater and dining\" — a customer to business transaction under the High-value personal purchases category."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦780,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Delivery obligations",
+            "body": "The Seller must deliver the complete furniture set on or before 2026-08-05, in the fabric and finish agreed in the order summary. The Seller should upload workshop progress photos and the delivery waybill to the transaction room."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released to the Seller only when the furniture is delivered, assembled, and inspected by the Buyer with no damage or material deviation from the agreed specification, confirmed in the transaction room."
+          },
+          {
+            "heading": "Disputes",
+            "body": "Either party may open a dispute in the transaction room before release. While a dispute is open, no release occurs. Disputes are reviewed against the evidence attached to this deal."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-13T10:20:00Z",
+      "expiresAt": "2026-07-20T10:20:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_002",
+      "reference": "NT-2026-000191",
+      "fromName": "Northbridge Supplies Ltd",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2b",
+      "title": "Bulk order — 200 office chairs",
+      "amountMinor": 145000000,
+      "currency": "NGN",
+      "message": "We'd like to run this purchase through Naitrust. Please confirm the terms so we can fund the protected account.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This safe deal agreement is between Northbridge Supplies Ltd (the Buyer) and you (the Seller) for \"Bulk order — 200 office chairs\" — a business to business transaction under the Supplier and wholesale orders category."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,450,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly."
+          },
+          {
+            "heading": "Delivery obligations",
+            "body": "The Seller must deliver 200 office chairs (model NB-EC200, black mesh) to the Buyer's Ikeja warehouse on or before 2026-08-01, with a signed waybill and stock inspection evidence uploaded to the transaction room."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released to the Seller only when the full quantity is delivered and the Buyer's inspection confirms count and condition, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Disputes",
+            "body": "Either party may open a dispute in the transaction room before release. While a dispute is open, no release occurs."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen."
+          }
+        ]
+      },
+      "createdAt": "2026-07-11T15:05:00Z",
+      "expiresAt": "2026-07-18T15:05:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_003",
+      "reference": "NT-2026-000184",
+      "fromName": "Kelechi Nwosu",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2c",
+      "title": "Event photography — full-day coverage",
+      "amountMinor": 32000000,
+      "currency": "NGN",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This safe deal agreement is between Kelechi Nwosu (the Buyer) and you (the Seller) for \"Event photography — full-day coverage\" — a customer to business transaction under the Events and advance bookings category."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦320,000.00 into a partner-issued virtual account operated by a regulated payment partner."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released when the edited gallery is delivered within 14 days of the event and the Buyer confirms receipt in the transaction room."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding."
+          }
+        ]
+      },
+      "createdAt": "2026-07-06T09:00:00Z",
+      "expiresAt": "2026-07-13T09:00:00Z",
+      "status": "expired"
+    }
+  ]
+}

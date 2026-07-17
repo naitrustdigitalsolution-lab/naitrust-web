@@ -51,7 +51,7 @@ export function AnimatedHeroText() {
   return (
     <div className="relative">
       {/* Headline */}
-      <div className="grid min-h-[250px] place-items-center md:min-h-[232px] px-2">
+      <div className="grid place-items-center px-2">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={`hero-copy-${currentIndex}`}
@@ -59,7 +59,7 @@ export function AnimatedHeroText() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.05, ease: 'easeInOut' }}
-            className="flex flex-col items-center h-auto md:h-120 mt-4"
+            className="flex flex-col items-center h-auto mt-4"
           >
             <h1 className="naitrust-satoshi-bold max-w-370 text-[clamp(2.25rem,7vw,6.5rem)] lg:text-[clamp(62px,4.0vw,106px)] leading-[1.02] sm:leading-[0.96] tracking-[-0.04em] sm:tracking-[-0.06em]">
               {currentMessage.headline}{' '}
@@ -67,9 +67,9 @@ export function AnimatedHeroText() {
                 {currentMessage.headlineHighlight}
               </span>
             </h1>
-            <p className="my-6 mt-6 md:mt-12 max-w-[53.125rem] text-base font-semibold leading-7 text-muted-foreground md:h-24 md:text-xl md:leading-9 text-center sm:text-lg sm:leading-8">
+            <p className="my-6 mt-6 md:mt-12 max-w-[53.125rem] text-base font-semibold leading-7 text-muted-foreground md:h-24 md:text-md md:leading-9 text-center sm:text-lg sm:leading-8">
               {currentMessage.subtext}
-              <span className="font-bold text-foreground">
+              <span className="font-bold">
                 {currentMessage.subtextHighlight}
               </span>
             </p>

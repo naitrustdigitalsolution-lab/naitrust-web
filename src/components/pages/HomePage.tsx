@@ -194,7 +194,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <AnimatedHeroText />
             </div>
               
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 mt-4 px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 mt-14 px-4 sm:px-6 lg:px-8">
               {/* <Button size="lg" onClick={() => onNavigate('register')} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
                 Start a Safer Deal
               </Button> */}

@@ -2,6 +2,11 @@
   publish = "dist"
   command = "npm run build"
 
+[[headers]]
+  for = "/"
+  [headers.values]
+    Link = "</sitemap.xml>; rel=\"describedby\"; type=\"application/xml\", </help>; rel=\"service-doc\"; type=\"text/html\""
+
 [[redirects]]
   from = "/api/public-submissions"
   to = "/.netlify/functions/public-submissions"

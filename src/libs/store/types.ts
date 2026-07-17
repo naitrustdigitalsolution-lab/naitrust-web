@@ -290,6 +290,30 @@ export interface DealDispute {
 }
 
 /* ------------------------------------------------------------------ *
+ * Termination — either party can request ending a deal early. The other
+ * party (or parties) sees the reason and accepts or rejects (a rejection
+ * carries its own reason). Every request and outcome is kept on the record.
+ * ------------------------------------------------------------------ */
+
+export type TerminationStatus = 'requested' | 'accepted' | 'rejected';
+
+export interface DealTermination {
+  dealId: string;
+  status: TerminationStatus;
+  /** Why the requester wants to end the deal. */
+  reason: string;
+  requestedByName: string;
+  /** The current user opened this termination request. */
+  requestedByYou: boolean;
+  createdAt: string; // ISO 8601
+  /** The counterparty's response (present once they accept/reject). */
+  respondedByName?: string;
+  respondedAt?: string;
+  /** Required when a request is rejected — why the other party declined. */
+  responseReason?: string;
+}
+
+/* ------------------------------------------------------------------ *
  * Invitation — incoming request to join a counterparty's safe deal
  * ------------------------------------------------------------------ */
 
@@ -392,6 +416,17 @@ export interface BusinessProfile {
   name: string;
   rcNumber: string; // CAC registration number
   category: string;
+  /** Everything below is captured at registration and shown on the profile. */
+  description?: string;
+  ownerName?: string;
+  email?: string; // business contact email
+  phone?: string; // business phone
+  website?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  socialHandles?: { platform: string; value: string }[];
   verified: boolean;
   createdAt: string;
 }

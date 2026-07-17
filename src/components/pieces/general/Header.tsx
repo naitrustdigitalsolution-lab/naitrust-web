@@ -77,11 +77,11 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
           <button
             type="button"
             onClick={openWaitlistModal}
-            className="w-full bg-primary/10 px-4 h-14 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80"
+            className="w-full bg-primary/10 px-4 min-h-14 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80"
           >
-            <span className="inline-flex flex-wrap items-center justify-center gap-2">
-              <span className='text-green-500 text-lg'>Naitrust is coming soon. A trust operating system built for safer deals.</span>
-              <span className="inline-flex items-center gap-1 text-primary text-lg font-semibold">
+            <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+              <span className='text-green-500 text-xs sm:text-sm md:text-lg'>Naitrust is coming soon. A trust operating system built for safer deals.</span>
+              <span className="inline-flex items-center gap-1 text-primary text-xs sm:text-sm md:text-lg font-semibold">
                 Join the waiting list
                 <ArrowRight size={15} />
               </span>

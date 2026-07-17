@@ -14,6 +14,11 @@ import { NIGERIAN_STATES } from '../../libs/constant';
 import { authApi, businessApi } from '../../libs/api';
 import { useAuth } from '../../libs/auth-context';
 import { useBusinessStore } from '../../libs/store/business.store';
+import { PhoneField } from '../pieces/general/PhoneField';
+import { RegistrationStepper } from '../pieces/registration/RegistrationStepper';
+import { BeforeYouStartCard } from '../pieces/registration/BeforeYouStartCard';
+import type { SocialHandleInterface } from '../../interfaces/SocialHandleInterface';
+import type { TeamMemberInterface } from '../../interfaces/TeamMemberInterface';
 import { useLocation } from 'react-router-dom';
 import icon from '../../assets/naitrust-logo/naitrust-icon-3.png';
 import spiralBackground from '../../assets/spiral.svg';
@@ -24,121 +29,7 @@ interface RegistrationPageProps {
   registrationType: 'business' | 'customer';
 }
 
-interface SocialHandle {
-  platform: string;
-  value: string;
-}
-
-interface TeamMember {
-  name: string;
-  role: string;
-  email: string;
-  phone: string;
-}
-
 const smoothViewFade = { duration: 0.18, ease: [0.16, 1, 0.3, 1] as const };
-
-const signupRequirements = [
-  {
-    title: 'You are 16 years and older',
-    text: 'You must be at least 16 years old to open an account.',
-  },
-  {
-    title: 'You have a valid BVN or NIN',
-    text: 'Use a valid NIN or BVN to help us verify your identity quickly.',
-  },
-  {
-    title: 'You can complete face verification',
-    text: 'Make sure you are in a well-lit area and follow the onscreen instructions for the best results.',
-  },
-];
-
-function BeforeYouStartCard({ registrationType }: { registrationType: 'business' | 'customer' }) {
-  const requirements = registrationType === 'business'
-    ? [
-        { title: 'Authorised business representative', text: 'You must be an owner, director, or person authorised to register the business.' },
-        { title: 'Business registration details', text: 'Have the CAC registration details and business contact information available.' },
-        { title: 'Representative identity check', text: 'The representative may need a valid NIN or BVN and a short liveness check.' },
-      ]
-    : signupRequirements;
-
-  return (
-    <div className="rounded-2xl border border-primary/15 bg-white/70 p-5 shadow-sm dark:bg-background/70">
-      <div className="mb-4 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <ShieldCheck size={20} />
-        </div>
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            Before you get started
-          </p>
-          <h3 className="mt-1 text-base font-semibold text-foreground">
-            Confirm you meet these requirements
-          </h3>
-        </div>
-      </div>
-      <div className="grid gap-3">
-        {requirements.map((requirement) => (
-          <div key={requirement.title} className="flex gap-3">
-            <Check className="mt-0.5 shrink-0 text-primary" size={18} />
-            <div>
-              <h4 className="text-sm font-semibold text-foreground">{requirement.title}</h4>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">{requirement.text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function RegistrationStepper({
-  steps,
-  currentStep,
-}: {
-  steps: { title: string; description: string }[];
-  currentStep: number;
-}) {
-  return (
-    <div className="space-y-0">
-      {steps.map((step, index) => {
-        const stepNumber = index + 1;
-        const isActive = stepNumber === currentStep;
-        const isComplete = stepNumber < currentStep;
-
-        return (
-          <div key={step.title} className="relative flex gap-4 pb-7 last:pb-0">
-            {index < steps.length - 1 && (
-              <div
-                className={`absolute left-[11px] top-7 h-[calc(100%-1.75rem)] w-px ${
-                  isComplete ? 'bg-primary/50' : 'bg-border'
-                }`}
-              />
-            )}
-            <div
-              className={`relative z-10 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-4 ${
-                isActive || isComplete
-                  ? 'border-primary bg-primary text-white'
-                  : 'border-white bg-muted text-muted-foreground shadow-sm'
-              }`}
-            >
-              {isComplete ? <Check size={12} /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
-            </div>
-            <div>
-              <p className={`text-sm font-semibold uppercase ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Step {stepNumber}
-              </p>
-              <p className={`mt-0.5 text-sm ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                {step.title}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 export function RegistrationPage({ onNavigate, registrationType }: RegistrationPageProps) {
   const { user, isAuthenticated } = useAuth();
@@ -148,8 +39,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<any>({
-    socialHandles: [] as SocialHandle[],
-    teamMembers: [] as TeamMember[],
+    socialHandles: [] as SocialHandleInterface[],
+    teamMembers: [] as TeamMemberInterface[],
     verificationType: 'unverified', // Default to unverified
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -390,7 +281,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
       } else if (isAuthenticated) {
         onNavigate('business-dashboard');
       } else {
-        onNavigate('login');
+        // onNavigate('login');
+         window.history.back();
       }
     }
   };
@@ -531,11 +423,11 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
               <div>
                 <Label htmlFor="phone">Phone Number (Optional)</Label>
-                <Input
+                <PhoneField
                   id="phone"
-                  placeholder="+234 XXX XXX XXXX"
+                  className="mt-1.5"
                   value={formData.phone || ''}
-                  onChange={(e) => updateFormData('phone', e.target.value)}
+                  onChange={(v) => updateFormData('phone', v)}
                 />
               </div>
 
@@ -719,12 +611,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
               <div>
                 <Label htmlFor="ownerPhone">Owner Phone *</Label>
-                <Input
+                <PhoneField
                   id="ownerPhone"
-                  placeholder="+234 XXX XXX XXXX"
+                  className="mt-1.5"
                   value={formData.ownerPhone || ''}
-                  onChange={(e) => updateFormData('ownerPhone', e.target.value)}
+                  onChange={(v) => updateFormData('ownerPhone', v)}
                   disabled={isAuthenticated && user !== null}
+                  required
                 />
               </div>
 
@@ -851,11 +744,11 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
                 <div className="mt-4">
                   <Label htmlFor="businessPhone">Business Phone Number (Optional)</Label>
-                  <Input
+                  <PhoneField
                     id="businessPhone"
-                    placeholder="+234 XXX XXX XXXX"
+                    className="mt-1.5"
                     value={formData.businessPhone || ''}
-                    onChange={(e) => updateFormData('businessPhone', e.target.value)}
+                    onChange={(v) => updateFormData('businessPhone', v)}
                   />
                 </div>
 
@@ -944,7 +837,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               <div>
                 <Label>Social Media Handles (Optional)</Label>
                 <div className="space-y-3 mt-2">
-                  {formData.socialHandles?.map((handle: SocialHandle, index: number) => (
+                  {formData.socialHandles?.map((handle: SocialHandleInterface, index: number) => (
                     <div key={index} className="flex gap-2">
                       <Select
                         value={handle.platform}
@@ -1095,36 +988,38 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
           />
         </div>
-      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
-        <aside className="flex flex-col justify-between rounded-2xl bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:bg-transparent lg:p-10 lg:dark:bg-transparent">
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl xl:gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+        <aside className="flex flex-col justify-between rounded-2xl bg-none lg:bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:p-10">
           <div>
             <button
               type="button"
               onClick={() => onNavigate('home')}
-              className="mb-12 inline-flex items-center"
+              className="mb-6 hidden lg:inline-flex items-center lg:mb-12"
               aria-label="Go to Naitrust home"
             >
               <NaitrustLogo size="postMd" showText={true} textColor={isDarkMode ? "text-white" : "text-primary"} />
             </button>
 
-            <div className="max-w-md">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+            <div className="max-w-md hidden lg:block">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
                 Setup a profile
               </p>
-              <h1 className="text-3xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-4xl">
+              <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
                 {registrationType === 'business' ? 'Create your business trust profile.' : 'Create your safer buyer account.'}
               </h1>
-              <p className="mt-4 text-base leading-7 text-[#496274] dark:text-slate-300">
+              <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
                 Follow the steps below to get started with Naitrust. Your information helps keep buyers, sellers, and transaction records easier to trust.
               </p>
             </div>
 
-            <div className="mt-10 max-w-md">
+            <div className="mt-6 max-w-md lg:mt-10">
               <RegistrationStepper steps={steps} currentStep={currentStep} />
             </div>
           </div>
 
-          <div className="mt-10 grid gap-5">
+          {/* Desktop: requirements + login link live in the side panel. On mobile
+              the requirements card is moved BELOW the form (split copy). */}
+          <div className="mt-10 hidden gap-5 lg:grid">
             <BeforeYouStartCard registrationType={registrationType} />
             <div className="text-sm leading-6 text-muted-foreground">
               Already have an account?{' '}
@@ -1139,20 +1034,20 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
           </div>
         </aside>
 
-        <main className="flex min-h-full items-center justify-center py-4 lg:py-10">
-          <div className="w-full max-w-xl rounded-2xl border border-border/70 bg-card p-5 shadow-2xl sm:p-8">
+        <main className="flex min-h-full flex-col items-center justify-center py-4 lg:py-10">
+          <div className="w-full max-w-xl sm:rounded-2xl sm:border sm:border-border/70 bg-card p-5 sm:shadow-2xl sm:p-8">
             <button
               type="button"
               onClick={handleBack}
               className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:underline"
             >
               <ArrowLeft size={16} />
-              {currentStep === 1 ? (isAuthenticated ? 'Back to dashboard' : 'Back to login') : 'Go back'}
+              {currentStep === 1 ? (isAuthenticated ? 'Back to dashboard' : 'Go back') : 'Go back'}
             </button>
 
             <div className="mb-8">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 p-2">
-                <img src={icon} alt="Naitrust logo" className="h-full w-full" />
+              <div className="mb-4 flex h-14 w-14 items-center justify-center p-2">
+                <NaitrustLogo size="postMd" showText={false} />
               </div>
               <p className="mb-2 text-sm font-semibold text-primary">
                 Step {currentStep} of {totalSteps}
@@ -1179,7 +1074,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 className="h-12 flex-1 rounded-full"
               >
                 <ArrowLeft size={16} className="mr-2" />
-                {currentStep === 1 ? (isAuthenticated ? 'Back to Dashboard' : 'Back to Login') : 'Back'}
+                {currentStep === 1 ? (isAuthenticated ? 'Back to Dashboard' : 'Back') : 'Back'}
               </Button>
               <Button
                 onClick={handleNext}
@@ -1200,6 +1095,21 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                   </>
                 )}
               </Button>
+            </div>
+          </div>
+
+          {/* Mobile: the requirements card sits BELOW the form (split copy). */}
+          <div className="mt-6 grid w-full max-w-xl gap-5 lg:hidden">
+            <BeforeYouStartCard registrationType={registrationType} />
+            <div className="text-center text-sm leading-6 text-muted-foreground">
+              Already have an account?{' '}
+              <button
+                type="button"
+                onClick={() => onNavigate('login')}
+                className="font-semibold text-primary hover:underline"
+              >
+                Login
+              </button>
             </div>
           </div>
         </main>

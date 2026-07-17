@@ -6,6 +6,7 @@
 import { User, Save, Loader2 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
+import { PhoneField } from '../general/PhoneField';
 import { Label } from '../../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 
@@ -78,12 +79,11 @@ export function ProfileInfoSettings({
           </div>
           <div>
             <Label htmlFor="phone">Phone Number</Label>
-            <Input
+            <PhoneField
               id="phone"
-              type="tel"
+              className="mt-1.5"
               value={phone}
-              onChange={(e) => onPhoneChange(e.target.value)}
-              placeholder="+234 800 000 0000"
+              onChange={onPhoneChange}
             />
           </div>
         </div>

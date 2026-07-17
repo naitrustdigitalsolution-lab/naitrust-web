@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Plus, Search, X } from 'lucide-react';
+import { CalendarRange, ChevronLeft, ChevronRight, Plus, Search, X } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
 import { Button } from '../ui/button';
@@ -29,7 +29,7 @@ const FILTERS: { key: Filter; label: string }[] = [
 ];
 
 const CLOSED: SafeDealStatus[] = ['draft', 'completed', 'paid_out', 'refunded', 'cancelled'];
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 20;
 
 function byStatus(deals: SafeDealSummary[], filter: Filter): SafeDealSummary[] {
   switch (filter) {
@@ -54,6 +54,7 @@ export function DealsPage() {
   const [search, setSearch] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [showDates, setShowDates] = useState(false);
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
@@ -114,67 +115,83 @@ export function DealsPage() {
         </div>
 
         {/* Toolbar */}
-        <div className="mb-4 space-y-3 rounded-xl border bg-card p-4 shadow-sm">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-            <div className="flex-1">
-              <Label htmlFor="deal-search" className="sr-only">
-                Search deals
-              </Label>
-              <div className="relative">
+        <div className="mb-4 space-y-3 rounded-xl border bg-card p-3 shadow-sm sm:p-4">
+          {/* Search + date range (dates inline on desktop, toggled on mobile) */}
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:gap-3">
+            <div className="flex flex-1 items-center gap-2">
+              <div className="relative flex-1">
+                <Label htmlFor="deal-search" className="sr-only">
+                  Search deals
+                </Label>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                 <Input
                   id="deal-search"
-                  placeholder="Search by counterparty or reference…"
+                  placeholder="Search deals…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-9"
                 />
               </div>
+              {/* Mobile-only date toggle keeps the bar compact. */}
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label="Date range"
+                aria-pressed={showDates}
+                className={`shrink-0 rounded-full lg:hidden ${from || to ? 'border-primary text-primary' : ''}`}
+                onClick={() => setShowDates((s) => !s)}
+              >
+                <CalendarRange size={16} />
+              </Button>
             </div>
-            <div className="flex items-end gap-2">
-              <div>
+            <div className={`${showDates ? 'grid' : 'hidden'} grid-cols-2 gap-2 lg:flex lg:items-end`}>
+              <div className="min-w-0">
                 <Label htmlFor="from" className="text-xs">
                   From
                 </Label>
-                <Input id="from" type="date" value={from} max={to || undefined} className="mt-1" onChange={(e) => setFrom(e.target.value)} />
+                <Input id="from" type="date" value={from} max={to || undefined} className="mt-1 w-full" onChange={(e) => setFrom(e.target.value)} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <Label htmlFor="to" className="text-xs">
                   To
                 </Label>
-                <Input id="to" type="date" value={to} min={from || undefined} className="mt-1" onChange={(e) => setTo(e.target.value)} />
+                <Input id="to" type="date" value={to} min={from || undefined} className="mt-1 w-full" onChange={(e) => setTo(e.target.value)} />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {FILTERS.map((f) => {
-              const active = filter === f.key;
-              return (
-                <button
-                  key={f.key}
-                  type="button"
-                  onClick={() => setFilter(f.key)}
-                  className={
-                    'rounded-full border px-3 py-1 text-sm font-medium transition-colors ' +
-                    (active
-                      ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-border bg-card text-muted-foreground hover:bg-accent/40')
-                  }
-                >
-                  {f.label}
-                  {!isLoading && <span className="ml-1.5 opacity-80">{countFor(f.key)}</span>}
-                </button>
-              );
-            })}
+          {/* Status chips scroll horizontally on mobile instead of wrapping. */}
+          <div className="flex items-center gap-2">
+            <div className="-mx-1 flex flex-1 items-center gap-2 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {FILTERS.map((f) => {
+                const active = filter === f.key;
+                return (
+                  <button
+                    key={f.key}
+                    type="button"
+                    onClick={() => setFilter(f.key)}
+                    className={
+                      'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-sm font-medium transition-colors ' +
+                      (active
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-border bg-card text-muted-foreground hover:bg-accent/40')
+                    }
+                  >
+                    {f.label}
+                    {!isLoading && <span className="ml-1.5 opacity-80">{countFor(f.key)}</span>}
+                  </button>
+                );
+              })}
+            </div>
             {hasFilters && (
               <button
                 type="button"
                 onClick={clearAll}
-                className="ml-auto inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                className="inline-flex shrink-0 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
               >
                 <X size={14} />
-                Clear
+                <span className="hidden sm:inline">Clear</span>
               </button>
             )}
           </div>

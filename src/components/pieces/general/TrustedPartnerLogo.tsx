@@ -1,10 +1,9 @@
 // Actual payment provider logos using real images
 import { ImageWithFallback } from '../../utility/ImageWithFallback';
 import flutterwaveLogo from 'figma:asset/7f5d6df5d7c8cc6439ec1a9a924166c1d5a08cb5.png';
-
-// Mono API logo - Replace this URL with the actual Mono logo from https://mono.co/
-// For now, using a placeholder. You should upload the Mono logo to your assets
-const KORA_LOGO_URL = 'https://en.wikipedia.org/wiki/Special:Redirect/file/Kora_Logo.png?width=240';
+// Anchor brand mark (getanchor.co) — colored icon with its own background, so it
+// reads on both the light and dark partner cards.
+import anchorMark from '../../../assets/partners/anchor-mark.svg';
 
 export function PaystackLogo({ className = "h-6" }: { className?: string }) {
   return (
@@ -42,11 +41,11 @@ export function QoreIDLogo({ className = "h-16" }: { className?: string }) {
   );
 }
 
-export function KoraLogo({ className = "h-16" }: { className?: string }) {
+export function AnchorLogo({ className = "h-16" }: { className?: string }) {
   return (
-    <ImageWithFallback
-      src={KORA_LOGO_URL}
-      alt="Kora Logo"
+    <img
+      src={anchorMark}
+      alt="Anchor Logo"
       className={className}
     />
   );
@@ -90,7 +89,7 @@ export function BankLogo({ bankName, className = "h-6" }: { bankName: string; cl
 
 export function getPaymentLogo(provider?: string, label?: string) {
   if (provider === 'paystack') return PaystackLogo;
-  if (provider === 'kora') return KoraLogo;
+  if (provider === 'anchor') return AnchorLogo;
   if (provider === 'flutterwave') return FlutterwaveLogo;
   if (provider === 'cac') return CACLogo;
   if (label) return () => <BankLogo bankName={label} />;

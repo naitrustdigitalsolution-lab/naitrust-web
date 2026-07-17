@@ -19,6 +19,7 @@ import { Camera, Check, Lightbulb, Loader2, ShieldCheck, VideoOff } from 'lucide
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
 import { Button } from '../../ui/button';
 import { useSecurity } from '../../../hooks/useSecurity';
+import { appConfig } from '../../../configs/env';
 
 interface LivenessCheckModalProps {
   open: boolean;
@@ -45,9 +46,6 @@ export function LivenessCheckModal({
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  // Temporal smoothing: only flip to "face present" after a few good frames,
-  // and drop immediately when the face leaves the oval.
-  const faceStreak = useRef(0);
 
   const stopStream = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -77,7 +75,15 @@ export function LivenessCheckModal({
     (async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          // Keep the old app's 4:3 capture shape. A wide 16:9 stream is heavily
+          // cropped by the portrait preview and made the centre-face heuristic
+          // reject correctly positioned users on phones.
+          video: {
+            facingMode: 'user',
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            aspectRatio: { ideal: 4 / 3 },
+          },
           audio: false,
         });
         if (cancelled) {
@@ -102,76 +108,63 @@ export function LivenessCheckModal({
   // Per-frame lighting + face-placement analysis while the preview is live.
   useEffect(() => {
     if (phase !== 'ready') return;
-    faceStreak.current = 0;
     setFaceDetected(false);
     const canvas = document.createElement('canvas');
     let raf = 0;
     let last = 0;
+
     const tick = (t: number) => {
       raf = requestAnimationFrame(tick);
-      if (t - last < 220) return;
+      if (t - last < 150) return;
       last = t;
       const video = videoRef.current;
-      if (!video || !video.videoWidth) return;
+      if (!video || video.readyState < 2 || !video.videoWidth) return;
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
-      const w = 160;
-      const h = Math.max(1, Math.round((160 * video.videoHeight) / video.videoWidth));
-      canvas.width = w;
-      canvas.height = h;
-      ctx.drawImage(video, 0, 0, w, h);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Average brightness → room lighting.
-      const all = ctx.getImageData(0, 0, w, h).data;
-      let total = 0;
+      // Room lighting — average brightness across the whole frame (adapted from
+      // the old app: sample ~every 10th pixel). This is the "is it bright enough
+      // for a photo" check.
+      const frame = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let totalB = 0;
       let count = 0;
-      for (let i = 0; i < all.length; i += 16) {
-        total += (all[i] + all[i + 1] + all[i + 2]) / 3;
+      for (let i = 0; i < frame.length; i += 40) {
+        totalB += (frame[i] + frame[i + 1] + frame[i + 2]) / 3;
         count += 1;
       }
-      const avg = total / count;
-      const light: Lighting = avg < 45 ? 'low' : avg > 210 ? 'too-bright' : 'good';
+      const avg = count ? totalB / count : 0;
+      const light: Lighting = avg < 80 ? 'low' : avg > 200 ? 'too-bright' : 'good';
       setLighting(light);
 
-      // Skin-tone ratio in the centre oval vs. the four corners. A face that
-      // fills the oval reads high in the centre and low at the corners; when it
-      // drifts out of the oval the centre ratio drops, so it won't stay green.
-      const skinRatio = (rx: number, ry: number, rw: number, rh: number) => {
-        const region = ctx.getImageData(
-          Math.max(0, Math.floor(rx)),
-          Math.max(0, Math.floor(ry)),
-          Math.max(1, Math.floor(rw)),
-          Math.max(1, Math.floor(rh)),
-        ).data;
-        let s = 0;
-        let m = 0;
-        for (let i = 0; i < region.length; i += 8) {
-          const rr = region[i];
-          const gg = region[i + 1];
-          const bb = region[i + 2];
-          const br = (rr + gg + bb) / 3;
-          // Loose skin-tone gate: warm (r > b), mid brightness.
-          if (br >= 60 && br <= 200 && rr > bb) s += 1;
-          m += 1;
-        }
-        return m ? s / m : 0;
-      };
-
-      const center = skinRatio(w * 0.34, h * 0.24, w * 0.32, h * 0.5);
-      const cs = w * 0.16;
-      const ch = h * 0.16;
-      const corners =
-        (skinRatio(0, 0, cs, ch) +
-          skinRatio(w - cs, 0, cs, ch) +
-          skinRatio(0, h - ch, cs, ch) +
-          skinRatio(w - cs, h - ch, cs, ch)) /
-        4;
-
-      const goodFrame = light === 'good' && center > 0.45 && center - corners > 0.18;
-      faceStreak.current = goodFrame
-        ? Math.min(3, faceStreak.current + 1)
-        : Math.max(0, faceStreak.current - 2);
-      setFaceDetected(faceStreak.current >= 2);
+      // Face placement — skin-tone ratio inside the central region (~40% × 50%,
+      // narrower than the visible oval). A face fills it with mid-brightness
+      // skin tone; when it drifts out of the oval the ratio drops and the frame
+      // turns red. (Ported from the old app's proven heuristic.)
+      const fw = canvas.width * 0.4;
+      const fh = canvas.height * 0.5;
+      const fx = Math.max(0, canvas.width / 2 - fw / 2);
+      const fy = Math.max(0, canvas.height / 2 - fh / 2);
+      const faceData = ctx.getImageData(
+        fx,
+        fy,
+        Math.min(fw, canvas.width - fx),
+        Math.min(fh, canvas.height - fy),
+      ).data;
+      let faceScore = 0;
+      let samples = 0;
+      for (let i = 0; i < faceData.length; i += 16) {
+        const b = (faceData[i] + faceData[i + 1] + faceData[i + 2]) / 3;
+        if (b >= 100 && b <= 180) faceScore += 1;
+        samples += 1;
+      }
+      const ratio = samples ? faceScore / samples : 0;
+      const good = ratio > 0.3;
+      // Match the old flow: a valid centre region is immediately actionable.
+      // The former streak gate made the button oscillate on real camera feeds.
+      setFaceDetected(good);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
@@ -196,6 +189,17 @@ export function LivenessCheckModal({
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0);
+        // Preserve the old app's useful low-light correction. We still warn the
+        // user, but don't strand them when their face is clearly detectable.
+        if (lighting === 'low') {
+          const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < image.data.length; i += 4) {
+            image.data[i] = Math.min(255, image.data[i] * 1.2);
+            image.data[i + 1] = Math.min(255, image.data[i + 1] * 1.2);
+            image.data[i + 2] = Math.min(255, image.data[i + 2] * 1.2);
+          }
+          ctx.putImageData(image, 0, 0);
+        }
         dataUrl = canvas.toDataURL('image/jpeg', 0.85);
       }
     }
@@ -208,18 +212,18 @@ export function LivenessCheckModal({
   };
 
   const showVideo = phase === 'starting' || phase === 'ready' || phase === 'capturing';
-  const lightingBad = lighting !== 'good';
-  // "Ready" (green) requires BOTH good lighting AND a face centred in the oval.
-  const ready = phase === 'ready' && lighting === 'good' && faceDetected;
-  // Capture is the "go ahead" — only allowed on a green frame. When the frame
-  // is live but not ready we show a red border and guidance so the user fixes
-  // their lighting/position first.
+  // The old, field-tested flow allowed capture once a face was centred and used
+  // lighting as photo-quality guidance rather than a brittle hard gate.
+  const ready = phase === 'ready' && faceDetected;
   const canCapture = ready;
   // Live camera but not yet a good frame → red error state.
   const liveNotReady = phase === 'ready' && !ready;
+  const photoQualityGood = ready && lighting === 'good';
 
-  const frameBorder = ready
+  const frameBorder = photoQualityGood
     ? 'border-emerald-500'
+    : ready
+      ? 'border-amber-500'
     : liveNotReady
       ? 'border-red-500'
       : 'border-primary';
@@ -235,10 +239,14 @@ export function LivenessCheckModal({
             ? 'Too bright — reduce glare or backlight'
             : !faceDetected
               ? 'Center your face in the oval'
-              : 'Looking good — capture now';
+              : lighting === 'good'
+                ? 'Looking good — capture now'
+                : 'Face detected — you can capture, but better light is recommended';
 
-  const statusClass = ready
+  const statusClass = photoQualityGood
     ? 'text-emerald-600 dark:text-emerald-400'
+    : ready
+      ? 'text-amber-600 dark:text-amber-400'
     : liveNotReady
       ? 'text-red-600 dark:text-red-400'
       : 'text-foreground';
@@ -288,7 +296,13 @@ export function LivenessCheckModal({
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div
                   className={`h-[74%] w-[66%] rounded-[50%] border-[3px] shadow-[0_0_0_9999px_rgba(0,0,0,0.28)] transition-colors ${
-                    ready ? 'border-emerald-400' : liveNotReady ? 'border-red-400' : 'border-white/80'
+                    photoQualityGood
+                      ? 'border-emerald-400'
+                      : ready
+                        ? 'border-amber-400'
+                        : liveNotReady
+                          ? 'border-red-400'
+                          : 'border-white/80'
                   }`}
                 />
               </div>
@@ -305,7 +319,13 @@ export function LivenessCheckModal({
             <div className="flex items-center gap-2">
               <span
                 className={`h-2.5 w-2.5 rounded-full ${
-                  ready ? 'bg-emerald-500' : liveNotReady ? 'bg-red-500' : 'bg-muted-foreground'
+                  photoQualityGood
+                    ? 'bg-emerald-500'
+                    : ready
+                      ? 'bg-amber-500'
+                      : liveNotReady
+                        ? 'bg-red-500'
+                        : 'bg-muted-foreground'
                 }`}
               />
               <p className={`text-sm font-medium ${statusClass}`}>{statusText}</p>
@@ -315,7 +335,7 @@ export function LivenessCheckModal({
               <Camera size={16} className="mr-1.5" />
               {ready ? 'Capture photo' : 'Adjust lighting & position'}
             </Button>
-            {liveNotReady && (
+            {liveNotReady && appConfig.isMock && (
               <button
                 type="button"
                 onClick={() => complete()}
@@ -340,9 +360,11 @@ export function LivenessCheckModal({
               <Button variant="outline" className="flex-1 rounded-full" onClick={() => setPhase('starting')}>
                 Try again
               </Button>
-              <Button className="flex-1 rounded-full" onClick={() => complete()}>
-                Simulated check
-              </Button>
+              {appConfig.isMock && (
+                <Button className="flex-1 rounded-full" onClick={() => complete()}>
+                  Simulated check
+                </Button>
+              )}
             </div>
           </div>
         )}

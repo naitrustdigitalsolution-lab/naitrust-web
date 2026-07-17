@@ -1,0 +1,88 @@
+[
+  {
+    "id": "draft_supplier_generators",
+    "step": 2,
+    "createdAt": "2026-07-15T09:30:00.000Z",
+    "updatedAt": "2026-07-16T14:20:00.000Z",
+    "form": {
+      "useCase": "supplier-orders",
+      "dealType": "single",
+      "partyMode": "b2b",
+      "role": "buyer",
+      "participants": [
+        { "name": "Apex Power Supplies Ltd", "email": "sales@apexpower.example", "allocation": "2450000" }
+      ],
+      "title": "Supply of three industrial generators",
+      "description": "Purchase and delivery of three 45KVA generators to the Lagos warehouse.",
+      "amount": "2450000",
+      "deliveryDueDate": "2026-08-12",
+      "openUntil": "2026-07-28",
+      "releaseConditions": "Release after all three generators are delivered, inspected, and tested successfully."
+    }
+  },
+  {
+    "id": "draft_abandoned_event_catering",
+    "step": 2,
+    "createdAt": "2026-06-30T11:00:00.000Z",
+    "updatedAt": "2026-07-05T08:45:00.000Z",
+    "form": {
+      "useCase": "event-vendors",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        { "name": "Savannah Events & Catering", "email": "bookings@savannahevents.example", "allocation": "850000" }
+      ],
+      "title": "Wedding catering and venue setup",
+      "description": "Catering and table setup for 180 guests.",
+      "amount": "850000",
+      "deliveryDueDate": "2026-09-05",
+      "openUntil": "2026-07-20",
+      "releaseConditions": "Release after catering service and venue setup are completed as agreed."
+    }
+  },
+  {
+    "id": "draft_emeka_abandoned_interstate_haulage",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-06-27T10:15:00.000Z",
+    "updatedAt": "2026-07-03T16:40:00.000Z",
+    "form": {
+      "useCase": "business-service-providers",
+      "dealType": "single",
+      "partyMode": "b2b",
+      "role": "seller",
+      "participants": [
+        { "name": "Northern Foods Distribution Ltd", "email": "procurement@northernfoods.example", "allocation": "1750000" }
+      ],
+      "title": "Interstate haulage for packaged foods",
+      "description": "Dedicated truck delivery from Lagos to three distribution points in Abuja and Kaduna.",
+      "amount": "1750000",
+      "deliveryDueDate": "2026-08-08",
+      "openUntil": "2026-07-24",
+      "releaseConditions": "Release after signed waybills and delivery confirmations are received from all three locations."
+    }
+  },
+  {
+    "id": "draft_emeka_abandoned_last_mile",
+    "ownerUserId": "usr_mock_004",
+    "step": 3,
+    "createdAt": "2026-07-01T08:00:00.000Z",
+    "updatedAt": "2026-07-07T12:10:00.000Z",
+    "form": {
+      "useCase": "supplier-orders",
+      "dealType": "recurring",
+      "partyMode": "b2b",
+      "role": "seller",
+      "participants": [
+        { "name": "GreenBasket Retail Nigeria", "email": "operations@greenbasket.example", "allocation": "960000" }
+      ],
+      "title": "Monthly Lagos last-mile deliveries",
+      "description": "Monthly shared-load and last-mile delivery service for twelve GreenBasket retail locations.",
+      "amount": "960000",
+      "deliveryDueDate": "2026-08-15",
+      "openUntil": "2026-07-25",
+      "releaseConditions": "Release monthly after delivery scans and signed store receipts are uploaded for all locations."
+    }
+  }
+]

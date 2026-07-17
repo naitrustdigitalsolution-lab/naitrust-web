@@ -111,20 +111,20 @@ export function Footer({ onNavigate }: FooterProps) {
       // className="relative bg-linear-to-br from-blue-10 via-background to-primary/5 pt-4 pb-8 sm:pb-12 overflow-hidden"
       style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='800' viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='nigeria-verification' x='0' y='0' width='300' height='300' patternUnits='userSpaceOnUse'%3E%3Cpath d='M50 50 L100 100 L150 50 L200 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 150 L150 200 L200 150 L250 200' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Ccircle cx='150' cy='150' r='30' fill='%231e90ff' fill-opacity='0.03'/%3E%3Cpath d='M120 120 L150 150 L180 120' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.05' fill='none'/%3E%3Cpath d='M50 200 L100 250 L150 200 L200 250' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 50 L150 100 L200 50 L250 100' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M150 50 L200 100 L250 50 L300 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M50 100 L100 150 L150 100 L200 150' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23nigeria-verification)'/%3E%3Cpath d='M200 200 L250 250 L300 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M400 300 L450 350 L500 300' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M600 200 L650 250 L700 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M800 400 L850 450 L900 400' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M1000 250 L1050 300 L1100 250' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Ccircle cx='300' cy='400' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3Ccircle cx='600' cy='500' r='40' fill='%230b2b45' fill-opacity='0.03'/%3E%3Ccircle cx='900' cy='300' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3C/svg%3E")`,
-        backgroundSize: '800px 800px',
+        backgroundSize: '600px 600px',
         backgroundPosition: 'center',
         backgroundRepeat: 'repeat',
         opacity: 1,
       }}
     >
       <div className="max-w-440 mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_2.65fr] mb-10 h-[550px]">
+        <div className="grid gap-10 lg:grid-cols-[1.35fr_2.65fr] mb-10">
           {/* Brand */}
-          <div className="max-w-md">
+          <div className="lg:max-w-lg">
             <div className="mb-4">
               <NaitrustLogo size="postMd" showText={true} textColor="text-white" />
             </div>
-            <div className="mb-4 space-y-3 text-md leading-7 text-white/80">
+            <div className="mb-4 space-y-3 text-sm lg:text-md leading-7 text-white/80">
               <p>
                 Naitrust is the safer way for Nigerians to buy, sell, pay, and deliver with confidence. We help businesses and customers move beyond blind transfers by putting every deal inside a shared, traceable transaction room.
               </p>
@@ -187,11 +187,11 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h4 className="font-semibold text-lg mb-4">{group.title}</h4>
-                <ul className="space-y-2 text-md text-white/80">
+                <h4 className="font-semibold text-md lg:text-lg mb-4">{group.title}</h4>
+                <ul className="space-y-2 text-sm lg:text-md text-white/80">
                   {group.links.map((link) => (
                     <li key={`${group.title}-${link.label}`}>
                       <button onClick={() => onNavigate(link.page)} className="text-left hover:text-white transition-colors">

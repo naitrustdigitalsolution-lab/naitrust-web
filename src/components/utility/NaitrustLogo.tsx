@@ -22,8 +22,8 @@ export function NaitrustLogo({ size = 'md', showText = true, className = '', tex
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {/* Logo Icon - Shield with Nigerian colors and security elements */}
-      <div className={`${currentSize.container} relative`}>
-        <img src={icon} alt="logo" className='w-full h-full' />
+      <div className={`${currentSize.container} relative shrink-0`}>
+        <img src={icon} alt="logo" className="h-full w-full object-contain" />
       </div>
       
       {showText && (

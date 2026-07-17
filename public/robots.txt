@@ -1,79 +1,20 @@
-# Naitrust - Robots.txt
-# Public business directory — allow all legitimate crawlers and AI assistants.
-# Only block known scraping tools and protect private routes.
+# Naitrust — robots.txt
+# Public marketing pages are OPEN to all search engines and AI assistants so
+# the site can be found and cited. The authenticated app (/app) and the admin
+# console (/admin) are private and must never be indexed.
+#
+# NOTE: AI-crawler blocking (GPTBot, ClaudeBot, etc.) is NOT set here — if AI
+# assistants still can't read the site, disable "Block AI bots / AI Scrapers"
+# in the Cloudflare dashboard (Security → Bots), which appends its own rules.
 
-# ===========================
-# Block Known Scrapers & Training-Only Bots
-# ===========================
-User-agent: CCBot
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: scrapy
-Disallow: /
-
-User-agent: HTTrack
-Disallow: /
-
-User-agent: WebCopier
-Disallow: /
-
-User-agent: WebReaper
-Disallow: /
-
-User-agent: WebStripper
-Disallow: /
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: DotBot
-Disallow: /
-
-# ===========================
-# Allow Everything Else
-# (Google, Bing, ChatGPT, Perplexity, social crawlers, etc.)
-# ===========================
 User-agent: *
-Disallow: /api/
-Disallow: /admin/
-Disallow: /dashboard/
-Disallow: /settings/
-Disallow: /profile/
-Disallow: /chat/
-Disallow: /chat-admin
-Disallow: /transactions/
-Disallow: /notifications/
-Disallow: /inbox/
-Disallow: /saved
-Disallow: /login-history
-Disallow: /verify-email
-Disallow: /business/dashboard
-Disallow: /business/inbox
-Disallow: /business/analytics
-Disallow: /business/settings
-Disallow: /business/manage-profile
-Disallow: /business/complaints
-Disallow: /business/team
-Disallow: /business/upgrade
-Disallow: /business/create
-Disallow: /business/saved-customers
-Disallow: /business/reported-handles
-Disallow: /business/ai-insights
-Disallow: /business/verification/
 Allow: /
-
-Crawl-delay: 1
+# Private, authenticated areas — keep out of every index for security.
+Disallow: /app
+Disallow: /admin
+# Transient auth/verification flows — no SEO value.
+Disallow: /verify-email
+Disallow: /verify-code
+Disallow: /forgot-password
 
 Sitemap: https://naitrust.com/sitemap.xml

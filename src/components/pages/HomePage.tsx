@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '../utility/ImageWithFallback';
 import { TrustHeroAnimation } from '../pieces/general/TrustHeroAnimation';
 import { AnimatedHeroText } from '../pieces/general/AnimatedHeroText';
-import { CACLogo, QoreIDLogo, KoraLogo } from '../pieces/general/TrustedPartnerLogo';
+import { CACLogo, QoreIDLogo, AnchorLogo } from '../pieces/general/TrustedPartnerLogo';
 import { FloatingFeedbackButton } from '../utility/FloatingFeedbackButton';
 import { SEOHead } from '../utility/SEOHead';
 import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
@@ -1035,8 +1035,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </motion.div>
 
           <div className="flex flex-wrap gap-4 justify-center mx-auto overflow-x-auto py-4">
-            <motion.a
-              href="https://qoreid.com"
+            {/* <motion.a
+              href="https://www.cac.gov.ng/"
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
@@ -1053,7 +1053,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <p className="font-semibold text-sm text-center">CAC Nigeria</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Official Registry</p>
               </Card>
-            </motion.a>
+            </motion.a> */}
 
             <motion.a
               href="https://qoreid.com"
@@ -1069,14 +1069,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
               style={{ minWidth: '190px', maxWidth: '80px' }}
             >
               <Card className="p-4 h-full flex justify-center items-center hover:shadow-xl transition-all hoverborder-2 hover:border-primary/50 dark:from-card dark:to-gray-900/50">
-                <QoreIDLogo className="w-16 h-16" />
+                <QoreIDLogo className="w-16 h-16 bg-[#141414] rounded-full p-2" />
                 <p className="font-semibold text-sm group-hover:text-primary transition-colors">QoreID</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Identity and business checks</p>
               </Card>
             </motion.a>
 
             <motion.a
-              href="https://www.korahq.com/"
+              href="https://getanchor.co"
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
@@ -1089,8 +1089,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               style={{ minWidth: '190px', maxWidth: '80px' }}
             >
               <Card className="p-4 h-full flex justify-center items-center hover:shadow-xl transition-all hoverborder-2 hover:border-primary/50 dark:from-card dark:to-gray-900/50">
-                <KoraLogo className="w-24 h-16 object-contain" />
-                <p className="font-semibold text-sm group-hover:text-primary transition-colors">Kora</p>
+                <AnchorLogo className="w-16 h-16 object-contain rounded-full" />
+                <p className="font-semibold text-sm group-hover:text-primary transition-colors">Anchor</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Payment infrastructure</p>
               </Card>
             </motion.a>
@@ -1134,7 +1134,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Final CTA - Enhanced with Slogan */}
-      <section className={`py-20 ${isDarkMode ? "bg-card-foreground" : "bg-[#eef3f8]"} text-[#0b2b45] relative overflow-hidden`}>
+      <section className={`py-14 sm:py-20 ${isDarkMode ? "bg-card-foreground" : "bg-[#eef3f8]"} text-[#0b2b45] relative overflow-hidden`}>
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
@@ -1143,45 +1143,44 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
           >
             {/* Slogan - Prominent */}
-            <div className="mb-8 p-6 bg-white/75 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
-              <p className="text-3xl sm:text-4xl font-bold text-[#0b2b45]">
+            <div className="mb-7 sm:mb-8 p-4 lg:p-4 xl:p-6 bg-white/75 backdrop-blur-sm rounded-full border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
+              <p className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight text-[#0b2b45] text-balance">
                 "Secure every deal before money moves."
               </p>
             </div>
-            
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#0b2b45]">
-              Ready to Move Your Next Deal With More Confidence?
+
+            <h2 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
+              Ready to Move Your Next <br/> Deal With More Confidence?
             </h2>
-            <p className="text-xl mb-8 text-[#496274]">
+            <p className="text-base lg:text-xl leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">
               Invite the other party, agree the terms, verify the basics, and keep payment status and delivery proof in one trusted record.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Button
+                size="lg"
                 variant="secondary"
                 onClick={() => onNavigate('register-customer')}
-                className="bg-primary text-white hover:bg-primary/90 px-8 py-6 text-lg font-semibold shadow-[0_14px_32px_rgba(30,144,255,0.24)]"
+                className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-[0_14px_32px_rgba(30,144,255,0.24)]"
               >
                 Start a Safe Deal
-                <ArrowRight size={24} className="ml-2" />
+                <ArrowRight size={22} className="ml-2" />
               </Button>
-              <Button 
-                size="lg" 
-           
-                onClick={() => onNavigate('register-business')}
-                className="border-primary/40 bg-white hover:bg-primary/10 hover:text-primary px-8 py-6 text-lg font-semibold text-[#0b2b45]"
+              <Button
+                size="lg"
+                onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
+                className="w-full sm:w-auto border border-primary/40 bg-white hover:bg-primary/10 hover:text-primary px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold text-[#0b2b45]"
               >
                 Join as a Verified Seller
               </Button>
             </div>
-            
+
             {/* Feedback Link */}
-            <div className="mt-12 pt-8 border-t border-primary/20">
-              <p className="text-[#496274] mb-4">
+            <div className="mt-9 sm:mt-12 pt-7 sm:pt-8 border-t border-primary/20">
+              <p className="text-sm sm:text-base text-[#496274] mb-3 sm:mb-4">
                 Have feedback or suggestions?
               </p>
-              <Button 
+              <Button
                 variant="ghost"
                 onClick={() => onNavigate('feedback')}
                 className="text-primary hover:bg-primary/10 hover:text-primary"

@@ -55,8 +55,25 @@ export function useAdvanceTracking(id: string | undefined) {
 export function useAddTrackingStep(id: string | undefined) {
   const invalidate = useDealDetailInvalidator(id);
   return useMutation({
-    mutationFn: (step: { title: string; description?: string }) =>
-      dealDetailApi.addTrackingStep(id!, step),
+    mutationFn: (input: { title: string; description?: string; afterStepId?: string | null }) =>
+      dealDetailApi.addTrackingStep(id!, { title: input.title, description: input.description }, input.afterStepId),
+    onSuccess: invalidate,
+  });
+}
+
+export function useEditTrackingStep(id: string | undefined) {
+  const invalidate = useDealDetailInvalidator(id);
+  return useMutation({
+    mutationFn: (input: { stepId: string; title: string; description?: string }) =>
+      dealDetailApi.editTrackingStep(id!, input.stepId, { title: input.title, description: input.description }),
+    onSuccess: invalidate,
+  });
+}
+
+export function useRevertTracking(id: string | undefined) {
+  const invalidate = useDealDetailInvalidator(id);
+  return useMutation({
+    mutationFn: () => dealDetailApi.revertTracking(id!),
     onSuccess: invalidate,
   });
 }

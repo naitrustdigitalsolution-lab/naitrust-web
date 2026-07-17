@@ -20,6 +20,8 @@ interface AgreementDocumentProps {
   scrollable?: boolean;
   /** When true, clause bodies are editable via `onChange`. */
   editable?: boolean;
+  /** Hide the AI-drafted note (e.g. on an already-agreed deal being viewed). */
+  hideAiNote?: boolean;
   onChange?: (next: AgreementDraft) => void;
 }
 
@@ -27,6 +29,7 @@ export function AgreementDocument({
   agreement,
   scrollable = false,
   editable = false,
+  hideAiNote = false,
   onChange,
 }: AgreementDocumentProps) {
   const editBody = (index: number, body: string) => {
@@ -45,7 +48,7 @@ export function AgreementDocument({
           <p className="text-sm font-semibold text-foreground">Safe deal agreement</p>
           <span className="text-xs text-muted-foreground">v{agreement.version}</span>
         </div>
-        {agreement.generatedByAi && (
+        {agreement.generatedByAi && !hideAiNote && (
           <Badge variant="outline" className="gap-1 text-xs">
             <Sparkles size={12} className="text-primary" />
             {editable ? 'AI-drafted · editable' : 'AI-drafted · review before accepting'}

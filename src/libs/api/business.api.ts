@@ -26,7 +26,22 @@ const mockList = (mockBusinesses as ApiSuccess<BusinessProfile[]>).data;
 /** Session-scoped edits to a business, keyed by owner email (mock only). */
 const overrides: Record<string, Partial<BusinessProfile>> = {};
 
-export type BusinessUpdate = Partial<Pick<BusinessProfile, 'name' | 'category'>>;
+export type BusinessUpdate = Partial<
+  Pick<
+    BusinessProfile,
+    | 'name'
+    | 'category'
+    | 'rcNumber'
+    | 'description'
+    | 'email'
+    | 'phone'
+    | 'website'
+    | 'address'
+    | 'city'
+    | 'state'
+    | 'socialHandles'
+  >
+>;
 
 function resolveBusiness(email: string): BusinessProfile | null {
   const base = mockList.find((b) => b.ownerEmail.toLowerCase() === email.toLowerCase());
@@ -61,7 +76,9 @@ export const businessApi = {
   update: async (email: string, patch: BusinessUpdate): Promise<ApiSuccess<BusinessProfile | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      overrides[email.toLowerCase()] = { ...overrides[email.toLowerCase()], ...patch, verified: false };
+      // The verification-critical fields (name, CAC/RC number) are locked once
+      // verified, so editing contact/profile details doesn't change verification.
+      overrides[email.toLowerCase()] = { ...overrides[email.toLowerCase()], ...patch };
       return { success: true, data: resolveBusiness(email) };
     }
     const current = resolveBusiness(email);

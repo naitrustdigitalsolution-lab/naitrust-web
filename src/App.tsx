@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
@@ -28,26 +28,71 @@ import { Toaster } from "./components/ui/sonner";
 import { WaitlistModalHost } from "./components/modals/WaitlistModal";
 import { BlogPage } from "./components/pages/BlogPage";
 import { BlogArticlePage } from './components/pages/BlogArticlePage';
-import { AuthPageLoader } from "./components/pieces/auth/AuthPageLoader";
+import { AuthPageLoader, DashboardPageLoader } from "./components/pieces/auth/AuthPageLoader";
 import { UseCasesPage } from './components/pages/UseCasesPage';
 import { UseCaseDetailPage } from './components/pages/UseCaseDetailPage';
 import { ReportConcernPage } from './components/pages/ReportConcernPage';
 import { RequireAuth } from './components/utility/RequireAuth';
 
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const SignupPage = lazy(() => import("./pages/SignupPage"));
-const DashboardPage = lazy(() => import("./pages/DashboardPage"));
-const CreateDealPage = lazy(() => import("./pages/CreateDealPage"));
-const DealsPage = lazy(() => import("./pages/DealsPage"));
-const TransactionRoomPage = lazy(() => import("./pages/TransactionRoomPage"));
-const InvitationsPage = lazy(() => import("./pages/InvitationsPage"));
-const InvitationDetailPage = lazy(() => import("./pages/InvitationDetailPage"));
-const NotificationsPage = lazy(() => import("./pages/NotificationsPage"));
-const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const SettingsPage = lazy(() => import("./pages/SettingsPage"));
-const SecurityCenterPage = lazy(() => import("./pages/SecurityCenterPage"));
+/**
+ * Minimum time the branded AuthPageLoader stays on screen before a lazy route
+ * is revealed. Route chunks usually resolve in a few milliseconds, so without a
+ * floor the preloader only flashes. This keeps it visible long enough to read.
+ * Applies while the chunk loads (first visit / hard refresh); cached chunks on
+ * repeat navigation render instantly. Tune this single number to taste.
+ */
+const MIN_PRELOADER_MS = 800;
+
+/**
+ * Like React.lazy, but the import resolves no sooner than MIN_PRELOADER_MS so
+ * the Suspense fallback (AuthPageLoader) has a minimum display time.
+ */
+function lazyWithMinDelay<T extends ComponentType<any>>(
+  factory: () => Promise<{ default: T }>,
+): LazyExoticComponent<T> {
+  return lazy(() =>
+    Promise.all([
+      factory(),
+      new Promise((resolve) => setTimeout(resolve, MIN_PRELOADER_MS)),
+    ]).then(([module]) => module),
+  );
+}
+
+const LoginPage = lazyWithMinDelay(() => import("./pages/LoginPage"));
+const SignupPage = lazyWithMinDelay(() => import("./pages/SignupPage"));
+const DashboardPage = lazyWithMinDelay(() => import("./pages/DashboardPage"));
+const CreateDealPage = lazyWithMinDelay(() => import("./pages/CreateDealPage"));
+const DealsPage = lazyWithMinDelay(() => import("./pages/DealsPage"));
+const DealDraftsPage = lazyWithMinDelay(() => import("./pages/DealDraftsPage"));
+const TransactionRoomPage = lazyWithMinDelay(() => import("./pages/TransactionRoomPage"));
+const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage"));
+const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
+const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
+const ProfilePage = lazyWithMinDelay(() => import("./pages/ProfilePage"));
+const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
+const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
 
 const queryClient = new QueryClient();
+
+// A dashboard URL loaded directly by the browser (including refresh) gets the
+// full-screen loader. Client-side navigation—even the first trip into /app from
+// a public route—keeps the dashboard chrome and loads only the content panel.
+let browserLoadedDashboardUrl =
+  typeof window !== 'undefined' && window.location.pathname.startsWith('/app');
+
+function DashboardRouteSuspense({ children }: { children: ReactNode }) {
+  const [useFullScreenLoader] = useState(() => browserLoadedDashboardUrl);
+
+  useEffect(() => {
+    browserLoadedDashboardUrl = false;
+  }, []);
+
+  return (
+    <Suspense fallback={useFullScreenLoader ? <AuthPageLoader /> : <DashboardPageLoader />}>
+      {children}
+    </Suspense>
+  );
+}
 
 const simplePages: Record<
   string,
@@ -159,7 +204,7 @@ function PublicAppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <ScrollToRoutePosition />
       {!usesStandaloneHome && <Header onNavigate={handleNavigate} currentPage={currentPage} />}
 
@@ -190,16 +235,17 @@ function PublicAppContent() {
           <Route path="/verify-code" element={<VerifyCodePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route element={<RequireAuth />}>
-            <Route path="/app" element={<Suspense fallback={<AuthPageLoader />}><DashboardPage /></Suspense>} />
-            <Route path="/app/deals" element={<Suspense fallback={<AuthPageLoader />}><DealsPage /></Suspense>} />
-            <Route path="/app/deals/new" element={<Suspense fallback={<AuthPageLoader />}><CreateDealPage /></Suspense>} />
-            <Route path="/app/deals/:id" element={<Suspense fallback={<AuthPageLoader />}><TransactionRoomPage /></Suspense>} />
-            <Route path="/app/invitations" element={<Suspense fallback={<AuthPageLoader />}><InvitationsPage /></Suspense>} />
-            <Route path="/app/invitations/:id" element={<Suspense fallback={<AuthPageLoader />}><InvitationDetailPage /></Suspense>} />
-            <Route path="/app/notifications" element={<Suspense fallback={<AuthPageLoader />}><NotificationsPage /></Suspense>} />
-            <Route path="/app/profile" element={<Suspense fallback={<AuthPageLoader />}><ProfilePage /></Suspense>} />
-            <Route path="/app/settings" element={<Suspense fallback={<AuthPageLoader />}><SettingsPage /></Suspense>} />
-            <Route path="/app/security" element={<Suspense fallback={<AuthPageLoader />}><SecurityCenterPage /></Suspense>} />
+            <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
+            <Route path="/app/deals" element={<DashboardRouteSuspense><DealsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/deals/new" element={<DashboardRouteSuspense><CreateDealPage /></DashboardRouteSuspense>} />
+            <Route path="/app/drafts" element={<DashboardRouteSuspense><DealDraftsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/deals/:id" element={<DashboardRouteSuspense><TransactionRoomPage /></DashboardRouteSuspense>} />
+            <Route path="/app/invitations" element={<DashboardRouteSuspense><InvitationsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
+            <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/profile" element={<DashboardRouteSuspense><ProfilePage /></DashboardRouteSuspense>} />
+            <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />
           </Route>
           <Route path="/business" element={<SimpleRoutePage />} />
           <Route path="/resources" element={<SimpleRoutePage />} />

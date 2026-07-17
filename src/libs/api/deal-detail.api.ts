@@ -344,10 +344,15 @@ export const dealDetailApi = {
     return res as ApiSuccess<DealMilestone[]>;
   },
 
-  /** Seller adds a custom tracking update (a logged, completed step). */
+  /**
+   * Seller adds a custom tracking update (a logged, completed step). When
+   * `afterStepId` is given the update is inserted directly after that step;
+   * otherwise it lands just before the first not-yet-done stage.
+   */
   addTrackingStep: async (
     id: string,
     step: { title: string; description?: string },
+    afterStepId?: string | null,
   ): Promise<ApiSuccess<DealMilestone[]>> => {
     if (appConfig.isMock) {
       await delay(300);
@@ -360,14 +365,80 @@ export const dealDetailApi = {
         updatedByName: 'You',
         at: new Date().toISOString(),
       };
-      // Insert just before the first not-done stage so it reads chronologically.
-      const insertAt = list.findIndex((m) => m.status !== 'done');
-      if (insertAt === -1) list.push(milestone);
-      else list.splice(insertAt, 0, milestone);
+      const afterIdx = afterStepId ? list.findIndex((m) => m.id === afterStepId) : -1;
+      if (afterIdx !== -1) {
+        // Insert directly after the chosen step.
+        list.splice(afterIdx + 1, 0, milestone);
+      } else {
+        // Default: just before the first not-done stage so it reads chronologically.
+        const insertAt = list.findIndex((m) => m.status !== 'done');
+        if (insertAt === -1) list.push(milestone);
+        else list.splice(insertAt, 0, milestone);
+      }
       trackingOverrides[id] = [...list];
       return { success: true, data: trackingOverrides[id] };
     }
-    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking`, step);
+    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking`, {
+      ...step,
+      afterStepId,
+    });
+    return res as ApiSuccess<DealMilestone[]>;
+  },
+
+  /** Seller edits the title/note of an existing tracking step. */
+  editTrackingStep: async (
+    id: string,
+    stepId: string,
+    patch: { title: string; description?: string },
+  ): Promise<ApiSuccess<DealMilestone[]>> => {
+    if (appConfig.isMock) {
+      await delay(300);
+      const list = ensureTracking(id);
+      const idx = list.findIndex((m) => m.id === stepId);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], title: patch.title, description: patch.description };
+      }
+      trackingOverrides[id] = [...list];
+      return { success: true, data: trackingOverrides[id] };
+    }
+    const res = await httpClient.patch<DealMilestone[]>(
+      `${endpoints.transactions.getOne(id)}/tracking/${stepId}`,
+      patch,
+    );
+    return res as ApiSuccess<DealMilestone[]>;
+  },
+
+  /**
+   * Seller reverts the most recent tracking advance — steps the delivery back
+   * one stage (the last completed stage re-opens as the current one).
+   */
+  revertTracking: async (id: string): Promise<ApiSuccess<DealMilestone[]>> => {
+    if (appConfig.isMock) {
+      await delay(300);
+      const list = ensureTracking(id);
+      const currentIdx = list.findIndex((m) => m.status === 'current');
+      if (currentIdx === -1) {
+        // Every stage is done — re-open the final one as current.
+        for (let i = list.length - 1; i >= 0; i--) {
+          if (list[i].status === 'done') {
+            list[i] = { ...list[i], status: 'current', updatedByName: undefined, at: undefined };
+            break;
+          }
+        }
+      } else if (currentIdx > 0) {
+        // Un-complete the previous step: it becomes current, current becomes pending.
+        list[currentIdx] = { ...list[currentIdx], status: 'pending', updatedByName: undefined, at: undefined };
+        list[currentIdx - 1] = {
+          ...list[currentIdx - 1],
+          status: 'current',
+          updatedByName: undefined,
+          at: undefined,
+        };
+      }
+      trackingOverrides[id] = [...list];
+      return { success: true, data: trackingOverrides[id] };
+    }
+    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking/revert`);
     return res as ApiSuccess<DealMilestone[]>;
   },
 

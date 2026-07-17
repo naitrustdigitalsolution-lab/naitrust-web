@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeftIcon, PanelRightIcon } from "lucide-react";
+import { ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react";
 
 import { useIsMobile } from "./use-mobile";
 import { cn } from "./utils";
@@ -273,7 +273,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      {state === "collapsed" ? <PanelRightIcon /> : <PanelLeftIcon />}
+      {state === "collapsed" ? <ChevronsRightIcon /> : <ChevronsLeftIcon />}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

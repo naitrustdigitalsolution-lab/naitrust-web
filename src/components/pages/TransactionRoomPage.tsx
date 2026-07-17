@@ -12,20 +12,25 @@ import { formatDistanceToNow, format } from 'date-fns';
 import { useState } from 'react';
 import {
   ArrowLeft,
+  Ban,
   CalendarClock,
   Check,
   Circle,
   Copy,
+  Download,
   FileText,
   GitPullRequestArrow,
   Landmark,
   MapPin,
   MessageSquare,
   Paperclip,
+  Pencil,
+  Plus,
   Repeat,
   ScrollText,
   ShieldAlert,
   Truck,
+  Undo2,
   Upload,
   Users,
 } from 'lucide-react';
@@ -41,6 +46,8 @@ import { AddTrackingStepModal } from '../pieces/transaction/AddTrackingStepModal
 import { UploadEvidenceModal } from '../pieces/transaction/UploadEvidenceModal';
 import { RaiseDisputeModal } from '../pieces/transaction/RaiseDisputeModal';
 import { DisputePanel } from '../pieces/transaction/DisputePanel';
+import { TerminationPanel } from '../pieces/transaction/TerminationPanel';
+import { TerminationReasonModal } from '../pieces/transaction/TerminationReasonModal';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -50,10 +57,13 @@ import {
   useDealDetail,
   useAdvanceTracking,
   useAddTrackingStep,
+  useEditTrackingStep,
+  useRevertTracking,
   useAddEvidence,
 } from '../../hooks/useDealDetail';
 import { useNegotiation, useProposeNegotiation } from '../../hooks/useNegotiation';
 import { useDispute, useOpenDispute } from '../../hooks/useDispute';
+import { useTermination, useRequestTermination, useRespondTermination } from '../../hooks/useTermination';
 import { useCases } from '../../libs/use-cases';
 import {
   formatMinorAmount,
@@ -62,6 +72,7 @@ import {
   partyModeShort,
   roleLabel,
 } from '../../libs/utils/safe-deal-presentation';
+import { downloadAgreementDocument, downloadDealSummaryCard } from '../../libs/utils/deal-documents';
 import type { DealActivityEvent, SafeDealDetail } from '../../libs/store/types';
 import type { DealNegotiation } from '../../libs/store/types';
 
@@ -273,10 +284,27 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
       </dl>
 
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Agreement
-        </p>
-        <AgreementDocument agreement={deal.agreement} scrollable />
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Agreement
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full"
+            onClick={() =>
+              toast.promise(downloadAgreementDocument(deal), {
+                loading: 'Preparing agreement PDF…',
+                success: 'Agreement downloaded.',
+                error: 'Could not generate the PDF.',
+              })
+            }
+          >
+            <Download size={14} className="mr-1.5" />
+            Download agreement
+          </Button>
+        </div>
+        <AgreementDocument agreement={deal.agreement} scrollable hideAiNote />
       </div>
     </div>
   );
@@ -284,10 +312,15 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
 
 function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdate: boolean }) {
   const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState<{ id: string; title: string; description?: string } | null>(null);
   const advance = useAdvanceTracking(deal.id);
   const addStep = useAddTrackingStep(deal.id);
+  const editStep = useEditTrackingStep(deal.id);
+  const revert = useRevertTracking(deal.id);
   const hasNext = deal.milestones.some((m) => m.status === 'current' || m.status === 'pending');
   const nextStage = deal.milestones.find((m) => m.status === 'current' || m.status === 'pending');
+  // Something to revert exists once at least one stage is done.
+  const canRevert = deal.milestones.some((m) => m.status === 'done');
 
   return (
     <div className="space-y-5">
@@ -315,7 +348,24 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
               Mark "{nextStage?.title}" done
             </Button>
           )}
+          {canRevert && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-full"
+              onClick={() =>
+                revert.mutate(undefined, {
+                  onSuccess: () => toast.success('Stepped tracking back one stage.'),
+                })
+              }
+              disabled={revert.isPending}
+            >
+              <Undo2 size={14} className="mr-1.5" />
+              Revert last update
+            </Button>
+          )}
           <Button size="sm" variant="outline" className="rounded-full" onClick={() => setShowAdd(true)}>
+            <Plus size={14} className="mr-1.5" />
             Add custom step
           </Button>
         </div>
@@ -325,14 +375,38 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
         open={showAdd}
         onOpenChange={setShowAdd}
         submitting={addStep.isPending}
-        onSubmit={(step) =>
-          addStep.mutate(step, {
-            onSuccess: () => {
-              setShowAdd(false);
-              toast.success('Tracking update posted.');
+        steps={deal.milestones}
+        onSubmit={(step, afterStepId) =>
+          addStep.mutate(
+            { ...step, afterStepId },
+            {
+              onSuccess: () => {
+                setShowAdd(false);
+                toast.success('Tracking update posted.');
+              },
             },
-          })
+          )
         }
+      />
+
+      <AddTrackingStepModal
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        mode="edit"
+        submitting={editStep.isPending}
+        initial={editing ? { title: editing.title, description: editing.description } : undefined}
+        onSubmit={(step) => {
+          if (!editing) return;
+          editStep.mutate(
+            { stepId: editing.id, ...step },
+            {
+              onSuccess: () => {
+                setEditing(null);
+                toast.success('Tracking step updated.');
+              },
+            },
+          );
+        }}
       />
 
       <ol className="relative space-y-6 pl-7">
@@ -355,10 +429,23 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
                   <Circle size={18} className="text-border" />
                 )}
               </span>
-              <p className={`text-sm font-semibold ${current ? 'text-primary' : done ? 'text-foreground' : 'text-muted-foreground'}`}>
-                {ms.title}
-                {current && <span className="ml-2 text-xs font-medium text-primary">In progress</span>}
-              </p>
+              <div className="flex items-start justify-between gap-2">
+                <p className={`text-sm font-semibold ${current ? 'text-primary' : done ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {ms.title}
+                  {current && <span className="ml-2 text-xs font-medium text-primary">In progress</span>}
+                </p>
+                {canUpdate && (
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ id: ms.id, title: ms.title, description: ms.description })}
+                    className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={`Edit step ${ms.title}`}
+                  >
+                    <Pencil size={11} />
+                    Edit
+                  </button>
+                )}
+              </div>
               {ms.description && <p className="mt-0.5 text-sm text-muted-foreground">{ms.description}</p>}
               {ms.at && (
                 <p className="mt-0.5 text-xs text-muted-foreground">
@@ -379,15 +466,19 @@ function ActionsPanel({
   youIsReleaser,
   canNegotiate,
   hasDispute,
+  canTerminate,
   onRequestChanges,
   onRaiseDispute,
+  onTerminate,
 }: {
   deal: SafeDealDetail;
   youIsReleaser: boolean;
   canNegotiate: boolean;
   hasDispute: boolean;
+  canTerminate: boolean;
   onRequestChanges: () => void;
   onRaiseDispute: () => void;
+  onTerminate: () => void;
 }) {
   // Funding must be done by the party who releases the finance (the buyer).
   const canFund = deal.funding.status === 'awaiting_transfer' && youIsReleaser;
@@ -399,7 +490,7 @@ function ActionsPanel({
   const canDispute =
     !hasDispute && !['paid_out', 'completed', 'refunded', 'cancelled', 'draft'].includes(deal.status);
 
-  if (!canFund && !canConfirm && !canDispute && !canNegotiate) return null;
+  if (!canFund && !canConfirm && !canDispute && !canNegotiate && !canTerminate) return null;
 
   return (
     <Card className="gap-3 p-4 shadow-sm">
@@ -437,6 +528,16 @@ function ActionsPanel({
           A dispute is open — release is paused while it's reviewed. See the Dispute tab.
         </p>
       )}
+      {canTerminate && (
+        <Button
+          variant="outline"
+          className="w-full rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+          onClick={onTerminate}
+        >
+          <Ban size={16} className="mr-1.5" />
+          Terminate deal
+        </Button>
+      )}
       {!youIsReleaser && deal.funding.status === 'awaiting_transfer' && (
         <p className="text-xs leading-5 text-muted-foreground">
           The buyer funds this deal. You'll be notified once payment is protected.
@@ -452,10 +553,15 @@ export function TransactionRoomPage() {
   const { data: deal, isLoading, isError } = useDealDetail(id);
   const { data: negotiation } = useNegotiation(id);
   const { data: dispute } = useDispute(id);
+  const { data: termination } = useTermination(id);
   const propose = useProposeNegotiation(id);
   const openDispute = useOpenDispute(id);
+  const requestTermination = useRequestTermination(id);
+  const respondTermination = useRespondTermination(id);
   const [showPropose, setShowPropose] = useState(false);
   const [showDispute, setShowDispute] = useState(false);
+  const [showTerminate, setShowTerminate] = useState(false);
+  const [showReject, setShowReject] = useState(false);
 
   const counterparty = deal?.parties.find((p) => !p.isYou);
   const youParty = deal?.parties.find((p) => p.isYou);
@@ -469,6 +575,37 @@ export function TransactionRoomPage() {
   const negotiationOpen = negotiation?.status === 'open';
   const hasDispute = !!dispute;
   const disputeOpen = dispute?.status === 'open' || dispute?.status === 'under_review';
+  const terminationPending = termination?.status === 'requested';
+  const terminated = termination?.status === 'accepted';
+  // Anyone on the deal can request termination while it's live and none is pending.
+  const canTerminate =
+    !!deal &&
+    !terminationPending &&
+    !terminated &&
+    !['paid_out', 'completed', 'refunded', 'cancelled'].includes(deal.status);
+
+  const submitTermination = (reason: string) =>
+    requestTermination.mutate(reason, {
+      onSuccess: () => {
+        setShowTerminate(false);
+        toast.info('Termination requested — the other party will review your reason.');
+      },
+    });
+  const acceptTermination = () =>
+    respondTermination.mutate(
+      { accept: true, byName: youParty?.name ?? 'You' },
+      { onSuccess: () => toast.success('You agreed to terminate. The deal is now ended and recorded.') },
+    );
+  const rejectTermination = (reason: string) =>
+    respondTermination.mutate(
+      { accept: false, reason, byName: youParty?.name ?? 'You' },
+      {
+        onSuccess: () => {
+          setShowReject(false);
+          toast.info('Termination rejected — the deal stays active.');
+        },
+      },
+    );
   // A deal can be renegotiated before it's funded/closed.
   const canNegotiate =
     !!deal &&
@@ -570,6 +707,17 @@ export function TransactionRoomPage() {
                           Disputed
                         </Badge>
                       )}
+                      {terminated ? (
+                        <Badge variant="destructive" className="gap-1">
+                          <Ban size={12} />
+                          Terminated
+                        </Badge>
+                      ) : terminationPending ? (
+                        <Badge variant="outline" className="gap-1 text-amber-600 dark:text-amber-400">
+                          <Ban size={12} />
+                          Termination requested
+                        </Badge>
+                      ) : null}
                     </div>
                     {deal.previousReference && (
                       <p className="mt-1.5 text-xs text-muted-foreground">
@@ -589,14 +737,29 @@ export function TransactionRoomPage() {
                       ? 'Invitation expired'
                       : `Open until ${format(new Date(deal.expiresAt), 'MMM d')} · ${formatDistanceToNow(new Date(deal.expiresAt))} left`}
                   </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="mt-3 rounded-full"
+                    onClick={() =>
+                      toast.promise(downloadDealSummaryCard(deal), {
+                        loading: 'Preparing summary PDF…',
+                        success: 'Summary card downloaded.',
+                        error: 'Could not generate the PDF.',
+                      })
+                    }
+                  >
+                    <Download size={14} className="mr-1.5" />
+                    Download summary card
+                  </Button>
                 </div>
               </div>
             </Card>
 
             {/* Body */}
-            <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
-              <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="w-full justify-start">
+            <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
+              <Tabs defaultValue="overview" className="w-full min-w-0">
+                <TabsList className="w-full justify-start overflow-x-auto">
                   <TabsTrigger value="overview">
                     <ScrollText size={15} className="mr-1.5" />
                     Overview
@@ -617,6 +780,12 @@ export function TransactionRoomPage() {
                     <TabsTrigger value="dispute">
                       <ShieldAlert size={15} className="mr-1.5" />
                       Dispute
+                    </TabsTrigger>
+                  )}
+                  {termination && (
+                    <TabsTrigger value="termination">
+                      <Ban size={15} className="mr-1.5" />
+                      Termination
                     </TabsTrigger>
                   )}
                   <TabsTrigger value="chat">
@@ -659,6 +828,18 @@ export function TransactionRoomPage() {
                     </Card>
                   </TabsContent>
                 )}
+                {termination && (
+                  <TabsContent value="termination">
+                    <Card className="p-5 shadow-sm">
+                      <TerminationPanel
+                        termination={termination}
+                        responding={respondTermination.isPending}
+                        onAccept={acceptTermination}
+                        onReject={() => setShowReject(true)}
+                      />
+                    </Card>
+                  </TabsContent>
+                )}
                 <TabsContent value="chat">
                   <Card className="p-5 shadow-sm">
                     <DealChat dealId={deal.id} counterpartyName={counterparty?.name ?? deal.counterpartyName} />
@@ -682,13 +863,35 @@ export function TransactionRoomPage() {
                   youIsReleaser={youIsReleaser}
                   canNegotiate={canNegotiate}
                   hasDispute={hasDispute}
+                  canTerminate={canTerminate}
                   onRequestChanges={() => setShowPropose(true)}
                   onRaiseDispute={() => setShowDispute(true)}
+                  onTerminate={() => setShowTerminate(true)}
                 />
                 <PartiesPanel deal={deal} />
                 <FundingPanel deal={deal} />
               </div>
             </div>
+
+            <TerminationReasonModal
+              open={showTerminate}
+              onOpenChange={setShowTerminate}
+              title="Terminate this deal?"
+              description="Tell the other party why you want to end this deal. They'll accept or reject your request."
+              submitLabel="Request termination"
+              destructive
+              submitting={requestTermination.isPending}
+              onSubmit={submitTermination}
+            />
+            <TerminationReasonModal
+              open={showReject}
+              onOpenChange={setShowReject}
+              title="Reject termination"
+              description="Let the other party know why you don't want to end this deal."
+              submitLabel="Reject request"
+              submitting={respondTermination.isPending}
+              onSubmit={rejectTermination}
+            />
 
             <ProposeChangesModal
               open={showPropose}

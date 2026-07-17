@@ -13,7 +13,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { addDays, differenceInCalendarDays, format } from 'date-fns';
 import {
   ArrowDownLeft,
@@ -29,6 +29,7 @@ import {
   RefreshCw,
   Repeat,
   ShieldCheck,
+  Save,
   Sparkles,
   Trash2,
   Truck,
@@ -55,6 +56,7 @@ import { useCases } from '../../libs/use-cases';
 import { dealTypeMeta, featuresForUseCase } from '../../libs/features/use-case-features';
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
 import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
+import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/deal-draft';
 import {
   MAX_DEAL_OPEN_DAYS,
   type AgreementDraft,
@@ -182,19 +184,41 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
 
 export function CreateDealPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const createDeal = useCreateDeal();
   const security = useSecurity();
 
+  const requestedDraftId = searchParams.get('draft');
+  const recoveredDraft = useMemo(
+    () => loadDealDraft<FormState>(user?.id, requestedDraftId),
+    [user?.id, requestedDraftId],
+  );
+  const draftId = useMemo(() => recoveredDraft?.id ?? crypto.randomUUID(), [recoveredDraft?.id]);
   const [livenessOk, setLivenessOk] = useState(security.livenessFresh);
   const [showPin, setShowPin] = useState(false);
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState<FormState>(INITIAL);
+  const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
+  const [form, setForm] = useState<FormState>(() => recoveredDraft?.form ?? INITIAL);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [agreement, setAgreement] = useState<AgreementDraft | null>(null);
   const [agreementConfirmed, setAgreementConfirmed] = useState(false);
   const [editingAgreement, setEditingAgreement] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    if (recoveredDraft) toast.info('Deal draft opened.');
+    // Only announce the recovery once when the wizard mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const hasContent =
+      !!form.useCase || !!form.title.trim() || !!form.description.trim() || !!form.amount ||
+      form.participants.some((participant) => !!participant.name.trim() || !!participant.email.trim());
+    if (!hasContent) return;
+    const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step), 400);
+    return () => window.clearTimeout(timer);
+  }, [draftId, form, step, user?.id]);
 
   const invalidateAgreement = () => {
     setAgreement(null);
@@ -344,6 +368,12 @@ export function CreateDealPage() {
     setStep((s) => Math.max(s - 1, 1));
   };
 
+  const handleSaveDraft = () => {
+    saveDealDraft(user?.id, draftId, form, step);
+    toast.success('Deal saved to drafts.');
+    navigate('/app/drafts');
+  };
+
   const doSubmit = async () => {
     if (!agreement) return;
     try {
@@ -370,6 +400,7 @@ export function CreateDealPage() {
         expiresInDays,
         agreement,
       });
+      clearDealDraft(user?.id, draftId);
       toast.success('Safe deal created — invitation and agreement sent to the counterparty.');
       navigate('/app/deals');
     } catch {
@@ -857,31 +888,37 @@ export function CreateDealPage() {
                 </div>
               )}
 
-              <div className="mt-6 flex items-center justify-between gap-3 border-t pt-5">
+              <div className="mt-6 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <Button type="button" variant="ghost" onClick={handleBack} disabled={createDeal.isPending}>
                   <ArrowLeft size={16} className="mr-1" />
                   {step === 1 ? 'Cancel' : 'Back'}
                 </Button>
-                {step < STEPS.length ? (
-                  <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-full">
-                    Continue
-                    <ArrowRight size={16} className="ml-1" />
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-full">
+                    <Save size={16} className="mr-1.5" />
+                    Save to drafts
                   </Button>
-                ) : (
-                  <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending} className="rounded-full">
-                    {createDeal.isPending ? (
-                      <>
-                        <Loader2 size={16} className="mr-1.5 animate-spin" />
-                        Creating…
-                      </>
-                    ) : (
-                      <>
-                        <ShieldCheck size={16} className="mr-1.5" />
-                        Create safe deal
-                      </>
-                    )}
-                  </Button>
-                )}
+                  {step < STEPS.length ? (
+                    <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-full">
+                      Continue
+                      <ArrowRight size={16} className="ml-1" />
+                    </Button>
+                  ) : (
+                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending} className="rounded-full">
+                      {createDeal.isPending ? (
+                        <>
+                          <Loader2 size={16} className="mr-1.5 animate-spin" />
+                          Creating…
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck size={16} className="mr-1.5" />
+                          Create safe deal
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </div>
             </Card>
           </main>

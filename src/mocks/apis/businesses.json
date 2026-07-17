@@ -7,6 +7,19 @@
       "name": "Adaeze Fabrics Ltd",
       "rcNumber": "RC-1948221",
       "category": "Textiles & apparel supply",
+      "description": "Wholesale supplier of Ankara, lace, and assorted fabrics to boutiques and tailors across Nigeria. Bulk orders with delivery tracking.",
+      "ownerName": "Fatima Bello",
+      "email": "orders@adaezefabrics.ng",
+      "phone": "+2348031234567",
+      "website": "https://adaezefabrics.ng",
+      "address": "14 Balogun Market Road, Lagos Island",
+      "city": "Lagos",
+      "state": "Lagos",
+      "country": "Nigeria",
+      "socialHandles": [
+        { "platform": "instagram", "value": "@adaezefabrics" },
+        { "platform": "whatsapp", "value": "+2348031234567" }
+      ],
       "verified": true,
       "createdAt": "2025-11-02T09:00:00Z"
     },
@@ -16,6 +29,18 @@
       "name": "Emeka Trade & Logistics",
       "rcNumber": "RC-2211564",
       "category": "Haulage & logistics",
+      "description": "Interstate haulage and last-mile delivery for suppliers and traders. Full-truck and shared-load options with waybill confirmation.",
+      "ownerName": "Emeka Okonkwo",
+      "email": "dispatch@emekalogistics.com",
+      "phone": "+2347089887766",
+      "website": "https://emekalogistics.com",
+      "address": "Plot 7 Trade Fair Complex, Aspamda",
+      "city": "Lagos",
+      "state": "Lagos",
+      "country": "Nigeria",
+      "socialHandles": [
+        { "platform": "twitter", "value": "@emekalogistics" }
+      ],
       "verified": true,
       "createdAt": "2025-09-18T09:00:00Z"
     },
@@ -25,6 +50,18 @@
       "name": "Balogun Ventures Ltd",
       "rcNumber": "RC-3390877",
       "category": "General trading",
+      "description": "General trading and procurement — electronics, household goods, and office supplies sourced for retail and corporate buyers.",
+      "ownerName": "Yusuf Balogun",
+      "email": "hello@balogunventures.ng",
+      "phone": "+2349012345678",
+      "website": "",
+      "address": "22 Aba Road, Port Harcourt",
+      "city": "Port Harcourt",
+      "state": "Rivers",
+      "country": "Nigeria",
+      "socialHandles": [
+        { "platform": "instagram", "value": "@balogunventures" }
+      ],
       "verified": false,
       "createdAt": "2026-07-15T09:00:00Z"
     }

@@ -28,6 +28,7 @@ import {
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { LivenessCheckModal } from '../pieces/verification/LivenessCheckModal';
+import { VerificationDetailModal } from '../pieces/security/VerificationDetailModal';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -39,6 +40,7 @@ import { useAuth } from '../../libs/auth-context';
 import { useSecurity } from '../../hooks/useSecurity';
 import { securityApi, MOCK_OTP, type TwoFactorEnrolment } from '../../libs/api/security.api';
 import { accountTypeOf } from '../../libs/utils/account';
+import { useMyBusiness } from '../../hooks/useMyBusiness';
 
 /* ---------------------------------------------------------------- Row card */
 
@@ -502,17 +504,24 @@ function SetPinModal({
   open,
   onOpenChange,
   onSuccess,
+  requireOld = false,
+  currentPin,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   onSuccess: (pin: string) => void;
+  /** When changing an existing PIN, the user must enter their current one. */
+  requireOld?: boolean;
+  currentPin?: string;
 }) {
+  const [oldPin, setOldPin] = useState('');
   const [pin, setPin] = useState('');
   const [confirm, setConfirm] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
   const reset = () => {
+    setOldPin('');
     setPin('');
     setConfirm('');
     setError('');
@@ -520,6 +529,23 @@ function SetPinModal({
   };
 
   const save = async () => {
+    if (requireOld) {
+      if (oldPin.length !== 4) return;
+      // Verify the current PIN. In mock we compare to the stored value; a real
+      // backend verifies server-side via securityApi.verifyPin.
+      const okLocally = currentPin ? oldPin === currentPin : (await securityApi.verifyPin(oldPin)).data.valid;
+      if (!okLocally) {
+        setError('Your current PIN is incorrect.');
+        setOldPin('');
+        return;
+      }
+      if (pin === oldPin) {
+        setError('Your new PIN must be different from your current one.');
+        setPin('');
+        setConfirm('');
+        return;
+      }
+    }
     if (pin.length !== 4) return;
     if (pin !== confirm) {
       setError('PINs do not match.');
@@ -546,16 +572,37 @@ function SetPinModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <KeyRound size={18} className="text-primary" />
-            Set your transaction PIN
+            {requireOld ? 'Change your transaction PIN' : 'Set your transaction PIN'}
           </DialogTitle>
           <DialogDescription>
-            A 4-digit PIN confirms every money-moving action. Don't reuse an obvious code.
+            {requireOld
+              ? 'Enter your current PIN, then choose a new 4-digit PIN.'
+              : "A 4-digit PIN confirms every money-moving action. Don't reuse an obvious code."}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4 py-2">
+          {requireOld && (
+            <div className="flex flex-col items-center gap-1.5">
+              <Label className="text-xs">Current PIN</Label>
+              <InputOTP
+                maxLength={4}
+                value={oldPin}
+                onChange={(v) => {
+                  setOldPin(v);
+                  setError('');
+                }}
+              >
+                <InputOTPGroup>
+                  {[0, 1, 2, 3].map((i) => (
+                    <InputOTPSlot key={i} index={i} className="h-11 w-11" />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+          )}
           <div className="flex flex-col items-center gap-1.5">
-            <Label className="text-xs">Enter PIN</Label>
+            <Label className="text-xs">{requireOld ? 'New PIN' : 'Enter PIN'}</Label>
             <InputOTP maxLength={4} value={pin} onChange={setPin}>
               <InputOTPGroup>
                 {[0, 1, 2, 3].map((i) => (
@@ -565,7 +612,7 @@ function SetPinModal({
             </InputOTP>
           </div>
           <div className="flex flex-col items-center gap-1.5">
-            <Label className="text-xs">Confirm PIN</Label>
+            <Label className="text-xs">{requireOld ? 'Confirm new PIN' : 'Confirm PIN'}</Label>
             <InputOTP
               maxLength={4}
               value={confirm}
@@ -585,10 +632,10 @@ function SetPinModal({
           <Button
             className="w-full rounded-full"
             onClick={save}
-            disabled={pin.length !== 4 || confirm.length !== 4 || saving}
+            disabled={pin.length !== 4 || confirm.length !== 4 || (requireOld && oldPin.length !== 4) || saving}
           >
             {saving ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
-            Save PIN
+            {requireOld ? 'Update PIN' : 'Save PIN'}
           </Button>
         </div>
       </DialogContent>
@@ -602,6 +649,7 @@ export function SecurityCenterPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const security = useSecurity();
+  const { data: business } = useMyBusiness();
   const isBusiness = accountTypeOf(user) === 'business';
 
   const [modal, setModal] = useState<
@@ -732,8 +780,9 @@ export function SecurityCenterPage() {
           toast.success('Two-factor authentication enabled.');
         }}
       />
+      {/* Not yet verified → the verification form. Already verified → read-only details. */}
       <KycModal
-        open={modal === 'kyc'}
+        open={modal === 'kyc' && security.kycStatus !== 'verified'}
         onOpenChange={(o) => !o && close()}
         isBusiness={isBusiness}
         onSuccess={() => {
@@ -741,12 +790,32 @@ export function SecurityCenterPage() {
           toast.success('Verification complete.');
         }}
       />
+      <VerificationDetailModal
+        open={modal === 'kyc' && security.kycStatus === 'verified'}
+        onOpenChange={(o) => !o && close()}
+        isBusiness={isBusiness}
+        name={isBusiness ? business?.name ?? user?.name ?? 'Your business' : user?.name ?? 'You'}
+        subtitle={isBusiness ? business?.category : 'Individual account'}
+        rcNumber={business?.rcNumber}
+        category={business?.category}
+        verifiedAt={business?.createdAt}
+        checks={[
+          { label: isBusiness ? 'Business registration (CAC/RC)' : 'Identity (NIN/BVN)', done: security.kycStatus === 'verified' },
+          { label: 'Liveness check', done: security.livenessFresh },
+          { label: 'Email address', done: security.emailVerified },
+          { label: 'Phone number', done: security.phoneVerified },
+          { label: 'Transaction PIN', done: security.pinSet },
+          { label: 'Two-factor authentication', done: security.twoFactorEnabled },
+        ]}
+      />
       <SetPinModal
         open={modal === 'pin'}
         onOpenChange={(o) => !o && close()}
+        requireOld={security.pinSet}
+        currentPin={security.pin}
         onSuccess={(pin) => {
           security.patch({ pinSet: true, pin });
-          toast.success('Transaction PIN set.');
+          toast.success(security.pinSet ? 'Transaction PIN updated.' : 'Transaction PIN set.');
         }}
       />
       <LivenessCheckModal

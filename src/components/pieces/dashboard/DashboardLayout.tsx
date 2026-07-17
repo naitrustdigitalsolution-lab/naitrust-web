@@ -19,6 +19,7 @@ import {
   Settings,
   ShieldCheck,
   Lock,
+  FileClock,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -39,6 +40,7 @@ import { Avatar, AvatarFallback } from '../../ui/avatar';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
+import { SEOHead } from '../../utility/SEOHead';
 import { useAuth } from '../../../libs/auth-context';
 import { useTheme } from '../../../hooks/useTheme';
 import { usePendingInvitationCount } from '../../../hooks/useInvitations';
@@ -73,6 +75,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Safe deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
       { label: 'Create deal', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },
@@ -125,6 +128,8 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
+      {/* The authenticated app is private — never index any /app screen. */}
+      <SEOHead title={title} noindex />
       <Sidebar collapsible="icon">
         <SidebarHeader className="gap-3 px-3 py-4">
           <NaitrustLogo size="sm" showText className="group-data-[collapsible=icon]:[&>span]:hidden" />

@@ -241,7 +241,7 @@ function ComingSoonPage() {
             <div className="provider-row">
               <p>Payment provider strategy</p>
               <div>
-                <span>Kora</span>
+                <span>Anchor</span>
                 <span>Providus Bank</span>
               </div>
             </div>

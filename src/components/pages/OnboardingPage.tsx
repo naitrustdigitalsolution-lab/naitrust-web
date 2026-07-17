@@ -41,31 +41,32 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={smoothPageFade}
-          className="flex flex-col justify-between rounded-2xl bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:bg-transparent lg:p-10 lg:dark:bg-transparent"
+          className="hidden lg:flex flex-col justify-between rounded-2xl bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:bg-transparent lg:p-10 lg:dark:bg-transparent"
         >
           <div>
             <button
               type="button"
               onClick={() => onNavigate('home')}
-              className="mb-12 inline-flex items-center"
+              className="mb-6 inline-flex items-center lg:mb-12"
               aria-label="Go to Naitrust home"
             >
               <NaitrustLogo size="postMd" showText={true} textColor={isDarkMode ? "text-white" : "text-primary"} />
             </button>
 
             <div className="max-w-md">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
                 Start with the right profile
               </p>
-              <h1 className="text-3xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-4xl">
+              <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
                 Create safer transactions with Naitrust.
               </h1>
-              <p className="mt-4 text-base leading-7 text-[#496274] dark:text-slate-300">
+              <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                 Choose how you want to use Naitrust so your setup matches the deal rooms, evidence checks, and release actions you need.
               </p>
             </div>
 
-            <div className="mt-10 max-w-md space-y-4">
+            {/* Desktop only — on mobile these bullets move BELOW the choice cards. */}
+            <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
                 'Shared transaction rooms before money moves',
                 'Identity, business, and evidence records in one place',
@@ -82,7 +83,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
           </div>
 
-          <div className="mt-10 text-sm leading-6 text-muted-foreground">
+          <div className="mt-10 hidden text-sm leading-6 text-muted-foreground lg:block">
             Already have an account?{' '}
             <button
               type="button"
@@ -99,7 +100,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ ...smoothPageFade, delay: 0.1 }}
-            className="w-full max-w-2xl rounded-2xl border border-border/70 bg-card p-5 shadow-2xl sm:p-8"
+            className="w-full max-w-2xl sm:rounded-2xl sm:border sm:border-border/70 bg-card sm:p-5 sm:shadow-2xl sm:p-8"
           >
             <div className="mb-8">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-primary">
@@ -128,13 +129,13 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg font-semibold">For my personal deals</h3>
-                        <Button className="rounded-full sm:mt-1" size="sm">
+                        <h3 className="text-lg lg:text-md xl:text-lg font-semibold">For my personal deals</h3>
+                        <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Individual
-                          <ArrowRight size={16} className="ml-2" />
+                          <ArrowRight size={14} className="ml-1" />
                         </Button>
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
                         Buying from a new seller, paying a contractor, or making a high-value purchase? Create a clear record before you pay and keep the proof if anything goes wrong.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
@@ -144,7 +145,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                           'Follow payment and deal progress',
                           'Keep receipts, proof, and messages',
                         ].map((feature) => (
-                          <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
                             <span>{feature}</span>
                           </div>
@@ -172,9 +173,9 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
                         <h3 className="text-lg font-semibold">For my business deals</h3>
-                        <Button className="rounded-full sm:mt-1" size="sm">
+                        <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Business
-                          <ArrowRight size={16} className="ml-2" />
+                          <ArrowRight size={16} className="ml-1" />
                         </Button>
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
@@ -205,6 +206,33 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
           </motion.div>
         </main>
+
+        {/* Mobile: supporting points + login link sit BELOW the choice cards. */}
+        <section className="lg:hidden">
+          {[
+            'Shared transaction rooms before money moves',
+            'Identity, business, and evidence records in one place',
+            'Buyer and seller workflows built for Nigerian commerce',
+          ].map((item) => (
+            <div
+              key={item}
+              className="flex hidden gap-3 rounded-xl border border-border/70 bg-background/70 p-3 text-sm leading-5 text-muted-foreground shadow-sm dark:bg-card"
+            >
+              <ShieldCheck size={16} className="mt-0.5 shrink-0 text-primary" />
+              <span>{item}</span>
+            </div>
+          ))}
+          <p className="text-center text-sm leading-6 text-muted-foreground">
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={() => onNavigate('login')}
+              className="font-semibold text-primary hover:underline"
+            >
+              Login
+            </button>
+          </p>
+        </section>
       </div>
     </div>
   );

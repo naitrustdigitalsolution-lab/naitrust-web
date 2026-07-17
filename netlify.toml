@@ -10,7 +10,7 @@
 [[headers]]
   for = "/.well-known/api-catalog"
   [headers.values]
-    Content-Type = "application/linkset+json"
+    Content-Type = "application/linkset+json; profile=\"https://www.rfc-editor.org/info/rfc9727\""
     Cache-Control = "public, max-age=3600"
 
 [[headers]]

@@ -1,3 +1,25 @@
 {
-  "linkset": []
+  "linkset": [
+    {
+      "anchor": "https://naitrust.com/api/agent-discovery/status.json",
+      "service-desc": [
+        {
+          "href": "https://naitrust.com/openapi/agent-discovery.json",
+          "type": "application/vnd.oai.openapi+json;version=3.1"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://naitrust.com/auth.md",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://naitrust.com/api/agent-discovery/status.json",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
 }

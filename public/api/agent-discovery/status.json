@@ -1,0 +1,13 @@
+{
+  "service": "Naitrust Agent Discovery",
+  "status": "available",
+  "version": "1.0.0",
+  "publicApiAccess": false,
+  "agentRegistration": false,
+  "mcpServer": false,
+  "resources": {
+    "apiCatalog": "https://naitrust.com/.well-known/api-catalog",
+    "agentSkills": "https://naitrust.com/.well-known/agent-skills/index.json",
+    "authenticationPolicy": "https://naitrust.com/auth.md"
+  }
+}

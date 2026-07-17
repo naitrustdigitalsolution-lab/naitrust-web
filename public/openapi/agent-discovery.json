@@ -1,0 +1,50 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Naitrust Agent Discovery API",
+    "version": "1.0.0",
+    "description": "Read-only metadata describing Naitrust's public agent-discovery capabilities. This API does not provide account, verification, deal, payment, or dispute operations."
+  },
+  "servers": [
+    { "url": "https://naitrust.com" }
+  ],
+  "paths": {
+    "/api/agent-discovery/status.json": {
+      "get": {
+        "summary": "Get public agent-discovery status",
+        "operationId": "getAgentDiscoveryStatus",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Current public discovery capabilities",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgentDiscoveryStatus" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentDiscoveryStatus": {
+        "type": "object",
+        "required": ["service", "status", "version", "publicApiAccess", "agentRegistration", "mcpServer", "resources"],
+        "properties": {
+          "service": { "type": "string" },
+          "status": { "type": "string", "const": "available" },
+          "version": { "type": "string" },
+          "publicApiAccess": { "type": "boolean" },
+          "agentRegistration": { "type": "boolean" },
+          "mcpServer": { "type": "boolean" },
+          "resources": {
+            "type": "object",
+            "additionalProperties": { "type": "string", "format": "uri" }
+          }
+        }
+      }
+    }
+  }
+}

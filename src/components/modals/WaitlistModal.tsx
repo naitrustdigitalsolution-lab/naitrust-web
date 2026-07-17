@@ -113,7 +113,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-2 rounded-xl border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
+        <div className="grid gap-2 rounded-full border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
             Early-access priority
@@ -153,7 +153,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
                 required
                 value={formState.userType}
                 onChange={(event) => updateField('userType', event.target.value as WaitlistFormState['userType'])}
-                className="h-12 w-full min-w-0 rounded-lg border-2 border-input-border bg-input-background px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="h-12 w-full min-w-0 rounded-full border-2 border-input-border bg-input-background px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
               >
                 <option value="">Select one</option>
                 {userTypes.map((type) => (

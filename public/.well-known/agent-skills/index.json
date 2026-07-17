@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "naitrust-public-guide",
+      "type": "skill-md",
+      "description": "Guidance for explaining Naitrust's public safe-deal information while respecting transaction and identity safety boundaries.",
+      "url": "https://naitrust.com/.well-known/agent-skills/naitrust-public-guide/SKILL.md",
+      "digest": "sha256:8b0841c6a21c93851b6070e61576ff2c37e37fe5bcfb94fe0b8615759eaf7169"
+    }
+  ]
+}

@@ -5,7 +5,18 @@
 [[headers]]
   for = "/"
   [headers.values]
-    Link = "</sitemap.xml>; rel=\"describedby\"; type=\"application/xml\", </help>; rel=\"service-doc\"; type=\"text/html\""
+    Link = "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </sitemap.xml>; rel=\"describedby\"; type=\"application/xml\", </help>; rel=\"service-doc\"; type=\"text/html\""
+
+[[headers]]
+  for = "/.well-known/api-catalog"
+  [headers.values]
+    Content-Type = "application/linkset+json"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/auth.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
 
 [[redirects]]
   from = "/api/public-submissions"

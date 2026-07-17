@@ -78,11 +78,11 @@ export const analyticsApi = {
    * Get business dashboard analytics (profile views, search appearances, engagement)
    */
   getDashboardAnalytics: (businessId: string) =>
-    httpClient.get(`/analytics/businesses/${businessId}/analytics/dashboard`),
+    httpClient.get(endpoints.analytics.getDashboard(businessId)),
     
   /**
    * Track link click
    */
   trackLinkClick: (businessId: string) =>
-    httpClient.post(`/analytics/businesses/${businessId}/track/click`),
+    httpClient.post(endpoints.analytics.trackClick(businessId)),
 };

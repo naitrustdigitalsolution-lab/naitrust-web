@@ -340,7 +340,7 @@ export const dealDetailApi = {
       trackingOverrides[id] = [...list];
       return { success: true, data: trackingOverrides[id] };
     }
-    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking/advance`);
+    const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.advanceTracking(id));
     return res as ApiSuccess<DealMilestone[]>;
   },
 
@@ -378,7 +378,7 @@ export const dealDetailApi = {
       trackingOverrides[id] = [...list];
       return { success: true, data: trackingOverrides[id] };
     }
-    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking`, {
+    const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.tracking(id), {
       ...step,
       afterStepId,
     });
@@ -402,7 +402,7 @@ export const dealDetailApi = {
       return { success: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.patch<DealMilestone[]>(
-      `${endpoints.transactions.getOne(id)}/tracking/${stepId}`,
+      `${endpoints.transactions.tracking(id)}/${stepId}`,
       patch,
     );
     return res as ApiSuccess<DealMilestone[]>;
@@ -438,7 +438,7 @@ export const dealDetailApi = {
       trackingOverrides[id] = [...list];
       return { success: true, data: trackingOverrides[id] };
     }
-    const res = await httpClient.post<DealMilestone[]>(`${endpoints.transactions.getOne(id)}/tracking/revert`);
+    const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.revertTracking(id));
     return res as ApiSuccess<DealMilestone[]>;
   },
 

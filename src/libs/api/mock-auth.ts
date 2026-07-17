@@ -17,10 +17,11 @@
  */
 
 import fixtures from '../../mocks/apis/auth-users.json';
+import { appConfig } from '../../configs/env';
 import type { RegisterData } from './auth.api';
 import type { User } from '../store/types';
 
-export const MOCK_2FA_CODE: string = fixtures.twoFactorCode;
+export const MOCK_2FA_CODE = appConfig.mock2faCode;
 
 const DEFAULT_LATENCY_MS = 400;
 const TOKEN_PREFIX = 'mock-token';
@@ -43,10 +44,11 @@ export interface MockAuthResponse {
 }
 
 /** Session-scoped user list, seeded from the JSON fixture. */
-const records: MockUserRecord[] = (fixtures.users as MockUserRecord[]).map((record) => ({
+const records: MockUserRecord[] = fixtures.users.map((record) => ({
   ...record,
+  password: appConfig.mockPassword,
   user: { ...record.user },
-}));
+})) as MockUserRecord[];
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

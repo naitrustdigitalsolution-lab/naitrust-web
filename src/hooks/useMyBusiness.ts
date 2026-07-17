@@ -12,11 +12,11 @@ import type { BusinessProfile } from '../libs/store/types';
 
 export function useMyBusiness() {
   const { user } = useAuth();
-  const enabled = isBusinessAccount(user) && !!user?.email;
+  const enabled = isBusinessAccount(user) && !!user?.id;
   return useQuery<BusinessProfile | null>({
-    queryKey: ['my-business', user?.email],
+    queryKey: ['my-business', user?.id],
     enabled,
-    queryFn: async () => (user?.email ? (await businessApi.getMine(user.email)).data : null),
+    queryFn: async () => (user?.id ? (await businessApi.getMine(user.id)).data : null),
   });
 }
 
@@ -24,7 +24,7 @@ export function useUpdateBusiness() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (patch: BusinessUpdate) => businessApi.update(user!.email, patch),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['my-business', user?.email] }),
+    mutationFn: (patch: BusinessUpdate) => businessApi.update(user!.id, patch),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['my-business', user?.id] }),
   });
 }

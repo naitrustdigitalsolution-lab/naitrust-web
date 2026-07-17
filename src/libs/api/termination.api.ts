@@ -7,6 +7,7 @@
  */
 
 import { httpClient } from './client';
+import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './transactions.api';
 import type { DealTermination } from '../store/types';
@@ -24,7 +25,7 @@ export const terminationApi = {
       const t = terminations[dealId];
       return { success: true, data: t ? structuredClone(t) : null };
     }
-    const res = await httpClient.get<DealTermination | null>(`/transactions/${dealId}/termination`);
+    const res = await httpClient.get<DealTermination | null>(endpoints.transactions.termination(dealId));
     return res as ApiSuccess<DealTermination | null>;
   },
 
@@ -43,7 +44,7 @@ export const terminationApi = {
       terminations[dealId] = t;
       return { success: true, data: structuredClone(t) };
     }
-    const res = await httpClient.post<DealTermination>(`/transactions/${dealId}/termination`, { reason });
+    const res = await httpClient.post<DealTermination>(endpoints.transactions.termination(dealId), { reason });
     return res as ApiSuccess<DealTermination>;
   },
 
@@ -69,7 +70,7 @@ export const terminationApi = {
       terminations[dealId] = next;
       return { success: true, data: structuredClone(next) };
     }
-    const res = await httpClient.post<DealTermination>(`/transactions/${dealId}/termination/respond`, input);
+    const res = await httpClient.post<DealTermination>(endpoints.transactions.respondToTermination(dealId), input);
     return res as ApiSuccess<DealTermination>;
   },
 };

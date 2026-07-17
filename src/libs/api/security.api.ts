@@ -8,22 +8,21 @@
 
 import { appConfig } from '../../configs/env';
 import { httpClient } from './client';
+import { endpoints } from './endpoints';
 import type { ApiSuccess } from './transactions.api';
 
 const MOCK_MS = 600;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** Fixed OTP used across mock email/phone verification (documented for tests). */
-export const MOCK_OTP = '123456';
+export const MOCK_OTP = appConfig.mockOtp;
 
 /** Base32 secret shown during mock authenticator enrolment. */
 function mockTotpSecret(): string {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-  // Deterministic-ish from time; fine for a mock enrolment display.
-  let s = '';
-  const seed = Date.now();
-  for (let i = 0; i < 16; i += 1) s += alphabet[(seed >> (i % 5)) % 32 ^ (i * 7) % 32];
-  return s.replace(/[^A-Z2-7]/g, 'A').slice(0, 16);
+  if (!appConfig.mockTotpSecret) {
+    throw new Error('VITE_MOCK_TOTP_SECRET is required while VITE_APP_MODE=mock');
+  }
+  return appConfig.mockTotpSecret;
 }
 
 export interface TwoFactorEnrolment {
@@ -38,7 +37,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       return { success: true, data: null, message: `OTP sent to ${email}` };
     }
-    return (await httpClient.post('/security/email/send-otp', { email })) as ApiSuccess<null>;
+    return (await httpClient.post(endpoints.security.sendEmailOtp, { email })) as ApiSuccess<null>;
   },
 
   /** Verify email with the OTP. */
@@ -47,7 +46,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       return { success: true, data: { verified: code === MOCK_OTP } };
     }
-    return (await httpClient.post('/security/email/verify', { code })) as ApiSuccess<{ verified: boolean }>;
+    return (await httpClient.post(endpoints.security.verifyEmail, { code })) as ApiSuccess<{ verified: boolean }>;
   },
 
   sendPhoneOtp: async (phone: string): Promise<ApiSuccess<null>> => {
@@ -55,7 +54,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       return { success: true, data: null, message: `OTP sent to ${phone}` };
     }
-    return (await httpClient.post('/security/phone/send-otp', { phone })) as ApiSuccess<null>;
+    return (await httpClient.post(endpoints.security.sendPhoneOtp, { phone })) as ApiSuccess<null>;
   },
 
   verifyPhone: async (code: string): Promise<ApiSuccess<{ verified: boolean }>> => {
@@ -63,7 +62,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       return { success: true, data: { verified: code === MOCK_OTP } };
     }
-    return (await httpClient.post('/security/phone/verify', { code })) as ApiSuccess<{ verified: boolean }>;
+    return (await httpClient.post(endpoints.security.verifyPhone, { code })) as ApiSuccess<{ verified: boolean }>;
   },
 
   /** Begin authenticator-app (TOTP) enrolment — returns secret + otpauth URI. */
@@ -74,7 +73,7 @@ export const securityApi = {
       const otpauthUri = `otpauth://totp/Naitrust:${encodeURIComponent(email)}?secret=${secret}&issuer=Naitrust`;
       return { success: true, data: { secret, otpauthUri } };
     }
-    return (await httpClient.post('/security/2fa/start', { email })) as ApiSuccess<TwoFactorEnrolment>;
+    return (await httpClient.post(endpoints.security.start2FA, { email })) as ApiSuccess<TwoFactorEnrolment>;
   },
 
   /** Confirm authenticator enrolment with a generated 6-digit code. */
@@ -84,7 +83,7 @@ export const securityApi = {
       // Mock accepts any 6-digit code; production validates the TOTP window.
       return { success: true, data: { enabled: /^\d{6}$/.test(code) } };
     }
-    return (await httpClient.post('/security/2fa/verify', { code })) as ApiSuccess<{ enabled: boolean }>;
+    return (await httpClient.post(endpoints.security.verify2FA, { code })) as ApiSuccess<{ enabled: boolean }>;
   },
 
   /** Submit KYC (individual or business). Mock auto-approves after latency. */
@@ -96,7 +95,7 @@ export const securityApi = {
       await delay(MOCK_MS + 400);
       return { success: true, data: { status: 'verified' } };
     }
-    return (await httpClient.post('/security/kyc', { kind, ...payload })) as ApiSuccess<{ status: 'verified' }>;
+    return (await httpClient.post(endpoints.security.submitKyc, { kind, ...payload })) as ApiSuccess<{ status: 'verified' }>;
   },
 
   /** Set the 4-digit transaction PIN. */
@@ -105,7 +104,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       return { success: true, data: { set: /^\d{4}$/.test(pin) } };
     }
-    return (await httpClient.post('/security/pin/set', { pin })) as ApiSuccess<{ set: boolean }>;
+    return (await httpClient.post(endpoints.security.setPin, { pin })) as ApiSuccess<{ set: boolean }>;
   },
 
   /** Verify the PIN before a sensitive action. */
@@ -114,6 +113,6 @@ export const securityApi = {
       await delay(300);
       return { success: true, data: { valid: /^\d{4}$/.test(pin) } };
     }
-    return (await httpClient.post('/security/pin/verify', { pin })) as ApiSuccess<{ valid: boolean }>;
+    return (await httpClient.post(endpoints.security.verifyPin, { pin })) as ApiSuccess<{ valid: boolean }>;
   },
 };

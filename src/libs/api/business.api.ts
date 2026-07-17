@@ -23,7 +23,7 @@ export interface CreateBusinessData {
 }
 
 const mockList = (mockBusinesses as ApiSuccess<BusinessProfile[]>).data;
-/** Session-scoped edits to a business, keyed by owner email (mock only). */
+/** Session-scoped edits to a business, keyed by owner user ID (mock only). */
 const overrides: Record<string, Partial<BusinessProfile>> = {};
 
 export type BusinessUpdate = Partial<
@@ -43,10 +43,10 @@ export type BusinessUpdate = Partial<
   >
 >;
 
-function resolveBusiness(email: string): BusinessProfile | null {
-  const base = mockList.find((b) => b.ownerEmail.toLowerCase() === email.toLowerCase());
+function resolveBusiness(userId: string): BusinessProfile | null {
+  const base = mockList.find((b) => b.ownerUserId === userId);
   if (!base) return null;
-  return { ...base, ...overrides[email.toLowerCase()] };
+  return { ...base, ...overrides[userId] };
 }
 
 export const businessApi = {
@@ -55,13 +55,13 @@ export const businessApi = {
   getSavedBusinesses: () => httpClient.get(endpoints.businesses.savedBusinesses),
 
   /**
-   * The business tied to the current account. Mock resolves by owner email.
+   * The business tied to the current account. Mock resolves by owner user ID.
    * Real endpoint: GET /businesses/my/businesses (first record).
    */
-  getMine: async (email: string): Promise<ApiSuccess<BusinessProfile | null>> => {
+  getMine: async (userId: string): Promise<ApiSuccess<BusinessProfile | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: resolveBusiness(email) };
+      return { success: true, data: resolveBusiness(userId) };
     }
     const response = await httpClient.get<BusinessProfile[]>(endpoints.businesses.myBusinesses);
     const list = (response as ApiSuccess<BusinessProfile[]>).data ?? [];
@@ -73,15 +73,15 @@ export const businessApi = {
    * re-verified (compliance requirement) — the caller handles the KYC reset.
    * Real endpoint: PATCH /businesses/:id.
    */
-  update: async (email: string, patch: BusinessUpdate): Promise<ApiSuccess<BusinessProfile | null>> => {
+  update: async (userId: string, patch: BusinessUpdate): Promise<ApiSuccess<BusinessProfile | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       // The verification-critical fields (name, CAC/RC number) are locked once
       // verified, so editing contact/profile details doesn't change verification.
-      overrides[email.toLowerCase()] = { ...overrides[email.toLowerCase()], ...patch };
-      return { success: true, data: resolveBusiness(email) };
+      overrides[userId] = { ...overrides[userId], ...patch };
+      return { success: true, data: resolveBusiness(userId) };
     }
-    const current = resolveBusiness(email);
+    const current = resolveBusiness(userId);
     const response = await httpClient.put(
       endpoints.businesses.update(current?.id ?? ''),
       patch,

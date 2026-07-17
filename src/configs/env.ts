@@ -24,5 +24,9 @@ export const appConfig = {
   pagePhase: getPagePhase(import.meta.env.VITE_PAGE_PHASE),
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || "",
   splineSceneUrl: import.meta.env.VITE_SPLINE_SCENE_URL || "",
+  mockOtp: import.meta.env.VITE_MOCK_OTP || "",
+  mock2faCode: import.meta.env.VITE_MOCK_2FA_CODE || "",
+  mockPassword: import.meta.env.VITE_MOCK_PASSWORD || "",
+  mockTotpSecret: import.meta.env.VITE_MOCK_TOTP_SECRET || "",
   isMock: getAppMode(import.meta.env.VITE_APP_MODE) === "mock",
 };

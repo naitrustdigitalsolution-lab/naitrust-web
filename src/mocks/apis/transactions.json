@@ -3,6 +3,8 @@
   "data": [
     {
       "id": "txn_mock_001",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000182",
       "counterpartyName": "Adaeze Fabrics Ltd",
       "amountMinor": 45000000,
@@ -12,6 +14,8 @@
     },
     {
       "id": "txn_mock_002",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000179",
       "counterpartyName": "Chinedu Okafor",
       "amountMinor": 12000000,
@@ -21,6 +25,8 @@
     },
     {
       "id": "txn_mock_003",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000171",
       "counterpartyName": "Lagos Freight Movers",
       "amountMinor": 89000000,
@@ -30,6 +36,8 @@
     },
     {
       "id": "txn_mock_004",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000160",
       "counterpartyName": "Bright Homes Realty",
       "amountMinor": 250000000,
@@ -39,6 +47,8 @@
     },
     {
       "id": "txn_mock_005",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000144",
       "counterpartyName": "Zenith Office Supplies",
       "amountMinor": 6300000,
@@ -48,6 +58,8 @@
     },
     {
       "id": "txn_mock_006",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000138",
       "counterpartyName": "Okonkwo & Sons Builders",
       "amountMinor": 175000000,
@@ -57,6 +69,8 @@
     },
     {
       "id": "txn_mock_007",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000129",
       "counterpartyName": "Ibrahim Musa",
       "amountMinor": 3200000,
@@ -66,6 +80,8 @@
     },
     {
       "id": "txn_mock_008",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002",
       "reference": "NT-2026-000117",
       "counterpartyName": "Coastal Logistics Ltd",
       "amountMinor": 54000000,

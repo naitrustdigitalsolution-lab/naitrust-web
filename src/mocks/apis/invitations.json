@@ -3,6 +3,7 @@
   "data": [
     {
       "id": "inv_mock_001",
+      "recipientUserId": "usr_mock_004",
       "reference": "NT-2026-000195",
       "fromName": "Damilola Interiors Ltd",
       "fromRole": "seller",
@@ -48,6 +49,7 @@
     },
     {
       "id": "inv_mock_002",
+      "recipientUserId": "usr_mock_004",
       "reference": "NT-2026-000191",
       "fromName": "Northbridge Supplies Ltd",
       "fromRole": "buyer",
@@ -93,6 +95,7 @@
     },
     {
       "id": "inv_mock_003",
+      "recipientUserId": "usr_mock_004",
       "reference": "NT-2026-000184",
       "fromName": "Kelechi Nwosu",
       "fromRole": "buyer",

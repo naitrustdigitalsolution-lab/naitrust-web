@@ -1,6 +1,7 @@
 [
   {
     "id": "draft_supplier_generators",
+    "ownerUserId": "usr_mock_003",
     "step": 2,
     "createdAt": "2026-07-15T09:30:00.000Z",
     "updatedAt": "2026-07-16T14:20:00.000Z",
@@ -22,6 +23,7 @@
   },
   {
     "id": "draft_abandoned_event_catering",
+    "ownerUserId": "usr_mock_003",
     "step": 2,
     "createdAt": "2026-06-30T11:00:00.000Z",
     "updatedAt": "2026-07-05T08:45:00.000Z",

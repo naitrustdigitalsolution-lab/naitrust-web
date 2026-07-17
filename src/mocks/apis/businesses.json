@@ -3,7 +3,7 @@
   "data": [
     {
       "id": "biz_mock_001",
-      "ownerEmail": "fatima.verified@naitrust.test",
+      "ownerUserId": "usr_mock_003",
       "name": "Adaeze Fabrics Ltd",
       "rcNumber": "RC-1948221",
       "category": "Textiles & apparel supply",
@@ -25,12 +25,12 @@
     },
     {
       "id": "biz_mock_002",
-      "ownerEmail": "emeka.2fa@naitrust.test",
+      "ownerUserId": "usr_mock_004",
       "name": "Emeka Trade & Logistics",
       "rcNumber": "RC-2211564",
       "category": "Haulage & logistics",
       "description": "Interstate haulage and last-mile delivery for suppliers and traders. Full-truck and shared-load options with waybill confirmation.",
-      "ownerName": "Emeka Okonkwo",
+      "ownerName": "Emeka Nwosu",
       "email": "dispatch@emekalogistics.com",
       "phone": "+2347089887766",
       "website": "https://emekalogistics.com",
@@ -46,12 +46,12 @@
     },
     {
       "id": "biz_mock_003",
-      "ownerEmail": "new.biz@naitrust.test",
+      "ownerUserId": "usr_mock_006",
       "name": "Balogun Ventures Ltd",
       "rcNumber": "RC-3390877",
       "category": "General trading",
       "description": "General trading and procurement — electronics, household goods, and office supplies sourced for retail and corporate buyers.",
-      "ownerName": "Yusuf Balogun",
+      "ownerName": "Tunde Balogun",
       "email": "hello@balogunventures.ng",
       "phone": "+2349012345678",
       "website": "",

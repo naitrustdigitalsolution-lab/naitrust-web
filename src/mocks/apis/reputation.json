@@ -1,6 +1,8 @@
 {
   "success": true,
   "data": {
+    "userId": "usr_mock_004",
+    "businessId": "biz_mock_002",
     "completedTransactionsCount": 2,
     "ratingAverage": 4.8,
     "ratingCount": 2

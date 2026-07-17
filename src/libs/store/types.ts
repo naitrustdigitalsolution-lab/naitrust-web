@@ -412,7 +412,8 @@ export interface ReputationSummary {
 
 export interface BusinessProfile {
   id: string;
-  ownerEmail: string;
+  /** Foreign key to the user account that owns this business. */
+  ownerUserId: string;
   name: string;
   rcNumber: string; // CAC registration number
   category: string;

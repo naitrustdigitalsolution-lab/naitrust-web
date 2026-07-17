@@ -61,7 +61,7 @@ export function AnimatedHeroText() {
             transition={{ duration: 1.05, ease: 'easeInOut' }}
             className="flex flex-col items-center h-auto md:h-120 mt-4"
           >
-            <h1 className="naitrust-satoshi-bold max-w-370 text-[clamp(2.25rem,7vw,6.5rem)] leading-[1.02] sm:leading-[0.96] tracking-[-0.04em] sm:tracking-[-0.06em]">
+            <h1 className="naitrust-satoshi-bold max-w-370 text-[clamp(2.25rem,7vw,6.5rem)] lg:text-[clamp(62px,4.0vw,106px)] leading-[1.02] sm:leading-[0.96] tracking-[-0.04em] sm:tracking-[-0.06em]">
               {currentMessage.headline}{' '}
               <span className="text-primary">
                 {currentMessage.headlineHighlight}

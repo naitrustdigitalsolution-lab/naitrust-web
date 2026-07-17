@@ -187,7 +187,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <Badge className="bg-primary text-white text-sm font-semibold px-4 py-1.5 mb-6 inline-block">A safer way to pay, receive, and deliver in Nigeria</Badge>
+            <Badge className="bg-primary/10 dark:bg-[#1a1a1a] text-primary dark:text-white text-sm font-semibold px-4 py-1.5 mb-6 inline-block">A safer way to pay, receive, and deliver in Nigeria</Badge>
             
             {/* Animated Hero Text */}
             <div className="px-4 sm:px-6 lg:px-8">
@@ -1136,7 +1136,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Final CTA - Enhanced with Slogan */}
       <section className={`py-14 sm:py-20 ${isDarkMode ? "bg-card-foreground" : "bg-[#eef3f8]"} text-[#0b2b45] relative overflow-hidden`}>
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1144,12 +1144,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
           >
             {/* Slogan - Prominent */}
             <div className="mb-7 sm:mb-8 p-4 lg:p-4 xl:p-6 bg-white/75 backdrop-blur-sm rounded-full border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
-              <p className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight text-[#0b2b45] text-balance">
+              <p className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-[#0b2b45] text-balance">
                 "Secure every deal before money moves."
               </p>
             </div>
 
-            <h2 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
+            <h2 className="text-lg md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
               Ready to Move Your Next <br/> Deal With More Confidence?
             </h2>
             <p className="text-base lg:text-xl leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">

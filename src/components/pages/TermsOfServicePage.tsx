@@ -19,7 +19,7 @@ export function TermsOfServicePage({ onNavigate }: TermsOfServicePageProps) {
   return (
     <div className="min-h-screen bg-background py-12">
       <SEOHead title="Terms of Service" description="Terms governing the Naitrust website and property early-access list." canonicalPath="/terms" />
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header className="rounded-3xl bg-[#031335] px-6 py-12 text-center text-white">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10"><FileText size={27} /></div>
           <h1 className="text-4xl font-bold">Terms of Service</h1>

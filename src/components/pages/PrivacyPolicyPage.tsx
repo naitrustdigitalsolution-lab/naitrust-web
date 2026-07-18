@@ -17,7 +17,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
         canonicalPath="/privacy"
         noindex={false}
       />
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-4">
         <div className="bg-muted/30 rounded-lg shadow-lg p-8 md:p-12">
           {/* Header */}
           <div className="relative mb-8 overflow-hidden rounded-3xl bg-[#031335] px-6 py-12 text-center text-white dark:bg-[#0A0E1A]">

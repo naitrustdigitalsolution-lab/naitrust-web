@@ -15,7 +15,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
   return (
     <div className="min-h-screen bg-background py-12">
       <SEOHead title="Verification Policy" description="How Naitrust intends to verify individuals and businesses for safer transactions." canonicalPath="/verification-policy" />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header className="rounded-3xl bg-[#031335] px-6 py-12 text-center text-white sm:px-10">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10"><ShieldCheck size={28} /></div>
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Trust with clear limits</p>

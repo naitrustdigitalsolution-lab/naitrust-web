@@ -29,7 +29,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
         canonicalPath="/compliance"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header className="mb-10 rounded-3xl bg-[#031335] px-6 py-12 text-center text-white sm:px-10">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10"><Scale size={28} /></div>
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Compliance and trust</p>

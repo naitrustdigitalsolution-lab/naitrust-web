@@ -14,7 +14,7 @@ export function AnimatedHeroText() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="mt-4 flex h-auto flex-col items-center lg:items-start"
         >
-          <h1 className="naitrust-satoshi-bold max-w-370 text-center text-[clamp(2.25rem,7vw,6.5rem)] leading-[1.12] tracking-[-0.04em] sm:leading-[1.08] sm:tracking-[-0.06em] lg:text-left lg:text-[clamp(58px,4.3vw,88px)]">
+          <h1 className="naitrust-satoshi-bold max-w-370 text-center text-[clamp(2.25rem,7vw,6.5rem)] leading-[1.12] tracking-[-0.04em] sm:leading-[1.08] sm:tracking-[-0.06em] lg:text-left lg:text-[clamp(58px,4.3vw,78px)]">
             Buy Property with{' '}
             <span className="text-primary">Greater Confidence.</span>
           </h1>

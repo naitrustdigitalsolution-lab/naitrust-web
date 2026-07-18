@@ -39,7 +39,7 @@ export function BlogPage() {
           </p>
         </div>
       </section>
-      <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <Link
           to={`/blog/${featured.slug}`}
           className="group grid overflow-hidden rounded-3xl border bg-card shadow-sm transition hover:shadow-xl lg:grid-cols-[1.2fr_1fr]"

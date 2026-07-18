@@ -58,10 +58,10 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 Start with the right profile
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                Create safer transactions with Naitrust.
+                Create clearer property transactions with Naitrust.
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                Choose how you want to use Naitrust so your setup matches the deal rooms, evidence checks, and release actions you need.
+                Choose how you participate in property transactions so your profile and transaction guidance fit your needs.
               </p>
             </div>
 
@@ -70,7 +70,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
               {[
                 'Shared transaction rooms before money moves',
                 'Identity, business, and evidence records in one place',
-                'Buyer and seller workflows built for Nigerian commerce',
+                'Property workflows built for buyers, sellers, agents, and companies',
               ].map((item) => (
                 <div
                   key={item}
@@ -129,21 +129,21 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg lg:text-md xl:text-lg font-semibold">For my personal deals</h3>
+                        <h3 className="text-lg lg:text-md xl:text-lg font-semibold">As a property buyer or seller</h3>
                         <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Individual
                           <ArrowRight size={14} className="ml-1" />
                         </Button>
                       </div>
                       <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
-                        Buying from a new seller, paying a contractor, or making a high-value purchase? Create a clear record before you pay and keep the proof if anything goes wrong.
+                        Buying or selling property? Create a clear record of the property, participants, terms, payments, documents, milestones, and supporting evidence.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify who you are dealing with',
-                          'Agree price and delivery first',
-                          'Follow payment and deal progress',
-                          'Keep receipts, proof, and messages',
+                          'Record the property, price, and payment plan',
+                          'Follow payments and transaction milestones',
+                          'Keep receipts, documents, evidence, and messages',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
@@ -172,7 +172,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg font-semibold">For my business deals</h3>
+                        <h3 className="text-lg font-semibold">As a property business or professional</h3>
                         <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Business
                           <ArrowRight size={16} className="ml-1" />
@@ -180,13 +180,13 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Give customers and suppliers more confidence in your business. Verify your organisation, structure each deal, and build a record of successful transactions.
+                        Give property clients a professional experience. Verify your organisation or role, structure each transaction, and build a history of completed activity.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify your business and representatives',
-                          'Set clear terms with counterparties',
-                          'Manage buyer and supplier deal rooms',
+                          'Set clear property transaction terms',
+                          'Manage buyer, seller, agent, and developer records',
                           'Build portable transaction reputation',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -212,7 +212,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
           {[
             'Shared transaction rooms before money moves',
             'Identity, business, and evidence records in one place',
-            'Buyer and seller workflows built for Nigerian commerce',
+            'Property workflows built for Nigerian buyers and businesses',
           ].map((item) => (
             <div
               key={item}

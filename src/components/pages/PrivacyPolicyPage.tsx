@@ -13,7 +13,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
     <div className="min-h-screen bg-background relative py-12">
       <SEOHead
         title="Privacy Policy"
-        description="Naitrust Privacy Policy. Learn how we collect, use, store, and protect your personal data in compliance with NDPA 2023 and NDPR 2019."
+        description="Learn how Naitrust handles personal data for property early access, participant verification, and property transaction records under Nigerian data-protection requirements."
         canonicalPath="/privacy"
         noindex={false}
       />
@@ -34,7 +34,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               This Privacy Policy ("Policy") explains how Naitrust Digital Solutions Limited ("Naitrust", "we", "us", or "our"), 
               a company incorporated under the Companies and Allied Matters Act (CAMA) 2020 with its registered office in 
               Lagos, Nigeria, collects, uses, stores, discloses, and protects your personal data when you use the Naitrust 
-              platform at naitrust.com ("Platform").
+              property transaction platform and early-access website at naitrust.com ("Platform").
             </p>
             <p className="text-muted-foreground mb-4">
               This Policy is issued in compliance with the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection 
@@ -100,10 +100,22 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 </ul>
                 <p className="text-muted-foreground mt-2 text-sm">
                   Payment card details are processed exclusively by Paystack, our PCI-DSS Level 1 certified payment partner. 
-                  Naitrust does not store, transmit, or have access to full payment card numbers. Payments connected to safe deals are processed by the regulated financial partner identified for the transaction. If you enable auto-renewal, your card details are 
+                  Naitrust does not store, transmit, or have access to full payment card numbers. Payments connected to property transactions are processed by the regulated financial partner identified for that transaction. If you enable auto-renewal, your card details are 
                   securely stored and managed by Paystack for recurring charges — Naitrust only stores a tokenized reference 
                   and never has access to your full card number, CVV, or PIN.
                 </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg mb-2">2.3 Property Transaction Data</h3>
+                <p className="text-muted-foreground mb-2">When property transaction features become available, we may process:</p>
+                <ul className="list-disc ml-6 text-muted-foreground space-y-1">
+                  <li>Property descriptions, locations, transaction purposes, amounts, and timelines</li>
+                  <li>Participant identities, contact details, claimed roles, and transaction permissions</li>
+                  <li>Agreements, offers, receipts, payment status, milestones, messages, and confirmations</li>
+                  <li>Property documents, inspection evidence, photographs, issue reports, and supporting files submitted by participants</li>
+                </ul>
+                <p className="mt-2 text-sm text-muted-foreground">Naitrust does not independently certify property ownership, title validity, authority to sell, or the legal effect of documents merely because they are uploaded to a transaction record.</p>
               </div>
 
               <div>
@@ -256,7 +268,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                   bound to process data only on our instructions and in compliance with applicable data protection law:
                 </p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for subscriptions and, when launched, safe-deal funding, settlement, release, refund, and status updates</li>
+                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for subscriptions and, when launched, property-transaction funding, settlement, release, refund, and status updates</li>
                   <li><strong>Verification Providers:</strong> QoreID for CAC, TIN, and personal ID validation against government databases</li>
                   <li><strong>Cloud Infrastructure:</strong> Hosting and data storage providers with ISO 27001 or equivalent certification</li>
                   <li><strong>Communication Services:</strong> Email and SMS service providers for transactional notifications</li>

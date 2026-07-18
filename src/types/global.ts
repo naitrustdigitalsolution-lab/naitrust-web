@@ -40,7 +40,14 @@ export type WaitlistUserType =
   | 'supplier_vendor'
   | 'contractor_service_provider'
   | 'marketplace_social_seller'
-  | 'partner';
+  | 'partner'
+  | 'property_buyer'
+  | 'property_seller'
+  | 'real_estate_agent'
+  | 'real_estate_company'
+  | 'property_developer'
+  | 'legal_transaction_representative'
+  | 'other';
 
 export type TransactionRange =
   | 'below_100k'

@@ -37,7 +37,7 @@ function Frame({ children }: { children: React.ReactNode }) {
       <div className="flex items-center gap-2">
         <h2 className="text-base font-semibold text-foreground">Deal breakdown</h2>
         <HelpHint title="Deal breakdown">
-          <p>The donut splits your deals by where they stand right now:</p>
+          <p>The chart groups your property transactions by their current status:</p>
           <ul className="list-disc space-y-1 pl-4">
             <li><strong>Active</strong> — in progress or awaiting a step.</li>
             <li><strong>Completed</strong> — delivered and paid out.</li>
@@ -45,7 +45,7 @@ function Frame({ children }: { children: React.ReactNode }) {
             <li><strong>Closed</strong> — refunded or cancelled.</li>
           </ul>
           <p>
-            Completion and dispute rates are shares of all your deals. Average deal size is the
+            Completion and issue rates are shares of all your property transactions. Average transaction value is the
             typical protected amount.
           </p>
         </HelpHint>
@@ -86,8 +86,8 @@ export function DealBreakdown({ deals, isLoading, currency = 'NGN' }: DealBreakd
     <Frame>
       {total === 0 ? (
         <div className="flex h-40 flex-col items-center justify-center gap-1 text-center">
-          <p className="text-sm font-medium text-foreground">No deals yet</p>
-          <p className="text-sm text-muted-foreground">Create a safe deal to see your breakdown.</p>
+          <p className="text-sm font-medium text-foreground">No property transactions yet</p>
+          <p className="text-sm text-muted-foreground">Create a property transaction to see your breakdown.</p>
         </div>
       ) : (
         <>
@@ -114,7 +114,7 @@ export function DealBreakdown({ deals, isLoading, currency = 'NGN' }: DealBreakd
             </ResponsiveContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-foreground tabular-nums">{total}</span>
-              <span className="text-xs text-muted-foreground">total deals</span>
+              <span className="text-xs text-muted-foreground">total property transactions</span>
             </div>
           </div>
 

@@ -37,7 +37,7 @@ function ChangeList({ deal, changes }: { deal: SafeDealDetail; changes: Proposed
       to: formatMinorAmount(changes.amountMinor, deal.currency),
     });
   if (changes.deliveryDueDate)
-    rows.push({ label: 'Delivery due', from: deal.deliveryDueDate, to: changes.deliveryDueDate });
+    rows.push({ label: 'Next milestone', from: deal.deliveryDueDate, to: changes.deliveryDueDate });
   if (changes.releaseConditions)
     rows.push({ label: 'Release conditions', from: deal.releaseConditions, to: changes.releaseConditions });
   if (changes.agreementNote)

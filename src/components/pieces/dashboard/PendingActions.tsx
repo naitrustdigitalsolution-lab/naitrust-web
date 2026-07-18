@@ -27,7 +27,7 @@ export function PendingActions({ deals, onSelect }: PendingActionsProps) {
         <CircleAlert size={16} className="text-primary" />
         Needs your action
       </h3>
-      <ul className="mt-2 space-y-2" aria-label="Deals needing your action">
+      <ul className="mt-2 space-y-2" aria-label="Property transactions needing your action">
         {deals.map((deal) => (
           <li key={deal.id}>
             <Card

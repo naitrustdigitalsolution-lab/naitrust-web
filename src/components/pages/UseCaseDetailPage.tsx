@@ -1,15 +1,120 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, FileCheck2 } from 'lucide-react';
-import { Link, Navigate, useParams } from 'react-router-dom';
-import { SEOHead } from '../utility/SEOHead';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { openWaitlistModal } from '../modals/WaitlistModal';
-import { useCases } from '../../libs/use-cases';
+import { ArrowLeft, ArrowRight, CheckCircle2, FileCheck2 } from "lucide-react";
+import { Link, Navigate, useParams } from "react-router-dom";
+import { SEOHead } from "../utility/SEOHead";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { openWaitlistModal } from "../modals/WaitlistModal";
+import { useCases } from "../../libs/use-cases";
 
 export function UseCaseDetailPage() {
   const { slug } = useParams();
   const item = useCases.find((entry) => entry.slug === slug);
   if (!item) return <Navigate to="/use-cases" replace />;
   const Icon = item.icon;
-  return <div className="min-h-screen bg-background"><SEOHead title={`${item.title} | Naitrust Use Cases`} description={`${item.summary} Learn the transaction flow Naitrust is being designed to support.`} canonicalPath={`/use-cases/${item.slug}`} /><section className="bg-[#031335] px-4 py-16 text-white sm:px-6"><div className="mx-auto max-w-5xl"><Link to="/use-cases" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-200 hover:text-white"><ArrowLeft size={17} /> All use cases</Link><div className="mt-10 grid items-center gap-8 lg:grid-cols-[1fr_auto]"><div><Badge className="mb-4 bg-white/10 text-white hover:bg-white/10">Coming soon</Badge><h1 className="text-4xl font-bold leading-tight sm:text-5xl">{item.title}</h1><p className="mt-4 text-sm font-semibold uppercase tracking-wider text-blue-300">For {item.audience}</p><p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">{item.summary}</p></div><div className="hidden h-28 w-28 items-center justify-center rounded-3xl bg-white/10 text-blue-200 lg:flex"><Icon size={50} /></div></div></div></section><main className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8"><section className="rounded-3xl border border-amber-200 bg-amber-50 p-7 dark:border-amber-900 dark:bg-amber-950/20"><p className="text-sm font-semibold text-amber-800 dark:text-amber-300">The transaction problem</p><h2 className="mt-2 text-2xl font-bold">Why this deal needs a clearer record</h2><p className="mt-4 leading-8 text-muted-foreground">{item.problem}</p></section><section className="py-14"><p className="font-semibold text-primary">The intended Naitrust flow</p><h2 className="mt-2 text-3xl font-bold">How Naitrust is designed to help</h2><div className="mt-8 grid gap-4 sm:grid-cols-2">{item.flow.map((step, index) => <div key={step} className="flex gap-4 rounded-2xl border bg-card p-5"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">{index + 1}</span><p className="pt-1 text-sm leading-6">{step}</p></div>)}</div></section><section className="grid gap-7 rounded-3xl bg-muted/50 p-7 md:grid-cols-[auto_1fr] sm:p-9"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><FileCheck2 size={24} /></div><div><h2 className="text-2xl font-bold">Evidence that may matter</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">The right evidence depends on the transaction. For this use case, a clear record may include:</p><ul className="mt-5 grid gap-3 sm:grid-cols-2">{item.evidence.map((value) => <li key={value} className="flex items-center gap-2 text-sm"><CheckCircle2 size={17} className="shrink-0 text-primary" />{value}</li>)}</ul></div></section><section className="mt-14 rounded-3xl bg-primary p-8 text-center text-white sm:p-12"><h2 className="text-3xl font-bold">Would this make your transactions safer?</h2><p className="mx-auto mt-4 max-w-xl text-blue-50">Join the waiting list and tell us what you would need from this flow before Naitrust launches.</p><Button onClick={openWaitlistModal} size="lg" className="mt-7 bg-white text-primary hover:bg-blue-50">Join the waiting list <ArrowRight /></Button></section></main></div>;
+  return (
+    <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${item.title} | Naitrust Use Cases`}
+        description={`${item.summary} Learn the transaction flow Naitrust is being designed to support.`}
+        canonicalPath={`/use-cases/${item.slug}`}
+      />
+      <section className="bg-[#031335] dark:bg-[#0A0E1A] px-4 py-16 text-white sm:px-6">
+        <div className="mx-auto max-w-5xl">
+          <Link
+            to="/use-cases"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-blue-200 hover:text-white"
+          >
+            <ArrowLeft size={17} /> All use cases
+          </Link>
+          <div className="mt-10 grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+            <div>
+              <Badge className="mb-4 bg-white/10 text-white hover:bg-white/10">
+                Coming soon
+              </Badge>
+              <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
+                {item.title}
+              </h1>
+              <p className="mt-4 text-sm font-semibold uppercase tracking-wider text-blue-300">
+                For {item.audience}
+              </p>
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">
+                {item.summary}
+              </p>
+            </div>
+            <div className="hidden h-28 w-28 items-center justify-center rounded-3xl bg-white/10 text-blue-200 lg:flex">
+              <Icon size={50} />
+            </div>
+          </div>
+        </div>
+      </section>
+      <main className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+        <section className="rounded-3xl border border-amber-200 bg-amber-50 p-7 dark:border-amber-900 dark:bg-amber-950/20">
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+            The transaction problem
+          </p>
+          <h2 className="mt-2 text-2xl font-bold">
+            Why this deal needs a clearer record
+          </h2>
+          <p className="mt-4 leading-8 text-muted-foreground">{item.problem}</p>
+        </section>
+        <section className="py-14">
+          <p className="font-semibold text-primary">
+            The intended Naitrust flow
+          </p>
+          <h2 className="mt-2 text-3xl font-bold">
+            How Naitrust is designed to help
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {item.flow.map((step, index) => (
+              <div
+                key={step}
+                className="flex gap-4 rounded-2xl border bg-card p-5"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                  {index + 1}
+                </span>
+                <p className="pt-1 text-sm leading-6">{step}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="grid gap-7 rounded-3xl bg-muted/50 p-7 md:grid-cols-[auto_1fr] sm:p-9">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <FileCheck2 size={24} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold">Evidence that may matter</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              The right evidence depends on the transaction. For this use case,
+              a clear record may include:
+            </p>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {item.evidence.map((value) => (
+                <li key={value} className="flex items-center gap-2 text-sm">
+                  <CheckCircle2 size={17} className="shrink-0 text-primary" />
+                  {value}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+        <section className="mt-14 rounded-3xl bg-primary p-8 text-center text-white sm:p-12">
+          <h2 className="text-3xl font-bold">
+            Would this make your transactions safer?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-blue-50">
+            Join the waiting list and tell us what you would need from this flow
+            before Naitrust launches.
+          </p>
+          <Button
+            onClick={openWaitlistModal}
+            size="lg"
+            className="mt-7 bg-white text-primary hover:bg-blue-50"
+          >
+            Join the waiting list <ArrowRight />
+          </Button>
+        </section>
+      </main>
+    </div>
+  );
 }

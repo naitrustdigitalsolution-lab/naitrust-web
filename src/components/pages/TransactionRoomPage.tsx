@@ -19,6 +19,7 @@ import {
   Copy,
   Download,
   FileText,
+  Eye,
   GitPullRequestArrow,
   Landmark,
   MapPin,
@@ -183,14 +184,27 @@ function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <p className="text-sm text-muted-foreground">
-          Invoices, waybills, photos, and inspection reports attached to this deal.
+          Invoices, property documents, photos, and inspection reports attached to this transaction.
         </p>
-        <Button variant="outline" size="sm" className="shrink-0 rounded-full" onClick={() => setShowUpload(true)}>
-          <Upload size={14} className="mr-1.5" />
-          Upload
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+            onClick={() => toast.promise(downloadDealSummaryCard(deal), {
+              loading: 'Preparing deal summary…',
+              success: 'Deal summary downloaded.',
+              error: 'Could not generate the deal summary.',
+            })}
+          >
+            <Download size={14} className="mr-1.5" /> Download deal summary
+          </Button>
+          <Button variant="outline" size="sm" className="rounded-full" onClick={() => setShowUpload(true)}>
+            <Upload size={14} className="mr-1.5" /> Upload document
+          </Button>
+        </div>
       </div>
 
       <UploadEvidenceModal
@@ -214,7 +228,7 @@ function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
           <Paperclip size={22} className="text-muted-foreground" />
           <p className="text-sm font-medium text-foreground">No evidence yet</p>
           <p className="max-w-xs text-xs text-muted-foreground">
-            Evidence such as invoices, delivery proof, and inspection reports will appear here.
+            Property documents, receipts, inspection evidence, and supporting reports will appear here.
           </p>
         </div>
       ) : (
@@ -233,6 +247,22 @@ function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
               <Badge variant="outline" className="shrink-0">
                 {item.kind}
               </Badge>
+              {item.fileUrl ? (
+                <div className="flex shrink-0 gap-1">
+                  <Button asChild variant="ghost" size="icon" className="h-8 w-8" title="Preview document">
+                    <a href={item.fileUrl} target="_blank" rel="noreferrer">
+                      <Eye size={16} />
+                    </a>
+                  </Button>
+                  <Button asChild variant="ghost" size="icon" className="h-8 w-8" title="Download document">
+                    <a href={item.fileUrl} download={item.fileName}>
+                      <Download size={16} />
+                    </a>
+                  </Button>
+                </div>
+              ) : (
+                <span className="shrink-0 text-xs text-muted-foreground">Preview unavailable</span>
+              )}
             </li>
           ))}
         </ul>
@@ -274,7 +304,7 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
 
       <dl className="divide-y divide-border rounded-xl border">
         <div className="flex gap-4 px-4 py-3">
-          <dt className="w-40 shrink-0 text-sm text-muted-foreground">Delivery due</dt>
+          <dt className="w-40 shrink-0 text-sm text-muted-foreground">Next milestone</dt>
           <dd className="text-sm font-medium text-foreground">{deal.deliveryDueDate}</dd>
         </div>
         <div className="flex gap-4 px-4 py-3">
@@ -326,8 +356,8 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
         {canUpdate
-          ? "You're delivering on this deal — keep the buyer updated as the goods move."
-          : 'Delivery is tracked in stages so you stay updated while goods are in transit.'}
+          ? "You're updating this property transaction — keep the buyer informed as milestones are completed."
+          : 'Property progress is recorded in stages so participants can follow milestones and supporting evidence.'}
       </p>
 
       {canUpdate && (
@@ -508,9 +538,9 @@ function ActionsPanel({
         </Button>
       )}
       {canConfirm && (
-        <Button className="w-full rounded-full" onClick={() => toast.info('Confirm delivery & release — coming soon')}>
+        <Button className="w-full rounded-full" onClick={() => toast.info('Confirm milestone and payment instruction — coming soon')}>
           <Check size={16} className="mr-1.5" />
-          Confirm delivery & release
+          Confirm milestone and payment instruction
         </Button>
       )}
       {canDispute && (
@@ -647,7 +677,7 @@ export function TransactionRoomPage() {
           className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} />
-          All safe deals
+          All property transactions
         </button>
 
         {isLoading ? (
@@ -661,7 +691,7 @@ export function TransactionRoomPage() {
               This transaction may have been removed or the link is no longer valid.
             </p>
             <Button variant="outline" className="mt-2 rounded-full" onClick={() => navigate('/app/deals')}>
-              Back to safe deals
+              Back to property transactions
             </Button>
           </Card>
         ) : (

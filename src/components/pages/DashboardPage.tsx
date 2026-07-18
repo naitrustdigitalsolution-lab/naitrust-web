@@ -82,9 +82,9 @@ export function DashboardPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               {accountType === 'business'
                 ? business?.name
-                  ? `Managing safe deals for ${business.name}.`
-                  : 'Manage your business safe deals, funding, and evidence in one place.'
-                : 'Here is where your safe deals, funding, and evidence stand today.'}
+                  ? `Managing property transactions for ${business.name}.`
+                  : 'Manage your property transactions, payment records, and supporting evidence in one place.'
+                : 'Here is where your property transactions, payments, and supporting evidence stand today.'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -94,7 +94,7 @@ export function DashboardPage() {
             </Button>
             <Button onClick={handleCreateDeal} className="rounded-full">
               <Plus size={16} className="mr-1" />
-              Create safe deal
+              New property transaction
             </Button>
           </div>
         </div>
@@ -116,7 +116,7 @@ export function DashboardPage() {
         <PendingActions deals={actionItems} onSelect={handleOpenDeal} />
 
         <div>
-          <h2 className="text-lg font-bold text-foreground">Your safe deals</h2>
+          <h2 className="text-lg font-bold text-foreground">Your property transactions</h2>
           <p className="mt-0.5 text-sm text-muted-foreground">
             Protected transactions with terms, funding status, and evidence in one place.
           </p>

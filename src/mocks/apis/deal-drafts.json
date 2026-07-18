@@ -11,14 +11,14 @@
       "partyMode": "b2b",
       "role": "buyer",
       "participants": [
-        { "name": "Apex Power Supplies Ltd", "email": "sales@apexpower.example", "allocation": "2450000" }
+        { "name": "Adaeze Homes & Properties Ltd", "email": "transactions@adaezehomes.example", "allocation": "2450000" }
       ],
-      "title": "Supply of three industrial generators",
-      "description": "Purchase and delivery of three 45KVA generators to the Lagos warehouse.",
+      "title": "Reservation deposit for two-bedroom apartment",
+      "description": "Reservation of Unit B14 at Cedar Court, Sangotedo, pending document review and execution of the sale agreement.",
       "amount": "2450000",
       "deliveryDueDate": "2026-08-12",
       "openUntil": "2026-07-28",
-      "releaseConditions": "Release after all three generators are delivered, inspected, and tested successfully."
+      "releaseConditions": "Complete after the buyer receives and acknowledges the offer letter, allocation details, and deposit receipt."
     }
   },
   {
@@ -33,14 +33,14 @@
       "partyMode": "b2c",
       "role": "buyer",
       "participants": [
-        { "name": "Savannah Events & Catering", "email": "bookings@savannahevents.example", "allocation": "850000" }
+        { "name": "Savannah Property Services", "email": "transactions@savannahproperty.example", "allocation": "850000" }
       ],
-      "title": "Wedding catering and venue setup",
-      "description": "Catering and table setup for 180 guests.",
+      "title": "Abandoned agent and inspection fee record",
+      "description": "Proposed inspection and agency engagement for a three-bedroom flat in Gwarinpa.",
       "amount": "850000",
       "deliveryDueDate": "2026-09-05",
       "openUntil": "2026-07-20",
-      "releaseConditions": "Release after catering service and venue setup are completed as agreed."
+      "releaseConditions": "Complete after inspection confirmation and written evidence of the agent's authority is attached."
     }
   },
   {

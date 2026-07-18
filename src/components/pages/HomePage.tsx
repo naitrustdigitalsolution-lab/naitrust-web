@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Shield, Search, CheckCircle2, Users, TrendingUp, Lock, Zap, Award, ArrowRight, Star, ChevronRight, BarChart3, UserCheck, FileCheck, MessageSquare, Bell, Globe, Handshake, Fingerprint, QrCode, ScanLine, Download, Share2, ShoppingBag, Smartphone, Landmark } from 'lucide-react';
+import { Shield, Search, CheckCircle2, Users, TrendingUp, Lock, Zap, Award, ArrowRight, Star, ChevronRight, BarChart3, UserCheck, FileCheck, MessageSquare, Bell, Globe, Handshake, Fingerprint, QrCode, ScanLine, Download, Share2, ShoppingBag, Smartphone, Landmark, Home } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -23,7 +23,7 @@ interface HomePageProps {
 export function HomePage({ onNavigate }: HomePageProps) {
   const { isDarkMode, toggleTheme } = useTheme();
   const stats = [
-    { value: 'B2B+B2C', label: 'Safe Deal Flows', icon: CheckCircle2 },
+    { value: 'Property', label: 'Transaction Flows', icon: CheckCircle2 },
     { value: '24/7', label: 'Transaction Rooms', icon: Lock },
     { value: 'Proof', label: 'Evidence Trail', icon: Users },
     { value: '4-Step', label: 'Deal Workflow', icon: TrendingUp },
@@ -32,50 +32,50 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const features = [
     {
       icon: Shield,
-      title: 'Party Verification',
-      description: 'Use identity, business, document, and liveness checks so buyers and sellers can proceed with clearer confidence.',
+      title: 'Verified Participants',
+      description: 'Use identity, business, document, and liveness checks to better understand the buyers, sellers, agents, and companies involved.',
       color: 'text-blue-500',
     },
     {
       icon: Search,
-      title: 'Transaction Room',
-      description: 'Keep amount, roles, terms, delivery rules, funding state, evidence, and release decisions in one shared room.',
+      title: 'Property Transaction Room',
+      description: 'Keep the property, participants, amount, terms, payment state, milestones, and supporting evidence in one shared record.',
       color: 'text-green-500',
     },
     {
       icon: MessageSquare,
       title: 'Agreement Record',
-      description: 'Set acceptance rules, milestones, delivery expectations, and required proof before money moves.',
+      description: 'Document the price, payment plan, responsibilities, milestones, and confirmation rules before money moves.',
       color: 'text-purple-500',
     },
     {
       icon: Award,
-      title: 'Evidence Trail',
-      description: 'Invoices, photos, waybills, messages, approvals, and issue reports stay attached to the deal.',
+      title: 'Property Document Trail',
+      description: 'Receipts, offers, allocation letters, inspection photos, messages, approvals, and issue reports stay attached to the transaction.',
       color: 'text-orange-500',
     },
     {
       icon: UserCheck,
-      title: 'Counterparty Trust',
-      description: 'Review who you are dealing with, their role in the deal, verification status, and transaction history.',
+      title: 'Clear Participant Roles',
+      description: 'Review who you are dealing with, their claimed role, verification status, and relevant transaction history.',
       color: 'text-pink-500',
     },
     {
       icon: BarChart3,
       title: 'Funding Status',
-      description: 'Track payment instructions, funding confirmation, release conditions, refund paths, and partner-led payment updates.',
+      description: 'Track payment instructions, confirmations, agreed conditions, refund paths, and partner-led payment updates.',
       color: 'text-indigo-500',
     },
     {
       icon: Fingerprint,
       title: 'Reputation Layer',
-      description: 'Completed safe deals become proof that honest businesses can carry into future transactions.',
+      description: 'Completed property transactions create a history that participants can carry into future dealings.',
       color: 'text-teal-500',
     },
     {
       icon: QrCode,
       title: 'Shareable Deal Access',
-      description: 'Give counterparties a clear link or scan path to review terms, evidence requirements, and deal status.',
+      description: 'Give property transaction participants a clear link to review terms, document requirements, and current status.',
       color: 'text-cyan-500',
     },
   ];
@@ -83,26 +83,26 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const howItWorks = [
     {
       step: '1',
-      title: 'Create Safe Deal',
-      description: 'Invite the buyer, supplier, contractor, or client into one transaction room with amount, roles, timeline, and terms.',
+      title: 'Create a Property Transaction',
+      description: 'Record the property and invite the buyer, seller, agent, developer, or property company.',
       icon: Search,
     },
     {
       step: '2',
-      title: 'Verify Both Sides',
-      description: 'Confirm identity, business details, liveness, and documents based on the risk and value of the transaction.',
+      title: 'Confirm the Participants',
+      description: 'Record roles and use identity, business, liveness, and document checks appropriate to the transaction.',
       icon: Shield,
     },
     {
       step: '3',
-      title: 'Protect Payment',
-      description: 'Route funding, confirmations, release, and refund instructions through regulated financial partners.',
+      title: 'Record Terms and Payments',
+      description: 'Keep agreements, payment instructions, confirmations, milestones, and refund conditions visible.',
       icon: MessageSquare,
     },
     {
       step: '4',
-      title: 'Complete with Proof',
-      description: 'Track invoices, delivery photos, waybills, approvals, issues, release decisions, and reputation from one record.',
+      title: 'Complete with Evidence',
+      description: 'Attach property documents, receipts, inspection evidence, approvals, issues, and completion confirmations.',
       icon: CheckCircle2,
     },
   ];
@@ -111,56 +111,56 @@ export function HomePage({ onNavigate }: HomePageProps) {
     {
       title: 'For Buyers',
       icon: '🛡️',
-      text: 'Create safe B2C or B2B deals, confirm terms, review evidence, track funding status, and know what to do if something goes wrong.',
+      text: 'Keep a clear record of property agreements, payments, documents, inspections, and transaction milestones.',
     },
     {
-      title: 'For Sellers',
+      title: 'For Property Companies',
       icon: '✅',
-      text: 'Show seriousness, agree terms upfront, submit proof, respond to issues, and build transaction reputation with completed safe deals.',
+      text: 'Give buyers a professional transaction experience with consistent agreements, payment records, documents, and confirmations.',
     },
     {
-      title: 'For Partners',
-      icon: '🤖',
-      text: 'Plug verification, banking, payment, intelligence, logistics, and marketplace services into safer commerce workflows.',
+      title: 'For Agents and Developers',
+      icon: '🏗️',
+      text: 'Document participant roles, property commitments, payment stages, supporting evidence, and completion activity.',
     },
   ];
 
   const categories = [
-    { name: 'Supplier Orders', icon: '📦' },
-    { name: 'Electronics Deals', icon: '📱' },
-    { name: 'Service Projects', icon: '💼' },
-    { name: 'Event Vendors', icon: '🎪' },
-    { name: 'Home Delivery', icon: '🛋️' },
-    { name: 'Vehicle Payments', icon: '🚗' },
+    { name: 'Land Purchases', icon: '📍' },
     { name: 'Property Deposits', icon: '🏠' },
-    { name: 'Contractor Work', icon: '🧾' },
+    { name: 'Developer Instalments', icon: '🏗️' },
+    { name: 'Agent Transactions', icon: '🤝' },
+    { name: 'Property Sales', icon: '🔑' },
+    { name: 'Diaspora Purchases', icon: '🌍' },
+    { name: 'Construction Milestones', icon: '🧱' },
+    { name: 'Documented Handover', icon: '📄' },
   ];
 
   const faqs = [
     {
-      question: 'What is a safe deal?',
-      answer: 'A safe deal is a shared transaction room where both sides can see the amount, roles, terms, payment status, evidence requirements, activity, release conditions, and dispute steps.',
+      question: 'What is a Naitrust property transaction?',
+      answer: 'It is a shared safe-deal transaction room where participants can see the property, roles, amount, terms, payment records, document requirements, milestones, and issue history.',
     },
     {
       question: 'Does Naitrust hold customer funds?',
-      answer: 'Naitrust manages the transaction workflow and record. Funding and payment movement are designed to run through regulated financial partners.',
+      answer: 'No. Naitrust manages the transaction workflow and record. Any funding or payment movement is designed to run through the regulated financial partner identified for that transaction.',
     },
     {
       question: 'What happens if there is a problem?',
-      answer: 'The transaction room keeps terms, proof uploads, activity, and issue reports together so both sides can review what happened and follow the dispute path.',
+      answer: 'The property transaction room keeps terms, supporting evidence, activity, and issue reports together so participants can review what happened and follow the available dispute path.',
     },
     {
       question: 'Who is Naitrust for?',
-      answer: 'Naitrust is built for Nigerian SMEs, suppliers, contractors, vendors, service providers, buyers, and high-value B2C transactions where blind transfers are too risky.',
+      answer: 'Naitrust is being built for Nigerian property buyers, sellers, agents, developers, real estate companies, and transaction representatives. It is not a property-listing marketplace.',
     },
   ];
 
   return (
     <div className="min-h-screen relative">
       <SEOHead
-        title="Safe High-Value Transaction Platform"
-        description="Create safe deals, agree terms, protect payments through regulated partners, keep evidence in one transaction room, and handle release or disputes clearly."
-        keywords="safe transactions, protected payments, transaction room, evidence trail, B2B deals, B2C safe deals, dispute evidence, trust platform"
+        title="Secure and Verifiable Property Transactions in Nigeria"
+        description="Naitrust is trust infrastructure for Nigerian property transactions, helping participants record agreements, payments, documents, evidence, and milestones."
+        keywords="Nigeria property transactions, real estate transaction record, property payment evidence, property agreement records, verified property participants"
         canonicalPath="/"
       />
       
@@ -179,27 +179,23 @@ export function HomePage({ onNavigate }: HomePageProps) {
         }}
       >
         
-        <div className="max-w-5xl mx-auto relative z-10 py-8 sm:py-8">
-          {/* Hero Content - Centered */}
+        <div className="relative z-10 mx-auto max-w-[96rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-4xl mx-auto"
+            className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12"
           >
-            <Badge className="bg-primary/10 dark:bg-[#1a1a1a] text-primary dark:text-white text-sm font-semibold px-4 py-1.5 mb-6 inline-block">A safer way to pay, receive, and deliver in Nigeria</Badge>
-            
-            {/* Animated Hero Text */}
-            <div className="px-4 sm:px-6 lg:px-8">
+            <div className="min-w-0 text-center lg:text-left">
+              <Badge className="mb-4 inline-block bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary dark:bg-[#1a1a1a] dark:text-white">Trust infrastructure for Nigerian real estate</Badge>
               <AnimatedHeroText />
-            </div>
               
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 mt-14 px-4 sm:px-6 lg:px-8">
+            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
               {/* <Button size="lg" onClick={() => onNavigate('register')} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
                 Start a Safer Deal
               </Button> */}
               <Button size="lg" onClick={openWaitlistModal} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
-                Join the waiting list
+                Join the Property Early Access List
                 <ArrowRight size={24} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button size="lg" variant="outline" onClick={() => onNavigate('how-it-works')} className="px-8 py-6 text-lg font-semibold rounded-full">
@@ -207,40 +203,78 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button>
             </div>
 
+              <div className="mt-7 flex flex-wrap justify-center gap-3 text-xs font-medium sm:text-sm lg:justify-start">
+                {['Documented agreements', 'Verified participants', 'Visible payment records'].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5 rounded-full border border-[#e5edf5] bg-white/70 px-3 py-2 dark:border-white/10 dark:bg-white/5">
+                    <CheckCircle2 size={15} className="text-green-600" />
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative mx-auto w-full max-w-2xl">
+              <div className="absolute -inset-6 rounded-[2.5rem] bg-primary/10 blur-3xl" />
+              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-4 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 sm:p-6">
+                <ImageWithFallback
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200"
+                  alt="Modern residential property represented in a Naitrust transaction"
+                  className="h-52 w-full rounded-2xl object-cover sm:h-72"
+                />
+                <div className="relative -mt-12 mx-3 rounded-2xl border bg-card p-4 shadow-xl sm:mx-6 sm:p-5">
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-primary">Property transaction</p>
+                      <h2 className="mt-1 text-lg font-bold sm:text-xl">Lekki residential purchase</h2>
+                      <p className="mt-1 text-sm text-muted-foreground">Buyer, seller, terms, documents, and payments in one record</p>
+                    </div>
+                    <VerifiedBadge tier="premium" variant="small" />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="rounded-xl bg-primary/5 p-3"><FileCheck className="mx-auto mb-1 text-primary" size={18} /><span>Terms</span></div>
+                    <div className="rounded-xl bg-green-500/10 p-3"><Users className="mx-auto mb-1 text-green-600" size={18} /><span>People</span></div>
+                    <div className="rounded-xl bg-amber-500/10 p-3"><Landmark className="mx-auto mb-1 text-amber-600" size={18} /><span>Payments</span></div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Previous supporting trust rows are intentionally hidden in this wider hero;
+                their content is represented by the compact chips and product card above. */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="my-10 px-4 sm:px-6 lg:px-8"
+              className="hidden"
             >
               <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-medium">
                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
                   <Lock size={16} className="text-green-600" />
-                  <span className=" ">Bank-level security</span>
+                  <span className=" ">Documented agreements</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
                   <CheckCircle2 size={16} className="text-blue-600" />
-                  <span className="">Identity verified</span>
+                  <span className="">Verified participants</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
                   <Shield size={16} className="text-purple-600" />
-                  <span className="">Protected funding</span>
+                  <span className="">Visible payment records</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
                   <Award size={16} className="text-amber-600" />
-                  <span className="">Built for Nigeria</span>
+                  <span className="">Built for property transactions in Nigeria</span>
                 </div>
               </div>
             </motion.div>
 
-            <div className="flex items-center justify-center gap-4 sm:gap-8 text-sm flex-wrap">
+            <div className="hidden">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
-                <span className="font-medium">B2B and B2C safe deals</span>
+                <span className="font-medium">For buyers, sellers, agents, and developers</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
-                <span className="font-medium">Reusable verification</span>
+                <span className="font-medium">Not a property-listing marketplace</span>
               </div>
             </div>
           </motion.div>
@@ -260,45 +294,45 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="mt-4"
           >
             <div className="text-center mb-8 pt-8">
-              <Badge className="mb-4 bg-primary text-white">Commerce Rails</Badge>
+              <Badge className="mb-4 bg-primary text-white">Property Transaction Records</Badge>
               <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                Built for Nigerian Deals With Global Ambition
+                Property Transactions Should Not Depend on Trust Alone
               </h2>
               <p className="text-base text-muted-foreground max-w-3xl mx-auto">
-                Naitrust fits around the places serious transactions already begin, then adds the structure needed for verification, payment confidence, delivery proof, and release decisions.
+                Property transactions can involve large payments, several participants, informal conversations, and scattered documents. Naitrust creates one clear record that the people involved can access and verify.
               </p>
             </div>
             
             <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-4 mx-auto max-w-7xl py-4">
               {[
                 { 
-                  platform: 'Chat-led orders',
-                  iconComponent: Smartphone,
-                  description: 'Move WhatsApp-style negotiations into a deal room with accepted terms and proof.',
+                  platform: 'Land purchases',
+                  iconComponent: Landmark,
+                  description: 'Record the land, participants, agreed price, documents, payment stages, and confirmations.',
                   gradient: 'from-green-500 to-emerald-700'
                 },
                 { 
-                  platform: 'Social storefronts',
-                  iconComponent: ShoppingBag,
-                  description: 'Give Instagram and Facebook sellers a more serious way to close high-value orders.',
+                  platform: 'Property deposits',
+                  iconComponent: Home,
+                  description: 'Keep reservation terms, deposit evidence, deadlines, and refund conditions visible.',
                   gradient: 'from-pink-500 to-purple-600'
                 }, 
                 { 
-                  platform: 'Supplier deals',
+                  platform: 'Developer instalments',
                   iconComponent: Handshake,
-                  description: 'Structure referrals, bulk orders, procurement, contractor work, and vendor sourcing.',
+                  description: 'Maintain a consistent record of instalment schedules, receipts, progress, and outstanding amounts.',
                   gradient: 'from-amber-500 to-orange-700'
                 },
                 { 
-                  platform: 'Bank transfers',
-                  iconComponent: Landmark,
-                  description: 'Keep transfer status, payment instructions, release rules, and refund paths visible.',
+                  platform: 'Agent-led transactions',
+                  iconComponent: Handshake,
+                  description: 'Identify the agent, buyer, seller, developer, and the authority each person claims to hold.',
                   gradient: 'from-blue-600 to-cyan-700'
                 },
                 { 
-                  platform: 'Cross-border trade',
+                  platform: 'Property documentation',
                   iconComponent: Globe,
-                  description: 'Support Nigerian suppliers, diaspora buyers, and international customers with clearer records.',
+                  description: 'Keep offers, receipts, allocation letters, inspections, and supporting evidence with the transaction.',
                   gradient: 'from-indigo-500 to-violet-700'
                 },
               ].map((platform, index) => (
@@ -368,10 +402,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="mb-4 bg-primary text-white">Platform Features</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">Everything You Need to Complete a Safe Deal</h2>
+            <Badge className="mb-4 bg-primary text-white">Property Transaction Infrastructure</Badge>
+            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">A Clear Record from Agreement to Completion</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Naitrust is not only a payment screen. It is the record of who is involved, what both sides agreed, what proof exists, and what happens next.
+              Naitrust is not a property marketplace. It creates a structured record of who is involved, what was agreed, what payments and documents exist, and what happens next.
             </p>
           </motion.div>
 
@@ -412,7 +446,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Badge className="mb-4">Simple Process</Badge>
             <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 ">How Naitrust Works</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Four steps to move from uncertainty to a transaction both sides can trust
+              Four steps to create a clearer, verifiable property transaction record
             </p>
           </motion.div>
 
@@ -492,21 +526,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <Badge className="mb-4">For Buyers</Badge>
+              <Badge className="mb-4">For Property Buyers</Badge>
               <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6 text-white">
-                Pay with Confidence Before Money Leaves Your Account
+                Keep the Property, People, Terms, and Payments in View
               </h2>
               <p className="text-lg text-white mb-6">
-                Buyers can ask the right questions, verify the seller, fund through an approved partner flow, and keep proof of the agreement before release.
+                Buyers can document the property and participants, review agreed terms, keep payment evidence, and retain supporting records throughout the transaction.
               </p>
               
               <div className="space-y-4 mb-8">
                 {[
-                  'Create a safe deal before paying',
-                  'Confirm seller identity and role',
-                  'Review terms, amount, and delivery timeline',
-                  'Track funding and release conditions',
-                  'Keep invoices, photos, and approvals attached',
+                  'Create a property transaction before paying',
+                  'Confirm the seller, agent, or developer and their role',
+                  'Record the property, amount, payment plan, and timeline',
+                  'Track payment confirmations and agreed conditions',
+                  'Keep receipts, property documents, inspections, and approvals attached',
                   'Raise an issue with structured evidence',
                   'Build a reusable list of trusted counterparties'
                 ].map((item, index) => (
@@ -536,15 +570,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative"
+              className="relative min-w-0"
             >
-              <div className="grid grid-cols-2 gap-4">
+              <div className="mx-auto grid w-full max-w-xl grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-4">
-                  <Card className="p-4">
+                  <Card className="min-w-0 overflow-hidden p-4">
                     <ImageWithFallback
                       src="https://images.unsplash.com/photo-1520528105264-de3db89485f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
-                      alt="African small shop with smiling customer"
-                      className="w-full h-40 object-cover rounded-lg mb-3"
+                      alt="Property buyer reviewing a transaction"
+                      className="mb-3 h-48 w-full rounded-lg object-cover sm:h-40"
                     />
                     <div className="flex items-center gap-2 mb-2">
                       <VerifiedBadge tier="premium" variant="small" />
@@ -554,8 +588,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs font-medium">Fashion Hub Lagos</p>
-                    <p className="text-xs text-muted-foreground">Payment funded through partner</p>
+                    <p className="text-sm font-medium">Lagos Property Purchase</p>
+                    <p className="text-xs text-muted-foreground">Deposit confirmation recorded</p>
                   </Card>
                   
                   <Card className="p-4">
@@ -565,22 +599,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       </div>
                       <div className="flex-1">
                         <p className="text-xs font-medium">Terms Accepted</p>
-                        <p className="text-xs text-muted-foreground">Delivery evidence pending</p>
+                        <p className="text-xs text-muted-foreground">Property documents pending</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Badge variant="outline" className="text-xs">Electronics</Badge>
+                      <Badge variant="outline" className="text-xs">Property purchase</Badge>
                       <Badge variant="outline" className="text-xs">Lagos</Badge>
                     </div>
                   </Card>
                 </div>
 
-                <div className="space-y-4 mt-12">
-                  <Card className="p-4">
+                <div className="space-y-4 sm:mt-12">
+                  <Card className="min-w-0 overflow-hidden p-4">
                     <ImageWithFallback
                       src="https://images.unsplash.com/photo-1637328613628-bc050ce89953?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
-                      alt="Lagos shop vendor with happy customer interaction"
-                      className="w-full h-40 object-cover rounded-lg mb-3"
+                      alt="Property professional supporting a Nigerian transaction"
+                      className="mb-3 h-48 w-full rounded-lg object-cover sm:h-40"
                     />
                     <div className="flex items-center gap-2 mb-2">
                       <VerifiedBadge tier="basic" variant="small" />
@@ -590,8 +624,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs font-medium text-gray-900 dark:text-white">Beauty Essentials NG</p>
-                    <p className="text-xs text-muted-foreground">Safe deal ready</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">Verified Property Company</p>
+                    <p className="text-xs text-muted-foreground">Participant details available to review</p>
                   </Card>
 
                   <Card className="p-4 bg-primary text-white">
@@ -599,114 +633,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       <Lock size={16} />
                       <span className="text-xs font-medium">Protected Transaction</span>
                     </div>
-                    <p className="text-xs opacity-90">Terms, evidence, funding status, and release conditions stay attached to the deal</p>
+                    <p className="text-xs leading-relaxed opacity-90">Terms, property documents, payment status, milestones, and supporting evidence stay attached to the transaction.</p>
                   </Card>
                 </div>
               </div>
 
               <div className="absolute -bottom-4 -right-4 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10"></div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Transaction Intelligence + Transaction Fit Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full border-2 bg-card p-8 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <BarChart3 size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold">Transaction intelligence</h3>
-                    <p className="text-sm text-muted-foreground">Risk signals before release</p>
-                  </div>
-                </div>
-
-                <p className="mt-6 text-base leading-7 text-muted-foreground">
-                  Naitrust can guide customers through the evidence that matters: identity, liveness, business documents, terms, proof uploads, payment status, and issue reports.
-                </p>
-
-                <div className="mt-8 space-y-3">
-                  {[
-                    'Identity and business verification',
-                    'Terms and delivery proof',
-                    'Payment and funding status',
-                    'Issue reports and dispute trail',
-                  ].map((item, index) => (
-                    <div key={item} className={`flex items-center gap-3 rounded-2xl border px-4 py-4 ${index === 0 ? 'border-primary bg-primary text-white' : 'border-border bg-background/70'}`}>
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-full ${index === 0 ? 'bg-white/15' : 'bg-primary/10 text-primary'}`}>
-                        {index % 2 === 0 ? <Shield size={16} /> : <CheckCircle2 size={16} />}
-                      </div>
-                      <span className="text-sm font-medium">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="h-full border-2 bg-card p-8 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Handshake size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold">Built for Nigerian B2B and B2C transactions.</h3>
-                    <p className="text-sm text-muted-foreground">B2B + B2C transaction flows</p>
-                  </div>
-                </div>
-
-                <div className="mt-8 space-y-4">
-                  {[
-                    {
-                      title: 'Built for suppliers, contractors, agencies, social sellers, and high-value consumer trades.',
-                      label: 'Use cases',
-                    },
-                    {
-                      title: 'NGN 500k+ high-value deal focus',
-                      label: 'Deal focus',
-                    },
-                    {
-                      title: 'Designed for moments where blind transfers are too risky.',
-                      label: 'Why it matters',
-                    },
-                    {
-                      title: '1 record for every transaction',
-                      label: 'Single record',
-                    },
-                    {
-                      title: 'Terms, verification, evidence, payment status, approvals, and disputes stay together.',
-                      label: 'Record depth',
-                    },
-                    {
-                      title: 'Partner-led payment movement',
-                      label: 'Payments',
-                    },
-                    {
-                      title: 'Regulated financial partners handle money movement while Naitrust manages the trust workflow.',
-                      label: 'How it works',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="rounded-2xl border border-border bg-background/70 p-4">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{item.label}</p>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.title}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
             </motion.div>
           </div>
         </div>
@@ -740,7 +672,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 Build Trust, Close Better Transactions
               </h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Good sellers and contractors should not lose deals because the buyer is afraid. Naitrust gives them a structured way to prove who they are, agree the work, submit evidence, and earn reputation.
+                Property companies, agents, and developers should be able to give buyers a professional and transparent transaction experience. Naitrust provides a structured way to record who is involved, what was agreed, what was paid, and which evidence exists.
               </p>
               
               {/* Premium Feature Description - Analytics */}
@@ -750,7 +682,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   <div>
                     <p className="text-sm font-semibold  mb-2">Transaction Intelligence:</p>
                     <p className="text-sm text-muted-foreground">
-                      See which deals need action, which evidence is pending, which payments are funded, and which issues need a response before release.
+                      See which property transactions need action, which documents are pending, which payments are confirmed, and which issues need a response.
                     </p>
                   </div>
                 </div>
@@ -761,7 +693,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <p className="text-sm  mb-3">
                   <strong className="">Perfect for small, medium, and digital businesses </strong> 
                   <span className="text-muted-foreground">
-                    that sell through referrals, social channels, marketplaces, and direct B2B relationships. Naitrust gives each transaction a clear record before money moves.
+                    that work with buyers, sellers, agents, developers, and representatives. Naitrust gives each property transaction a clear record before money moves.
                   </span>
                 </p>
               </div>
@@ -774,7 +706,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   { icon: BarChart3, text: 'Evidence & Action Insights', color: 'text-purple-600 dark:text-purple-400' },
                   { icon: MessageSquare, text: 'Deal Activity Log', color: 'text-pink-600 dark:text-pink-400' },
                   { icon: Fingerprint, text: 'Transaction Reputation', color: 'text-teal-600 dark:text-teal-400' },
-                  { icon: QrCode, text: 'Shareable Safe Deal Link', color: 'text-cyan-600 dark:text-cyan-400' },
+                  { icon: QrCode, text: 'Shareable Property Transaction Link', color: 'text-cyan-600 dark:text-cyan-400' },
                   { icon: Globe, text: 'Partner Payment Status', color: 'text-indigo-600 dark:text-indigo-400' }
                 ].map((item, index) => {
                   const Icon = item.icon;
@@ -834,16 +766,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 Transaction Room — Your Deal Record
               </h2>
               <p className="text-lg text-white mb-6 leading-relaxed text-justify">
-                Every safe deal gets a shared <strong className="text-white">transaction room</strong> — a clear record of who is involved, what was agreed, what evidence is required, and what happens next.
+                Every property transaction gets a shared <strong className="text-white">Naitrust safe-deal room</strong> — a clear record of the property, who is involved, what was agreed, what evidence is required, and what happens next.
               </p>
               <p className="text-lg text-white mb-8 leading-relaxed text-justify">
-                Buyers and sellers can use a link or QR-style access point to review terms, payment status, proof uploads, activity, release conditions, and issue reports.
+                Buyers, sellers, agents, and property companies can review terms, payment status, property documents, activity, milestones, and issue reports from one place.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
                   { icon: Fingerprint, text: 'Reusable identity and business checks' },
-                  { icon: QrCode, text: 'Shareable safe deal access' },
+                  { icon: QrCode, text: 'Shareable property transaction access' },
                   { icon: ScanLine, text: 'Review terms and evidence quickly' },
                   { icon: Shield, text: 'Linked to the transaction record' },
                   { icon: Download, text: 'Keep proof for later review' },
@@ -888,7 +820,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <Fingerprint size={40} className="text-primary" />
                   </div>
                   <h3 className="text-xl font-bold">Transaction Room</h3>
-                  <p className="text-sm text-muted-foreground">Safe Deal Record</p>
+                  <p className="text-sm text-muted-foreground">Property Transaction Record</p>
                 </div>
 
                 <div className="space-y-4 mb-6">
@@ -942,9 +874,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mb-12"
           >
             <Badge className="mb-4">Use Cases</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 ">Safe Deals Across Nigerian Commerce</h2>
+            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 ">Built Around Nigerian Property Transactions</h2>
             <p className="text-lg text-muted-foreground">
-              Start with the transaction types where blind transfers are too risky
+              Create a clear record for the property transactions where verbal promises and scattered documents are not enough
             </p>
           </motion.div>
 
@@ -960,7 +892,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Card className="p-6 text-center hover:shadow-lg transition-all cursor-pointer hover:scale-105">
                   <div className="text-4xl mb-3">{category.icon}</div>
                   <h4 className="mb-1">{category.name}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Create safe deal</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Create property transaction</p>
                 </Card>
               </motion.div>
             ))}
@@ -973,7 +905,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mt-8"
           >
             <Button variant="outline" onClick={() => onNavigate('search')}>
-              Explore Safe Deal Flows
+              Explore Property Transaction Flows
               <ChevronRight size={18} className="ml-2" />
             </Button>
           </motion.div>
@@ -990,9 +922,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mb-12"
           >
             <Badge className="mb-4">Why Naitrust</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">Built for Trust in Nigerian Commerce</h2>
+            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">Built for Trust in Nigerian Real Estate</h2>
             <p className="text-lg text-muted-foreground">
-              Whether you're buying or selling, Naitrust gives you the tools to transact with confidence
+              Clearer records for buyers, sellers, agents, developers, and property companies
             </p>
           </motion.div>
 
@@ -1145,25 +1077,25 @@ export function HomePage({ onNavigate }: HomePageProps) {
             {/* Slogan - Prominent */}
             <div className="mb-7 sm:mb-8 p-4 lg:p-4 xl:p-6 bg-white/75 backdrop-blur-sm rounded-full border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
               <p className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-[#0b2b45] text-balance">
-                "Secure every deal before money moves."
+                "Create a clear property record before money moves."
               </p>
             </div>
 
             <h2 className="text-lg md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
-              Ready to Move Your Next <br/> Deal With More Confidence?
+              Ready to Approach Your Next <br/> Property Transaction with More Confidence?
             </h2>
             <p className="text-base lg:text-xl leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">
-              Invite the other party, agree the terms, verify the basics, and keep payment status and delivery proof in one trusted record.
+              Record the property and participants, agree the terms, verify the basics, and keep payments, documents, milestones, and supporting evidence in one trusted record.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Button
                 size="lg"
                 variant="secondary"
-                onClick={() => onNavigate('register-customer')}
+                onClick={openWaitlistModal}
                 className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-[0_14px_32px_rgba(30,144,255,0.24)]"
               >
-                Start a Safe Deal
+                Join Property Early Access
                 <ArrowRight size={22} className="ml-2" />
               </Button>
               <Button
@@ -1171,14 +1103,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
                 className="w-full sm:w-auto border border-primary/40 bg-white hover:bg-primary/10 hover:text-primary px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold text-[#0b2b45]"
               >
-                Join as a Verified Seller
+                Join as a Property Company
               </Button>
             </div>
 
             {/* Feedback Link */}
             <div className="mt-9 sm:mt-12 pt-7 sm:pt-8 border-t border-primary/20">
               <p className="text-sm sm:text-base text-[#496274] mb-3 sm:mb-4">
-                Have feedback or suggestions?
+                Have feedback about property transactions in Nigeria?
               </p>
               <Button
                 variant="ghost"

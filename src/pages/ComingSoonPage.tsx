@@ -4,7 +4,8 @@ import { submitWaitlist } from "../services/waitlistService";
 import type { WaitlistPayload } from '../types/global';
 
 const initialFormState = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   businessName: "",
   email: "",
   phone: "",
@@ -18,7 +19,12 @@ type FormState = typeof initialFormState;
 
 function buildPayload(formState: FormState): WaitlistPayload {
   return {
-    ...formState,
+    fullName: `${formState.firstName} ${formState.lastName}`.trim(),
+    businessName: formState.businessName,
+    email: formState.email,
+    phone: formState.phone,
+    transactionNeed: formState.transactionNeed,
+    consent: formState.consent,
     userType: formState.userType as WaitlistPayload["userType"],
     transactionRange: formState.transactionRange as WaitlistPayload["transactionRange"],
     source: `naitrust-web-${appConfig.mode}`,
@@ -28,7 +34,8 @@ function buildPayload(formState: FormState): WaitlistPayload {
 
 function isValid(formState: FormState) {
   return Boolean(
-    formState.fullName &&
+    formState.firstName &&
+      formState.lastName &&
       formState.email &&
       formState.phone &&
       formState.userType &&
@@ -99,11 +106,12 @@ function ComingSoonPage() {
 
         <div className="hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">Coming soon for trusted commerce</p>
-            <h1 id="hero-title">When the transaction matters, use Naitrust.</h1>
+            <p className="eyebrow">Coming soon for Nigerian real estate</p>
+            <h1 id="hero-title">Buy property with greater confidence.</h1>
             <p className="lede">
-              Naitrust is building a safer way for Nigerians to buy, sell, hire, deliver, and
-              get paid when both parties do not fully know each other yet.
+              Naitrust is building one trusted platform for property buyers, sellers, agents,
+              developers, and real estate companies to record participants, agreements, payments,
+              documents, milestones, and supporting evidence.
             </p>
 
             <div className="hero-actions">
@@ -117,12 +125,12 @@ function ComingSoonPage() {
 
             <dl className="trust-stats" aria-label="Naitrust launch focus">
               <div>
-                <dt>Safe deals</dt>
+                <dt>Property transactions</dt>
                 <dd>Create agreement-backed transactions</dd>
               </div>
               <div>
-                <dt>B2B + B2C</dt>
-                <dd>Built for business and high-risk consumer trades</dd>
+                <dt>Real estate first</dt>
+                <dd>For buyers, sellers, agents, developers, and companies</dd>
               </div>
               <div>
                 <dt>{modeLabel}</dt>
@@ -156,8 +164,8 @@ function ComingSoonPage() {
               </div>
             </div>
             <div className="visual-caption">
-              <strong>Trust layer for Nigerian transactions</strong>
-              <span>Verification, agreements, protected payments, evidence, and release workflow.</span>
+              <strong>Trust infrastructure for Nigerian real estate</strong>
+              <span>Participant records, agreements, payments, property documents, milestones, and evidence.</span>
             </div>
           </aside>
         </div>
@@ -166,40 +174,40 @@ function ComingSoonPage() {
       <section className="platform-section" id="platform" aria-labelledby="platform-title">
         <div className="section-heading">
           <p className="eyebrow">What Naitrust is building</p>
-          <h2 id="platform-title">A transaction room for deals that need more than trust.</h2>
+          <h2 id="platform-title">A clear record for property transactions that need more than trust.</h2>
           <p>
-            Today, many deals happen through WhatsApp chats, screenshots, verbal promises,
-            PDF invoices, bank transfers, and scattered evidence. Naitrust brings the important
-            parts into one workflow so both sides know who they are dealing with, what was
-            agreed, where the payment is, and what happens next.
+            Property transactions often happen through WhatsApp chats, screenshots, verbal promises,
+            bank transfers, and scattered documents. Naitrust brings the important parts into one
+            workflow so participants can see who is involved, what was agreed, what was paid, which
+            documents were supplied, and what happens next.
           </p>
         </div>
         <div className="platform-grid">
           <article>
-            <h3>For buyers</h3>
-            <p>Reduce the fear of paying a supplier, vendor, agent, or contractor who may disappear.</p>
+            <h3>For property buyers</h3>
+            <p>Keep the property, seller, agent, developer, terms, payments, and supporting records visible.</p>
           </article>
           <article>
-            <h3>For sellers</h3>
-            <p>Show seriousness, collect protected payments, submit evidence, and build reputation.</p>
+            <h3>For property companies</h3>
+            <p>Give buyers a professional record of agreements, instalments, documents, milestones, and confirmations.</p>
           </article>
           <article>
-            <h3>For partners</h3>
-            <p>Connect regulated payment, banking, verification, logistics, and marketplace services.</p>
+            <h3>For agents and developers</h3>
+            <p>Document roles, authority, property commitments, payment stages, evidence, and completion activity.</p>
           </article>
         </div>
       </section>
 
       <section className="workflow" id="how-it-works" aria-labelledby="workflow-title">
         <div className="section-heading">
-          <p className="eyebrow">Built around the deal</p>
-          <h2 id="workflow-title">From agreement to payment release.</h2>
+          <p className="eyebrow">Built around the property transaction</p>
+          <h2 id="workflow-title">From participant records to documented completion.</h2>
         </div>
         <div className="workflow-grid">
           <article>
             <span>01</span>
-            <h3>Create a safe deal</h3>
-            <p>Set the amount, parties, delivery terms, timeline, and required evidence.</p>
+            <h3>Create a property transaction</h3>
+            <p>Record the property, participants, amount, payment plan, milestones, documents, and required evidence.</p>
           </article>
           <article>
             <span>02</span>
@@ -222,21 +230,21 @@ function ComingSoonPage() {
       <section className="details-section" aria-labelledby="details-title">
         <div className="section-heading">
           <p className="eyebrow">Who should join</p>
-          <h2 id="details-title">Built first for Nigerian transactions where failure is expensive.</h2>
+          <h2 id="details-title">Built first for Nigerian property transactions where uncertainty is expensive.</h2>
         </div>
         <div className="details-grid">
           <article className="deal-panel">
             <div className="deal-header">
               <span>Example transaction room</span>
-              <strong>Supplier order</strong>
+              <strong>Property reservation</strong>
             </div>
             <ol className="deal-steps">
               <li className="complete"><span /> Parties invited</li>
               <li className="complete"><span /> Verification checked</li>
               <li className="complete"><span /> Terms agreed</li>
               <li className="active"><span /> Payment protected</li>
-              <li><span /> Delivery evidence</li>
-              <li><span /> Release or dispute</li>
+              <li><span /> Property documents reviewed</li>
+              <li><span /> Completion or issue recorded</li>
             </ol>
             <div className="provider-row">
               <p>Payment provider strategy</p>
@@ -248,16 +256,16 @@ function ComingSoonPage() {
           </article>
           <div className="use-case-list">
             <article>
-              <h3>SMEs and wholesalers</h3>
-              <p>Bulk orders, supplier payments, stock purchases, distribution deals, and contractor payments.</p>
+              <h3>Property buyers and sellers</h3>
+              <p>Land purchases, property deposits, sales agreements, inspections, payment evidence, and completion records.</p>
             </article>
             <article>
-              <h3>Service providers</h3>
-              <p>Freelancers, agencies, event vendors, construction teams, and professionals who need payment confidence.</p>
+              <h3>Agents and property companies</h3>
+              <p>Participant roles, authority records, buyer commitments, developer instalments, and supporting documents.</p>
             </article>
             <article>
-              <h3>High-risk B2C trades</h3>
-              <p>Phones, laptops, property deposits, fashion orders, social-commerce purchases, and informal seller deals.</p>
+              <h3>Diaspora buyers and representatives</h3>
+              <p>Remote property transactions with one accessible history of local participants, payments, inspections, and progress.</p>
             </article>
           </div>
         </div>
@@ -268,31 +276,35 @@ function ComingSoonPage() {
           <p className="eyebrow">Early access</p>
           <h2 id="waitlist-title">Join the waiting list.</h2>
           <p>
-            Tell us who you are and the kind of transaction you want Naitrust to protect. We
+            Tell us who you are and the kind of property transaction you want Naitrust to support. We
             will use this to invite the right early users first.
           </p>
           <ul className="waitlist-benefits">
             <li>Get early product updates.</li>
-            <li>Help shape the first safe-deal workflow.</li>
+            <li>Help shape the first property transaction workflow.</li>
             <li>Be considered for pilot access when testing opens.</li>
           </ul>
         </div>
 
         <form className="waitlist-form" name="naitrust-waitlist" onSubmit={handleSubmit}>
           <div className="form-row">
-            <label htmlFor="fullName">Full name</label>
+            <label htmlFor="firstName">First name</label>
             <input
-              id="fullName"
-              name="fullName"
+              id="firstName"
+              name="firstName"
               type="text"
               autoComplete="name"
-              value={formState.fullName}
-              onChange={(event) => updateField("fullName", event.target.value)}
+              value={formState.firstName}
+              onChange={(event) => updateField("firstName", event.target.value)}
               required
             />
           </div>
           <div className="form-row">
-            <label htmlFor="businessName">Business or brand name</label>
+            <label htmlFor="lastName">Last name</label>
+            <input id="lastName" name="lastName" type="text" autoComplete="family-name" value={formState.lastName} onChange={(event) => updateField("lastName", event.target.value)} required />
+          </div>
+          <div className="form-row">
+            <label htmlFor="businessName">Business or company name</label>
             <input
               id="businessName"
               name="businessName"
@@ -336,11 +348,14 @@ function ComingSoonPage() {
               required
             >
               <option value="">Select one</option>
-              <option value="business_buyer">Business buyer</option>
-              <option value="supplier_vendor">Supplier or vendor</option>
-              <option value="contractor_service_provider">Contractor or service provider</option>
-              <option value="marketplace_social_seller">Marketplace or social seller</option>
-              <option value="partner">Potential partner</option>
+              <option value="property_buyer">Property buyer</option>
+              <option value="property_seller">Property seller or owner</option>
+              <option value="real_estate_agent">Real estate agent</option>
+              <option value="real_estate_company">Real estate company</option>
+              <option value="property_developer">Property developer</option>
+              <option value="legal_transaction_representative">Legal or transaction representative</option>
+              <option value="partner">Payment, verification, or technology partner</option>
+              <option value="other">Other</option>
             </select>
           </div>
           <div className="form-row">
@@ -361,12 +376,12 @@ function ComingSoonPage() {
             </select>
           </div>
           <div className="form-row">
-            <label htmlFor="transactionNeed">What transaction do you want to protect?</label>
+            <label htmlFor="transactionNeed">Which property transaction do you need help recording?</label>
             <textarea
               id="transactionNeed"
               name="transactionNeed"
               rows={4}
-              placeholder="Example: I buy goods from suppliers I do not fully know."
+              placeholder="Example: I am paying a reservation deposit for a property from a developer."
               value={formState.transactionNeed}
               onChange={(event) => updateField("transactionNeed", event.target.value)}
             />

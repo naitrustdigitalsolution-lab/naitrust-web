@@ -5,21 +5,21 @@
       "id": "inv_mock_001",
       "recipientUserId": "usr_mock_004",
       "reference": "NT-2026-000195",
-      "fromName": "Damilola Interiors Ltd",
+      "fromName": "Damilola Properties Ltd",
       "fromRole": "seller",
       "yourRole": "buyer",
       "partyMode": "b2c",
-      "title": "Custom furniture set — 3-seater and dining",
+      "title": "Two-bedroom apartment reservation — Lekki",
       "amountMinor": 78000000,
       "currency": "NGN",
-      "message": "Sharing the safe deal for the furniture order we discussed. Terms and delivery window are inside — please review and accept to lock it in.",
+      "message": "Sharing the property transaction record for the apartment reservation we discussed. Please review the participants, property details, deposit terms, and required documents.",
       "agreement": {
         "version": 1,
         "generatedByAi": true,
         "sections": [
           {
             "heading": "Parties and purpose",
-            "body": "This safe deal agreement is between you (the Buyer) and Damilola Interiors Ltd (the Seller) for \"Custom furniture set — 3-seater and dining\" — a customer to business transaction under the High-value personal purchases category."
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Damilola Properties Ltd (the Seller) for the reservation of a two-bedroom apartment in Lekki."
           },
           {
             "heading": "Protected payment",
@@ -27,11 +27,11 @@
           },
           {
             "heading": "Delivery obligations",
-            "body": "The Seller must deliver the complete furniture set on or before 2026-08-05, in the fabric and finish agreed in the order summary. The Seller should upload workshop progress photos and the delivery waybill to the transaction room."
+            "body": "The Seller must provide the offer letter, unit details, allocation information, and agreed supporting property documents by the stated milestone dates."
           },
           {
             "heading": "Release conditions",
-            "body": "Funds are released to the Seller only when the furniture is delivered, assembled, and inspected by the Buyer with no damage or material deviation from the agreed specification, confirmed in the transaction room."
+            "body": "Completion is recorded when the agreed reservation documents and payment receipt are available and acknowledged by the Buyer in the transaction room."
           },
           {
             "heading": "Disputes",
@@ -55,7 +55,7 @@
       "fromRole": "buyer",
       "yourRole": "seller",
       "partyMode": "b2b",
-      "title": "Bulk order — 200 office chairs",
+      "title": "Developer instalment — Cedar Court Unit C08",
       "amountMinor": 145000000,
       "currency": "NGN",
       "message": "We'd like to run this purchase through Naitrust. Please confirm the terms so we can fund the protected account.",
@@ -101,7 +101,7 @@
       "fromRole": "buyer",
       "yourRole": "seller",
       "partyMode": "b2c",
-      "title": "Event photography — full-day coverage",
+      "title": "Property inspection and agent engagement",
       "amountMinor": 32000000,
       "currency": "NGN",
       "agreement": {

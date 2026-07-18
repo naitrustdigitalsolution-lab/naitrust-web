@@ -22,7 +22,7 @@ export function BlogPage() {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Naitrust Blog"
-        description="Practical guides about safer Nigerian transactions, verification, evidence and trust."
+        description="Practical guides about Nigerian property transactions, participant verification, payments, documents, evidence, and trust."
         canonicalPath="/blog"
       />
       <section className="bg-[#031335] dark:bg-[#0A0E1A] px-4 py-16 text-white sm:px-6">
@@ -31,11 +31,11 @@ export function BlogPage() {
             Naitrust Insights
           </Badge>
           <h1 className="max-w-3xl text-4xl font-bold sm:text-5xl">
-            Practical thinking for safer deals
+            Practical guidance for clearer property transactions
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-blue-100">
-            Useful guides for buyers and honest businesses navigating identity,
-            agreements, payments and evidence.
+            Useful guidance for property buyers, sellers, agents, developers, and companies navigating participants,
+            agreements, payments, documents, milestones, and evidence.
           </p>
         </div>
       </section>
@@ -72,7 +72,7 @@ export function BlogPage() {
           <div>
             <p className="font-semibold text-primary">All articles</p>
             <h2 className="mt-2 text-3xl font-bold">
-              Learn before the next deal
+              Learn before your next property transaction
             </h2>
           </div>
           <label className="relative block sm:w-80">

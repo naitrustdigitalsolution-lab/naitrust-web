@@ -35,19 +35,19 @@ export function Footer({ onNavigate }: FooterProps) {
       title: 'Platform',
       links: [
         { label: 'How It Works', page: 'how-it-works' },
-        { label: 'Use Cases', page: 'use-cases' },
-        { label: 'Start a Safe Deal', page: 'register' },
-        { label: 'Register Your Business', page: 'register-business' },
+        { label: 'Real Estate', page: 'use-cases' },
+        { label: 'Join Property Early Access', page: 'register' },
+        { label: 'For Property Companies', page: 'register-business' },
       ],
     },
     {
-      title: 'Use Cases',
+      title: 'Real Estate',
       links: [
-        { label: 'Supplier orders', page: '/use-cases/supplier-orders' },
-        { label: 'Contractor work', page: '/use-cases/contractor-projects' },
-        { label: 'Social storefront sales', page: '/use-cases/social-commerce' },
-        { label: 'High-value purchases', page: '/use-cases/high-value-personal-purchases' },
-        { label: 'Freelance and agency work', page: '/use-cases/freelance-agency-work' },
+        { label: 'Property purchases', page: '/use-cases/property-agent-payments' },
+        { label: 'Developer instalments', page: '/use-cases/developer-instalments' },
+        { label: 'Land transactions', page: '/use-cases/land-transactions' },
+        { label: 'Agent-led transactions', page: '/use-cases/agent-led-property' },
+        { label: 'Construction milestones', page: '/use-cases/contractor-projects' },
       ],
     },
     {
@@ -76,7 +76,7 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       icon: ShieldCheck,
       title: 'Verified transaction identity',
-      text: 'Business, buyer, and deal information are checked before money or goods move.',
+      text: 'Property participants, roles, and transaction information can be checked before money moves.',
     },
     {
       icon: Landmark,
@@ -85,8 +85,8 @@ export function Footer({ onNavigate }: FooterProps) {
     },
     {
       icon: FileCheck,
-      title: 'Evidence for every deal',
-      text: 'Agreements, receipts, delivery proof, chat records, and dispute notes stay tied to the transaction.',
+      title: 'Evidence for every transaction',
+      text: 'Agreements, receipts, property documents, inspection evidence, messages, and issue notes stay tied to the transaction.',
     },
   ];
 
@@ -126,10 +126,10 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
             <div className="mb-4 space-y-3 text-sm lg:text-md leading-7 text-white/80">
               <p>
-                Naitrust is the safer way for Nigerians to buy, sell, pay, and deliver with confidence. We help businesses and customers move beyond blind transfers by putting every deal inside a shared, traceable transaction room.
+                Naitrust is building trust infrastructure for Nigerian real estate. We help property buyers, sellers, agents, developers, and companies move beyond verbal promises and scattered records with one shared property transaction room.
               </p>
               <p>
-                From seller verification to clear terms, payment tracking, delivery evidence, and dispute-ready records, Naitrust gives both sides the confidence to say yes to bigger deals with less worry.
+                From participant verification and documented terms to payment records, property documents, milestones, and issue-ready evidence, Naitrust makes important transaction activity easier to understand and verify.
               </p>
             </div>
             <div className="space-y-3 text-sm text-white/70 mb-5">
@@ -248,7 +248,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <div>
                 <h4 className="text-base font-semibold">Subscribe to Naitrust updates</h4>
                 <p className="mt-1 max-w-sm text-xs leading-5 text-white/60">
-                  Product updates, safer-commerce guides, and early access notes.
+                  Property transaction guidance, product updates, and early-access notes.
                 </p>
               </div>
             </div>

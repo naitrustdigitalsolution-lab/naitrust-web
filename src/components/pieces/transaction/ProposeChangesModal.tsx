@@ -112,7 +112,7 @@ export function ProposeChangesModal({
               />
             </div>
             <div>
-              <Label htmlFor="np-due">Delivery due date</Label>
+              <Label htmlFor="np-due">Next milestone or completion date</Label>
               <Input
                 id="np-due"
                 type="date"

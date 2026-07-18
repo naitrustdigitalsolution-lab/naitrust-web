@@ -293,7 +293,7 @@ export function CreateDealPage() {
     try {
       const response = await agreementsApi.draft(
         {
-          useCaseTitle: selectedUseCase?.title ?? 'General safe deal',
+          useCaseTitle: selectedUseCase?.title ?? 'Property transaction',
           partyModeLabel: form.partyMode ? partyModeLabel(form.partyMode) : 'Protected',
           buyerName,
           sellerName,
@@ -332,7 +332,7 @@ export function CreateDealPage() {
       const amount = Number(form.amount);
       if (!form.amount || Number.isNaN(amount) || amount <= 0)
         next.amount = 'Enter an amount greater than zero.';
-      if (!form.deliveryDueDate) next.deliveryDueDate = 'Set a delivery due date.';
+      if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the next milestone or completion date.';
       if (!form.openUntil) {
         next.openUntil = 'Set how long the deal stays open.';
       } else {
@@ -401,10 +401,10 @@ export function CreateDealPage() {
         agreement,
       });
       clearDealDraft(user?.id, draftId);
-      toast.success('Safe deal created — invitation and agreement sent to the counterparty.');
+      toast.success('Property transaction created — invitation and agreement sent to the participant.');
       navigate('/app/deals');
     } catch {
-      toast.error('Could not create the safe deal. Please try again.');
+      toast.error('Could not create the property transaction. Please try again.');
     }
   };
 
@@ -428,14 +428,14 @@ export function CreateDealPage() {
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
   if (startBlocked) {
     return (
-      <DashboardLayout title="Create safe deal">
+      <DashboardLayout title="New property transaction">
         <VerificationGate missing={security.missingForDeal} />
       </DashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout title="Create safe deal">
+    <DashboardLayout title="New property transaction">
       <LivenessCheckModal
         open={!livenessOk}
         onOpenChange={(open) => {
@@ -450,7 +450,7 @@ export function CreateDealPage() {
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description="Enter your 4-digit transaction PIN to create this safe deal."
+        description="Enter your 4-digit transaction PIN to create this property transaction."
       />
 
       <div className="mx-auto w-full max-w-9xl">
@@ -458,10 +458,10 @@ export function CreateDealPage() {
           {/* Left rail */}
           <aside className="lg:sticky lg:top-20 lg:self-start">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              New safe deal
+              New property transaction
             </p>
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground">
-              Create a safe deal
+              Create a property transaction
             </h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               Agree terms and protect payment through a regulated partner. Funds only release when
@@ -573,7 +573,7 @@ export function CreateDealPage() {
                           onClick={() => set('role', 'buyer')}
                           icon={ArrowUpRight}
                           title="I'm sending funds"
-                          description="You're the buyer — you pay in and release on delivery."
+                          description="You're the buyer — you make the agreed property payment and confirm the relevant milestone."
                         />
                         <ChoiceCard
                           selected={form.role === 'seller'}
@@ -638,7 +638,7 @@ export function CreateDealPage() {
                         <FieldError message={errors.amount} />
                       </div>
                       <div>
-                        <Label htmlFor="due">Delivery due date</Label>
+                        <Label htmlFor="due">Next milestone or completion date</Label>
                         <Input
                           id="due"
                           type="date"
@@ -708,7 +708,7 @@ export function CreateDealPage() {
                           <div className="mt-2 space-y-2">
                             <div>
                               <Input
-                                placeholder="Name or business"
+                                placeholder="Buyer, seller, agent, developer, or property company"
                                 value={p.name}
                                 onChange={(e) => updateParticipant(i, 'name', e.target.value)}
                               />
@@ -861,7 +861,7 @@ export function CreateDealPage() {
                         .map((p) => (multiParty && p.allocation ? `${p.name} (${formatMinorAmount(Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
                         .join(', ')}
                     />
-                    <ReviewRow label="Delivery due" value={form.deliveryDueDate || '—'} />
+                    <ReviewRow label="Next milestone" value={form.deliveryDueDate || '—'} />
                     <ReviewRow
                       label="Deal open until"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : '—'}
@@ -913,7 +913,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           <ShieldCheck size={16} className="mr-1.5" />
-                          Create safe deal
+                          Create property transaction
                         </>
                       )}
                     </Button>

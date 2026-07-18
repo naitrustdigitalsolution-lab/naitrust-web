@@ -442,10 +442,10 @@ export const dealDetailApi = {
     return res as ApiSuccess<DealMilestone[]>;
   },
 
-  /** Add uploaded evidence (mock stores names only). */
+  /** Add uploaded evidence (mock retains session object URLs for preview). */
   addEvidence: async (
     id: string,
-    items: { fileName: string; kind: string; note?: string }[],
+    items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string }[],
     uploadedByName: string,
   ): Promise<ApiSuccess<DealEvidenceItem[]>> => {
     if (appConfig.isMock) {
@@ -454,6 +454,8 @@ export const dealDetailApi = {
         id: `ev_${crypto.randomUUID()}`,
         fileName: it.fileName,
         kind: it.kind,
+        fileUrl: it.fileUrl,
+        mimeType: it.mimeType,
         uploadedByName,
         note: it.note,
         createdAt: new Date().toISOString(),

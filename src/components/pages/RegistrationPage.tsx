@@ -503,7 +503,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <div>
                   <h4 className="font-medium">Verify Businesses</h4>
                   <p className="text-sm text-muted-foreground">
-                    Access verified business profiles and make secure transactions.
+                    Create documented property transactions with sellers, agents, developers, and property companies.
                   </p>
                 </div>
               </div>
@@ -570,7 +570,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <UserIcon size={32} className="text-primary" />
               </div>
               <h2>Personal Information</h2>
-              <p className="text-muted-foreground">Tell us about the business owner</p>
+              <p className="text-muted-foreground">Tell us about the authorised property business representative</p>
             </div>
 
             <div className="space-y-4">
@@ -652,7 +652,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <Building size={32} className="text-primary" />
               </div>
               <h2>Business Information</h2>
-              <p className="text-muted-foreground">Tell us about your business</p>
+              <p className="text-muted-foreground">Tell us about your real estate, development, agency, or professional business</p>
             </div>
 
             <div className="space-y-4">
@@ -1005,7 +1005,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 Setup a profile
               </p>
               <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                {registrationType === 'business' ? 'Create your business trust profile.' : 'Create your safer buyer account.'}
+                {registrationType === 'business' ? 'Create your property business trust profile.' : 'Create your property buyer or seller account.'}
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
                 Follow the steps below to get started with Naitrust. Your information helps keep buyers, sellers, and transaction records easier to trust.
@@ -1057,8 +1057,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               </h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {registrationType === 'business'
-                  ? 'Register your business and build trust with customers.'
-                  : 'Join Naitrust to find and transact with verified businesses.'}
+                  ? 'For real estate companies, agents, developers, and transaction professionals.'
+                  : 'For individuals buying or selling property in Nigeria.'}
               </p>
             </div>
 

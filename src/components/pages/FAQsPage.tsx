@@ -31,7 +31,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-1',
       category: 'getting-started',
       question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust is a Nigerian safe transaction platform. It helps buyers and sellers create a shared deal room, agree terms, verify each other where needed, protect payment through regulated partners, upload delivery evidence, confirm completion, and raise disputes with records attached.'
+      answer: 'Naitrust is trust infrastructure for Nigerian real estate transactions. It helps property buyers, sellers, agents, developers, and companies create a shared safe-deal room for participants, terms, payments, property documents, milestones, evidence, and issues. Naitrust does not list or sell properties.'
     },
     {
       id: 'gs-2',
@@ -49,13 +49,13 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-4',
       category: 'getting-started',
       question: 'What is an NT ID and how do I use it?',
-      answer: 'Your NT ID is a unique Naitrust identifier assigned at registration. Businesses can share it on social media, WhatsApp, websites, receipts, or invoices so buyers can confirm they are dealing with the right profile before starting a safe deal.'
+      answer: 'Your NT ID is a unique Naitrust identifier assigned at registration. Property businesses and professionals can share it so participants can confirm they are dealing with the intended profile before starting a property transaction.'
     },
     {
       id: 'gs-5',
       category: 'getting-started',
       question: 'Who is eligible to use Naitrust?',
-      answer: 'Naitrust is built for Nigerian buyers, sellers, registered businesses, vendors, suppliers, contractors, agents, and selected customer-to-business use cases. Users must be old enough to enter transactions and may need stronger verification for higher-risk deals.'
+      answer: 'Naitrust is being built first for Nigerian property buyers, sellers, agents, developers, real estate companies, and professional transaction representatives. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
     },
 
     {
@@ -105,7 +105,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-1',
       category: 'payments',
       question: 'What does Naitrust charge for?',
-      answer: 'Public package details are not shown on this FAQ while the new product offer is being finalised. The core product is safe deal coordination: verification, protected funding through regulated partners, evidence, confirmation, and disputes.'
+      answer: 'Public package details are not shown while the launch offer is being finalised. The core product is property transaction coordination: participant verification, documented terms, partner-led payment status, supporting evidence, confirmation, and issues.'
     },
     {
       id: 'p-2',
@@ -161,7 +161,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-1',
       category: 'features',
       question: 'What is the shareable profile link?',
-      answer: 'A shareable profile link helps buyers confirm they are dealing with the right person or business before a transaction starts. For serious deals, the link can lead into a safe deal room where terms, payment status, evidence, and confirmation are tracked.'
+      answer: 'A shareable profile link helps property participants confirm they are dealing with the intended person or business. It can lead into a property transaction room where the property, roles, terms, payments, documents, milestones, and evidence are tracked.'
     },
     {
       id: 'f-2',
@@ -173,7 +173,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-3',
       category: 'features',
       question: 'Can I message businesses on Naitrust?',
-      answer: 'Yes. Use messaging to ask about products or services, confirm terms, discuss delivery, and clarify evidence before funding or release. Important transaction messages should stay attached to the safe deal where possible.'
+      answer: 'Yes. Use messaging to clarify the property, participant roles, terms, payment plan, documents, milestones, and evidence. Important messages should stay attached to the property transaction where possible.'
     },
     {
       id: 'f-4',
@@ -185,7 +185,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-5',
       category: 'features',
       question: 'Can I save favourite businesses?',
-      answer: 'Yes. Tap the bookmark icon on any business profile to save it. Access your saved businesses from the "Saved" section in your dashboard. It\'s useful for keeping track of businesses you engage with frequently, businesses you\'re researching, or trusted vendors you want quick access to.'
+      answer: 'Yes. Save a property business or professional profile for later review. A saved profile is a convenience feature and is not an endorsement, ownership confirmation, or guarantee.'
     },
 
     {
@@ -252,7 +252,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     <div className="min-h-screen bg-background relative py-12">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers to common questions about Naitrust safe deals, business verification, protected funding, fraud reporting, and account management."
+        description="Find answers about Naitrust property transactions, participant verification, payment records, supporting evidence, issues, and account management."
         keywords="Naitrust FAQ, business verification questions, CAC verification FAQ, fraud reporting help"
         canonicalPath="/faqs"
       />

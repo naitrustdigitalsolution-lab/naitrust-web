@@ -20,7 +20,8 @@ import type {
 import { useCases } from '../../libs/use-cases';
 
 type WaitlistFormState = {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   businessName: string;
   email: string;
   phone: string;
@@ -38,7 +39,8 @@ interface WaitlistModalProps {
 }
 
 const initialFormState: WaitlistFormState = {
-  fullName: '',
+  firstName: '',
+  lastName: '',
   businessName: '',
   email: '',
   phone: '',
@@ -51,12 +53,15 @@ const initialFormState: WaitlistFormState = {
 };
 
 const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
-  { value: 'individual_customer', label: 'Individual buyer or customer' },
-  { value: 'business_buyer', label: 'Business buyer' },
-  { value: 'supplier_vendor', label: 'Supplier or vendor' },
-  { value: 'contractor_service_provider', label: 'Contractor or service provider' },
-  { value: 'marketplace_social_seller', label: 'Marketplace or social seller' },
-  { value: 'partner', label: 'Bank, payment, logistics, or verification partner' },
+  { value: 'property_buyer', label: 'Property buyer' },
+  { value: 'property_seller', label: 'Property seller or owner' },
+  { value: 'real_estate_agent', label: 'Real estate agent' },
+  { value: 'real_estate_company', label: 'Real estate company' },
+  { value: 'property_developer', label: 'Property developer' },
+  { value: 'contractor_service_provider', label: 'Contractor or property service provider' },
+  { value: 'legal_transaction_representative', label: 'Legal or transaction representative' },
+  { value: 'partner', label: 'Payment, verification, or technology partner' },
+  { value: 'other', label: 'Other' },
 ];
 
 export function openWaitlistModal() {
@@ -82,8 +87,15 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
     setIsSubmitting(true);
 
     const payload: WaitlistPayload = {
-      ...formState,
+      fullName: `${formState.firstName} ${formState.lastName}`.trim(),
+      businessName: formState.businessName,
+      email: formState.email,
+      phone: formState.phone,
+      userType: formState.userType,
+      transactionRange: formState.transactionRange,
+      transactionNeed: formState.transactionNeed,
       expectations: formState.useCase,
+      consent: formState.consent,
       source: 'public_header_waitlist',
       submittedAt: new Date().toISOString(),
     };
@@ -102,14 +114,14 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[92vh] gap-6 overflow-y-auto p-6 sm:max-w-2xl sm:p-8 lg:max-w-3xl">
         <DialogHeader>
           <div className="mb-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             Get early access
           </div>
-          <DialogTitle className="text-2xl sm:text-3xl">Make your next deal feel safer</DialogTitle>
+          <DialogTitle className="text-2xl sm:text-3xl">Make your next property transaction clearer</DialogTitle>
           <DialogDescription>
-            Join for early access to verified counterparties, clearer agreements, and transaction evidence in one place.
+            Join for early access to clearer participant records, agreements, payments, property documents, and transaction evidence in one place.
           </DialogDescription>
         </DialogHeader>
 
@@ -124,15 +136,34 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
         </div>
 
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+        <form className="grid gap-5" onSubmit={handleSubmit}>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-2 text-sm font-medium">
-              Full name
+              First name
               <Input
                 required
-                value={formState.fullName}
-                onChange={(event) => updateField('fullName', event.target.value)}
-                placeholder="Your name"
+                value={formState.firstName}
+                onChange={(event) => updateField('firstName', event.target.value)}
+                placeholder="First name"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-medium">
+              Last name
+              <Input
+                required
+                value={formState.lastName}
+                onChange={(event) => updateField('lastName', event.target.value)}
+                placeholder="Last name"
+              />
+            </label>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm font-medium">
+              Business or company <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              <Input
+                value={formState.businessName}
+                onChange={(event) => updateField('businessName', event.target.value)}
+                placeholder="Company name"
               />
             </label>
             <label className="grid gap-2 text-sm font-medium">
@@ -163,7 +194,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </label>
 
           <label className="grid min-w-0 gap-2 text-sm font-medium">
-            Which deal is closest to your needs?
+            Which property transaction is closest to your needs?
             <select
               required
               value={formState.useCase}
@@ -177,7 +208,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </label>
 
           <label className="grid gap-2 text-sm font-medium">
-            What would make transactions safer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+            What would make property transactions clearer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
             <Textarea
               value={formState.transactionNeed}
               onChange={(event) => updateField('transactionNeed', event.target.value)}
@@ -193,11 +224,11 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               type="checkbox"
               onChange={(event) => updateField('consent', event.target.checked)}
             />
-            Naitrust can contact me about early access, product updates, and safer transaction workflows.
+            Naitrust can contact me about property-transaction early access and product updates.
           </label>
 
           <Button type="submit" size="lg" disabled={isSubmitting} className="rounded-full">
-            {isSubmitting ? 'Saving your place...' : 'Save my early-access spot'}
+            {isSubmitting ? 'Saving your place...' : 'Join property early access'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">
             No spam. We will only send useful launch and early-access updates.

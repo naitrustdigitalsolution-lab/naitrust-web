@@ -178,7 +178,7 @@ export function ProfilePage() {
               <VerificationRow
                 label="Email address"
                 verified={security.emailVerified}
-                hint="Confirm your email to unlock safe deals."
+                hint="Confirm your email to create property transactions."
               />
               <VerificationRow
                 label={isBusiness ? 'Business verification (KYC)' : 'Identity (KYC)'}
@@ -223,7 +223,7 @@ export function ProfilePage() {
                     <p className="text-2xl font-bold text-foreground tabular-nums">
                       {counts?.completed ?? 0}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">Completed deals</p>
+                    <p className="mt-1 text-xs text-muted-foreground">Completed property transactions</p>
                   </div>
                   <div className="px-4 py-5">
                     <p className="text-2xl font-bold text-foreground tabular-nums">
@@ -242,7 +242,7 @@ export function ProfilePage() {
                 </div>
               )}
               <p className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground">
-                Reputation is built from completed safe deals and verified reviews on the platform —
+                Reputation is built from completed property transactions and verified activity on the platform —
                 it cannot be bought or edited.
               </p>
             </Card>

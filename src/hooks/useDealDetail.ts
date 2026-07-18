@@ -85,7 +85,7 @@ export function useAddEvidence(id: string | undefined) {
       items,
       uploadedByName,
     }: {
-      items: { fileName: string; kind: string; note?: string }[];
+      items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string }[];
       uploadedByName: string;
     }) => dealDetailApi.addEvidence(id!, items, uploadedByName),
     onSuccess: invalidate,

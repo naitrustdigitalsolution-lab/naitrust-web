@@ -4,6 +4,7 @@ import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { motion } from 'motion/react';
 import { SEOHead } from '../utility/SEOHead';
+import { openWaitlistModal } from '../modals/WaitlistModal';
 
 interface AboutPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -14,7 +15,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
     <div className="min-h-screen bg-muted/30">
       <SEOHead
         title="About Us — Naitrust"
-        description="Naitrust Digital Solutions Limited helps buyers and sellers in Nigeria run safer transactions with shared deal rooms, verification, evidence, and protected payment workflows."
+        description="Naitrust is building trust infrastructure for Nigerian property transactions, with shared records for participants, agreements, payments, documents, and milestones."
         canonicalPath="/about"
       />
 
@@ -22,9 +23,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
        <section className="relative overflow-hidden bg-[#031335] dark:bg-[#0A0E1A] px-4 py-20 text-white sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative mx-auto max-w-5xl text-center">
           <Badge className="mb-5 border border-white/15 bg-white/10 text-white hover:bg-white/10">About Naitrust</Badge>
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">We’re Building Safer Transactions<br />for Nigerian Commerce</h1>
+          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">Trust Infrastructure for<br />Nigerian Real Estate</h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-blue-100">
-            Naitrust Digital Solutions Limited is a Nigerian technology company that helps two people or parties coordinate a transaction with clarity — from agreement and verification to payment status, proof of delivery, and dispute handling.
+            Naitrust Digital Solutions Limited is building a clearer way for property buyers, sellers, agents, developers, and real estate companies to record agreements, payments, documents, milestones, and issues in one place.
           </p>
         </motion.div>
       </section>
@@ -37,17 +38,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               {
                 icon: Target,
                 title: 'Our Mission',
-                text: 'To make high-value transactions in Nigeria safer by giving buyers and sellers one shared space to agree terms, verify each other, protect payment, and keep evidence in one place.',
+                text: 'To support safer Nigerian property transactions by giving participants one shared place to record terms, identities, payments, documents, milestones, and evidence.',
               },
               {
                 icon: Eye,
                 title: 'Our Vision',
-                text: 'A Nigeria where every buyer and seller can move from chat or informal agreement into a trusted transaction flow with confidence, clarity, and proof.',
+                text: 'A Nigeria where property participants can move from informal conversations into a clear, accessible, and verifiable transaction record.',
               },
               {
                 icon: Shield,
                 title: 'Our Values',
-                text: 'Clarity, integrity, and protection. We help people transact honestly, keep evidence visible, and make every step of a deal easier to understand and trust.',
+                text: 'Clarity, integrity, and responsible protection. We help participants keep evidence visible and make each stage of a property transaction easier to understand.',
               },
             ].map((item, i) => (
               <motion.div
@@ -81,7 +82,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           >
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">The Problem We Solve</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              In Nigeria, many transactions still move through chat, social media, and informal agreements where trust is fragile. A buyer sends money, a seller sends goods or service, and both sides are left hoping the other will follow through.
+              Nigerian property transactions can involve large payments, multiple representatives, informal conversations, and documents spread across chats and email. That makes it difficult to prove who said what, what was paid, and what should happen next.
             </p>
           </motion.div>
 
@@ -93,7 +94,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               </h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Start a shared deal room before money moves</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Confirm the seller, terms, delivery steps, and proof requirements</li>
+                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Confirm the seller, agent, or developer, the terms, milestones, and document requirements</li>
                 <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Track payment status and release conditions with clear evidence</li>
                 <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Raise an issue with structured records instead of scattered chats</li>
               </ul>
@@ -105,9 +106,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               </h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Show readiness with verified identity, business information, and deal history</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Agree terms in one place and attach proof of delivery or completion</li>
+                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Agree terms in one place and attach property documents, milestone evidence, and completion records</li>
                 <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Make payment release and dispute steps clearer for both sides</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Build a reputation from completed safe deals</li>
+                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Build a history from completed property transactions</li>
               </ul>
             </Card>
           </div>
@@ -131,9 +132,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: 'Create the Deal Room', desc: 'The buyer and seller open a shared transaction room with the amount, terms, timeline, and required proof.' },
+              { step: '1', title: 'Create the Property Transaction', desc: 'Record the property, participants, amount, terms, timeline, documents, and required evidence.' },
               { step: '2', title: 'Verify and Align', desc: 'Each side confirms identity, business details, and transaction expectations before payment or release happens.' },
-              { step: '3', title: 'Complete with Evidence', desc: 'Payment status, delivery proof, approvals, and issue steps stay attached to the deal for both parties to review.' },
+              { step: '3', title: 'Complete with Evidence', desc: 'Payments, property documents, milestones, approvals, and issue records stay attached to the transaction for participants to review.' },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -205,17 +206,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           >
             <Award size={48} className="text-primary mx-auto mb-4" />
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              Ready to Build Trust?
+              Help Shape Better Property Transactions
             </h2>
             <p className="text-muted-foreground mb-8">
-              Join Naitrust today if you want a clearer, safer way to coordinate a deal between two people, two businesses, or a buyer and seller in Nigeria.
+              Join Naitrust early access if you want a clearer way to record property participants, agreements, payments, documents, milestones, and supporting evidence in Nigeria.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button size="lg" onClick={() => onNavigate('search')}>
-                Start a Safe Deal
+              <Button size="lg" onClick={openWaitlistModal}>
+                Join Property Early Access
               </Button>
               <Button size="lg" variant="outline" onClick={() => onNavigate('register-business')}>
-                Join as a Seller
+                Join as a Property Company
               </Button>
             </div>
           </motion.div>

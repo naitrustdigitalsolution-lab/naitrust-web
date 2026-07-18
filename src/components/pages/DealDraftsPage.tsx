@@ -34,7 +34,7 @@ export function DealDraftsPage() {
             </p>
           </div>
           <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-            <Plus size={16} className="mr-1" /> New deal
+            <Plus size={16} className="mr-1" /> New property transaction
           </Button>
         </div>
 

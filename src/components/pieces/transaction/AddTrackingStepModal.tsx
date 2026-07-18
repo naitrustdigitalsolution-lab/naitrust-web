@@ -89,7 +89,7 @@ export function AddTrackingStepModal({
           <DialogDescription>
             {isEdit
               ? 'Update the wording of this step. The buyer sees the change straight away.'
-              : 'Post a custom step so the buyer can follow the delivery.'}
+              : 'Post a custom step so participants can follow the property transaction milestone.'}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
@@ -123,7 +123,7 @@ export function AddTrackingStepModal({
                 value={afterStepId}
                 onChange={(e) => setAfterStepId(e.target.value)}
               >
-                <option value="">At the current delivery point</option>
+                <option value="">At the current property milestone</option>
                 {steps.map((s) => (
                   <option key={s.id} value={s.id}>
                     After: {s.title}

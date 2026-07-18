@@ -66,7 +66,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     {
       icon: FileCheck,
       title: 'Evidence trail',
-      text: 'Keep terms, delivery proof, receipts, and issue notes tied to the deal.',
+      text: 'Keep property terms, receipts, documents, milestones, and issue notes tied to the transaction.',
     },
   ];
 
@@ -338,13 +338,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               <div className="space-y-3 lg:space-y-4">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
                   <ShieldCheck size={15} />
-                  Safer commerce for Nigerian buyers and businesses
+                  Clearer property transactions for Nigerian participants
                 </div>
                 <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                  Return to your safe transaction room.
+                  Return to your property transaction room.
                 </h1>
                 <p className="text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:text-md xl:text-lg lg:leading-8">
-                  Sign in to review deal terms, verification status, funding updates, evidence uploads, and release actions in one trusted record.
+                  Sign in to review property terms, participant verification, payment updates, documents, milestones, and supporting evidence in one trusted record.
                 </p>
               </div>
 

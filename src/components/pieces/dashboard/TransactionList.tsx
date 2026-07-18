@@ -25,7 +25,7 @@ interface TransactionListProps {
 
 function LoadingRows() {
   return (
-    <Card className="gap-0 p-0 shadow-sm" aria-label="Loading safe deals">
+    <Card className="gap-0 p-0 shadow-sm" aria-label="Loading property transactions">
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="flex items-center justify-between gap-4 border-b px-5 py-4 last:border-b-0">
           <div className="flex items-center gap-3">
@@ -48,13 +48,13 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
         <ShieldPlus size={24} />
       </div>
-      <p className="font-semibold text-foreground">No active safe deals yet</p>
+      <p className="font-semibold text-foreground">No active property transactions yet</p>
       <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-        Create a safe deal to agree terms, protect payment through regulated partners, and track
+        Create a property transaction to document terms, payment records, and supporting
         evidence in one transaction room.
       </p>
       <Button onClick={onCreate} className="mt-2 rounded-full">
-        Create safe deal
+        New property transaction
       </Button>
     </Card>
   );
@@ -103,7 +103,7 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect 
   if (isError) {
     return (
       <Card className="p-6 text-center text-sm text-muted-foreground shadow-sm">
-        We could not load your safe deals. Please refresh to try again.
+        We could not load your property transactions. Please refresh to try again.
       </Card>
     );
   }
@@ -111,7 +111,7 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect 
   if (!deals || deals.length === 0) return <EmptyState onCreate={onCreate} />;
 
   return (
-    <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Your safe deals">
+    <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Your property transactions">
       {deals.map((deal) => (
         <DealRow key={deal.id} deal={deal} onSelect={onSelect} />
       ))}

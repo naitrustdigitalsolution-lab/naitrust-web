@@ -379,7 +379,7 @@ export function LivenessCheckModal({
         )}
 
         <p className="text-center text-xs text-muted-foreground">
-          Required once every 30 days. Your check stays valid for other deals during that time.
+          Required once every 30 days. Your check stays valid for other property transactions during that time.
         </p>
       </DialogContent>
     </Dialog>

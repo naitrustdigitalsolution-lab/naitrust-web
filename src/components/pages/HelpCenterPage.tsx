@@ -54,7 +54,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p1',
         question: 'Does Naitrust hold my money?',
-        answer: 'No. Naitrust coordinates the safe deal workflow, verification, evidence, payment status, and release process. When protected funding is used, funds are handled by regulated payment or banking partners through partner-issued virtual accounts.'
+        answer: 'No. Naitrust coordinates the property transaction workflow, participant records, verification, documents, evidence, payment status, and agreed actions. When protected funding is used, funds are handled by regulated payment or banking partners through partner-issued virtual accounts.'
       },
       {
         id: 'p2',
@@ -64,12 +64,12 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p3',
         question: 'When is payment released?',
-        answer: 'Release follows the rules agreed in the safe deal. A seller may need to upload delivery evidence, the buyer may need to confirm delivery, or a dispute window may need to pass before a release instruction is sent to the regulated partner.'
+        answer: 'Any payment instruction follows the conditions recorded for the property transaction. Required property documents, payment milestones, participant confirmation, or an issue window may apply before an instruction is sent to the regulated partner.'
       },
       {
         id: 'p4',
         question: 'What happens if there is a dispute?',
-        answer: 'Either party can raise an issue from the transaction room. Naitrust keeps the agreement, messages, invoices, photos, waybills, inspection notes, and delivery proof together so the dispute can be reviewed with context.'
+        answer: 'A participant can raise an issue from the property transaction room. Naitrust keeps the agreement, messages, receipts, property documents, photographs, inspection notes, milestones, and confirmations together so the issue can be reviewed with context.'
       },
       {
         id: 'p5',
@@ -130,7 +130,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'm1',
         question: 'How do I contact a business on Naitrust?',
-        answer: 'Open the business profile or transaction room and use messaging to ask about products, confirm terms, discuss delivery, or clarify evidence before funding or release. Important messages should stay attached to the deal where possible.'
+        answer: 'Open the participant profile or property transaction room and use messaging to clarify the property, roles, terms, payment plan, documents, milestones, or evidence. Important messages should stay attached to the transaction where possible.'
       },
       {
         id: 'm2',
@@ -147,17 +147,17 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g1',
         question: 'What is Naitrust?',
-        answer: 'Naitrust is a Nigerian safe transaction platform. We help buyers, sellers, suppliers, vendors, agents, and contractors agree terms, verify parties, protect payment through regulated partners, track evidence, confirm delivery, and handle disputes.'
+        answer: 'Naitrust is trust infrastructure for Nigerian real estate transactions. It is being built to help property buyers, sellers, agents, developers, companies, and representatives record participants, agreements, payments, documents, milestones, evidence, and issues. Naitrust does not list or sell properties.'
       },
       {
         id: 'g2',
         question: 'How can I verify a business I found on social media?',
-        answer: 'Look for the business\'s NT ID or Naitrust profile link in their social media bio. Enter the NT ID in the Naitrust search bar to review their profile and verification status. For high-value transactions, create a safe deal so terms, payment status, evidence, and confirmation are tracked.'
+        answer: 'Use the participant’s NT ID or Naitrust profile link to review the intended person or property business and their verification status. A property transaction room can then keep the property, terms, payments, documents, evidence, and confirmations together.'
       },
       {
         id: 'g3',
         question: 'Does verification guarantee a successful transaction?',
-        answer: 'No. Verification reduces identity and representation risk, but it does not guarantee product quality, delivery, refund, or behaviour. That is why Naitrust also uses deal terms, evidence, confirmation, and dispute records.'
+        answer: 'No. Verification helps reduce identity and representation risk, but it does not prove property ownership, authority to sell, title quality, legal validity, payment recovery, or future behaviour. Independent legal, title, survey, valuation, and physical checks may still be necessary.'
       },
       {
         id: 'g4',
@@ -172,7 +172,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g6',
         question: 'What kinds of transactions is Naitrust for?',
-        answer: 'Naitrust is for transactions where trust matters: supplier orders, contractor work, social commerce purchases, rent or agent payments, event vendors, high-value items, equipment, phones, cars, and selected customer-to-business service deals.'
+        answer: 'Naitrust is focused first on Nigerian property purchases, land transactions, reservation deposits, developer instalments, agent-led transactions, diaspora purchases, construction milestones, and documented handovers.'
       },
     ],
   };

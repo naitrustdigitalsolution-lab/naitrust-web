@@ -99,18 +99,18 @@ export function DealsPage() {
   };
 
   return (
-    <DashboardLayout title="Safe deals">
+    <DashboardLayout title="Property transactions">
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Safe deals</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Property transactions</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Every protected transaction you're part of, in one place.
             </p>
           </div>
           <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
             <Plus size={16} className="mr-1" />
-            Create safe deal
+            New property transaction
           </Button>
         </div>
 
@@ -121,12 +121,12 @@ export function DealsPage() {
             <div className="flex flex-1 items-center gap-2">
               <div className="relative flex-1">
                 <Label htmlFor="deal-search" className="sr-only">
-                  Search deals
+                  Search property transactions
                 </Label>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                 <Input
                   id="deal-search"
-                  placeholder="Search deals…"
+                  placeholder="Search property transactions…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-9"
@@ -200,14 +200,14 @@ export function DealsPage() {
         {/* Result meta */}
         {!isLoading && !isError && (
           <p className="mb-2 text-xs text-muted-foreground">
-            {total === 0 ? 'No deals match your filters' : `Showing ${paged?.length ?? 0} of ${total} deals`}
+            {total === 0 ? 'No property transactions match your filters' : `Showing ${paged?.length ?? 0} of ${total} property transactions`}
           </p>
         )}
 
         {!isLoading && !isError && (deals?.length ?? 0) > 0 && total === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed p-10 text-center">
             <Search size={22} className="text-muted-foreground" />
-            <p className="font-semibold text-foreground">No deals match your filters</p>
+            <p className="font-semibold text-foreground">No property transactions match your filters</p>
             <p className="max-w-sm text-sm text-muted-foreground">
               Try a different search, status, or date range.
             </p>

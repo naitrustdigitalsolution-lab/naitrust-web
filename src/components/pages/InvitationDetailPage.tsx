@@ -57,7 +57,7 @@ export function InvitationDetailPage() {
     try {
       await respond.mutateAsync({ id, action });
       if (action === 'accepted') {
-        toast.success('Invitation accepted — the safe deal is now in your dashboard.');
+        toast.success('Invitation accepted — the property transaction is now in your dashboard.');
         navigate('/app');
       } else {
         toast.info('Invitation declined.');
@@ -126,7 +126,7 @@ export function InvitationDetailPage() {
                 <CounterpartyAvatar name={invitation.fromName} className="h-11 w-11 text-sm" />
                 <div>
                   <p className="font-semibold text-foreground">{invitation.fromName}</p>
-                  <p className="text-sm text-muted-foreground">invited you to a safe deal</p>
+                  <p className="text-sm text-muted-foreground">invited you to a property transaction</p>
                 </div>
               </div>
               <InvitationStatusBadge status={invitation.status} />
@@ -164,7 +164,7 @@ export function InvitationDetailPage() {
                     className="mt-0.5"
                   />
                   <span className="text-sm leading-6 text-foreground">
-                    I have read the safe deal agreement above and agree to be bound by its terms as
+                    I have read the Naitrust safe-deal agreement above and agree to its terms as
                     the {roleLabel(invitation.yourRole)}.
                   </span>
                 </label>

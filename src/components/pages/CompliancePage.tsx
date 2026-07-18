@@ -48,23 +48,23 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
               <li>Business checks may include CAC registration details, business contact information, ownership or representative information, and supporting documents.</li>
               <li>Checks may be completed through approved verification providers or reviewed by authorised Naitrust personnel when manual review is required.</li>
             </ul>
-            <p>A verification result shows that specified information passed the checks performed. It is not a guarantee of character, solvency, product quality, delivery, or future behaviour.</p>
+            <p>A verification result shows that specified information passed the checks performed. It is not proof of property ownership, authority to sell, title quality, legal validity, solvency, character, or future behaviour.</p>
           </ComplianceSection>
 
-          <ComplianceSection icon={<FileCheck2 size={22} />} title="2. Safe-deal records and user responsibilities">
-            <p>A Naitrust safe-deal record can hold the parties, amount, accepted terms, milestones, delivery requirements, payment status, uploaded evidence, approvals, and issue reports.</p>
-            <p>Users remain responsible for providing accurate information, reviewing the counterparty and terms, uploading genuine evidence, protecting their account, and complying with applicable law. Naitrust may restrict activity or request further information where records appear inconsistent, misleading, abusive, or fraudulent.</p>
+          <ComplianceSection icon={<FileCheck2 size={22} />} title="2. Property transaction records and user responsibilities">
+            <p>A Naitrust property transaction record can hold the property description, participants, roles, amount, accepted terms, payment plan, milestones, payment status, property documents, uploaded evidence, approvals, and issue reports.</p>
+            <p>Users remain responsible for accurate information, participant authority, independent property due diligence, genuine evidence, account security, and legal compliance. Uploading a document does not mean Naitrust has authenticated its legal effect or the ownership claims within it.</p>
           </ComplianceSection>
 
           <ComplianceSection icon={<Landmark size={22} />} title="3. Partner-led payments">
-            <p>Naitrust is not a bank or deposit-taking institution. Where a safe deal includes funding, release, settlement, reversal, or refund activity, the movement or custody of funds is performed by the regulated payment, banking, or financial partner identified for that transaction.</p>
-            <p>Naitrust may display payment instructions and partner-supplied status updates inside the deal record. Partner terms, processing limits, compliance reviews, availability, settlement timing, and refund or reversal rules may also apply.</p>
+            <p>Naitrust is not a bank or deposit-taking institution. Where a property transaction includes funding, release, settlement, reversal, or refund activity, movement or custody of funds is performed by the regulated payment, banking, or financial partner identified for that transaction.</p>
+            <p>Naitrust may display payment instructions and partner-supplied status updates inside the property transaction record. Partner terms, processing limits, compliance reviews, availability, settlement timing, and refund or reversal rules may also apply.</p>
           </ComplianceSection>
 
           <ComplianceSection icon={<Database size={22} />} title="4. Privacy and biometric data">
             <p>Naitrust processes personal data in accordance with its Privacy Policy and applicable Nigerian data-protection law, including the Nigeria Data Protection Act 2023.</p>
             <ul className="list-disc space-y-2 pl-5">
-              <li>We aim to collect only the information needed to provide accounts, verification, safe-deal workflows, support, security, and legal compliance.</li>
+              <li>We aim to collect only the information needed for accounts, verification, property transaction workflows, support, security, and legal compliance.</li>
               <li>Camera access, facial images, facial-match results, and liveness signals are requested only when needed for a verification check.</li>
               <li>Information may be shared with contracted verification, infrastructure, communication, and regulated financial providers only as needed for their role.</li>
               <li>Users may request access, correction, deletion, restriction, objection, or portability where those rights apply and are not limited by a lawful retention obligation.</li>
@@ -77,14 +77,14 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
           </ComplianceSection>
 
           <ComplianceSection icon={<Building2 size={22} />} title="6. Product roles and transparency">
-            <p>Naitrust provides trust and transaction-workflow technology. Verification providers perform specified identity or business checks. Regulated financial partners handle applicable fund movement or custody. Buyers and sellers remain responsible for the underlying goods, services, statements, and performance they agree to.</p>
-            <p>We do not describe Naitrust as a regulator, bank, insurer, credit-rating agency, or guarantee service. Material product or partner changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
+            <p>Naitrust provides property transaction-record and trust-workflow technology. Verification providers perform specified identity or business checks. Regulated financial partners handle applicable fund movement or custody. Property participants remain responsible for ownership, authority, legal advice, physical and document checks, statements, and performance.</p>
+            <p>Naitrust is not a property marketplace, estate agent, title registry, law firm, surveyor, regulator, bank, insurer, credit-rating agency, or guarantee service. Material changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
           </ComplianceSection>
         </div>
 
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
           <h2 className="text-xl font-bold">Questions about compliance or your information?</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Contact Naitrust for privacy, verification, safe-deal, or partner-payment questions.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Contact Naitrust for privacy, verification, property transaction, or partner-payment questions.</p>
           <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
             <button onClick={() => onNavigate('contact')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90">Contact Naitrust</button>
             <button onClick={() => onNavigate('privacy')} className="rounded-full border-2 border-primary bg-background px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">Read the Privacy Policy</button>

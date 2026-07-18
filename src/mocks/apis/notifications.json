@@ -7,7 +7,7 @@
       "transactionId": "txn_mock_002",
       "type": "funding",
       "title": "Funding confirmed",
-      "message": "Chinedu Okafor funded NT-2026-000179. The deal is now protected and delivery can begin.",
+      "message": "Payment was confirmed on NT-2026-000179. The land transaction record has been updated.",
       "read": false,
       "createdAt": "2026-07-14T08:45:00Z",
       "link": "/app"
@@ -18,7 +18,7 @@
       "invitationId": "inv_mock_001",
       "type": "deal",
       "title": "New deal invitation",
-      "message": "Damilola Interiors Ltd invited you to a safe deal: Custom furniture set — 3-seater and dining.",
+      "message": "Damilola Properties Ltd invited you to a property transaction: Two-bedroom apartment reservation.",
       "read": false,
       "createdAt": "2026-07-13T10:21:00Z",
       "link": "/app/invitations/inv_mock_001"
@@ -29,7 +29,7 @@
       "transactionId": "txn_mock_003",
       "type": "evidence",
       "title": "Evidence submitted",
-      "message": "Lagos Freight Movers uploaded delivery evidence on NT-2026-000171. Review it to move the deal forward.",
+      "message": "Lekki Gardens Development Co. uploaded property documents on NT-2026-000171. Review them in the transaction room.",
       "read": false,
       "createdAt": "2026-07-12T16:10:00Z",
       "link": "/app"
@@ -59,7 +59,7 @@
       "userId": "usr_mock_004",
       "type": "system",
       "title": "Welcome to Naitrust",
-      "message": "Create a safe deal, agree terms, protect payment through a regulated partner, and keep evidence in one room.",
+      "message": "Create a property transaction, document the participants and terms, and keep payments and supporting evidence in one room.",
       "read": true,
       "createdAt": "2026-07-05T12:00:00Z"
     }

@@ -157,7 +157,7 @@ export function NotificationsPage() {
             </div>
             <p className="font-semibold text-foreground">You're all caught up</p>
             <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-              Updates about your safe deals, funding, evidence, and disputes will appear here.
+              Updates about your property transactions, payments, supporting evidence, and issues will appear here.
             </p>
           </Card>
         ) : (

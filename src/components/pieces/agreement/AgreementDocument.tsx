@@ -45,7 +45,7 @@ export function AgreementDocument({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/60 px-4 py-3">
         <div className="flex items-center gap-2">
           <FileText size={16} className="text-primary" />
-          <p className="text-sm font-semibold text-foreground">Safe deal agreement</p>
+          <p className="text-sm font-semibold text-foreground">Property transaction agreement</p>
           <span className="text-xs text-muted-foreground">v{agreement.version}</span>
         </div>
         {agreement.generatedByAi && !hideAiNote && (

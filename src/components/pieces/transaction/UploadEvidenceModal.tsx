@@ -2,7 +2,7 @@
  * UploadEvidenceModal
  * Attach evidence to a deal — invoices, waybills, photos, inspection reports.
  * Pick a kind, choose one or more files, add an optional note. In mock mode
- * only the file names are recorded; production uploads the files.
+ * object URLs retain selected files for preview/download during the mock session.
  */
 
 import { useRef, useState } from 'react';
@@ -18,24 +18,24 @@ interface UploadEvidenceModalProps {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   submitting?: boolean;
-  onSubmit: (input: { items: { fileName: string; kind: string; note?: string }[] }) => void;
+  onSubmit: (input: { items: { fileName: string; kind: string; note?: string; fileUrl: string; mimeType: string }[] }) => void;
 }
 
 export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }: UploadEvidenceModalProps) {
   const [kind, setKind] = useState('Invoice');
-  const [names, setNames] = useState<string[]>([]);
+  const [files, setFiles] = useState<Array<{ fileName: string; fileUrl: string; mimeType: string }>>([]);
   const [note, setNote] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setKind('Invoice');
-    setNames([]);
+    setFiles([]);
     setNote('');
   };
 
   const submit = () => {
-    if (names.length === 0) return;
-    onSubmit({ items: names.map((fileName) => ({ fileName, kind, note: note.trim() || undefined })) });
+    if (files.length === 0) return;
+    onSubmit({ items: files.map((file) => ({ ...file, kind, note: note.trim() || undefined })) });
     reset();
   };
 
@@ -83,21 +83,28 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
               multiple
               className="hidden"
               onChange={(e) => {
-                const incoming = Array.from(e.target.files ?? []).map((f) => f.name);
-                setNames((prev) => [...prev, ...incoming]);
+                const incoming = Array.from(e.target.files ?? []).map((file) => ({
+                  fileName: file.name,
+                  fileUrl: URL.createObjectURL(file),
+                  mimeType: file.type || 'application/octet-stream',
+                }));
+                setFiles((prev) => [...prev, ...incoming]);
                 e.currentTarget.value = '';
               }}
             />
-            {names.length > 0 && (
+            {files.length > 0 && (
               <ul className="mt-1.5 space-y-1.5">
-                {names.map((n, i) => (
-                  <li key={`${n}-${i}`} className="flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2">
+                {files.map((file, i) => (
+                  <li key={`${file.fileName}-${i}`} className="flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2">
                     <FileText size={16} className="shrink-0 text-primary" />
-                    <span className="min-w-0 flex-1 truncate text-sm text-foreground">{n}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm text-foreground">{file.fileName}</span>
                     <button
                       type="button"
                       aria-label="Remove file"
-                      onClick={() => setNames((prev) => prev.filter((_, idx) => idx !== i))}
+                      onClick={() => {
+                        URL.revokeObjectURL(file.fileUrl);
+                        setFiles((prev) => prev.filter((_, idx) => idx !== i));
+                      }}
                       className="text-muted-foreground transition-colors hover:text-destructive"
                     >
                       <X size={15} />
@@ -116,7 +123,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">
-                  {names.length === 0 ? 'Choose files' : 'Add more files'}
+                  {files.length === 0 ? 'Choose files' : 'Add more files'}
                 </p>
                 <p className="text-xs text-muted-foreground">PDF, JPG or PNG</p>
               </div>
@@ -138,9 +145,9 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
             <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button className="rounded-full" onClick={submit} disabled={names.length === 0 || submitting}>
+            <Button className="rounded-full" onClick={submit} disabled={files.length === 0 || submitting}>
               {submitting ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : <Upload size={16} className="mr-1.5" />}
-              Upload {names.length > 0 ? `(${names.length})` : ''}
+              Upload {files.length > 0 ? `(${files.length})` : ''}
             </Button>
           </div>
         </div>

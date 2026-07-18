@@ -45,7 +45,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
 
         <section className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6">
           <h2 className="text-xl font-bold">What verification does not mean</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed the checks performed at a particular time. It is not an endorsement or guarantee of honesty, creditworthiness, product quality, delivery, payment, legal compliance, or the outcome of a transaction. Users must still review the deal, the counterparty, and the evidence for themselves.</p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed particular checks at a particular time. It is not proof of property ownership, authority to sell, title quality, planning status, legal validity, honesty, creditworthiness, payment recovery, or the outcome of a transaction. Users must still review the property, participants, documents, terms, and evidence and obtain appropriate independent professional advice.</p>
         </section>
 
         <section className="mt-8 rounded-2xl border bg-card p-6">

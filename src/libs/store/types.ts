@@ -189,6 +189,9 @@ export interface DealEvidenceItem {
   id: string;
   fileName: string;
   kind: string; // e.g. Invoice, Waybill, Photo, Inspection report
+  /** Backend file URL, or a session object URL while running the mock API. */
+  fileUrl?: string;
+  mimeType?: string;
   uploadedByName: string;
   note?: string;
   createdAt: string; // ISO 8601

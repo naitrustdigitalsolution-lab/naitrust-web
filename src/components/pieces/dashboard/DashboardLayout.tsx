@@ -71,10 +71,10 @@ const NAV_GROUPS: NavGroup[] = [
     items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }],
   },
   {
-    label: 'Deals',
+    label: 'Property',
     items: [
-      { label: 'Safe deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'Create deal', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Property transactions', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'New property transaction', path: '/app/deals/new', icon: PlusCircle },
       { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],

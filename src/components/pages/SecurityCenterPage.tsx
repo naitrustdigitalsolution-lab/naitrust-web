@@ -21,6 +21,7 @@ import {
   Mail,
   Phone,
   ScanFace,
+  ShieldCheck,
   Smartphone,
   Upload,
   X,
@@ -341,11 +342,13 @@ function KycModal({
     ? [
         { key: 'businessName', label: 'Registered business name' },
         { key: 'rcNumber', label: 'CAC / RC number' },
-        { key: 'directorName', label: 'Director full name' },
+        { key: 'directorFirstName', label: 'Director first name' },
+        { key: 'directorLastName', label: 'Director last name' },
         { key: 'directorNin', label: "Director's NIN" },
       ]
     : [
-        { key: 'fullName', label: 'Full legal name' },
+        { key: 'firstName', label: 'Legal first name' },
+        { key: 'lastName', label: 'Legal last name' },
         { key: 'nin', label: 'NIN (National Identity Number)' },
         { key: 'dob', label: 'Date of birth', type: 'date' },
       ];
@@ -656,10 +659,13 @@ export function SecurityCenterPage() {
     null | 'email' | 'phone' | '2fa' | 'kyc' | 'pin' | 'liveness'
   >(null);
   const close = () => setModal(null);
+  const requiredChecks = [security.kycStatus === 'verified', security.emailVerified, security.pinSet];
+  const requiredComplete = requiredChecks.filter(Boolean).length;
+  const progress = Math.round((requiredComplete / requiredChecks.length) * 100);
 
   return (
     <DashboardLayout title="Security Center">
-      <div className="mx-auto w-full max-w-9xl">
+      <div className="mx-auto w-full max-w-7xl">
         <button
           type="button"
           onClick={() => navigate('/app')}
@@ -669,12 +675,42 @@ export function SecurityCenterPage() {
           Back to dashboard
         </button>
 
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Security Center</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Complete verification and lock down your account. Identity, email, and a transaction PIN
-            are required before you can create a deal.
-          </p>
+        <Card className="mb-8 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-0 shadow-sm">
+          <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_320px] lg:items-center">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
+                <ShieldCheck size={25} />
+              </div>
+              <div>
+                <Badge className="mb-3 bg-primary/10 text-primary hover:bg-primary/10">Account protection</Badge>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Security Center</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+                  Verify who you are and protect sensitive property transaction actions. Identity,
+                  email, and a transaction PIN are required before creating a transaction.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-2xl border bg-background/80 p-5 backdrop-blur-sm">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Required setup</p>
+                  <p className="mt-1 text-lg font-bold text-foreground">{requiredComplete} of {requiredChecks.length} complete</p>
+                </div>
+                <span className="text-2xl font-bold text-primary">{progress}%</span>
+              </div>
+              <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                Phone verification, liveness, and authenticator protection add stronger recovery and sign-in security.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-foreground">Verification and security checks</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Complete required checks first, then add recommended protection.</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

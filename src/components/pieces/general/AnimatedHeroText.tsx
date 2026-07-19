@@ -18,7 +18,7 @@ export function AnimatedHeroText() {
             Buy Property with{' '}
             <span className="text-primary">Greater Confidence.</span>
           </h1>
-          <p className="my-6 mt-6 max-w-[46rem] text-center text-base font-semibold leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:mt-8 md:text-xl md:leading-9 lg:text-left">
+          <p className="my-6 mt-6 max-w-[46rem] text-center test-sm md:text-base font-semibold leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:mt-8 md:leading-9 lg:text-left">
             Naitrust is a property transaction platform for buyers, sellers, agents, developers, and
             real estate companies to record agreements, payments, property documents, and milestones{' '}
             <span className="font-bold text-foreground">in one trusted place.</span>

@@ -14,6 +14,7 @@ import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
 import { useTheme } from '@/hooks/useTheme';
 import spiralBackground from '../../assets/spiral.svg';
 import { openWaitlistModal } from '../modals/WaitlistModal';
+import { useIsMobile } from '../ui/use-mobile';
 
 
 interface HomePageProps {
@@ -22,6 +23,8 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const { isDarkMode, toggleTheme } = useTheme();
+  const isMobile = useIsMobile();
+
   const stats = [
     { value: 'Property', label: 'Transaction Flows', icon: CheckCircle2 },
     { value: '24/7', label: 'Transaction Rooms', icon: Lock },
@@ -190,15 +193,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <Badge className="mb-4 inline-block bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary dark:bg-[#1a1a1a] dark:text-white">Trust infrastructure for Nigerian real estate</Badge>
               <AnimatedHeroText />
               
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
+            <div className="mt-8 flex justify-center gap-2 sm:gap-4 flex-row lg:justify-start">
               {/* <Button size="lg" onClick={() => onNavigate('register')} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
                 Start a Safer Deal
               </Button> */}
-              <Button size="lg" onClick={openWaitlistModal} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
+              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group bg-primary text-white px-8 py-6 text-sm sm:text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
                 Get Early Access
                 <ArrowRight size={24} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => onNavigate('how-it-works')} className="px-8 py-6 text-lg font-semibold rounded-full">
+              <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => onNavigate('how-it-works')} className="px-8 py-6 text-sm sm:text-lg font-semibold rounded-full">
                 See How It Works
               </Button>
             </div>
@@ -294,9 +297,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="mt-4"
           >
             <div className="text-center mb-8 pt-8">
-              <Badge className="mb-4 bg-primary text-white">Property Transaction Records</Badge>
+              <Badge className="mb-4 bg-primary text-white">Trusted Property Transactions</Badge>
               <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                Property Transactions Should Not Depend on Trust Alone
+                Put Every Property Deal on the Record
               </h2>
               <p className="text-base text-muted-foreground max-w-3xl mx-auto">
                 Property transactions can involve large payments, several participants, informal conversations, and scattered documents. Naitrust creates one clear record that the people involved can access and verify.
@@ -405,7 +408,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Badge className="mb-4 bg-primary text-white">Property Transaction Infrastructure</Badge>
             <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">A Clear Record from Agreement to Completion</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Naitrust is not a property marketplace. It creates a structured record of who is involved, what was agreed, what payments and documents exist, and what happens next.
+              Naitrust creates a structured record of who is involved, what was agreed, what payments and documents exist, and what happens next in your property transaction.
             </p>
           </motion.div>
 

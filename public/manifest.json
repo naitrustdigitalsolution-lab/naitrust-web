@@ -1,7 +1,7 @@
 {
-  "name": "Naitrust — Trusted Business Verification Platform",
+  "name": "Naitrust — Trust Infrastructure for Property Transactions",
   "short_name": "Naitrust",
-  "description": "Verify businesses through CAC, BVN, and AI-powered checks. Protect yourself from fraud and impersonation worldwide.",
+  "description": "Naitrust creates a structured record of participants, agreements, payments, documents, and milestones for Nigerian property transactions.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -28,7 +28,7 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["business", "finance", "productivity", "utilities", "security"],
+  "categories": ["business", "finance", "productivity", "real estate", "security"],
   "lang": "en",
   "dir": "ltr",
   "iarc_rating_id": "",
@@ -45,35 +45,25 @@
   ],
   "shortcuts": [
     {
-      "name": "Search Businesses",
-      "short_name": "Search",
-      "description": "Search for verified businesses",
-      "url": "/search",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
-    },
-    {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Access your dashboard",
-      "url": "/dashboard",
+      "description": "Access your Naitrust dashboard",
+      "url": "/app",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Report Fraud",
+      "name": "Start a Transaction",
+      "short_name": "New Deal",
+      "description": "Start a new property transaction record",
+      "url": "/app/deals/new",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Report a Concern",
       "short_name": "Report",
-      "description": "Report fraudulent businesses",
-      "url": "/report-fraud",
+      "description": "Report a suspicious claim or impersonation attempt",
+      "url": "/report-concern",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
-  ],
-  "share_target": {
-    "action": "/share",
-    "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  }
+  ]
 }

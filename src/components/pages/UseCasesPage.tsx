@@ -5,12 +5,10 @@ import { SEOHead } from "../utility/SEOHead";
 import { Badge } from "../ui/badge";
 import { useCases } from "../../libs/use-cases";
 
-const cardThemes = [
-  { bar: 'from-blue-500 to-cyan-500', icon: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300', audience: 'bg-blue-50 text-blue-800 dark:bg-blue-950/40 dark:text-blue-200', link: 'bg-blue-600 hover:bg-blue-700' },
-  { bar: 'from-emerald-500 to-teal-500', icon: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300', audience: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200', link: 'bg-emerald-600 hover:bg-emerald-700' },
-  { bar: 'from-violet-500 to-fuchsia-500', icon: 'bg-violet-50 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300', audience: 'bg-violet-50 text-violet-800 dark:bg-violet-950/40 dark:text-violet-200', link: 'bg-violet-600 hover:bg-violet-700' },
-  { bar: 'from-amber-500 to-orange-500', icon: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300', audience: 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200', link: 'bg-amber-600 hover:bg-amber-700' },
-] as const;
+const cardThemes: Record<string, { comingLater?: boolean }> = {
+  'vehicle-transactions': { comingLater: true },
+  'high-value-personal-purchases': { comingLater: true },
+};
 
 export function UseCasesPage() {
   return (
@@ -42,7 +40,7 @@ export function UseCasesPage() {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {useCases.map(
             ({ slug, icon: Icon, title, audience, summary }, index) => {
-              const theme = cardThemes[index % cardThemes.length];
+              const theme = cardThemes[slug] ?? {};
               return (
               <motion.article
                 key={slug}
@@ -50,22 +48,33 @@ export function UseCasesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: (index % 3) * 0.05 }}
-                className="group relative flex min-h-80 flex-col overflow-hidden rounded-3xl border bg-card p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                className={`group relative flex min-h-80 flex-col overflow-hidden rounded-3xl border bg-card p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${theme.comingLater ? 'opacity-80' : ''}`}
               >
-                <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${theme.bar}`} />
-                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${theme.icon}`}>
-                  <Icon size={24} />
+                <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-slate-400 to-slate-500`} />
+                <div className="flex items-start justify-between gap-3">
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800/40 dark:text-slate-300`}>
+                    <Icon size={24} />
+                  </div>
+                  {theme.comingLater && (
+                    <span className="rounded-full border border-dashed border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-600 dark:text-slate-400">
+                      Coming later
+                    </span>
+                  )}
                 </div>
-                <p className={`mt-5 w-fit rounded-full px-3 py-1.5 text-xs font-bold leading-5 ${theme.audience}`}>
+                <p className={`mt-5 w-fit rounded-full px-3 py-1.5 text-xs font-bold leading-5 bg-slate-100 text-slate-700 dark:bg-slate-800/40 dark:text-slate-300`}>
                   {audience}
                 </p>
-                <h2 className="mt-2 text-xl font-bold">{title}</h2>
+                <h2 className="mt-2 text-xl font-bold">{title.replace(/\s*—\s*coming later$/i, '')}</h2>
                 <p className="mt-3 flex-1 text-sm leading-7 text-muted-foreground">
                   {summary}
                 </p>
                 <Link
                   to={`/use-cases/${slug}`}
-                  className={`mt-6 inline-flex w-fit items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition ${theme.link}`}
+                  className={
+                    theme.comingLater
+                      ? "mt-6 inline-flex w-fit items-center gap-2 rounded-full border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800/40"
+                      : `mt-6 inline-flex w-fit items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition bg-slate-500 hover:bg-slate-600`
+                  }
                 >
                   See the intended flow{" "}
                   <ArrowRight

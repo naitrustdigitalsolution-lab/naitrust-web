@@ -1,4 +1,5 @@
-import { AlertTriangle, Building2, FileCheck2, ScanFace, ShieldCheck, UserCheck } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Building2, FileCheck2, ScanFace, ShieldCheck, UserCheck } from 'lucide-react';
+import { openWaitlistModal } from '../modals/WaitlistModal';
 import { SEOHead } from '../utility/SEOHead';
 
 interface VerificationPolicyPageProps {
@@ -25,7 +26,20 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
         </header>
 
         <div className="mt-8 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100">
-          <div className="flex gap-3"><AlertTriangle className="mt-0.5 shrink-0" size={21} /><div><h2 className="font-bold">Naitrust is currently accepting waiting-list registrations.</h2><p className="mt-1 text-sm leading-6">Verification is not yet available to the public. The final checks, providers, fees, timing, and availability will be shown before anyone is asked to submit verification information.</p></div></div>
+          <div className="flex gap-3">
+            <AlertTriangle className="mt-0.5 shrink-0" size={21} />
+            <div>
+              <h2 className="font-bold">Naitrust is currently accepting waiting-list registrations.</h2>
+              <p className="mt-1 text-sm leading-6">Verification is not yet available to the public. The final checks, providers, fees, timing, and availability will be shown before anyone is asked to submit verification information.</p>
+              <button
+                type="button"
+                onClick={openWaitlistModal}
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-amber-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-900 dark:bg-amber-100 dark:text-amber-950 dark:hover:bg-white"
+              >
+                Join the waiting list <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
         <section className="py-12">

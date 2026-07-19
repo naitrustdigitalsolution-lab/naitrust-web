@@ -12,7 +12,7 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust — the trusted business verification platform. Verify businesses through CAC, TIN, identity checks, and AI-powered fraud detection. Protect yourself from fraud and impersonation.';
+const DEFAULT_DESCRIPTION = 'Naitrust is trust infrastructure for Nigerian property transactions — a structured record of participants, agreements, payments, documents, and milestones from deal to completion.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 export function SEOHead({
@@ -24,7 +24,7 @@ export function SEOHead({
   ogImage = DEFAULT_IMAGE,
   noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Trusted Business Verification Platform`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Trust Infrastructure for Property Transactions`;
   const canonicalUrl = canonicalPath ? `${SITE_URL}${canonicalPath}` : undefined;
 
   return (

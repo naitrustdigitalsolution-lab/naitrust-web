@@ -172,7 +172,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg font-semibold">As a property business or professional</h3>
+                        <h3 className="text-lg font-semibold">As a property business</h3>
                         <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Business
                           <ArrowRight size={16} className="ml-1" />

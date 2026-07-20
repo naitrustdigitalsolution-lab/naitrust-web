@@ -8,8 +8,8 @@ import { Check, ShieldCheck } from 'lucide-react';
 
 const signupRequirements = [
   {
-    title: 'You are 16 years and older',
-    text: 'You must be at least 16 years old to open an account.',
+    title: 'You are 18 years and older',
+    text: 'You must be at least 18 years old to open an account.',
   },
   {
     title: 'You have a valid BVN or NIN',

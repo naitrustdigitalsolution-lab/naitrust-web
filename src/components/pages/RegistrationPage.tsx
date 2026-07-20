@@ -17,6 +17,7 @@ import { useBusinessStore } from '../../libs/store/business.store';
 import { PhoneField } from '../pieces/general/PhoneField';
 import { RegistrationStepper } from '../pieces/registration/RegistrationStepper';
 import { BeforeYouStartCard } from '../pieces/registration/BeforeYouStartCard';
+import { openWaitlistModal } from '../modals/WaitlistModal';
 import type { SocialHandleInterface } from '../../interfaces/SocialHandleInterface';
 import type { TeamMemberInterface } from '../../interfaces/TeamMemberInterface';
 import { useLocation } from 'react-router-dom';
@@ -30,6 +31,11 @@ interface RegistrationPageProps {
 }
 
 const smoothViewFade = { duration: 0.18, ease: [0.16, 1, 0.3, 1] as const };
+
+// Registration is not open yet — the form still renders so people can see
+// what's needed, but the Continue/Complete button opens the waitlist modal
+// instead of advancing or submitting. Flip to true once launch is ready.
+const REGISTRATION_OPEN = false;
 
 export function RegistrationPage({ onNavigate, registrationType }: RegistrationPageProps) {
   const { user, isAuthenticated } = useAuth();
@@ -1077,7 +1083,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 {currentStep === 1 ? (isAuthenticated ? 'Back to Dashboard' : 'Back') : 'Back'}
               </Button>
               <Button
-                onClick={handleNext}
+                onClick={() => {
+                  if (!REGISTRATION_OPEN) {
+                    openWaitlistModal();
+                    return;
+                  }
+                  handleNext();
+                }}
                 className="h-12 flex-1 rounded-full"
                 disabled={isSubmitting || (currentStep === totalSteps && !formData.acceptTerms)}
               >

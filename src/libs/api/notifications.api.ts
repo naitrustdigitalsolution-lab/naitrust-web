@@ -11,7 +11,7 @@ import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { AppNotification } from '../store/types';
-import type { ApiSuccess } from './transactions.api';
+import type { ApiSuccess } from './types';
 import mockNotifications from '../../mocks/apis/notifications.json';
 
 const MOCK_LATENCY_MS = 300;

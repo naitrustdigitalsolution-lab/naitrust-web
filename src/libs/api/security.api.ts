@@ -9,7 +9,7 @@
 import { appConfig } from '../../configs/env';
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
-import type { ApiSuccess } from './transactions.api';
+import type { ApiSuccess } from './types';
 
 const MOCK_MS = 600;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));

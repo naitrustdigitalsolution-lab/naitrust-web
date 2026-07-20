@@ -240,7 +240,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div className="text-center mb-8 pt-8">
               <Badge className="mb-4 bg-primary text-white">Why Naitrust Exists</Badge>
               <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                The Financial Infrastructure Behind Every Property Deal
+                Financial Infrastructure for Property Deals
               </h2>
               <p className="text-base text-muted-foreground max-w-3xl mx-auto">
                 Naitrust brings bank-grade verification and record-keeping to every property transaction — so buyers, sellers, agents, and developers can move money with confidence, not guesswork.
@@ -569,7 +569,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* For Business Section - Enhanced */}
       <section className="py-20 bg-linear-to-br ">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -597,29 +597,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 Property companies, agents, and developers should be able to give buyers a professional and transparent transaction experience. Naitrust provides a structured way to record who is involved, what was agreed, what was paid, and which evidence exists.
               </p>
               
-              {/* Premium Feature Description - Analytics */}
-              <div className="mb-6 p-4 flex gap-4 border bg-card rounded-xl">
-                <div className="flex items-start gap-3">
-                  <BarChart3 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold  mb-2">Transaction Intelligence:</p>
-                    <p className="text-sm text-muted-foreground">
-                      See which property transactions need action, which documents are pending, which payments are confirmed, and which issues need a response.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Additional Business Features */}
-              <div className="mb-6 p-4 flex gap-4 border bg-card rounded-xl">
-                <p className="text-sm  mb-3">
-                  <strong className="">Perfect for small, medium, and digital businesses </strong> 
-                  <span className="text-muted-foreground">
-                    that work with buyers, sellers, agents, developers, and representatives. Naitrust gives each property transaction a clear record before money moves.
-                  </span>
-                </p>
-              </div>
-              
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
                   { icon: TrendingUp, text: 'Active Deal Pipeline', color: 'text-green-600 dark:text-green-400' },
@@ -628,8 +605,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   { icon: BarChart3, text: 'Evidence & Action Insights', color: 'text-purple-600 dark:text-purple-400' },
                   { icon: MessageSquare, text: 'Deal Activity Log', color: 'text-pink-600 dark:text-pink-400' },
                   { icon: Fingerprint, text: 'Transaction Reputation', color: 'text-teal-600 dark:text-teal-400' },
-                  { icon: QrCode, text: 'Shareable Property Transaction Link', color: 'text-cyan-600 dark:text-cyan-400' },
-                  { icon: Globe, text: 'Partner Payment Status', color: 'text-indigo-600 dark:text-indigo-400' }
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (
@@ -677,7 +652,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           />
         </div>
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -693,9 +668,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
-                  { icon: Fingerprint, text: 'Reusable identity and business checks' },
+                  { icon: Fingerprint, text: 'Every action logged to the deal' },
                   { icon: QrCode, text: 'Shareable property transaction access' },
-                  { icon: ScanLine, text: 'Review terms and evidence quickly' },
+                  { icon: ScanLine, text: 'Milestone and delivery tracking' },
+                  { icon: Lock, text: 'Dispute-ready from day one' },
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (

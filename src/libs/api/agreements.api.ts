@@ -12,7 +12,7 @@ import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { AgreementDraft } from '../store/types';
-import type { ApiSuccess } from './transactions.api';
+import type { ApiSuccess } from './types';
 import { formatMinorAmount } from '../utils/safe-deal-presentation';
 
 export interface DraftAgreementInput {

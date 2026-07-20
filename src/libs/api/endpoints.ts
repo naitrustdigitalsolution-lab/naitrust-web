@@ -90,6 +90,14 @@ export const endpoints = {
   upload: {
     verificationDocument: '/upload/verification-document',
   },
+
+  public: {
+    joinWaitlist: '/Public/joinWaitlist',
+    contactUs: '/Public/contactUs',
+    subscribe: '/Public/subscribe',
+    submitFeedback: '/Public/submitFeedback',
+    reportConcern: '/Public/reportConcern',
+  },
 } as const;
 
 export type ApiEndpoints = typeof endpoints;

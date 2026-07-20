@@ -9,7 +9,7 @@
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
-import type { ApiSuccess } from './transactions.api';
+import type { ApiSuccess } from './types';
 import type { DealDispute, DisputeMessage } from '../store/types';
 
 const MOCK_MS = 350;

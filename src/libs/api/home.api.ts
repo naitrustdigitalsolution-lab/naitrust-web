@@ -1,30 +1,42 @@
-export type PublicSubmissionType = 'waitlist' | 'contact' | 'subscription' | 'feedback' | 'concern';
-
-export interface PublicSubmissionPayload {
-  type: PublicSubmissionType;
-  name?: string;
-  email: string;
-  phone?: string;
-  subject?: string;
-  category?: string;
-  message?: string;
-  rating?: number | null;
-  metadata?: Record<string, unknown>;
-  consent?: boolean;
-  source: string;
-}
+import { httpClient } from './client';
+import { endpoints } from './endpoints';
+import type { ApiSuccess } from './types';
+import type {
+  JoinWaitlistInput,
+  ContactUsInput,
+  SubscribeInput,
+  SubmitFeedbackInput,
+  ReportConcernInput
+} from './types';
 
 export const homeApi = {
-  async submit(payload: PublicSubmissionPayload) {
-    const baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
-    const response = await fetch(`${baseUrl}/api/public-submissions`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await response.json().catch(() => null);
-    if (!response.ok) throw new Error(result?.message || 'Submission failed. Please try again.');
-    return result as { message: string; reference?: string };
+  /** POST /Public/joinWaitlist */
+  joinWaitlist: async (input: JoinWaitlistInput): Promise<ApiSuccess<JoinWaitlistInput>> => {
+    const res = await httpClient.post(endpoints.public.joinWaitlist, input);
+    return res as ApiSuccess<JoinWaitlistInput>;
+  },
+
+  /** POST /Public/contactUs */
+  contactUs: async (input: ContactUsInput): Promise<ApiSuccess<ContactUsInput>> => {
+    const res = await httpClient.post(endpoints.public.contactUs, input);
+    return res as ApiSuccess<ContactUsInput>;
+  },
+
+  /** POST /Public/subscribe */
+  subscribe: async (input: SubscribeInput): Promise<ApiSuccess<SubscribeInput>> => {
+    const res = await httpClient.post(endpoints.public.subscribe, input);
+    return res as ApiSuccess<SubscribeInput>;
+  },
+
+  /** POST /Public/submitFeedback */
+  submitFeedback: async (input: SubmitFeedbackInput): Promise<ApiSuccess<SubmitFeedbackInput>> => {
+    const res = await httpClient.post(endpoints.public.submitFeedback, input);
+     return res as ApiSuccess<SubmitFeedbackInput>;
+  },
+
+  /** POST /Public/reportConcern */
+  reportConcern: async (input: ReportConcernInput): Promise<ApiSuccess<ReportConcernInput>> => {
+    const res = await httpClient.post(endpoints.public.reportConcern, input);
+    return res as ApiSuccess<ReportConcernInput>;
   },
 };

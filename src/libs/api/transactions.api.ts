@@ -13,12 +13,7 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { CreateSafeDealInput, SafeDealSummary } from '../store/types';
 import mockTransactions from '../../mocks/apis/transactions.json';
-
-export interface ApiSuccess<T> {
-  success: true;
-  data: T;
-  message?: string;
-}
+import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 400;
 

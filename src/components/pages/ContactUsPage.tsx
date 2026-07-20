@@ -13,7 +13,7 @@ interface Props {
   onNavigate: (page: string) => void;
 }
 export function ContactUsPage({ onNavigate }: Props) {
-  const submit = useHomeStore((state) => state.submit);
+  const contactUs = useHomeStore((state) => state.contactUs);
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -26,7 +26,7 @@ export function ContactUsPage({ onNavigate }: Props) {
     event.preventDefault();
     setLoading(true);
     try {
-      await submit({ type: "contact", ...form, source: "contact_page" });
+      await contactUs(form);
       setSent(true);
       toast.success("Your message has been sent.");
     } catch (error) {

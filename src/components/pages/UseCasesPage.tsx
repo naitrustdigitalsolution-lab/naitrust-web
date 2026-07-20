@@ -36,7 +36,7 @@ export function UseCasesPage() {
           </p>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-6xl px-4 sm:px-0 py-16">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {useCases.map(
             ({ slug, icon: Icon, title, audience, summary }, index) => {

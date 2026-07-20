@@ -50,7 +50,6 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
     { label: 'About', page: 'about' },
     { label: 'How It Works', page: 'how-it-works' },
     { label: 'Real Estate', page: 'use-cases' },
-    { label: 'Blog', page: 'blog' },
     { label: 'Contact', page: 'contact' },
   ];
 

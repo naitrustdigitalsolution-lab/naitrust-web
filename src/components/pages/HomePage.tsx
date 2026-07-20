@@ -91,17 +91,30 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     {
       step: '3',
-      title: 'Record Terms and Payments',
-      description: 'Keep agreements, payment instructions, confirmations, milestones, and refund conditions visible.',
+      title: 'Fund the Transaction Safely',
+      description: 'Payment is held in a protected account — not released to the other party until the agreed conditions are met.',
       icon: MessageSquare,
     },
     {
       step: '4',
-      title: 'Complete with Evidence',
-      description: 'Attach property documents, receipts, inspection evidence, approvals, issues, and completion confirmations.',
+      title: 'Release on Confirmed Evidence',
+      description: 'Funds are released only once milestones, documents, receipts, and approvals confirm the conditions were met.',
       icon: CheckCircle2,
     },
   ];
+
+    //   {
+    //   step: '3',
+    //   title: 'Record Terms and Payments',
+    //   description: 'Keep agreements, payment instructions, confirmations, milestones, and refund conditions visible.',
+    //   icon: MessageSquare,
+    // },
+    // {
+    //   step: '4',
+    //   title: 'Complete with Evidence',
+    //   description: 'Attach property documents, receipts, inspection evidence, approvals, issues, and completion confirmations.',
+    //   icon: CheckCircle2,
+    // },
 
   const faqs = [
     {
@@ -227,10 +240,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div className="text-center mb-8 pt-8">
               <Badge className="mb-4 bg-primary text-white">Why Naitrust Exists</Badge>
               <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                Too Much Money Moves on Too Little Proof
+                The Financial Infrastructure Behind Every Property Deal
               </h2>
               <p className="text-base text-muted-foreground max-w-3xl mx-auto">
-                Fake agents, undocumented promises, scattered receipts, and payment disputes leave too much to chance. Naitrust creates one verifiable transaction record that buyers, sellers, agents, and developers can access and confirm.
+                Naitrust brings bank-grade verification and record-keeping to every property transaction — so buyers, sellers, agents, and developers can move money with confidence, not guesswork.
               </p>
             </div>
             

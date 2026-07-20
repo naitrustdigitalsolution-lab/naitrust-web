@@ -12,7 +12,7 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ReputationSummary } from '../store/types';
 import mockReputation from '../../mocks/apis/reputation.json';
-import type { ApiSuccess } from './transactions.api';
+import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 350;
 

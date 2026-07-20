@@ -9,7 +9,7 @@ interface FooterProps {
 }
 
 export function Footer({ onNavigate }: FooterProps) {
-  const submitPublicForm = useHomeStore((state) => state.submit);
+  const subscribe = useHomeStore((state) => state.subscribe);
   const [isSubscribing, setIsSubscribing] = useState(false);
   async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,7 +20,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
     setIsSubscribing(true);
     try {
-      await submitPublicForm({ type: 'subscription', email, consent: true, source: 'footer_newsletter' });
+      await subscribe({ email });
       event.currentTarget.reset();
       toast.success('You are subscribed to Naitrust updates.');
     } catch (error) {
@@ -54,6 +54,7 @@ export function Footer({ onNavigate }: FooterProps) {
       title: 'Company',
       links: [
         { label: 'About Us', page: 'about' },
+        { label: 'Blog', page: 'blog' },
         { label: 'Help Center', page: 'help' },
         { label: 'FAQs', page: 'faqs' },
         { label: 'Report a Concern', page: 'report-fraud' },

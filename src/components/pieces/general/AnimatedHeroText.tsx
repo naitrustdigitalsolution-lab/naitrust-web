@@ -14,14 +14,14 @@ export function AnimatedHeroText() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="mt-4 flex h-auto flex-col items-center lg:items-start"
         >
-          <h1 className="naitrust-satoshi-bold max-w-370 text-center text-[clamp(2.25rem,7vw,6.5rem)] leading-[1.12] tracking-[-0.04em] sm:leading-[1.08] sm:tracking-[-0.06em] lg:text-left lg:text-[clamp(58px,4.3vw,78px)]">
+          <h1 className="naitrust-satoshi-bold max-w-2xl text-center text-[clamp(2.25rem,7vw,6.5rem)] leading-[1.12] tracking-[-0.04em] sm:leading-[1.08] sm:tracking-[-0.06em] lg:text-left lg:text-[clamp(68px,4.8vw,65px)]">
             Buy Property with{' '}
             <span className="text-primary">Greater Confidence.</span>
           </h1>
           <p className="my-6 mt-6 max-w-[46rem] text-center test-sm md:text-base font-semibold leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:mt-8 md:leading-9 lg:text-left">
-            Naitrust is a property transaction platform for buyers, sellers, agents, developers, and
-            real estate companies to record agreements, payments, property documents, and milestones{' '}
-            <span className="font-bold text-foreground">in one trusted place.</span>
+            Property transactions involve large payments, multiple parties, scattered documents, and
+            too much uncertainty. Naitrust keeps every agreement, payment, document, and milestone{' '}
+            <span className="font-bold text-foreground">in one secure, verifiable transaction record.</span>
           </p>
         </motion.div>
       </div>

@@ -34,7 +34,6 @@ function delay(ms: number): Promise<void> {
 const summaries = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
 
 interface DetailOverlay {
-  title: string;
   description: string;
   useCase: string;
   releaseConditions: string;
@@ -43,30 +42,29 @@ interface DetailOverlay {
   previousReference?: string;
 }
 
-/** Rich, hand-authored overlays for a few known deals (title/description/etc). */
+/**
+ * Rich, hand-authored overlays for a few known deals — description/useCase/
+ * release conditions only. `title` always comes from the deal summary
+ * (single source of truth with the list row) so the room a deal opens into
+ * never shows a different name than the row that was clicked.
+ */
 const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
   txn_mock_001: {
-    title: 'Ankara fabric order — 60 yards assorted',
-    description: 'Bulk Ankara order for the new season, assorted prints as per the shared catalogue.',
-    useCase: 'supplier-orders',
-    releaseConditions: 'Fabric delivered, count and prints matching the catalogue, inspected by the buyer.',
+    description: 'Two-bedroom apartment reservation with Adaeze Homes & Properties Ltd, held safely until the offer letter, allocation details, and deposit receipt are confirmed.',
+    useCase: 'property-agent-payments',
+    releaseConditions: 'Offer letter, allocation details, and deposit receipt confirmed by the buyer.',
     dealType: 'milestone',
   },
   txn_mock_003: {
-    title: 'Interstate freight — Lagos to Kano haulage',
-    description: 'Full-truck haulage of packaged goods from Lagos to Kano with delivery confirmation.',
-    useCase: 'supplier-orders',
-    releaseConditions: 'Goods delivered to the Kano warehouse and signed for, with waybill uploaded.',
+    description: 'Off-plan unit deposit with Lekki Gardens Development Co., held safely until allocation documents and inspection evidence are confirmed.',
+    useCase: 'developer-instalments',
+    releaseConditions: 'Allocation letter and supporting documents delivered and confirmed by the buyer, with inspection evidence uploaded.',
     dealType: 'milestone',
   },
   txn_mock_004: {
-    title: 'Apartment rent — annual, Lekki Phase 1',
-    description: 'One-year apartment rent held safely until keys and a signed tenancy agreement are handed over.',
+    description: 'Sale of a 4-bedroom detached duplex in Magodo with Bright Homes Realty Ltd, held safely pending resolution of an open dispute.',
     useCase: 'property-agent-payments',
-    releaseConditions: 'Keys handed over and tenancy agreement signed by both parties.',
-    dealType: 'recurring',
-    recurring: true,
-    previousReference: 'NT-2025-000411',
+    releaseConditions: 'Title documents and handover confirmation provided and accepted by the buyer.',
   },
 };
 
@@ -251,7 +249,7 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
     sections: [
       {
         heading: 'Parties and purpose',
-        body: `This safe deal agreement covers "${overlay?.title ?? summary.counterpartyName}" between you (the Buyer) and ${summary.counterpartyName} (the Seller).`,
+        body: `This safe deal agreement covers "${summary.title ?? summary.counterpartyName}" between you (the Buyer) and ${summary.counterpartyName} (the Seller).`,
       },
       {
         heading: 'Protected payment',
@@ -284,7 +282,7 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     trackingOverrides[summary.id] ?? (dealType === 'milestone' ? milestonesFor(summary) : []);
   return {
     ...summary,
-    title: overlay?.title ?? `Safe deal with ${summary.counterpartyName}`,
+    title: summary.title ?? `Safe deal with ${summary.counterpartyName}`,
     description: overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
     useCase: overlay?.useCase ?? 'supplier-orders',
     dealType,

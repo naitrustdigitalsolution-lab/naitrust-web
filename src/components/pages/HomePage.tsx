@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Shield, Search, CheckCircle2, Users, TrendingUp, Lock, Zap, Award, ArrowRight, Star, ChevronRight, BarChart3, UserCheck, FileCheck, MessageSquare, Bell, Globe, Handshake, Fingerprint, QrCode, ScanLine, Download, Share2, ShoppingBag, Smartphone, Landmark, Home } from 'lucide-react';
+import { Shield, Search, CheckCircle2, Users, TrendingUp, Lock, Award, ArrowRight, Star, ChevronRight, BarChart3, UserCheck, MessageSquare, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Home } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -24,13 +24,6 @@ interface HomePageProps {
 export function HomePage({ onNavigate }: HomePageProps) {
   const { isDarkMode, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
-
-  const stats = [
-    { value: 'Property', label: 'Transaction Flows', icon: CheckCircle2 },
-    { value: '24/7', label: 'Transaction Rooms', icon: Lock },
-    { value: 'Proof', label: 'Evidence Trail', icon: Users },
-    { value: '4-Step', label: 'Deal Workflow', icon: TrendingUp },
-  ];
 
   const features = [
     {
@@ -110,35 +103,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
   ];
 
-  const valueProps = [
-    {
-      title: 'For Buyers',
-      icon: '🛡️',
-      text: 'Keep a clear record of property agreements, payments, documents, inspections, and transaction milestones.',
-    },
-    {
-      title: 'For Property Companies',
-      icon: '✅',
-      text: 'Give buyers a professional transaction experience with consistent agreements, payment records, documents, and confirmations.',
-    },
-    {
-      title: 'For Agents and Developers',
-      icon: '🏗️',
-      text: 'Document participant roles, property commitments, payment stages, supporting evidence, and completion activity.',
-    },
-  ];
-
-  const categories = [
-    { name: 'Land Purchases', icon: '📍' },
-    { name: 'Property Deposits', icon: '🏠' },
-    { name: 'Developer Instalments', icon: '🏗️' },
-    { name: 'Agent Transactions', icon: '🤝' },
-    { name: 'Property Sales', icon: '🔑' },
-    { name: 'Diaspora Purchases', icon: '🌍' },
-    { name: 'Construction Milestones', icon: '🧱' },
-    { name: 'Documented Handover', icon: '📄' },
-  ];
-
   const faqs = [
     {
       question: 'What is a Naitrust property transaction?',
@@ -161,8 +125,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen relative">
       <SEOHead
-        title="Secure and Verifiable Property Transactions in Nigeria"
-        description="Naitrust is trust infrastructure for Nigerian property transactions, helping participants record agreements, payments, documents, evidence, and milestones."
+        title="Naitrust | Secure Property Transactions in Nigeria"
+        description="Create secure, verifiable property transaction records for buyers, sellers, agents and developers in Nigeria."
         keywords="Nigeria property transactions, real estate transaction record, property payment evidence, property agreement records, verified property participants"
         canonicalPath="/"
       />
@@ -190,7 +154,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12"
           >
             <div className="min-w-0 text-center lg:text-left">
-              <Badge className="mb-4 inline-block bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary dark:bg-[#1a1a1a] dark:text-white">Trust infrastructure for Nigerian real estate</Badge>
+              <Badge className="mb-4 inline-block bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary dark:bg-[#1a1a1a] dark:text-white">The Trust Layer for Nigerian Property Transactions</Badge>
               <AnimatedHeroText />
               
             <div className="mt-8 flex justify-center gap-2 sm:gap-4 flex-row lg:justify-start">
@@ -207,7 +171,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3 text-xs font-medium sm:text-sm lg:justify-start">
-                {['Documented agreements', 'Verified participants', 'Visible payment records'].map((item) => (
+                {['Every agreement documented', 'Every payment recorded', 'Every milestone verified'].map((item) => (
                   <span key={item} className="flex items-center gap-1.5 rounded-full border border-[#e5edf5] bg-white/70 px-3 py-2 dark:border-white/10 dark:bg-white/5">
                     <CheckCircle2 size={15} className="text-green-600" />
                     {item}
@@ -234,54 +198,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <VerifiedBadge tier="premium" variant="small" />
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="rounded-xl bg-primary/5 p-3"><FileCheck className="mx-auto mb-1 text-primary" size={18} /><span>Terms</span></div>
-                    <div className="rounded-xl bg-green-500/10 p-3"><Users className="mx-auto mb-1 text-green-600" size={18} /><span>People</span></div>
-                    <div className="rounded-xl bg-amber-500/10 p-3"><Landmark className="mx-auto mb-1 text-amber-600" size={18} /><span>Payments</span></div>
+                    {['Buyer', 'Seller', 'Agreement', 'Payment', 'Documents', 'Verified'].map((item) => (
+                      <div key={item} className="flex items-center justify-center gap-1 rounded-xl bg-primary/5 p-3">
+                        <CheckCircle2 className="text-green-600" size={14} />
+                        <span>{item}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Card>
             </div>
-
-            {/* Previous supporting trust rows are intentionally hidden in this wider hero;
-                their content is represented by the compact chips and product card above. */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="hidden"
-            >
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-medium">
-                <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
-                  <Lock size={16} className="text-green-600" />
-                  <span className=" ">Documented agreements</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
-                  <CheckCircle2 size={16} className="text-blue-600" />
-                  <span className="">Verified participants</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
-                  <Shield size={16} className="text-purple-600" />
-                  <span className="">Visible payment records</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/5 dark:bg-transparent border border-[#eef3f8] dark:border-[#0A0E1A]">
-                  <Award size={16} className="text-amber-600" />
-                  <span className="">Built for property transactions in Nigeria</span>
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="hidden">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
-                <span className="font-medium">For buyers, sellers, agents, and developers</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
-                <span className="font-medium">Not a property-listing marketplace</span>
-              </div>
-            </div>
           </motion.div>
-          
+
         </div>
       </section>
 
@@ -297,12 +225,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="mt-4"
           >
             <div className="text-center mb-8 pt-8">
-              <Badge className="mb-4 bg-primary text-white">Trusted Property Transactions</Badge>
+              <Badge className="mb-4 bg-primary text-white">Why Naitrust Exists</Badge>
               <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                Put Every Property Deal on the Record
+                Too Much Money Moves on Too Little Proof
               </h2>
               <p className="text-base text-muted-foreground max-w-3xl mx-auto">
-                Property transactions can involve large payments, several participants, informal conversations, and scattered documents. Naitrust creates one clear record that the people involved can access and verify.
+                Fake agents, undocumented promises, scattered receipts, and payment disputes leave too much to chance. Naitrust creates one verifiable transaction record that buyers, sellers, agents, and developers can access and confirm.
               </p>
             </div>
             
@@ -363,36 +291,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </motion.div>
               ))}
             </div>
-          </motion.div>
-      </section>
 
-      {/* Stats Section */}
-      <section style={{display: 'none'}} className="py-16 bg-card ">
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="flex justify-center mb-3">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Icon size={24} className="text-primary" />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+            <div className="text-center mt-8">
+              <Button variant="outline" onClick={() => onNavigate('use-cases')}>
+                See All Use Cases
+                <ChevronRight size={18} className="ml-2" />
+              </Button>
+            </div>
+          </motion.div>
       </section>
 
       {/* Features Section - Enhanced with Brighter Colors */}
@@ -581,16 +487,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <ImageWithFallback
                       src="https://images.unsplash.com/photo-1520528105264-de3db89485f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
                       alt="Property buyer reviewing a transaction"
-                      className="mb-3 h-48 w-full rounded-lg object-cover sm:h-40"
+                      className="mb-3 h-52 w-full rounded-lg object-cover sm:h-52"
                     />
-                    <div className="flex items-center gap-2 mb-2">
+                    {/* <div className="flex items-center gap-2 mb-2">
                       <VerifiedBadge tier="premium" variant="small" />
                       <div className="flex gap-1">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
                         ))}
                       </div>
-                    </div>
+                    </div> */}
                     <p className="text-sm font-medium">Lagos Property Purchase</p>
                     <p className="text-xs text-muted-foreground">Deposit confirmation recorded</p>
                   </Card>
@@ -617,16 +523,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <ImageWithFallback
                       src="https://images.unsplash.com/photo-1637328613628-bc050ce89953?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
                       alt="Property professional supporting a Nigerian transaction"
-                      className="mb-3 h-48 w-full rounded-lg object-cover sm:h-40"
+                      className="mb-3 h-52 w-full rounded-lg object-cover sm:h-52"
                     />
-                    <div className="flex items-center gap-2 mb-2">
+                    {/* <div className="flex items-center gap-2 mb-2">
                       <VerifiedBadge tier="basic" variant="small" />
                       <div className="flex gap-1">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
                         ))}
                       </div>
-                    </div>
+                    </div> */}
                     <p className="text-sm font-medium text-gray-900 dark:text-white">Verified Property Company</p>
                     <p className="text-xs text-muted-foreground">Participant details available to review</p>
                   </Card>
@@ -768,11 +674,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6 text-white">
                 Transaction Room — Your Deal Record
               </h2>
-              <p className="text-lg text-white mb-6 leading-relaxed text-justify">
-                Every property transaction gets a shared <strong className="text-white">Naitrust safe-deal room</strong> — a clear record of the property, who is involved, what was agreed, what evidence is required, and what happens next.
-              </p>
               <p className="text-lg text-white mb-8 leading-relaxed text-justify">
-                Buyers, sellers, agents, and property companies can review terms, payment status, property documents, activity, milestones, and issue reports from one place.
+                Every property transaction gets a shared <strong className="text-white">Naitrust safe-deal room</strong> — a clear record of the property, who is involved, what was agreed, what evidence is required, and what happens next, reviewable by buyers, sellers, agents, and property companies from one place.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -780,9 +683,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   { icon: Fingerprint, text: 'Reusable identity and business checks' },
                   { icon: QrCode, text: 'Shareable property transaction access' },
                   { icon: ScanLine, text: 'Review terms and evidence quickly' },
-                  { icon: Shield, text: 'Linked to the transaction record' },
-                  { icon: Download, text: 'Keep proof for later review' },
-                  { icon: Share2, text: 'Share via link, email, or chat' },
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (
@@ -807,6 +707,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Button size="lg" onClick={() => onNavigate('register-business')}>
                   Create Transaction Room
                   <ArrowRight size={18} className="ml-2" />
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => onNavigate('how-it-works')} className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                  See How It Works
                 </Button>
               </div>
             </motion.div>
@@ -863,92 +766,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div className="absolute -bottom-4 -left-4 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10"></div>
               <div className="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10"></div>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="py-20">
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <Badge className="mb-4">Use Cases</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 ">Built Around Nigerian Property Transactions</h2>
-            <p className="text-lg text-muted-foreground">
-              Create a clear record for the property transactions where verbal promises and scattered documents are not enough
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category, index) => (
-              <motion.div
-                key={category.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Card className="p-6 text-center hover:shadow-lg transition-all cursor-pointer hover:scale-105">
-                  <div className="text-4xl mb-3">{category.icon}</div>
-                  <h4 className="mb-1">{category.name}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Create property transaction</p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-8"
-          >
-            <Button variant="outline" onClick={() => onNavigate('search')}>
-              Explore Property Transaction Flows
-              <ChevronRight size={18} className="ml-2" />
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials - Horizontal Carousel */}
-      <section className="py-20 bg-card">
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <Badge className="mb-4">Why Naitrust</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">Built for Trust in Nigerian Real Estate</h2>
-            <p className="text-lg text-muted-foreground">
-              Clearer records for buyers, sellers, agents, developers, and property companies
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {valueProps.map((prop, index) => (
-              <motion.div
-                key={prop.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-8 h-full bg-card/80 backdrop-blur-sm border-2 hover:border-primary/30 transition-colors text-center">
-                  <div className="text-5xl mb-5">{prop.icon}</div>
-                  <h3 className="text-xl font-semibold mb-3">{prop.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {prop.text}
-                  </p>
-                </Card>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
@@ -1065,6 +882,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </motion.div>
             ))}
           </div>
+
+          <div className="text-center mt-8">
+            <Button variant="outline" onClick={() => onNavigate('faqs')}>
+              View All FAQs
+              <ChevronRight size={18} className="ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -1079,15 +903,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
           >
             {/* Slogan - Prominent */}
             <div className="mb-7 sm:mb-8 p-4 lg:p-4 xl:p-6 bg-white/75 backdrop-blur-sm rounded-full border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
-              <p className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-[#0b2b45] text-balance">
+              <p className="text-lg md:text-xl lg:text-2xl font-bold leading-tight text-[#0b2b45] text-balance">
                 "Create a clear property record before money moves."
               </p>
             </div>
 
-            <h2 className="text-lg md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
               Ready to Approach Your Next <br/> Property Transaction with More Confidence?
             </h2>
-            <p className="text-base lg:text-xl leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">
+            <p className="text-base lg:text-lg leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">
               Record the property and participants, agree the terms, verify the basics, and keep payments, documents, milestones, and supporting evidence in one trusted record.
             </p>
 
@@ -1098,7 +922,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={openWaitlistModal}
                 className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-[0_14px_32px_rgba(30,144,255,0.24)]"
               >
-                Join Property Early Access
+                Join Early Access
                 <ArrowRight size={22} className="ml-2" />
               </Button>
               <Button

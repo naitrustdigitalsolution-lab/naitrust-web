@@ -4,7 +4,7 @@ import { appConfig } from '../../configs/env';
 import mockDealDrafts from '../../mocks/apis/deal-drafts.json';
 
 const PREFIX = 'naitrust:create-deal-drafts:';
-const MOCK_SEEDED_PREFIX = 'naitrust:mock-deal-drafts-seeded:v2:';
+const MOCK_SEEDED_PREFIX = 'naitrust:mock-deal-drafts-seeded:v3:';
 export const DEAL_DRAFT_ABANDONED_MS = 7 * 24 * 60 * 60 * 1000;
 export const DEAL_DRAFT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 

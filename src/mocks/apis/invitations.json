@@ -129,6 +129,766 @@
       "createdAt": "2026-07-06T09:00:00Z",
       "expiresAt": "2026-07-13T09:00:00Z",
       "status": "expired"
+    },
+    {
+      "id": "inv_mock_004",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200004",
+      "fromName": "Greenfield Estates Ltd",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Land purchase — 600sqm plot, Epe",
+      "amountMinor": 42000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Land purchase — 600sqm plot, Epe\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Greenfield Estates Ltd (the Seller) for \"Land purchase — 600sqm plot, Epe\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦420,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-17T11:00:00Z",
+      "expiresAt": "2026-07-24T11:00:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_005",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200005",
+      "fromName": "Ayo Balogun",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2c",
+      "title": "Property deposit — 3-bedroom duplex, Ajah",
+      "amountMinor": 58000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Property deposit — 3-bedroom duplex, Ajah\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between Ayo Balogun (the Buyer) and you (the Seller) for \"Property deposit — 3-bedroom duplex, Ajah\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦580,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-16T20:49:00Z",
+      "expiresAt": "2026-07-23T20:49:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_006",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200006",
+      "fromName": "Emerald Bay Developers",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Developer instalment — Emerald Court Unit A12",
+      "amountMinor": 118000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Developer instalment — Emerald Court Unit A12\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Emerald Bay Developers (the Seller) for \"Developer instalment — Emerald Court Unit A12\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,180,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-16T06:38:00Z",
+      "expiresAt": "2026-07-23T06:38:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_007",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200007",
+      "fromName": "Chukwuemeka Eze",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Family land transaction — Ogun State",
+      "amountMinor": 27500000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Family land transaction — Ogun State\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Chukwuemeka Eze (the Seller) for \"Family land transaction — Ogun State\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦275,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-15T16:27:00Z",
+      "expiresAt": "2026-07-22T16:27:00Z",
+      "status": "accepted"
+    },
+    {
+      "id": "inv_mock_008",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200008",
+      "fromName": "Sunrise Realty Partners",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2b",
+      "title": "Agency-led sale — 4-bedroom terrace, Ikoyi",
+      "amountMinor": 240000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Agency-led sale — 4-bedroom terrace, Ikoyi\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between Sunrise Realty Partners (the Buyer) and you (the Seller) for \"Agency-led sale — 4-bedroom terrace, Ikoyi\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦2,400,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-15T02:16:00Z",
+      "expiresAt": "2026-07-22T02:16:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_009",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200009",
+      "fromName": "Folake Adebayo",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Property inspection and agent engagement",
+      "amountMinor": 11400000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Property inspection and agent engagement\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Folake Adebayo (the Seller) for \"Property inspection and agent engagement\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦114,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-14T12:52:00Z",
+      "expiresAt": "2026-07-21T12:52:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_010",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200010",
+      "fromName": "Redwood Property Group",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Construction milestone — foundation stage",
+      "amountMinor": 76000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Construction milestone — foundation stage\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Redwood Property Group (the Seller) for \"Construction milestone — foundation stage\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦760,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-13T22:41:00Z",
+      "expiresAt": "2026-07-20T22:41:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_011",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200011",
+      "fromName": "Musa Abdullahi",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Family land representative — boundary confirmation",
+      "amountMinor": 19900000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Family land representative — boundary confirmation\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Musa Abdullahi (the Seller) for \"Family land representative — boundary confirmation\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦199,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-13T08:30:00Z",
+      "expiresAt": "2026-07-20T08:30:00Z",
+      "status": "declined"
+    },
+    {
+      "id": "inv_mock_012",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200012",
+      "fromName": "Golden Acres Development Co.",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Off-plan reservation — Golden Acres Phase 2",
+      "amountMinor": 95000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Off-plan reservation — Golden Acres Phase 2\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Golden Acres Development Co. (the Seller) for \"Off-plan reservation — Golden Acres Phase 2\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦950,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-12T18:19:00Z",
+      "expiresAt": "2026-07-19T18:19:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_013",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200013",
+      "fromName": "Ifeoma Okonjo",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2c",
+      "title": "Diaspora purchase — 2-bedroom flat, Lekki",
+      "amountMinor": 142000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Diaspora purchase — 2-bedroom flat, Lekki\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between Ifeoma Okonjo (the Buyer) and you (the Seller) for \"Diaspora purchase — 2-bedroom flat, Lekki\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,420,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-12T04:55:00Z",
+      "expiresAt": "2026-07-19T04:55:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_014",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200014",
+      "fromName": "Meridian Homes Nigeria",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Developer instalment — Meridian Gardens Unit B04",
+      "amountMinor": 186000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Developer instalment — Meridian Gardens Unit B04\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Meridian Homes Nigeria (the Seller) for \"Developer instalment — Meridian Gardens Unit B04\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,860,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-11T14:44:00Z",
+      "expiresAt": "2026-07-18T14:44:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_015",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200015",
+      "fromName": "Tunde Bakare",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Land agent engagement — Sango Ota",
+      "amountMinor": 15600000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Land agent engagement — Sango Ota\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Tunde Bakare (the Seller) for \"Land agent engagement — Sango Ota\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦156,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-11T00:33:00Z",
+      "expiresAt": "2026-07-18T00:33:00Z",
+      "status": "expired"
+    },
+    {
+      "id": "inv_mock_016",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200016",
+      "fromName": "Riverside Court Developers",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Handover milestone — Riverside Court Block 3",
+      "amountMinor": 67500000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Handover milestone — Riverside Court Block 3\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Riverside Court Developers (the Seller) for \"Handover milestone — Riverside Court Block 3\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦675,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-10T10:22:00Z",
+      "expiresAt": "2026-07-17T10:22:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_017",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200017",
+      "fromName": "Ngozi Umeh",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Property deposit — self-contain, Yaba",
+      "amountMinor": 8200000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Property deposit — self-contain, Yaba\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Ngozi Umeh (the Seller) for \"Property deposit — self-contain, Yaba\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦82,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-09T20:58:00Z",
+      "expiresAt": "2026-07-16T20:58:00Z",
+      "status": "accepted"
+    },
+    {
+      "id": "inv_mock_018",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200018",
+      "fromName": "Prestige Estate Managers Ltd",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Facility handover — Prestige Court commercial unit",
+      "amountMinor": 220000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Facility handover — Prestige Court commercial unit\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Prestige Estate Managers Ltd (the Seller) for \"Facility handover — Prestige Court commercial unit\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦2,200,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-09T06:47:00Z",
+      "expiresAt": "2026-07-16T06:47:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_019",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200019",
+      "fromName": "Segun Afolabi",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2c",
+      "title": "Property sale — 5-bedroom detached, Magodo",
+      "amountMinor": 210000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Property sale — 5-bedroom detached, Magodo\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between Segun Afolabi (the Buyer) and you (the Seller) for \"Property sale — 5-bedroom detached, Magodo\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦2,100,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-08T16:36:00Z",
+      "expiresAt": "2026-07-15T16:36:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_020",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200020",
+      "fromName": "Blue Horizon Properties",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Off-plan deposit — Blue Horizon Towers",
+      "amountMinor": 118000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Off-plan deposit — Blue Horizon Towers\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Blue Horizon Properties (the Seller) for \"Off-plan deposit — Blue Horizon Towers\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,180,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-08T02:25:00Z",
+      "expiresAt": "2026-07-15T02:25:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_021",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200021",
+      "fromName": "Amaka Nnamdi",
+      "fromRole": "buyer",
+      "yourRole": "seller",
+      "partyMode": "b2c",
+      "title": "Diaspora purchase — land in Enugu",
+      "amountMinor": 49900000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Diaspora purchase — land in Enugu\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between Amaka Nnamdi (the Buyer) and you (the Seller) for \"Diaspora purchase — land in Enugu\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦499,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-07T12:14:00Z",
+      "expiresAt": "2026-07-14T12:14:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "inv_mock_022",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200022",
+      "fromName": "Sterling Homes & Land Ltd",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2b",
+      "title": "Instalment plan — Sterling Court Unit D02",
+      "amountMinor": 156000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Instalment plan — Sterling Court Unit D02\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Sterling Homes & Land Ltd (the Seller) for \"Instalment plan — Sterling Court Unit D02\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦1,560,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-06T22:50:00Z",
+      "expiresAt": "2026-07-13T22:50:00Z",
+      "status": "declined"
+    },
+    {
+      "id": "inv_mock_023",
+      "recipientUserId": "usr_mock_004",
+      "reference": "NT-2026-200023",
+      "fromName": "Yakubu Garba",
+      "fromRole": "seller",
+      "yourRole": "buyer",
+      "partyMode": "b2c",
+      "title": "Family land representative — Kaduna plot",
+      "amountMinor": 23000000,
+      "currency": "NGN",
+      "message": "Sharing the property transaction record for \"Family land representative — Kaduna plot\". Please review the participants, terms, and required documents.",
+      "agreement": {
+        "version": 1,
+        "generatedByAi": true,
+        "sections": [
+          {
+            "heading": "Parties and purpose",
+            "body": "This Naitrust safe-deal agreement is between you (the Buyer) and Yakubu Garba (the Seller) for \"Family land representative — Kaduna plot\"."
+          },
+          {
+            "heading": "Protected payment",
+            "body": "The Buyer will fund ₦230,000.00 into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met."
+          },
+          {
+            "heading": "Release conditions",
+            "body": "Funds are released once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room, or the auto-confirm window elapses without a dispute."
+          },
+          {
+            "heading": "Acceptance",
+            "body": "By accepting this agreement, both parties confirm the terms above reflect their understanding. Once both parties accept, the agreement is frozen and changes require a new agreed version."
+          }
+        ]
+      },
+      "createdAt": "2026-07-06T08:39:00Z",
+      "expiresAt": "2026-07-13T08:39:00Z",
+      "status": "pending"
     }
   ]
 }

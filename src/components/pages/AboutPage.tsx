@@ -155,6 +155,25 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
         </div>
       </section>
 
+      {/* Long-Term Vision */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4">Our Roadmap</Badge>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+              Built for Real Estate. Designed for Every High-Value Transaction.
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Naitrust begins by making property transactions safer. Over time, the same trust infrastructure will support vehicles, equipment, business transactions, and other high-value exchanges.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Company Info */}
       <section className="py-16 bg-muted/30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,163 +1,173 @@
-# Future Idea: Naitrust as a Trusted Transaction Platform
+# Future Idea: Naitrust as a Trusted Real Estate Transaction Platform
 
 ## Core Insight
 
-Naitrust can solve a real Nigerian problem: trust collapse in commerce.
+Naitrust can solve a real Nigerian problem: trust collapse in property transactions.
 
-Many people already do business through WhatsApp, Instagram, referrals, phone calls, invoices, bank transfers, and "send me proof" screenshots. The issue is not that Nigerians do not want to trade. The issue is that too many transactions depend on blind trust.
+Property deals already happen through WhatsApp, phone calls, agent referrals, bank transfers, and
+"send me proof" screenshots. The issue is not that Nigerians do not want to buy, sell, rent, or
+develop property. The issue is that too many property transactions depend on blind trust in an
+agent, a developer, a landlord, or a stranger claiming ownership.
 
-Naitrust should not be positioned only as a verification platform. Verification is useful, but the bigger opportunity is helping people complete important transactions safely.
+Naitrust should not be positioned only as a verification platform. Verification is useful, but the
+bigger opportunity is helping people complete property transactions safely.
 
 ## Approved Platform Focus
 
-Naitrust should support both **B2B** and **B2C** protected transaction flows.
+Naitrust is a real-estate-only trusted transaction platform. Every transaction on the platform has
+a property at its center: land, an apartment, a duplex, a bungalow, a commercial unit, or a
+development under construction.
 
-B2B means transactions where both parties are businesses or business operators, such as an SME paying a supplier, wholesaler, contractor, distributor, vendor, agent, or service provider.
+Naitrust supports both **individual** and **business** counterparties on each side of a deal:
 
-B2C means transactions where one side is a business/vendor/service provider and the other side is an individual customer, such as a renter paying an agent, a customer paying an event vendor, a buyer paying a verified Instagram vendor for a high-value item, or an individual hiring a contractor.
+- The buying side: individual buyers, tenants/renters, and diaspora buyers (overseas Nigerians
+  buying or renting remotely).
+- The selling/facilitating side: individual sellers/landlords, real estate agents, property
+  developers, and property contractors (construction and renovation work tied to a property).
 
-The important rule is that Naitrust is not becoming a broad consumer payment app. B2C support must still serve the trusted-transaction promise:
+The important rule is that Naitrust is not becoming a broad consumer payment app or a property
+marketplace/listings site. Every flow must still serve the trusted-transaction promise:
 
-> agree terms, protect payment through a regulated partner, collect evidence, confirm delivery, handle disputes, and build reputation.
+> agree terms on a named property, protect payment through a regulated partner, collect evidence,
+> confirm completion, handle disputes, and build reputation.
 
 ## Approved Phase 1 Focus
 
-The approved Phase 1 technical direction is domestic-first:
+The approved Phase 1 technical direction is domestic-first real estate:
 
-> Nigerian SMEs and selected customer-to-business use cases completing domestic supplier, contractor, wholesale, vendor, service, and similar high-value transactions from agreement to payment.
+> Nigerian property buyers, tenants, agents, landlords, and developers completing domestic property
+> deposit, purchase, and agency-fee transactions from agreement to payment.
 
-Cross-border import remains strategically important, but it is not the first engineering build because it adds foreign KYC, trade documents, FX, multi-currency, and corridor partners. Phase 1 proves the protected transaction engine domestically first.
+Diaspora property purchases are part of Phase 1 because the same domestic single-release engine
+already serves them; only the buyer is remote. Multi-instalment developer plans and staged
+construction/renovation milestones are Phase 2, because they need milestone payment support rather
+than a single release.
 
 Phase 1 default transaction type:
 
-> Domestic SME to supplier/contractor, single release.
+> Property purchase deposit or agency-fee, single release.
 
-Phase 1 should be technically capable of representing B2B and B2C parties, even if go-to-market starts with higher-value B2B users first.
-
-Milestones, broad informal safe-deal links, and cross-border import corridors are later phases.
+Phase 1 should be technically capable of representing both individual and business counterparties,
+even if go-to-market starts with higher-value property purchase and deposit transactions first.
 
 Development payment partner:
 
-> Korapay is the development adapter for virtual accounts/collection accounts, funding confirmation, transfers, and webhooks.
+> Korapay is the development adapter for virtual accounts/collection accounts, funding confirmation,
+> transfers, and webhooks.
 
-Future adapters can include Providus Bank, Wema Bank, Anchor, and other licensed partners behind the same payment adapter interface.
+Future adapters can include Providus Bank, Wema Bank, Anchor, and other licensed partners behind the
+same payment adapter interface.
 
 ## Company Promise
 
-> Naitrust helps Nigerians do business with people they do not fully know without risking everything.
+> Naitrust helps people complete property transactions with agents, landlords, and developers they
+> do not fully know without risking everything.
 
 Another strong version:
 
-> When the transaction matters, use Naitrust.
+> When the property deal matters, use Naitrust.
 
 ## What This Fixes in Nigerian Society
 
-Naitrust can help reduce the trust gap that blocks trade, especially between people and businesses that do not know each other well.
+Naitrust can help reduce the trust gap that blocks safe property transactions between people and
+businesses that do not know each other well.
 
 Key problems it can help fix:
 
-- **Vendor fraud:** people paying for goods that never arrive.
-- **Client non-payment:** freelancers, suppliers, agents, and service providers doing work, then getting delayed or ghosted.
-- **Fake businesses:** companies claiming capacity, licenses, stock, or reputation they do not have.
-- **Import/export anxiety:** buyers sending large sums to suppliers they barely know.
-- **Disorganized dispute evidence:** chats, invoices, receipts, waybills, and photos scattered across WhatsApp, email, and phone galleries.
-- **Fear of first-time transactions:** people avoiding new opportunities because they cannot judge who is safe.
-- **Reputation poverty:** honest small businesses having no structured way to prove they are reliable over time.
+- **Agent and landlord fraud:** people paying deposits or agency fees for properties that are not
+  actually available, or to someone with no authority to collect payment.
+- **Fake ownership claims:** sellers or representatives claiming land or property ownership they do
+  not hold.
+- **Developer instalment risk:** buyers paying multi-year instalment plans with no structured record
+  of receipts, balance, allocation, or construction progress.
+- **Diaspora anxiety:** overseas buyers sending large sums for property they cannot inspect in
+  person, relying on relatives and screenshots.
+- **Disorganized dispute evidence:** offer letters, receipts, survey plans, title documents, and
+  inspection photos scattered across WhatsApp, email, and phone galleries.
+- **Fear of first-time property transactions:** buyers and tenants avoiding deals because they
+  cannot judge who is safe to pay.
+- **Reputation poverty:** honest agents, landlords, and developers having no structured way to prove
+  they are reliable over time.
 
 The bigger social fix:
 
-> Naitrust can help honest people trade with strangers safely.
+> Naitrust can help honest people complete property transactions with strangers safely.
 
-That matters because a lot of economic opportunity in Nigeria is blocked by one question:
+That matters because a lot of economic opportunity in Nigerian real estate is blocked by one
+question:
 
-> Can I trust this person?
+> Can I trust this agent, landlord, or developer?
 
 ## Positioning
 
-Naitrust should be positioned as a trusted transaction platform, not just a financial app.
+Naitrust should be positioned as a trusted real estate transaction platform, not just a financial
+app.
 
 Avoid saying:
 
 - "We are a bank."
 - "We hold your money."
 - "We are an escrow company."
-- "We verify businesses."
+- "We are a property listings site."
 
 Prefer saying:
 
-- "We help businesses complete high-value transactions safely."
-- "Create a safe deal, agree terms, fund a partner-issued virtual account, and complete the transaction."
+- "We help buyers, tenants, agents, landlords, and developers complete property transactions
+  safely."
+- "Create a safe deal on a named property, agree terms, fund a partner-issued virtual account, and
+  complete the transaction."
 - "Funds are handled by regulated financial partners while Naitrust provides the trust workflow."
 
-## Primary Target: High-Value B2B Transactions
+## Primary Target: Property Purchases, Deposits, and Agent-Led Deals
 
 Start here because these users feel the pain sharply and are more likely to pay.
 
 Ideal early users:
 
-- Domestic SMEs buying from suppliers or contractors.
-- Wholesalers buying from unknown suppliers.
-- SMEs paying contractors or distributors.
-- Real estate renters and buyers dealing with agents, landlords, or developers.
-- Domestic construction suppliers and contractors using single-release transactions first.
-- Logistics and clearing agents.
-- Marketplace sellers doing bulk orders.
+- Individual buyers paying deposits or purchase amounts to agents, landlords, or sellers.
+- Renters and buyers dealing with agents they do not fully trust.
+- Land buyers working through agents or family representatives.
+- Diaspora buyers purchasing or renting property remotely.
 
 First wedge:
 
-> Nigerian SMEs doing transactions from NGN 500k to NGN 50m where both parties do not fully trust each other.
+> Nigerian property buyers and tenants completing deposit, agency-fee, and purchase transactions
+> from NGN 200k to NGN 100m where the buyer does not fully trust the agent, landlord, or seller.
 
-These users already lose money from fraud, delays, fake suppliers, poor documentation, and disputes. Naitrust gives them a safer transaction room.
+These users already lose money from fake agents, double-selling, unclear ownership, and poor
+documentation. Naitrust gives them a safer transaction room built around the specific property.
 
-## Secondary Target: High-Trust B2C Transactions
+## Secondary Target: Developer Instalments and Construction/Renovation
 
-B2C should be part of the product design because many trust problems happen between an individual customer and a business, agent, vendor, or service provider.
+Good use cases:
 
-Good B2C use cases:
+- Buyers on multi-instalment developer payment plans needing a structured receipt and balance
+  record.
+- Property owners and developers hiring contractors for construction or renovation milestones.
 
-- Individual customer paying an event vendor.
-- Renter or buyer paying a real estate agent, landlord, or developer.
-- Individual hiring a contractor, technician, installer, designer, or home service provider.
-- Customer buying a high-value item from a verified vendor, such as phone, laptop, fashion, furniture, equipment, or appliances.
-- Customer paying a verified Instagram or WhatsApp seller for a high-value order.
-- Parent, student, or patient paying a verified service provider where proof and delivery matter.
+Product language should stay simple:
 
-B2C product language should stay simple:
+> Create a safe deal on this property. Agree terms. Pay through a protected partner account.
+> Confirm delivery or milestone. Release payment.
 
-> Create a safe deal. Agree terms. Pay through a protected partner account. Confirm delivery. Release payment.
+Phase note:
 
-## Later Target: Informal Users
+> Multi-instalment developer plans and staged construction/renovation milestones are Phase 2, not
+> Phase 1.
 
-Informal users can become a major market because they transact frequently and trust problems are everywhere. However, they may be more price-sensitive, less documented, and more support-heavy. Naitrust should serve them with a simpler version after proving the model with higher-value users.
+## Later Target: Informal Agents and Small Landlords
 
-Informal users include:
-
-- Instagram vendors.
-- WhatsApp sellers.
-- Market traders.
-- Thrift vendors.
-- Small importers.
-- Phone and laptop sellers.
-- Fashion vendors and tailors.
-- Hair vendors.
-- Home service providers.
-- Apprentices and skilled workers.
-- Small logistics agents.
-- Informal real estate agents.
+Informal agents and small landlords can become a major market because trust problems are common at
+every price point. However, they may be more price-sensitive, less documented, and more
+support-heavy. Naitrust should serve them with a simpler version after proving the model with
+higher-value users.
 
 For this audience, the product should feel simple:
 
-> Create a safe deal link. Buyer pays. Seller delivers. Money is released when both sides confirm.
+> Create a safe deal on this property. Buyer pays. Agent/landlord confirms handover or viewing.
+> Money is released when both sides confirm.
 
-Use simple product language:
-
-- "Protect this payment."
-- "Create safe deal."
-- "Confirm delivery."
-- "Release payment."
-- "Report issue."
-
-Avoid overwhelming informal users with words like:
+Avoid overwhelming this audience with words like:
 
 - "contracts"
 - "compliance"
@@ -166,170 +176,118 @@ Avoid overwhelming informal users with words like:
 
 ## Main Use Cases
 
-### 1. Domestic Supplier and Contractor Transactions
+### 1. Property Purchases and Deposits
 
-A Nigerian SME wants to buy goods or services from a domestic supplier or contractor they do not fully know.
+A buyer wants to pay a deposit or purchase amount to a seller, landlord, or agent without a shared
+record of the property, the recipient's role, or the conditions attached to the payment.
 
 Naitrust can support:
 
-- Supplier verification.
-- TransactionType configuration.
-- Frozen agreement terms.
-- Invoice upload.
+- Agent, landlord, or seller verification.
+- Property record: description, location, and documents.
+- Frozen agreement terms covering price, deposit, and payment plan.
 - Partner-issued virtual account funding.
-- Delivery evidence.
-- Buyer approval.
-- Release instruction to the regulated partner.
+- Document and inspection evidence.
+- Buyer confirmation and release instruction to the regulated partner.
 
-### 2. B2C Customer to Vendor Transactions
+### 2. Developer Instalment Plans
 
-An individual customer wants to buy from a business, vendor, agent, or service provider but does not fully trust delivery or payment handling.
-
-Naitrust can support:
-
-- Vendor or business verification.
-- Simple agreement terms.
-- Partner-issued funding details.
-- Delivery evidence.
-- Customer confirmation.
-- Payment release.
-- Dispute evidence if the vendor fails to deliver or the customer rejects unfairly.
-
-### 3. Wholesale and Bulk Purchases
-
-A buyer wants to pay for a large order from a supplier found through referral, Instagram, WhatsApp, or a marketplace.
+A buyer on a long-running instalment plan needs a structured record of the development, unit,
+schedule, receipts, and construction progress.
 
 Naitrust can support:
 
-- Seller identity and business checks.
-- Order agreement.
-- Delivery timeline.
-- Proof of stock.
-- Delivery confirmation.
-- Dispute evidence if goods are incomplete or fake.
-
-### 4. Freelance and Agency Projects
-
-A freelancer or agency wants assurance that they will be paid after delivering work.
-
-Naitrust can support:
-
-- Project agreement.
-- Milestone payments.
-- Work submission.
-- Client approval.
-- Dispute trail.
-- Reputation after completion.
+- Developer/company verification.
+- Property and unit record linked to the development.
+- Instalment schedule and expected documents.
+- Payment confirmations and progress updates.
+- Balance and completion history.
 
 Phase note:
 
-> Freelancer and agency milestone flows are Phase 2, not Phase 1.
+> Multi-instalment release flows are Phase 2. Phase 1 can support a single deposit or milestone
+> payment against a developer instalment plan.
 
-### 5. Real Estate Transactions
+### 3. Land Transactions
 
-A renter, buyer, landlord, developer, or agent needs safer handling of deposits, inspection fees, agency fees, or purchase steps.
+Land buyers, sellers, agents, and family representatives need a shared record of the land
+description, claimed ownership, participants, and payments.
 
 Naitrust can support:
 
-- Agent or landlord verification.
-- Property document upload.
-- Payment protection.
-- Viewing or inspection confirmation.
-- Agreement evidence.
-- Dispute process.
+- Land description and location record.
+- Seller and representative identity checks.
+- Agreed amount and payment stage tracking.
+- Reviewed evidence (survey, ownership documents) and completion activity.
 
-### 6. Construction and Contractor Payments
+### 4. Agent-Led Property Transactions
 
-A business or individual hires a contractor for a project where payment and delivery risk are high.
+Buyers, sellers, landlords, and agents need the agent's role, fees, authority, and activity made
+visible.
+
+Naitrust can support:
+
+- Agent identity or business profile verification.
+- Property record and purpose of each payment.
+- Fee, responsibility, and confirmation agreement.
+- Communication and evidence kept with the transaction.
+
+### 5. Construction and Renovation Milestones
+
+Property owners, developers, and contractors need scope, milestones, payment stages, and evidence
+made visible instead of living only in chats.
 
 Naitrust can support:
 
 - Contractor verification.
-- Scope of work.
-- Material purchase milestones.
-- Site progress evidence.
-- Payment release by stage.
-- Dispute record.
+- Scope of work and price record linked to the property.
+- Materials, milestones, and payment stage tracking.
+- Progress evidence and completion/dispute record.
 
 Phase note:
 
-> Staged construction/milestone payments are Phase 2. Phase 1 can support simpler domestic single-release contractor transactions.
+> Staged construction/renovation milestone payments are Phase 2. Phase 1 can support simpler
+> single-release payments for a defined scope of work.
 
-### 7. Event Vendor Transactions
+### 6. Diaspora Property Purchases
 
-A client hires vendors for a wedding, conference, or private event.
+Overseas buyers need one accessible record of the local property transaction, participants,
+payments, and progress.
 
 Naitrust can support:
 
-- Vendor verification.
-- Booking agreement.
-- Deposit protection.
-- Milestone check-ins.
-- Final delivery confirmation.
-- Reputation review.
-
-Phase note:
-
-> Event deposit and milestone flows are Phase 2.
-
-### 8. Informal Social Commerce
-
-A buyer wants to buy from an Instagram or WhatsApp seller but is afraid of being scammed.
-
-Naitrust can support:
-
-- Safe deal link.
-- Buyer payment through partner.
-- Seller delivery.
-- Buyer confirmation.
-- Payment release.
-- Simple issue reporting.
-
-Phase note:
-
-> Informal social commerce safe-deal links are Phase 3.
-
-### 8. Cross-Border Import Transactions
-
-A Nigerian importer wants to buy goods from a foreign supplier.
-
-Naitrust can eventually support:
-
-- foreign supplier checks.
-- trade documents.
-- inspection evidence.
-- FX and multi-currency handling.
-- corridor-specific partners.
-
-Phase note:
-
-> Cross-border import is Phase 3 because it requires foreign KYC, trade documents, FX, multi-currency, and corridor partners.
+- Local participant verification.
+- Property and inspection information.
+- Agreement and payment record accessible remotely.
+- Progress, allocation, or handover confirmation.
 
 ## MVP Flow
 
 The first version should focus on the safest core workflow:
 
-1. Create a transaction.
-2. Invite the other party.
+1. Create a transaction against a named property.
+2. Invite the other party (agent, landlord, developer, seller, or buyer).
 3. Agree on the amount, terms, timeline, and delivery conditions.
 4. Verify both parties at the right risk level.
 5. Freeze the agreement.
-6. Issue a partner-provided virtual account or collection account through Korapay during development.
-7. Buyer/customer funds the virtual account.
+6. Issue a partner-provided virtual account or collection account through Korapay during
+   development.
+7. Buyer funds the virtual account.
 8. Confirm funding through partner webhook.
-9. Track required evidence.
-10. Buyer/customer confirms delivery or auto-confirm window elapses.
+9. Track required property/evidence documents.
+10. Buyer confirms delivery/handover or auto-confirm window elapses.
 11. Send release instruction to the regulated partner.
 12. Handle disputes using transaction evidence.
 13. Build reputation after successful completion.
 
 ## Product Hierarchy
 
-Naitrust should be organized around completing transactions safely.
+Naitrust should be organized around completing property transactions safely.
 
 Core modules:
 
 - Verification.
+- Property records.
 - Agreements.
 - Protected funding.
 - Partner virtual accounts.
@@ -341,48 +299,37 @@ Core modules:
 
 Everything should support one goal:
 
-> Complete important transactions safely.
+> Complete property transactions safely.
 
 ## Go-To-Market Order
 
-### Phase 1: Domestic B2B and Selected B2C Protected Transactions
+### Phase 1: Domestic Property Purchases, Deposits, and Agent-Led Deals
 
 Start with users who already face high-value trust problems and can clearly understand the value.
 
 Examples:
 
-- Wholesalers.
-- SMEs buying from suppliers.
-- SMEs paying contractors.
-- Domestic real estate deposit or agency-fee use cases where the single-release model fits.
-- Individual customers paying verified vendors, service providers, agents, or event vendors for high-value domestic transactions.
+- Individual buyers paying deposits or purchase amounts through agents, landlords, or sellers.
+- Land buyers working through agents or family representatives.
+- Diaspora buyers completing domestic property deposits or purchases remotely.
 
-### Phase 2: Milestones and Service Work
+### Phase 2: Developer Instalments and Construction Milestones
 
-Add users who need milestone payments and proof of work.
+Add users who need milestone payments and staged proof of progress.
 
 Examples:
 
-- Agencies.
-- Software freelancers.
-- Creative freelancers.
-- Contractors.
-- Consultants.
-- Event vendors.
-- Staged construction work.
+- Developers running multi-instalment payment plans.
+- Contractors doing staged construction or renovation work.
 
-### Phase 3: Informal Commerce and Cross-Border
+### Phase 3: Informal Agents and Smaller Landlords
 
-Launch a lighter experience for everyday sellers and buyers, and add cross-border import corridors after the domestic engine works.
+Launch a lighter experience for smaller agents and landlords once the domestic engine works.
 
 Examples:
 
-- Instagram vendors.
-- WhatsApp sellers.
-- Market traders.
-- Phone and laptop sellers.
-- Fashion and hair vendors.
-- Nigerian importers buying from foreign suppliers.
+- Informal/independent real estate agents.
+- Small landlords renting directly to tenants.
 
 ### Phase 4: Reputation Profiles
 
@@ -390,20 +337,22 @@ Turn completed safe transactions into portable trust.
 
 Example reputation signal:
 
-> Completed 27 safe deals on Naitrust.
+> Completed 27 safe property deals on Naitrust.
 
-This gives honest businesses a way to prove reliability and win more future transactions.
+This gives honest agents, landlords, and developers a way to prove reliability and win more future
+transactions.
 
 ## Revenue Opportunities
 
 Potential monetization paths:
 
-- Transaction fee on protected deals.
-- Verification fee for higher-risk users.
-- Subscription for businesses doing frequent transactions.
-- Premium dispute handling for complex deals.
-- Reputation profile upgrades.
-- API or dashboard access for marketplaces, logistics companies, and business communities.
+- Transaction fee on protected property deals.
+- Verification fee for higher-risk agents, landlords, or developers.
+- Subscription for agencies and developers doing frequent transactions.
+- Premium dispute handling for complex property disputes.
+- Reputation profile upgrades for agents and developers.
+- API or dashboard access for real estate agencies, developer sales teams, and property management
+  companies.
 - Partner revenue share with regulated financial providers.
 
 ## Regulatory Direction
@@ -412,7 +361,9 @@ Naitrust should avoid holding customer funds directly unless properly licensed.
 
 Approved model:
 
-> Naitrust provides the transaction workflow, verification, agreement, evidence vault, ledger, dispute evidence, and reputation layer. A regulated bank, payment company, or financial partner issues per-transaction virtual accounts, holds funds, and executes money movement.
+> Naitrust provides the transaction workflow, verification, agreement, evidence vault, ledger,
+> dispute evidence, and reputation layer. A regulated bank, payment company, or financial partner
+> issues per-transaction virtual accounts, holds funds, and executes money movement.
 
 Important areas to confirm with legal and financial partners:
 
@@ -429,7 +380,8 @@ Important areas to confirm with legal and financial partners:
 
 ## What Not To Build First
 
-Avoid building broad financial-app features before the trusted transaction workflow is working.
+Avoid building broad financial-app or property-marketplace features before the trusted transaction
+workflow is working.
 
 Do not start with:
 
@@ -440,15 +392,19 @@ Do not start with:
 - Investment products.
 - Crypto.
 - Broad consumer payments.
-- A generic marketplace.
+- A public property listings/marketplace product.
+- Non-property verticals (vehicles, general goods, freelance work, event vendors, informal social
+  commerce, cross-border import).
 
-These can distract from the core wedge. The first product should stay focused on safe deals between parties that do not fully trust each other yet.
+These can distract from the core wedge. The first product should stay focused on safe property
+deals between parties that do not fully trust each other yet.
 
 ## Build Principle
 
 Every feature should answer at least one of these questions:
 
 - Who am I dealing with?
+- What property is this about?
 - What did we agree?
 - Where is the payment?
 - What evidence exists?
@@ -457,18 +413,19 @@ Every feature should answer at least one of these questions:
 
 ## Long-Term Vision
 
-Naitrust can become the operating system for trusted commerce in Africa.
+Naitrust can become the trust infrastructure for real estate in Africa.
 
 The wedge:
 
-> Start by protecting domestic high-value B2B and selected B2C transactions where the parties do not fully trust each other.
+> Start by protecting domestic property purchases, deposits, and agent-led transactions where the
+> parties do not fully trust each other.
 
 The long-term opportunity:
 
-- Domestic B2B commerce.
-- Domestic B2C protected transactions.
-- Cross-border trade.
-- Informal social commerce.
-- Freelancer and service payments.
-- Verified reputation infrastructure.
-- Transaction intelligence and fraud prevention.
+- Domestic property purchase and deposit protection.
+- Developer instalment plan protection.
+- Diaspora property purchase corridors.
+- Construction and renovation milestone protection.
+- Verified agent, landlord, and developer reputation infrastructure.
+- Land-registry and title verification partnerships.
+- Property transaction intelligence and fraud prevention.

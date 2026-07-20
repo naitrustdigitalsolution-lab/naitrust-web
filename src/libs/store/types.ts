@@ -59,6 +59,7 @@ export type SafeDealStatus =
 export interface SafeDealSummary {
   id: string;
   reference: string;
+  title: string;
   counterpartyName: string;
   amountMinor: number;
   currency: string;
@@ -232,7 +233,6 @@ export interface DealMilestone {
 }
 
 export interface SafeDealDetail extends SafeDealSummary {
-  title: string;
   description: string;
   useCase: string;
   dealType: DealType;

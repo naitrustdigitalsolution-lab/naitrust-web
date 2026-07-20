@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
@@ -81,7 +81,12 @@ let browserLoadedDashboardUrl =
   typeof window !== 'undefined' && window.location.pathname.startsWith('/app');
 
 function DashboardRouteSuspense({ children }: { children: ReactNode }) {
-  const [useFullScreenLoader] = useState(() => browserLoadedDashboardUrl);
+  // Read directly on every render rather than freezing via useState — this
+  // wrapper is the same component type across every /app/* route, so React
+  // Router updates it in place (children prop swap) instead of remounting it
+  // on navigation. A useState initializer would only run once for the whole
+  // session, permanently locking in whichever loader the first route saw.
+  const useFullScreenLoader = browserLoadedDashboardUrl;
 
   useEffect(() => {
     browserLoadedDashboardUrl = false;

@@ -52,7 +52,6 @@ function resolveBusiness(userId: string): BusinessProfile | null {
 export const businessApi = {
   create: (data: CreateBusinessData) => httpClient.post(endpoints.businesses.create, data),
   getMyBusinesses: () => httpClient.get(endpoints.businesses.myBusinesses),
-  getSavedBusinesses: () => httpClient.get(endpoints.businesses.savedBusinesses),
 
   /**
    * The business tied to the current account. Mock resolves by owner user ID.

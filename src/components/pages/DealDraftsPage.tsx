@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronRight, FileClock, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileClock, Plus, Trash2 } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { Badge } from '../ui/badge';
@@ -11,12 +11,23 @@ import { useAuth } from '../../libs/auth-context';
 import { clearDealDraft, listDealDrafts } from '../../libs/utils/deal-draft';
 
 const DRAFT_STEP_LABELS = ['Deal basics', 'Terms & parties', 'Agreement', 'Review & send'] as const;
+const PAGE_SIZE = 10;
 
 export function DealDraftsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [revision, setRevision] = useState(0);
+  const [page, setPage] = useState(1);
   const drafts = useMemo(() => listDealDrafts(user?.id), [user?.id, revision]);
+
+  const total = drafts.length;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const paged = drafts.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [total]);
 
   const remove = (id: string) => {
     clearDealDraft(user?.id, id);
@@ -45,8 +56,9 @@ export function DealDraftsPage() {
             <p className="max-w-sm text-sm text-muted-foreground">Start a new deal and your progress will appear here.</p>
           </Card>
         ) : (
+          <>
           <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Deal drafts">
-            {drafts.map((draft) => (
+            {paged.map((draft) => (
               <div
                 key={draft.id}
                 role="button"
@@ -104,6 +116,37 @@ export function DealDraftsPage() {
               </div>
             ))}
           </Card>
+
+          {total > PAGE_SIZE && (
+            <div className="mt-4 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                Page {current} of {pageCount}
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
+                  disabled={current <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft size={15} className="mr-1" />
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
+                  disabled={current >= pageCount}
+                  onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                >
+                  Next
+                  <ChevronRight size={15} className="ml-1" />
+                </Button>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </div>
     </DashboardLayout>

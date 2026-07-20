@@ -29,7 +29,7 @@ const FILTERS: { key: Filter; label: string }[] = [
 ];
 
 const CLOSED: SafeDealStatus[] = ['draft', 'completed', 'paid_out', 'refunded', 'cancelled'];
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 function byStatus(deals: SafeDealSummary[], filter: Filter): SafeDealSummary[] {
   switch (filter) {

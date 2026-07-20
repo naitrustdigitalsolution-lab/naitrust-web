@@ -7,7 +7,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
-import { Plus, Inbox, BadgeCheck, ScanFace } from 'lucide-react';
+import { Plus, Inbox, BadgeCheck, ScanFace, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -113,17 +113,29 @@ export function DashboardPage() {
           <DealBreakdown deals={deals} isLoading={isLoading} currency={currency} />
         </div>
 
-        <PendingActions deals={actionItems} onSelect={handleOpenDeal} />
+        <PendingActions deals={actionItems.slice(0, 3)} onSelect={handleOpenDeal} />
 
-        <div>
-          <h2 className="text-lg font-bold text-foreground">Your property transactions</h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            Protected transactions with terms, funding status, and evidence in one place.
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-bold text-foreground">Your property transactions</h2>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              Protected transactions with terms, funding status, and evidence in one place.
+            </p>
+          </div>
+          {!isLoading && (deals?.length ?? 0) > 0 && (
+            <button
+              type="button"
+              onClick={() => navigate('/app/deals')}
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              See all property transactions
+              <ArrowRight size={15} />
+            </button>
+          )}
         </div>
 
         <TransactionList
-          deals={deals}
+          deals={deals?.slice(0, 6)}
           isLoading={isLoading}
           isError={isError}
           onCreate={handleCreateDeal}

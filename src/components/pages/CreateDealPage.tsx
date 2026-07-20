@@ -28,6 +28,7 @@ import {
   Plus,
   RefreshCw,
   Repeat,
+  ScanFace,
   ShieldCheck,
   Save,
   Sparkles,
@@ -196,6 +197,7 @@ export function CreateDealPage() {
   );
   const draftId = useMemo(() => recoveredDraft?.id ?? crypto.randomUUID(), [recoveredDraft?.id]);
   const [livenessOk, setLivenessOk] = useState(security.livenessFresh);
+  const [showLiveness, setShowLiveness] = useState(!security.livenessFresh);
   const [showPin, setShowPin] = useState(false);
   const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
   const [form, setForm] = useState<FormState>(() => recoveredDraft?.form ?? INITIAL);
@@ -415,7 +417,7 @@ export function CreateDealPage() {
   };
 
   const continueDisabled =
-    createDeal.isPending || (step === 3 && (isGenerating || !agreement || !agreementConfirmed));
+    createDeal.isPending || !livenessOk || (step === 3 && (isGenerating || !agreement || !agreementConfirmed));
 
   const partiesHeading = !form.role
     ? 'Counterparties'
@@ -437,12 +439,12 @@ export function CreateDealPage() {
   return (
     <DashboardLayout title="New property transaction">
       <LivenessCheckModal
-        open={!livenessOk}
-        onOpenChange={(open) => {
-          if (!open && !livenessOk) navigate('/app');
+        open={showLiveness}
+        onOpenChange={setShowLiveness}
+        onVerified={() => {
+          setLivenessOk(true);
+          setShowLiveness(false);
         }}
-        onVerified={() => setLivenessOk(true)}
-        onCancel={() => navigate('/app')}
         reason="Before creating a deal, confirm it is really you. This is required once every 30 days."
       />
       <PinPromptModal
@@ -888,6 +890,20 @@ export function CreateDealPage() {
                 </div>
               )}
 
+              {!livenessOk && (
+                <button
+                  type="button"
+                  onClick={() => setShowLiveness(true)}
+                  className="mt-6 flex w-full items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-left"
+                >
+                  <ScanFace size={18} className="shrink-0 text-amber-600 dark:text-amber-400" />
+                  <span className="text-sm leading-5 text-foreground">
+                    Complete a quick liveness check to create this property transaction.
+                    <span className="ml-1 font-semibold text-primary underline">Start check</span>
+                  </span>
+                </button>
+              )}
+
               <div className="mt-6 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <Button type="button" variant="ghost" onClick={handleBack} disabled={createDeal.isPending}>
                   <ArrowLeft size={16} className="mr-1" />
@@ -904,7 +920,7 @@ export function CreateDealPage() {
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending} className="rounded-full">
+                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending || !livenessOk} className="rounded-full">
                       {createDeal.isPending ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />

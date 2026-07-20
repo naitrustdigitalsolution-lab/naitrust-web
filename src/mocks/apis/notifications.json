@@ -62,6 +62,195 @@
       "message": "Create a property transaction, document the participants and terms, and keep payments and supporting evidence in one room.",
       "read": true,
       "createdAt": "2026-07-05T12:00:00Z"
+    },
+    {
+      "id": "ntf_mock_007",
+      "userId": "usr_mock_004",
+      "type": "deal",
+      "title": "Terms agreed",
+      "message": "Both parties agreed the terms on NT-2026-100015. You can proceed to funding.",
+      "read": false,
+      "createdAt": "2026-07-04T09:00:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_008",
+      "userId": "usr_mock_004",
+      "type": "funding",
+      "title": "Funding confirmed",
+      "message": "Payment was confirmed on NT-2026-100012. The transaction record has been updated.",
+      "read": false,
+      "createdAt": "2026-07-03T23:53:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_009",
+      "userId": "usr_mock_004",
+      "type": "evidence",
+      "title": "Evidence submitted",
+      "message": "Greenfield Estates Ltd uploaded property documents on NT-2026-100009. Review them in the transaction room.",
+      "read": false,
+      "createdAt": "2026-07-03T14:46:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_010",
+      "userId": "usr_mock_004",
+      "type": "dispute",
+      "title": "Dispute opened",
+      "message": "A dispute was opened on NT-2026-100018 with Redwood Property Group. Add your response and evidence.",
+      "read": false,
+      "createdAt": "2026-07-03T05:39:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_011",
+      "userId": "usr_mock_004",
+      "type": "verification",
+      "title": "Verification expiring soon",
+      "message": "Your liveness check expires in 3 days. Redo the check to keep creating property transactions.",
+      "read": true,
+      "createdAt": "2026-07-02T20:32:00Z",
+      "link": "/app/security"
+    },
+    {
+      "id": "ntf_mock_012",
+      "userId": "usr_mock_004",
+      "type": "system",
+      "title": "New feature: milestone tracking",
+      "message": "You can now track construction and instalment milestones inside a transaction room.",
+      "read": true,
+      "createdAt": "2026-07-02T11:25:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_013",
+      "userId": "usr_mock_004",
+      "type": "deal",
+      "title": "New deal invitation",
+      "message": "Northbridge Supplies Ltd invited you to a property transaction: Developer instalment plan.",
+      "read": true,
+      "createdAt": "2026-07-02T02:18:00Z",
+      "link": "/app/invitations/inv_mock_002"
+    },
+    {
+      "id": "ntf_mock_014",
+      "userId": "usr_mock_004",
+      "type": "funding",
+      "title": "Funding released",
+      "message": "Funds for NT-2026-100010 were released to the seller after milestone confirmation.",
+      "read": true,
+      "createdAt": "2026-07-01T17:11:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_015",
+      "userId": "usr_mock_004",
+      "type": "evidence",
+      "title": "Document requested",
+      "message": "Sunrise Realty Partners asked for an updated survey plan on NT-2026-100013.",
+      "read": true,
+      "createdAt": "2026-07-01T08:57:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_016",
+      "userId": "usr_mock_004",
+      "type": "dispute",
+      "title": "Dispute resolved",
+      "message": "The dispute on NT-2026-100005 was resolved and funds were released per the agreed terms.",
+      "read": true,
+      "createdAt": "2026-06-30T23:50:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_017",
+      "userId": "usr_mock_004",
+      "type": "verification",
+      "title": "Business verification approved",
+      "message": "Your business (CAC) verification was approved. You can now create business-to-business transactions.",
+      "read": true,
+      "createdAt": "2026-06-30T14:43:00Z",
+      "link": "/app/security"
+    },
+    {
+      "id": "ntf_mock_018",
+      "userId": "usr_mock_004",
+      "type": "system",
+      "title": "Scheduled maintenance",
+      "message": "Naitrust will undergo brief maintenance this weekend. Transaction rooms remain viewable throughout.",
+      "read": true,
+      "createdAt": "2026-06-30T05:36:00Z"
+    },
+    {
+      "id": "ntf_mock_019",
+      "userId": "usr_mock_004",
+      "type": "deal",
+      "title": "Counterparty accepted invitation",
+      "message": "Ifeoma Okonjo accepted your invitation on NT-2026-100016. The agreement is now frozen.",
+      "read": true,
+      "createdAt": "2026-06-29T20:29:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_020",
+      "userId": "usr_mock_004",
+      "type": "funding",
+      "title": "Funding reminder",
+      "message": "NT-2026-100020 is awaiting funding. Fund the protected account to keep the transaction moving.",
+      "read": true,
+      "createdAt": "2026-06-29T11:22:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_021",
+      "userId": "usr_mock_004",
+      "type": "evidence",
+      "title": "Inspection evidence added",
+      "message": "Inspection photos were added to NT-2026-100024. Review before confirming the next milestone.",
+      "read": true,
+      "createdAt": "2026-06-29T02:15:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_022",
+      "userId": "usr_mock_004",
+      "type": "dispute",
+      "title": "Response needed",
+      "message": "You have 48 hours to respond to the dispute opened on NT-2026-100018.",
+      "read": true,
+      "createdAt": "2026-06-28T17:08:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_023",
+      "userId": "usr_mock_004",
+      "type": "verification",
+      "title": "Phone verification reminder",
+      "message": "Add and verify a phone number to receive SMS alerts for funding and disputes.",
+      "read": true,
+      "createdAt": "2026-06-28T08:54:00Z",
+      "link": "/app/security"
+    },
+    {
+      "id": "ntf_mock_024",
+      "userId": "usr_mock_004",
+      "type": "system",
+      "title": "Weekly summary",
+      "message": "You had 4 property transactions move forward this week. View your dashboard for details.",
+      "read": true,
+      "createdAt": "2026-06-27T23:47:00Z",
+      "link": "/app"
+    },
+    {
+      "id": "ntf_mock_025",
+      "userId": "usr_mock_004",
+      "type": "deal",
+      "title": "Deal completed",
+      "message": "NT-2026-100028 was marked complete and the record is now closed.",
+      "read": true,
+      "createdAt": "2026-06-27T14:40:00Z",
+      "link": "/app"
     }
   ]
 }

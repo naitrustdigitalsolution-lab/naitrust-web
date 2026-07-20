@@ -11,7 +11,11 @@
       "partyMode": "b2b",
       "role": "buyer",
       "participants": [
-        { "name": "Adaeze Homes & Properties Ltd", "email": "transactions@adaezehomes.example", "allocation": "2450000" }
+        {
+          "name": "Adaeze Homes & Properties Ltd",
+          "email": "transactions@adaezehomes.example",
+          "allocation": "2450000"
+        }
       ],
       "title": "Reservation deposit for two-bedroom apartment",
       "description": "Reservation of Unit B14 at Cedar Court, Sangotedo, pending document review and execution of the sale agreement.",
@@ -33,7 +37,11 @@
       "partyMode": "b2c",
       "role": "buyer",
       "participants": [
-        { "name": "Savannah Property Services", "email": "transactions@savannahproperty.example", "allocation": "850000" }
+        {
+          "name": "Savannah Property Services",
+          "email": "transactions@savannahproperty.example",
+          "allocation": "850000"
+        }
       ],
       "title": "Abandoned agent and inspection fee record",
       "description": "Proposed inspection and agency engagement for a three-bedroom flat in Gwarinpa.",
@@ -55,7 +63,11 @@
       "partyMode": "b2b",
       "role": "seller",
       "participants": [
-        { "name": "Northern Foods Distribution Ltd", "email": "procurement@northernfoods.example", "allocation": "1750000" }
+        {
+          "name": "Northern Foods Distribution Ltd",
+          "email": "procurement@northernfoods.example",
+          "allocation": "1750000"
+        }
       ],
       "title": "Interstate haulage for packaged foods",
       "description": "Dedicated truck delivery from Lagos to three distribution points in Abuja and Kaduna.",
@@ -77,7 +89,11 @@
       "partyMode": "b2b",
       "role": "seller",
       "participants": [
-        { "name": "GreenBasket Retail Nigeria", "email": "operations@greenbasket.example", "allocation": "960000" }
+        {
+          "name": "GreenBasket Retail Nigeria",
+          "email": "operations@greenbasket.example",
+          "allocation": "960000"
+        }
       ],
       "title": "Monthly Lagos last-mile deliveries",
       "description": "Monthly shared-load and last-mile delivery service for twelve GreenBasket retail locations.",
@@ -85,6 +101,396 @@
       "deliveryDueDate": "2026-08-15",
       "openUntil": "2026-07-25",
       "releaseConditions": "Release monthly after delivery scans and signed store receipts are uploaded for all locations."
+    }
+  },
+  {
+    "id": "draft_deposit_for_3-bedroom_05",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-07-18T01:00:00.000Z",
+    "updatedAt": "2026-07-19T03:00:00.000Z",
+    "form": {
+      "useCase": "property-agent-payments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Greenfield Estates Ltd",
+          "email": "greenfieldestatesltd@example.test",
+          "allocation": "3200000"
+        }
+      ],
+      "title": "Deposit for 3-bedroom flat, Lekki Phase 1",
+      "description": "Reservation deposit for a 3-bedroom flat pending offer letter and inspection.",
+      "amount": "3200000",
+      "deliveryDueDate": "2026-08-13",
+      "openUntil": "2026-07-29",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_instalment_plan_cedar_06",
+    "ownerUserId": "usr_mock_004",
+    "step": 3,
+    "createdAt": "2026-07-17T10:00:00.000Z",
+    "updatedAt": "2026-07-18T12:00:00.000Z",
+    "form": {
+      "useCase": "developer-instalments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Emerald Bay Developers",
+          "email": "emeraldbaydevelopers@example.test",
+          "allocation": "8900000"
+        }
+      ],
+      "title": "Instalment plan — Cedar Court Unit C11",
+      "description": "Second instalment on a developer payment plan for Cedar Court.",
+      "amount": "8900000",
+      "deliveryDueDate": "2026-08-12",
+      "openUntil": "2026-07-28",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_600sqm_land_purchase_07",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-07-16T07:00:00.000Z",
+    "updatedAt": "2026-07-17T09:00:00.000Z",
+    "form": {
+      "useCase": "land-transactions",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Ayo Balogun",
+          "email": "ayobalogun@example.test",
+          "allocation": "4200000"
+        }
+      ],
+      "title": "600sqm land purchase, Epe",
+      "description": "Land purchase with survey and family representative confirmation pending.",
+      "amount": "4200000",
+      "deliveryDueDate": "2026-08-11",
+      "openUntil": "2026-07-27",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_agent-led_sale_4-bedroom_08",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-07-15T04:00:00.000Z",
+    "updatedAt": "2026-07-16T06:00:00.000Z",
+    "form": {
+      "useCase": "agent-led-property",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Sunrise Realty Partners",
+          "email": "sunriserealtypartners@example.test",
+          "allocation": "2400000"
+        }
+      ],
+      "title": "Agent-led sale — 4-bedroom terrace, Ikoyi",
+      "description": "Agent engagement fee and viewing confirmation for a terrace duplex.",
+      "amount": "2400000",
+      "deliveryDueDate": "2026-08-10",
+      "openUntil": "2026-07-26",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_foundation_stage_redwood_09",
+    "ownerUserId": "usr_mock_004",
+    "step": 3,
+    "createdAt": "2026-07-14T12:00:00.000Z",
+    "updatedAt": "2026-07-15T14:00:00.000Z",
+    "form": {
+      "useCase": "contractor-projects",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Redwood Property Group",
+          "email": "redwoodpropertygroup@example.test",
+          "allocation": "7600000"
+        }
+      ],
+      "title": "Foundation stage — Redwood Court",
+      "description": "Milestone payment for foundation works, pending inspection photos.",
+      "amount": "7600000",
+      "deliveryDueDate": "2026-08-09",
+      "openUntil": "2026-07-25",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_diaspora_land_purchase_10",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-07-13T09:00:00.000Z",
+    "updatedAt": "2026-07-14T11:00:00.000Z",
+    "form": {
+      "useCase": "diaspora-purchases",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Amaka Nnamdi",
+          "email": "amakannamdi@example.test",
+          "allocation": "4990000"
+        }
+      ],
+      "title": "Diaspora land purchase, Enugu",
+      "description": "Remote buyer land purchase awaiting inspection and payment confirmation.",
+      "amount": "4990000",
+      "deliveryDueDate": "2026-08-08",
+      "openUntil": "2026-07-24",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_reservation_fee_2-bedroom_11",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-07-12T06:00:00.000Z",
+    "updatedAt": "2026-07-13T08:00:00.000Z",
+    "form": {
+      "useCase": "property-agent-payments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Ngozi Umeh",
+          "email": "ngoziumeh@example.test",
+          "allocation": "820000"
+        }
+      ],
+      "title": "Reservation fee — 2-bedroom flat, Yaba",
+      "description": "Reservation fee record pending offer letter.",
+      "amount": "820000",
+      "deliveryDueDate": "2026-08-07",
+      "openUntil": "2026-07-23",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_instalment_plan_meridian_12",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-07-10T03:00:00.000Z",
+    "updatedAt": "2026-07-11T05:00:00.000Z",
+    "form": {
+      "useCase": "developer-instalments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Meridian Homes Nigeria",
+          "email": "meridianhomesnigeria@example.test",
+          "allocation": "18600000"
+        }
+      ],
+      "title": "Instalment plan — Meridian Gardens Unit B09",
+      "description": "Third instalment payment on Meridian Gardens development.",
+      "amount": "18600000",
+      "deliveryDueDate": "2026-08-05",
+      "openUntil": "2026-07-21",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_family_land_transaction_13",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-07-09T11:00:00.000Z",
+    "updatedAt": "2026-07-10T13:00:00.000Z",
+    "form": {
+      "useCase": "land-transactions",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Chukwuemeka Eze",
+          "email": "chukwuemekaeze@example.test",
+          "allocation": "2750000"
+        }
+      ],
+      "title": "Family land transaction, Ogun State",
+      "description": "Family land sale with representative authority confirmation.",
+      "amount": "2750000",
+      "deliveryDueDate": "2026-08-04",
+      "openUntil": "2026-07-20",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_property_inspection_sango_14",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-07-07T08:00:00.000Z",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "form": {
+      "useCase": "agent-led-property",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Tunde Bakare",
+          "email": "tundebakare@example.test",
+          "allocation": "1560000"
+        }
+      ],
+      "title": "Property inspection — Sango Ota",
+      "description": "Land agent engagement and inspection fee record.",
+      "amount": "1560000",
+      "deliveryDueDate": "2026-08-02",
+      "openUntil": "2026-07-18",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_renovation_milestone_magodo_15",
+    "ownerUserId": "usr_mock_004",
+    "step": 3,
+    "createdAt": "2026-07-05T05:00:00.000Z",
+    "updatedAt": "2026-07-06T07:00:00.000Z",
+    "form": {
+      "useCase": "contractor-projects",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Segun Afolabi",
+          "email": "segunafolabi@example.test",
+          "allocation": "5400000"
+        }
+      ],
+      "title": "Renovation milestone — Magodo residence",
+      "description": "Renovation scope and first milestone payment.",
+      "amount": "5400000",
+      "deliveryDueDate": "2026-07-31",
+      "openUntil": "2026-07-16",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_property_deposit_self-contain_16",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-07-03T13:00:00.000Z",
+    "updatedAt": "2026-07-04T15:00:00.000Z",
+    "form": {
+      "useCase": "property-agent-payments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Folake Adebayo",
+          "email": "folakeadebayo@example.test",
+          "allocation": "610000"
+        }
+      ],
+      "title": "Property deposit — self-contain, Surulere",
+      "description": "Deposit record for a self-contain unit, awaiting receipt.",
+      "amount": "610000",
+      "deliveryDueDate": "2026-07-29",
+      "openUntil": "2026-07-14",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_family_land_representative_17",
+    "ownerUserId": "usr_mock_004",
+    "step": 1,
+    "createdAt": "2026-06-30T10:00:00.000Z",
+    "updatedAt": "2026-07-01T12:00:00.000Z",
+    "form": {
+      "useCase": "land-transactions",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Yakubu Garba",
+          "email": "yakubugarba@example.test",
+          "allocation": "2300000"
+        }
+      ],
+      "title": "Family land representative — Kaduna plot",
+      "description": "Land transaction with boundary confirmation pending.",
+      "amount": "2300000",
+      "deliveryDueDate": "2026-07-26",
+      "openUntil": "2026-07-11",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_off-plan_reservation_golden_18",
+    "ownerUserId": "usr_mock_004",
+    "step": 2,
+    "createdAt": "2026-06-28T07:00:00.000Z",
+    "updatedAt": "2026-06-29T09:00:00.000Z",
+    "form": {
+      "useCase": "developer-instalments",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Golden Acres Development Co.",
+          "email": "goldenacresdevelopmentco@example.test",
+          "allocation": "9500000"
+        }
+      ],
+      "title": "Off-plan reservation — Golden Acres Phase 2",
+      "description": "Off-plan unit reservation and first instalment.",
+      "amount": "9500000",
+      "deliveryDueDate": "2026-07-24",
+      "openUntil": "2026-07-09",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
+    }
+  },
+  {
+    "id": "draft_diaspora_purchase_2-bedroom_19",
+    "ownerUserId": "usr_mock_004",
+    "step": 4,
+    "createdAt": "2026-06-26T04:00:00.000Z",
+    "updatedAt": "2026-06-27T06:00:00.000Z",
+    "form": {
+      "useCase": "diaspora-purchases",
+      "dealType": "single",
+      "partyMode": "b2c",
+      "role": "buyer",
+      "participants": [
+        {
+          "name": "Ifeoma Okonjo",
+          "email": "ifeomaokonjo@example.test",
+          "allocation": "14200000"
+        }
+      ],
+      "title": "Diaspora purchase — 2-bedroom flat, Lekki",
+      "description": "Remote buyer apartment purchase, documents pending.",
+      "amount": "14200000",
+      "deliveryDueDate": "2026-07-22",
+      "openUntil": "2026-07-07",
+      "releaseConditions": "Complete once the agreed documents, receipts, and confirmations are available and acknowledged in the transaction room."
     }
   }
 ]

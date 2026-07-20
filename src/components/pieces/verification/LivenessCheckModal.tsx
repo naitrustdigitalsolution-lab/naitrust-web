@@ -16,7 +16,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Camera, Check, Lightbulb, Loader2, ShieldCheck, VideoOff } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../../ui/sheet';
 import { Button } from '../../ui/button';
 import { useSecurity } from '../../../hooks/useSecurity';
 import { appConfig } from '../../../configs/env';
@@ -252,16 +252,17 @@ export function LivenessCheckModal({
       : 'text-foreground';
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
+        <SheetHeader className="border-b">
+          <SheetTitle className="flex items-center gap-2">
             <ShieldCheck size={18} className="text-primary" />
             Liveness check
-          </DialogTitle>
-          <DialogDescription>{reason}</DialogDescription>
-        </DialogHeader>
+          </SheetTitle>
+          <SheetDescription>{reason}</SheetDescription>
+        </SheetHeader>
 
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
         {phase === 'intro' && (
           <div className="flex flex-col items-center gap-4 py-2">
             <div className="flex h-56 w-full items-center justify-center rounded-2xl border-4 border-dashed border-border bg-muted/40">
@@ -381,7 +382,8 @@ export function LivenessCheckModal({
         <p className="text-center text-xs text-muted-foreground">
           Required once every 30 days. Your check stays valid for other property transactions during that time.
         </p>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

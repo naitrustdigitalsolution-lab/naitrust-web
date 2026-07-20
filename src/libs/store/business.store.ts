@@ -4,12 +4,10 @@ import type { BusinessProfile } from './types';
 
 interface BusinessState {
   myBusinesses: BusinessProfile[];
-  savedBusinesses: BusinessProfile[];
   currentBusiness: BusinessProfile | null;
   isLoading: boolean;
   setCurrentBusiness: (business: BusinessProfile | null) => void;
   fetchMyBusinesses: () => Promise<void>;
-  fetchSavedBusinesses: () => Promise<void>;
 }
 
 function extractBusinesses(response: any): BusinessProfile[] {
@@ -19,7 +17,6 @@ function extractBusinesses(response: any): BusinessProfile[] {
 
 export const useBusinessStore = create<BusinessState>((set) => ({
   myBusinesses: [],
-  savedBusinesses: [],
   currentBusiness: null,
   isLoading: false,
   setCurrentBusiness: (currentBusiness) => set({ currentBusiness }),
@@ -29,15 +26,6 @@ export const useBusinessStore = create<BusinessState>((set) => ({
       const response = await businessApi.getMyBusinesses();
       const myBusinesses = extractBusinesses(response);
       set((state) => ({ myBusinesses, currentBusiness: state.currentBusiness ?? myBusinesses[0] ?? null }));
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  fetchSavedBusinesses: async () => {
-    set({ isLoading: true });
-    try {
-      const response = await businessApi.getSavedBusinesses();
-      set({ savedBusinesses: extractBusinesses(response) });
     } finally {
       set({ isLoading: false });
     }

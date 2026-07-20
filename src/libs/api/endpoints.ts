@@ -19,13 +19,6 @@ export const endpoints = {
     verifyOtp: '/auth/verify-otp',
     resetPassword: '/auth/reset-password',
     changePassword: '/auth/change-password',
-    loginHistory: '/auth/login-history',
-    searchUsers: '/auth/search-users',
-    notificationPreferences: '/auth/notification-preferences',
-    securitySettings: '/auth/security-settings',
-    generate2FA: '/auth/2fa/generate',
-    verify2FA: '/auth/2fa/verify',
-    disable2FA: '/auth/2fa/disable',
   },
 
   security: {
@@ -41,20 +34,15 @@ export const endpoints = {
   },
 
   businesses: {
-    list: '/businesses',
-    search: '/businesses/search',
     create: '/businesses',
-    getOne: (id: string) => `/businesses/${id}`,
     update: (id: string) => `/businesses/${id}`,
     myBusinesses: '/businesses/my/businesses',
-    savedBusinesses: '/businesses/saved/all',
   },
 
   transactions: {
     create: '/transactions',
     getOne: (id: string) => `/transactions/${id}`,
     getMyTransactions: '/transactions/my',
-    getStatistics: '/transactions/statistics',
     messages: (id: string) => `/transactions/${id}/messages`,
     sendMessage: (id: string) => `/transactions/${id}/messages`,
     tracking: (id: string) => `/transactions/${id}/tracking`,
@@ -62,14 +50,6 @@ export const endpoints = {
     revertTracking: (id: string) => `/transactions/${id}/tracking/revert`,
     termination: (id: string) => `/transactions/${id}/termination`,
     respondToTermination: (id: string) => `/transactions/${id}/termination/respond`,
-  },
-
-  drafts: {
-    list: '/deal-drafts',
-    create: '/deal-drafts',
-    getOne: (id: string) => `/deal-drafts/${id}`,
-    update: (id: string) => `/deal-drafts/${id}`,
-    delete: (id: string) => `/deal-drafts/${id}`,
   },
 
   agreements: {
@@ -99,7 +79,6 @@ export const endpoints = {
 
   notifications: {
     list: '/notifications',
-    unreadCount: '/notifications/unread/count',
     markAsRead: (id: string) => `/notifications/${id}/read`,
     markAllAsRead: '/notifications/read-all',
   },
@@ -108,23 +87,8 @@ export const endpoints = {
     getMine: '/reputation/me',
   },
 
-  analytics: {
-    trackView: (businessId: string) => `/analytics/businesses/${businessId}/track/view`,
-    trackClick: (businessId: string) => `/analytics/businesses/${businessId}/track/click`,
-    trackEvent: '/analytics/track/event',
-    trackSearch: '/analytics/track/search',
-    getBusinessAnalytics: (businessId: string) => `/analytics/business/${businessId}`,
-    getProfileViews: (businessId: string) => `/analytics/business/${businessId}/views`,
-    getSearchAnalytics: '/analytics/search',
-    getDashboard: (businessId: string) => `/analytics/businesses/${businessId}/analytics/dashboard`,
-  },
-
   upload: {
     verificationDocument: '/upload/verification-document',
-  },
-
-  app: {
-    version: '/app/version',
   },
 } as const;
 

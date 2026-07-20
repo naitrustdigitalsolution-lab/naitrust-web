@@ -5,7 +5,7 @@
  * notifications, and more nav items arrive with future slices.
  */
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -111,6 +111,14 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const unreadNotifications = useUnreadNotificationCount();
   const { data: business } = useMyBusiness();
 
+  // Tablets (iPad portrait/landscape included) default to the collapsed icon
+  // rail so page content isn't squeezed behind a full 256px sidebar; only
+  // genuine desktop-width viewports start expanded. Still user-toggleable via
+  // the sidebar trigger either way.
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth >= 1280,
+  );
+
   // An exact nav match (e.g. /app/deals/new) wins so a prefix item
   // (/app/deals) doesn't also highlight.
   const exactMatch = NAV_ITEMS.some((i) => i.path === location.pathname);
@@ -127,7 +135,7 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       {/* The authenticated app is private — never index any /app screen. */}
       <SEOHead title={title} noindex />
       <Sidebar collapsible="icon">

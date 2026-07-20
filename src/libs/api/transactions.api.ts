@@ -59,6 +59,7 @@ export const transactionsApi = {
       const summary: SafeDealSummary = {
         id: `txn_${crypto.randomUUID()}`,
         reference: `NT-${now.getFullYear()}-${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`,
+        title: input.title,
         counterpartyName,
         amountMinor: input.amountMinor,
         currency: input.currency,

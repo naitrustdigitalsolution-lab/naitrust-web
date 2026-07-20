@@ -80,7 +80,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
             className="hidden w-full min-h-14 bg-primary/10 px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
           >
             <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-              <span className='text-sm text-black dark:text-white md:text-base'>Coming soon: Property transactions, clearly documented.</span>
+              <span className='text-sm text-black dark:text-white md:text-base'>Coming soon: Every property deal, backed by a clear record.</span>
               <span className="inline-flex items-center gap-1 text-primary text-xs sm:text-sm md:text-lg font-semibold">
                 Join the waiting list
                 <ArrowRight size={15} />

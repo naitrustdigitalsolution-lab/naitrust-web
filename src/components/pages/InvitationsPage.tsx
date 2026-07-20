@@ -5,13 +5,15 @@
  * Purely reads the useInvitations query; actions live on the detail page.
  */
 
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, ChevronRight, Inbox } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Inbox } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { InvitationStatusBadge } from '../pieces/invitations/InvitationStatusBadge';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { useInvitations } from '../../hooks/useInvitations';
@@ -88,9 +90,21 @@ function InvitationRow({ invitation, onOpen }: { invitation: DealInvitation; onO
   );
 }
 
+const PAGE_SIZE = 10;
+
 export function InvitationsPage() {
   const navigate = useNavigate();
   const { data: invitations, isLoading, isError } = useInvitations();
+  const [page, setPage] = useState(1);
+
+  const total = invitations?.length ?? 0;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const paged = invitations?.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [total]);
 
   return (
     <DashboardLayout title="Invitations">
@@ -120,15 +134,47 @@ export function InvitationsPage() {
         ) : !invitations || invitations.length === 0 ? (
           <EmptyState />
         ) : (
-          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Invitations">
-            {invitations.map((inv) => (
-              <InvitationRow
-                key={inv.id}
-                invitation={inv}
-                onOpen={() => navigate(`/app/invitations/${inv.id}`)}
-              />
-            ))}
-          </Card>
+          <>
+            <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Invitations">
+              {paged?.map((inv) => (
+                <InvitationRow
+                  key={inv.id}
+                  invitation={inv}
+                  onOpen={() => navigate(`/app/invitations/${inv.id}`)}
+                />
+              ))}
+            </Card>
+
+            {total > PAGE_SIZE && (
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  Page {current} of {pageCount}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                    disabled={current <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    <ChevronLeft size={15} className="mr-1" />
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                    disabled={current >= pageCount}
+                    onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                  >
+                    Next
+                    <ChevronRight size={15} className="ml-1" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </DashboardLayout>

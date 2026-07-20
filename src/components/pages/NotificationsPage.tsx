@@ -5,6 +5,7 @@
  * the old app's NotificationsPage card-feed pattern on the new domain model.
  */
 
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -12,6 +13,8 @@ import {
   ArrowLeft,
   Bell,
   CheckCheck,
+  ChevronLeft,
+  ChevronRight,
   FileCheck,
   Handshake,
   Landmark,
@@ -95,13 +98,24 @@ function NotificationRow({
   );
 }
 
+const PAGE_SIZE = 10;
+
 export function NotificationsPage() {
   const navigate = useNavigate();
   const { data: notifications, isLoading, isError } = useNotifications();
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
+  const [page, setPage] = useState(1);
 
   const unreadCount = notifications?.filter((n) => !n.read).length ?? 0;
+  const total = notifications?.length ?? 0;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const paged = notifications?.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [total]);
 
   const handleOpen = (notification: AppNotification) => {
     if (!notification.read) markRead.mutate(notification.id);
@@ -161,11 +175,43 @@ export function NotificationsPage() {
             </p>
           </Card>
         ) : (
-          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Notifications">
-            {notifications.map((n) => (
-              <NotificationRow key={n.id} notification={n} onOpen={() => handleOpen(n)} />
-            ))}
-          </Card>
+          <>
+            <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Notifications">
+              {paged?.map((n) => (
+                <NotificationRow key={n.id} notification={n} onOpen={() => handleOpen(n)} />
+              ))}
+            </Card>
+
+            {total > PAGE_SIZE && (
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  Page {current} of {pageCount}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                    disabled={current <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    <ChevronLeft size={15} className="mr-1" />
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                    disabled={current >= pageCount}
+                    onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                  >
+                    Next
+                    <ChevronRight size={15} className="ml-1" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </DashboardLayout>

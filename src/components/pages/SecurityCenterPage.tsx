@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   BadgeCheck,
   Building2,
+  ChevronRight,
   FileText,
   Fingerprint,
   KeyRound,
@@ -36,24 +37,23 @@ import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/input-otp';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../ui/sheet';
 import { useAuth } from '../../libs/auth-context';
 import { useSecurity } from '../../hooks/useSecurity';
 import { securityApi, MOCK_OTP, type TwoFactorEnrolment } from '../../libs/api/security.api';
 import { accountTypeOf } from '../../libs/utils/account';
 import { useMyBusiness } from '../../hooks/useMyBusiness';
 
-/* ---------------------------------------------------------------- Row card */
+/* ---------------------------------------------------------------- Row list */
 
-function SecurityCard({
+function SecurityRow({
   icon: Icon,
   title,
   description,
   done,
   doneLabel = 'Done',
-  actionLabel,
+  required,
   onAction,
-  accent,
 }: {
   icon: ComponentType<{ size?: number; className?: string }>;
   title: string;
@@ -62,11 +62,19 @@ function SecurityCard({
   doneLabel?: string;
   actionLabel: string;
   onAction: () => void;
-  accent?: boolean;
+  required?: boolean;
 }) {
   return (
-    <Card className="gap-3 p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
+    <div
+      role="button"
+      tabIndex={0}
+      className="flex cursor-pointer items-center justify-between gap-4 border-b px-5 py-4 transition-colors last:border-b-0 hover:bg-accent/40"
+      onClick={onAction}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') onAction();
+      }}
+    >
+      <div className="flex min-w-0 items-center gap-3">
         <div
           className={
             'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ' +
@@ -75,24 +83,21 @@ function SecurityCard({
         >
           {done ? <BadgeCheck size={20} /> : <Icon size={20} />}
         </div>
+        <div className="min-w-0">
+          <p className="truncate font-semibold text-foreground">{title}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">{description}</p>
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-3">
         {done ? (
           <Badge variant="success">{doneLabel}</Badge>
         ) : (
-          <Badge variant={accent ? 'default' : 'outline'}>Required</Badge>
+          <Badge variant={required ? 'default' : 'outline'}>{required ? 'Required' : 'Recommended'}</Badge>
         )}
+        <ChevronRight size={16} className="text-muted-foreground" />
       </div>
-      <div>
-        <p className="font-semibold text-foreground">{title}</p>
-        <p className="mt-0.5 text-sm leading-6 text-muted-foreground">{description}</p>
-      </div>
-      <Button
-        variant={done ? 'outline' : 'default'}
-        className="mt-1 w-fit rounded-full"
-        onClick={onAction}
-      >
-        {actionLabel}
-      </Button>
-    </Card>
+    </div>
   );
 }
 
@@ -153,50 +158,52 @@ function OtpModal({
   };
 
   return (
-    <Dialog
+    <Sheet
       open={open}
       onOpenChange={(o) => {
         onOpenChange(o);
         if (!o) reset();
       }}
     >
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>We'll send a 6-digit code to {channelLabel}.</DialogDescription>
-        </DialogHeader>
-        {!sent ? (
-          <Button className="w-full rounded-full" onClick={send} disabled={sending}>
-            {sending ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
-            Send code
-          </Button>
-        ) : (
-          <div className="flex flex-col items-center gap-4 py-2">
-            <InputOTP
-              maxLength={6}
-              value={code}
-              onChange={(v) => {
-                setCode(v);
-                setError('');
-                if (v.length === 6) void verify(v);
-              }}
-              disabled={verifying}
-            >
-              <InputOTPGroup>
-                {[0, 1, 2, 3, 4, 5].map((i) => (
-                  <InputOTPSlot key={i} index={i} />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
-            {verifying && <p className="text-xs text-muted-foreground">Verifying…</p>}
-            {error && <p className="text-xs text-destructive">{error}</p>}
-            <button type="button" className="text-xs text-primary hover:underline" onClick={send}>
-              Resend code
-            </button>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-sm">
+        <SheetHeader className="border-b">
+          <SheetTitle>{title}</SheetTitle>
+          <SheetDescription>We'll send a 6-digit code to {channelLabel}.</SheetDescription>
+        </SheetHeader>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {!sent ? (
+            <Button className="w-full rounded-full" onClick={send} disabled={sending}>
+              {sending ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
+              Send code
+            </Button>
+          ) : (
+            <div className="flex flex-col items-center gap-4 py-2">
+              <InputOTP
+                maxLength={6}
+                value={code}
+                onChange={(v) => {
+                  setCode(v);
+                  setError('');
+                  if (v.length === 6) void verify(v);
+                }}
+                disabled={verifying}
+              >
+                <InputOTPGroup>
+                  {[0, 1, 2, 3, 4, 5].map((i) => (
+                    <InputOTPSlot key={i} index={i} />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+              {verifying && <p className="text-xs text-muted-foreground">Verifying…</p>}
+              {error && <p className="text-xs text-destructive">{error}</p>}
+              <button type="button" className="text-xs text-primary hover:underline" onClick={send}>
+                Resend code
+              </button>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -243,7 +250,7 @@ function TwoFactorModal({
   };
 
   return (
-    <Dialog
+    <Sheet
       open={open}
       onOpenChange={(o) => {
         onOpenChange(o);
@@ -254,53 +261,55 @@ function TwoFactorModal({
         }
       }}
     >
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Set up authenticator app</DialogTitle>
-          <DialogDescription>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+        <SheetHeader className="border-b">
+          <SheetTitle>Set up authenticator app</SheetTitle>
+          <SheetDescription>
             Add an extra layer with Google Authenticator, Authy, or 1Password.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        {!enrol ? (
-          <Button className="w-full rounded-full" onClick={begin} disabled={loading}>
-            {loading ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
-            Generate setup key
-          </Button>
-        ) : (
-          <div className="flex flex-col items-center gap-4 py-2">
-            <div className="rounded-xl bg-white p-3">
-              <QRCode value={enrol.otpauthUri} size={148} />
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {!enrol ? (
+            <Button className="w-full rounded-full" onClick={begin} disabled={loading}>
+              {loading ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
+              Generate setup key
+            </Button>
+          ) : (
+            <div className="flex flex-col items-center gap-4 py-2">
+              <div className="rounded-xl bg-white p-3">
+                <QRCode value={enrol.otpauthUri} size={148} />
+              </div>
+              <div className="w-full rounded-lg bg-muted/60 px-3 py-2 text-center">
+                <p className="text-xs text-muted-foreground">Or enter this key manually</p>
+                <p className="font-mono text-sm font-semibold tracking-wider text-foreground">
+                  {enrol.secret}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground">Enter the 6-digit code to confirm</p>
+              <InputOTP
+                maxLength={6}
+                value={code}
+                onChange={(v) => {
+                  setCode(v);
+                  setError('');
+                  if (v.length === 6) void verify(v);
+                }}
+                disabled={verifying}
+              >
+                <InputOTPGroup>
+                  {[0, 1, 2, 3, 4, 5].map((i) => (
+                    <InputOTPSlot key={i} index={i} />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+              {verifying && <p className="text-xs text-muted-foreground">Verifying…</p>}
+              {error && <p className="text-xs text-destructive">{error}</p>}
             </div>
-            <div className="w-full rounded-lg bg-muted/60 px-3 py-2 text-center">
-              <p className="text-xs text-muted-foreground">Or enter this key manually</p>
-              <p className="font-mono text-sm font-semibold tracking-wider text-foreground">
-                {enrol.secret}
-              </p>
-            </div>
-            <p className="text-sm text-muted-foreground">Enter the 6-digit code to confirm</p>
-            <InputOTP
-              maxLength={6}
-              value={code}
-              onChange={(v) => {
-                setCode(v);
-                setError('');
-                if (v.length === 6) void verify(v);
-              }}
-              disabled={verifying}
-            >
-              <InputOTPGroup>
-                {[0, 1, 2, 3, 4, 5].map((i) => (
-                  <InputOTPSlot key={i} index={i} />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
-            {verifying && <p className="text-xs text-muted-foreground">Verifying…</p>}
-            {error && <p className="text-xs text-destructive">{error}</p>}
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -372,27 +381,27 @@ function KycModal({
   };
 
   return (
-    <Dialog
+    <Sheet
       open={open}
       onOpenChange={(o) => {
         onOpenChange(o);
         if (!o) reset();
       }}
     >
-      <DialogContent className="max-h-[88vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
+        <SheetHeader className="border-b">
+          <SheetTitle className="flex items-center gap-2">
             {isBusiness ? <Building2 size={18} /> : <Fingerprint size={18} />}
             {isBusiness ? 'Business verification' : 'Identity verification'}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             {isBusiness
               ? 'Verify your business (CAC), a director, and confirm business ownership before transacting.'
               : 'Verify your identity before transacting. Your details are checked against official records.'}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
           <div className="grid gap-3 sm:grid-cols-2">
             {spec.map((f) => (
               <div key={f.key} className={f.key === 'businessName' ? 'sm:col-span-2' : ''}>
@@ -496,8 +505,8 @@ function KycModal({
             )}
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -564,27 +573,27 @@ function SetPinModal({
   };
 
   return (
-    <Dialog
+    <Sheet
       open={open}
       onOpenChange={(o) => {
         onOpenChange(o);
         if (!o) reset();
       }}
     >
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-sm">
+        <SheetHeader className="border-b">
+          <SheetTitle className="flex items-center gap-2">
             <KeyRound size={18} className="text-primary" />
             {requireOld ? 'Change your transaction PIN' : 'Set your transaction PIN'}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             {requireOld
               ? 'Enter your current PIN, then choose a new 4-digit PIN.'
               : "A 4-digit PIN confirms every money-moving action. Don't reuse an obvious code."}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <div className="flex flex-col items-center gap-4 py-2">
+        <div className="flex flex-1 flex-col items-center gap-4 overflow-y-auto p-4 py-2 sm:p-6">
           {requireOld && (
             <div className="flex flex-col items-center gap-1.5">
               <Label className="text-xs">Current PIN</Label>
@@ -641,8 +650,8 @@ function SetPinModal({
             {requireOld ? 'Update PIN' : 'Save PIN'}
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -665,7 +674,7 @@ export function SecurityCenterPage() {
 
   return (
     <DashboardLayout title="Security Center">
-      <div className="mx-auto w-full max-w-7xl">
+      <div className="mx-auto w-full max-w-9xl">
         <button
           type="button"
           onClick={() => navigate('/app')}
@@ -713,68 +722,77 @@ export function SecurityCenterPage() {
           <p className="mt-1 text-sm text-muted-foreground">Complete required checks first, then add recommended protection.</p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <SecurityCard
-            icon={isBusiness ? Building2 : Fingerprint}
-            title={isBusiness ? 'Business verification (KYC)' : 'Identity verification (KYC)'}
-            description={
-              isBusiness
-                ? 'Verify your CAC registration and a director.'
-                : 'Verify your identity with your NIN.'
-            }
-            done={security.kycStatus === 'verified'}
-            doneLabel="Verified"
-            actionLabel={security.kycStatus === 'verified' ? 'View' : 'Start verification'}
-            onAction={() => setModal('kyc')}
-            accent
-          />
-          <SecurityCard
-            icon={ScanFace}
-            title="Liveness check"
-            description="A live photo confirms you're really present. Valid for 30 days."
-            done={security.livenessFresh}
-            doneLabel="Fresh"
-            actionLabel={security.livenessFresh ? 'Redo check' : 'Run check'}
-            onAction={() => setModal('liveness')}
-          />
-          <SecurityCard
-            icon={Mail}
-            title="Email address"
-            description="Confirm your email to secure account recovery."
-            done={security.emailVerified}
-            doneLabel="Verified"
-            actionLabel="Verify email"
-            onAction={() => setModal('email')}
-            accent
-          />
-          <SecurityCard
-            icon={KeyRound}
-            title="Transaction PIN"
-            description="A 4-digit PIN confirms every money-moving action."
-            done={security.pinSet}
-            doneLabel="Set"
-            actionLabel={security.pinSet ? 'Change PIN' : 'Set PIN'}
-            onAction={() => setModal('pin')}
-            accent
-          />
-          <SecurityCard
-            icon={Phone}
-            title="Phone number"
-            description="Add a phone for recovery and SMS security alerts."
-            done={security.phoneVerified}
-            doneLabel="Verified"
-            actionLabel="Verify phone"
-            onAction={() => setModal('phone')}
-          />
-          <SecurityCard
-            icon={Smartphone}
-            title="Two-factor (authenticator)"
-            description="Protect sign-in with a time-based code from an app."
-            done={security.twoFactorEnabled}
-            doneLabel="Enabled"
-            actionLabel="Enable 2FA"
-            onAction={() => setModal('2fa')}
-          />
+        <div className="mb-2">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Required</p>
+          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Required security checks">
+            <SecurityRow
+              icon={isBusiness ? Building2 : Fingerprint}
+              title={isBusiness ? 'Business verification (KYC)' : 'Identity verification (KYC)'}
+              description={
+                isBusiness
+                  ? 'Verify your CAC registration and a director.'
+                  : 'Verify your identity with your NIN.'
+              }
+              done={security.kycStatus === 'verified'}
+              doneLabel="Verified"
+              actionLabel={security.kycStatus === 'verified' ? 'View' : 'Start verification'}
+              onAction={() => setModal('kyc')}
+              required
+            />
+            <SecurityRow
+              icon={Mail}
+              title="Email address"
+              description="Confirm your email to secure account recovery."
+              done={security.emailVerified}
+              doneLabel="Verified"
+              actionLabel="Verify email"
+              onAction={() => setModal('email')}
+              required
+            />
+            <SecurityRow
+              icon={KeyRound}
+              title="Transaction PIN"
+              description="A 4-digit PIN confirms every money-moving action."
+              done={security.pinSet}
+              doneLabel="Set"
+              actionLabel={security.pinSet ? 'Change PIN' : 'Set PIN'}
+              onAction={() => setModal('pin')}
+              required
+            />
+          </Card>
+        </div>
+
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recommended protection</p>
+          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Recommended security checks">
+            <SecurityRow
+              icon={ScanFace}
+              title="Liveness check"
+              description="A live photo confirms you're really present. Valid for 30 days."
+              done={security.livenessFresh}
+              doneLabel="Fresh"
+              actionLabel={security.livenessFresh ? 'Redo check' : 'Run check'}
+              onAction={() => setModal('liveness')}
+            />
+            <SecurityRow
+              icon={Phone}
+              title="Phone number"
+              description="Add a phone for recovery and SMS security alerts."
+              done={security.phoneVerified}
+              doneLabel="Verified"
+              actionLabel="Verify phone"
+              onAction={() => setModal('phone')}
+            />
+            <SecurityRow
+              icon={Smartphone}
+              title="Two-factor (authenticator)"
+              description="Protect sign-in with a time-based code from an app."
+              done={security.twoFactorEnabled}
+              doneLabel="Enabled"
+              actionLabel="Enable 2FA"
+              onAction={() => setModal('2fa')}
+            />
+          </Card>
         </div>
       </div>
 

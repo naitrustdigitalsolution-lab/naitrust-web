@@ -19,7 +19,7 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Textarea } from '../../ui/textarea';
 import { Skeleton } from '../../ui/skeleton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../../ui/sheet';
 import { PhoneField } from '../general/PhoneField';
 import { PinPromptModal } from '../security/PinPromptModal';
 import { useMyBusiness, useUpdateBusiness } from '../../../hooks/useMyBusiness';
@@ -190,17 +190,17 @@ export function BusinessProfileCard() {
         </div>
       )}
 
-      {/* Edit dialog */}
-      <Dialog open={editing} onOpenChange={setEditing}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit business details</DialogTitle>
-            <DialogDescription>
+      {/* Edit panel */}
+      <Sheet open={editing} onOpenChange={setEditing}>
+        <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
+          <SheetHeader className="border-b">
+            <SheetTitle>Edit business details</SheetTitle>
+            <SheetDescription>
               Update your contact and profile details. Your registered name and CAC/RC number are
               locked once verified. You'll confirm changes with your transaction PIN.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-3">
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-6">
             <div>
               <Label htmlFor="biz-name">Business name</Label>
               <Input
@@ -280,8 +280,8 @@ export function BusinessProfileCard() {
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
 
       {/* PIN confirmation for the edit */}
       <PinPromptModal

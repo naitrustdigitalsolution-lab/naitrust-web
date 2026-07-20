@@ -80,7 +80,8 @@ function DealRow({ deal, onSelect }: { deal: SafeDealSummary; onSelect?: (deal: 
       <div className="flex min-w-0 items-center gap-3">
         <CounterpartyAvatar name={deal.counterpartyName} />
         <div className="min-w-0">
-          <p className="truncate font-semibold text-foreground">{deal.counterpartyName}</p>
+          <p className="truncate font-semibold text-foreground">{deal.title}</p>
+          <p className="mt-0.5 truncate text-sm text-muted-foreground">{deal.counterpartyName}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {deal.reference} · {formatDistanceToNow(new Date(deal.createdAt), { addSuffix: true })}
           </p>

@@ -6,7 +6,7 @@
 
 import { BadgeCheck, Building2, CalendarCheck, Check, Fingerprint, X } from 'lucide-react';
 import { Badge } from '../../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../../ui/sheet';
 
 interface VerificationCheck {
   label: string;
@@ -51,17 +51,17 @@ export function VerificationDetailModal({
   const passed = checks.filter((c) => c.done).length;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+        <SheetHeader className="border-b">
+          <SheetTitle className="flex items-center gap-2">
             <BadgeCheck size={18} className="text-emerald-600 dark:text-emerald-400" />
             Verification details
-          </DialogTitle>
-          <DialogDescription>A summary of what was verified — for your records.</DialogDescription>
-        </DialogHeader>
+          </SheetTitle>
+          <SheetDescription>A summary of what was verified — for your records.</SheetDescription>
+        </SheetHeader>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
           {/* Entity */}
           <div className="flex items-center gap-3 rounded-xl border bg-muted/40 p-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -129,7 +129,7 @@ export function VerificationDetailModal({
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

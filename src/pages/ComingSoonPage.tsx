@@ -1,6 +1,6 @@
 import { createElement, useMemo, useState } from "react";
 import { appConfig } from "../configs/env";
-import { submitWaitlist } from "../services/waitlistService";
+import { joinWaitlist } from "../services/publicService";
 import type { WaitlistPayload } from '../types/global';
 
 const initialFormState = {
@@ -70,13 +70,9 @@ function ComingSoonPage() {
     setIsSubmitting(true);
 
     try {
-      const result = await submitWaitlist(buildPayload(formState));
+      await joinWaitlist(buildPayload(formState));
       setFormState(initialFormState);
-      setStatus(
-        result.mode === "mock"
-          ? "Mock mode: your waitlist request was saved locally for frontend testing."
-          : "You are on the list. We will contact you when early access opens.",
-      );
+      setStatus("You are on the list. We will contact you when early access opens.");
       setIsError(false);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "We could not submit this right now.");

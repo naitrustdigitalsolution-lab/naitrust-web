@@ -12,7 +12,7 @@ The default first screen is the new Naitrust product home screen. The coming-soo
 - React
 - TypeScript
 - Tailwind CSS
-- Vercel and Cloudflare hosting
+- Vercel and Netlify hosting
 
 ## App Modes
 
@@ -68,25 +68,23 @@ npm run dev:vercel
 npm run build
 ```
 
-The build output directory is `dist/`, matching `vercel.json`'s `outputDirectory` and `wrangler.jsonc`'s `assets.directory`.
+The build output directory is `dist/`, matching `vercel.json`'s `outputDirectory` and the Netlify publish directory in `netlify.toml`.
 
 ## Deploy
 
-Two hosting targets are supported: **Vercel** and **Cloudflare**.
+Two hosting targets are supported: **Vercel** and **Netlify**.
 
 ### Vercel
 
 Configured entirely by `vercel.json`: build command (includes the SEO prerender step), `outputDirectory: "dist"`, SPA rewrite (`/(.*) → /index.html`), and response headers. No dashboard configuration needed beyond connecting the repo.
 
-### Cloudflare
+### Netlify
 
-Configured by `wrangler.jsonc` (static-assets deployment — no Worker script, just `assets.directory: "./dist"` with `not_found_handling: "single-page-application"` for SPA fallback) plus `public/_headers` (same response headers as Vercel, using Cloudflare's `_headers` file syntax — copied into `dist/_headers` automatically since it lives under `public/`).
-
-In the Cloudflare dashboard, set the Build Command to `npm run build:seo` and Output Directory to `dist`. Presence of `wrangler.jsonc` is what stops Cloudflare's Workers Builds pipeline from trying to auto-detect a framework from `package.json` — without it, stray unused dependencies can cause the auto-detection step to guess wrong and fail the deploy.
+Configured entirely by `netlify.toml`: build command (same SEO prerender step as Vercel), `publish = "dist"`, SPA redirect (`/* → /index.html`), and the same response headers as Vercel (translated to Netlify's `[[headers]]` syntax). No dashboard configuration needed beyond connecting the repo.
 
 ## Public Form Submissions
 
-The waitlist, contact, subscribe, feedback, and report-concern forms all call the backend directly via `POST {VITE_API_BASE_URL}/api/Public/*` (see `src/libs/api/home.api.ts`). There is no serverless proxy function on either host — both Vercel and Cloudflare just serve the static frontend, and the frontend talks to the real backend API over `VITE_API_BASE_URL`.
+The waitlist, contact, subscribe, feedback, and report-concern forms all call the backend directly via `POST {VITE_API_BASE_URL}/api/Public/*` (see `src/libs/api/home.api.ts`). There is no serverless proxy function on either host — both Vercel and Netlify just serve the static frontend, and the frontend talks to the real backend API over `VITE_API_BASE_URL`.
 
 ## Source of Truth
 

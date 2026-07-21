@@ -72,5 +72,4 @@ export interface WaitlistPayload {
 
 export interface WaitlistResponse {
   message: string;
-  mode: AppMode;
 }

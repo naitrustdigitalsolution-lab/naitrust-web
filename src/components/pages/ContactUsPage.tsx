@@ -7,13 +7,12 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { useHomeStore } from "../../libs/store/home.store";
+import { contactUs } from "../../services/publicService";
 
 interface Props {
   onNavigate: (page: string) => void;
 }
 export function ContactUsPage({ onNavigate }: Props) {
-  const contactUs = useHomeStore((state) => state.contactUs);
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({

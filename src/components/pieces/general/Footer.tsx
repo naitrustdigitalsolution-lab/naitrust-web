@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from 'react';
 import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart, Apple, Play } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
-import { useHomeStore } from '../../../libs/store/home.store';
+import { subscribe } from '../../../services/publicService';
 import { toast } from 'sonner';
 
 interface FooterProps {
@@ -9,7 +9,6 @@ interface FooterProps {
 }
 
 export function Footer({ onNavigate }: FooterProps) {
-  const subscribe = useHomeStore((state) => state.subscribe);
   const [isSubscribing, setIsSubscribing] = useState(false);
   async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

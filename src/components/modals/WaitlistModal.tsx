@@ -11,7 +11,7 @@ import {
 } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { submitWaitlist } from '../../services/waitlistService';
+import { joinWaitlist } from '../../services/publicService';
 import type {
   TransactionRange,
   WaitlistPayload,
@@ -101,7 +101,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
     };
 
     try {
-      await submitWaitlist(payload);
+      await joinWaitlist(payload);
       toast.success('You are on the Naitrust waiting list.');
       setFormState(initialFormState);
       onOpenChange(false);

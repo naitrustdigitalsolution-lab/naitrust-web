@@ -3,7 +3,7 @@
  * Core HTTP request handler with error handling and JWT authentication
  */
 
-import { API_CONFIG, getAuthToken } from './config';
+import { API_CONFIG, getAuthToken, removeAuthToken, removeUserData } from './config';
 
 // Flag to prevent multiple redirects (module-level singleton)
 let isRedirecting = false;
@@ -14,6 +14,21 @@ export interface ApiResponse<T = any> {
   data?: T;
   message?: string;
   error?: string;
+}
+
+export interface ApiError {
+  message: string;
+  statusCode?: number;
+  errors?: Record<string, string[]>;
+}
+
+/**
+ * Build a thrown value that is both a real `Error` (so `error instanceof Error`
+ * checks work and the backend's message reaches the UI) and still carries the
+ * ApiError fields (`statusCode`, `errors`) for callers that need them.
+ */
+function apiError({ message, statusCode, errors }: ApiError): Error & ApiError {
+  return Object.assign(new Error(message), { statusCode, errors });
 }
 
 /**
@@ -42,10 +57,52 @@ function cleanResponseData(data: unknown): unknown {
   return data;
 }
 
-export interface ApiError {
-  message: string;
-  statusCode?: number;
-  errors?: Record<string, string[]>;
+/** Attach the bearer token (if any) to a header bag. Shared by request() and upload(). */
+function withAuthHeader(headers: Record<string, string>): Record<string, string> {
+  const token = getAuthToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return headers;
+}
+
+/**
+ * Runs on any 401 response: clears the session (Secure auth cookies — never
+ * localStorage) and sends the browser to /login. Returns `true` when the
+ * browser is being navigated away, so the caller should resolve quietly
+ * instead of throwing (the page is about to unload); `false` otherwise,
+ * meaning the caller should throw the usual "Unauthorized" ApiError.
+ *
+ * There are currently no public-but-optionally-authenticated endpoints in
+ * the API surface (see libs/api/endpoints.ts) — every endpoint that can
+ * 401 today requires a logged-in user, so every 401 redirects. If a public
+ * endpoint that tolerates a missing/expired token is added later, exempt it
+ * here rather than redirecting.
+ */
+function handleUnauthorized(): boolean {
+  console.error('❌ Unauthorized request - token may be invalid or expired');
+
+  if (isRedirecting) return false; // Already navigating; this caller just throws.
+
+  isRedirecting = true;
+  removeAuthToken();
+  removeUserData();
+  try {
+    // Non-sensitive UI state (which business is selected) — fine in localStorage.
+    localStorage.removeItem('naitrust_selected_business_id');
+  } catch {
+    // Ignore storage errors (private browsing, etc.)
+  }
+
+  if (window.location.pathname === '/login') {
+    if (redirectTimeoutId) clearTimeout(redirectTimeoutId);
+    redirectTimeoutId = setTimeout(() => {
+      isRedirecting = false;
+      redirectTimeoutId = null;
+    }, 2000);
+    return false;
+  }
+
+  window.location.replace('/login');
+  return true;
 }
 
 /**
@@ -55,161 +112,60 @@ async function request<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  const token = getAuthToken();
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-  
-  const headers: HeadersInit = {
+  const headers = withAuthHeader({
     'Content-Type': 'application/json',
-    ...options.headers,
-  };
-  
-  // Add JWT token to all requests if available
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  
+    ...(options.headers as Record<string, string> | undefined),
+  });
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
-    
-    const response = await fetch(url, {
-      ...options,
-      headers,
-      signal: controller.signal,
-    });
-    
+
+    const response = await fetch(url, { ...options, headers, signal: controller.signal });
     clearTimeout(timeoutId);
-    
+
     const contentType = response.headers.get('content-type');
     const isJson = contentType?.includes('application/json');
-    
-    let data;
-    if (isJson) {
-      data = cleanResponseData(await response.json());
-    } else {
-      const text = await response.text();
-      data = { message: text };
-    }
-    
-    // Handle 401 Unauthorized
-    // Only redirect to login for protected routes, not public routes like business profiles
+    const data: any = isJson
+      ? cleanResponseData(await response.json())
+      : { message: await response.text() };
+
     if (response.status === 401) {
-      console.error('❌ Unauthorized request - token may be invalid or expired');
-      
-      // Check if this is a public route that shouldn't redirect
-      // Public routes: business profiles, search, business lists, reviews, analytics tracking
-      // Also includes endpoints used on public business profile pages (even if backend requires auth, we don't redirect)
-      const publicRoutes = [
-        '/businesses/',  // Business endpoints (e.g., /businesses/:id)
-        '/reviews/business/',  // Public reviews endpoint (/reviews/business/:businessId)
-        '/search',  // Search endpoint
-        '/ai/trust-score/',  // AI trust score (used on public business profiles)
-        '/reported-handles/',  // Reported handles (used on public business profiles)
-        '/digital-prints/shared/',  // Public Digital Print viewer
-      ];
-      
-      // Analytics tracking endpoint is public (uses optionalAuthenticate)
-      const isAnalyticsTracking = endpoint.includes('/analytics/businesses/') && endpoint.includes('/track/');
-      
-      // Exclude protected sub-routes
-      const isProtectedSubRoute = 
-        endpoint.includes('/businesses/save') || 
-        endpoint.includes('/businesses/my') ||
-        endpoint.includes('/businesses/:id/save') ||
-        endpoint.includes('/reviews/my') ||
-        (endpoint.includes('/reported-handles/') && endpoint.includes('/delete/')) || // Only exclude DELETE, allow GET /:businessId and GET /:businessId/stats
-        (endpoint.includes('/analytics/business/') && !endpoint.includes('/track/')); // Analytics GET requires auth, but POST /track/ doesn't
-      
-      const isPublicRoute = (publicRoutes.some(route => endpoint.includes(route)) || isAnalyticsTracking) && !isProtectedSubRoute;
-      
-      if (!isPublicRoute) {
-        // Prevent multiple redirects - check flag FIRST
-        if (isRedirecting) {
-          // Already redirecting, just throw the error without attempting another redirect
-          const error: ApiError = {
-            message: 'Unauthorized - Please login again',
-            statusCode: 401,
-          };
-          throw error;
-        }
-        
-        // Set redirect flag IMMEDIATELY (before any async operations)
-        isRedirecting = true;
-        
-        // Clear any existing auth state IMMEDIATELY (synchronously)
-        try {
-          localStorage.removeItem('naitrust_token');
-          localStorage.removeItem('naitrust_user');
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('naitrust_selected_business_id');
-          // Clear Zustand persisted auth store state (the store uses 'naitrust-auth' as the persist key)
-          localStorage.removeItem('naitrust-auth');
-        } catch (e) {
-          // Ignore localStorage errors
-        }
-        
-        // Use window.location.replace to redirect IMMEDIATELY (synchronously)
-        // This will stop all JavaScript execution and redirect the page
-        if (window.location.pathname !== '/login') {
-          window.location.replace('/login');
-          // Code after this won't execute, but TypeScript doesn't know that
-          return; // This will never execute, but helps TypeScript
-        } else {
-          // If already on login page, reset flag after a delay
-          if (redirectTimeoutId) {
-            clearTimeout(redirectTimeoutId);
-          }
-          redirectTimeoutId = setTimeout(() => {
-            isRedirecting = false;
-            redirectTimeoutId = null;
-          }, 2000);
-        }
-      }
-      
-      const error: ApiError = {
-        message: 'Unauthorized - Please login again',
-        statusCode: 401,
-      };
-      throw error;
+      // Browser is navigating away to /login — resolving quietly is harmless;
+      // throwing would only surface a flash of "Unauthorized" before unload.
+      if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;
+      throw apiError({ message: 'Unauthorized - Please login again', statusCode: 401 });
     }
-    
+
     if (!response.ok) {
-      const error: ApiError = {
+      const error = apiError({
         message: data.error || data.message || `HTTP ${response.status}`,
         statusCode: response.status,
         errors: data.errors,
-      };
-      
-      console.error('❌ API Request Error:', {
-        url,
-        status: response.status,
-        error,
       });
-      
+      console.error('❌ API Request Error:', { url, status: response.status, error });
       throw error;
     }
-    
-    return data;
+
+    return data as ApiResponse<T>;
   } catch (error: any) {
     if (error.name === 'AbortError') {
-      throw {
+      throw apiError({
         message: 'Request timed out. Please check your connection and try again.',
         statusCode: 408,
-      } as ApiError;
+      });
     }
-    
-    console.error('❌ API Request Failed:', {
-      url,
-      error: error.message || error,
-    });
-    
+
+    console.error('❌ API Request Failed:', { url, error: error.message || error });
+
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      throw {
+      throw apiError({
         message: 'Unable to reach the server. Please check your internet connection.',
         statusCode: 0,
-      } as ApiError;
+      });
     }
-    
+
     throw error;
   }
 }
@@ -220,71 +176,43 @@ async function request<T = any>(
 export const httpClient = {
   get: <T = any>(endpoint: string, headers?: HeadersInit) =>
     request<T>(endpoint, { method: 'GET', headers }),
-    
+
   post: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers,
-    }),
-    
+    request<T>(endpoint, { method: 'POST', body: JSON.stringify(data), headers }),
+
   put: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers,
-    }),
-    
+    request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data), headers }),
+
   patch: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-      headers,
-    }),
-    
+    request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(data), headers }),
+
   delete: <T = any>(endpoint: string, headers?: HeadersInit) =>
     request<T>(endpoint, { method: 'DELETE', headers }),
-    
-  upload: async <T = any>(endpoint: string, formData: FormData, extraHeaders?: HeadersInit) => {
-    const token = getAuthToken();
+
+  upload: async <T = any>(
+    endpoint: string,
+    formData: FormData,
+    extraHeaders?: HeadersInit
+  ): Promise<ApiResponse<T>> => {
     const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-    
-    const headers: HeadersInit = { ...extraHeaders };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    
+    const headers = withAuthHeader({ ...(extraHeaders as Record<string, string> | undefined) });
+
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: formData,
-      });
-      
-      const data = await response.json();
-      
-      // Handle 401 Unauthorized
+      const response = await fetch(url, { method: 'POST', headers, body: formData });
+      const data: any = await response.json();
+
       if (response.status === 401) {
-        console.error('❌ Unauthorized upload - token may be invalid or expired');
-        localStorage.removeItem('naitrust_token');
-        localStorage.removeItem('naitrust_user');
-        
-        // Redirect to login page
-        window.location.href = '/login';
-        
-        throw {
-          message: 'Unauthorized - Please login again',
-          statusCode: 401,
-        } as ApiError;
+        if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;
+        throw apiError({ message: 'Unauthorized - Please login again', statusCode: 401 });
       }
-      
+
       if (!response.ok) {
-        throw {
+        throw apiError({
           message: data.error || data.message || 'Upload failed',
           statusCode: response.status,
-        } as ApiError;
+        });
       }
-      
+
       return data as ApiResponse<T>;
     } catch (error: any) {
       console.error('❌ Upload Failed:', error);

@@ -878,31 +878,69 @@
 
 // ================================================================
 // 12. PUBLIC SUBMISSIONS (marketing site: waitlist, contact, newsletter, feedback, concern)
+// Five separate endpoints under /api/Public/*, matching the real staging
+// backend (see src/libs/api/home.api.ts). Envelope is the real backend's
+// NaitrustResponse shape: { statusCode, message, data, isSuccessful } — NOT
+// the { success, data, error } shape the authenticated modules use.
 // ================================================================
 
 /**
- * POST /public-submissions (public — no auth)
+ * POST /Public/joinWaitlist (public — no auth)
  *
- * Request body (waitlist):
- * { "type": "waitlist", "name": "Ada Okafor", "email": "ada.okafor@example.com", "phone": "+2348012345678", "consent": true, "source": "waitlist_modal" }
+ * Request body — the modal collects more than the original schema accepted;
+ * all of these fields are now sent (only `email` is required, everything
+ * else is optional on the wire, though the modal fills them in):
+ * {
+ *   "name": "Ada Okafor",
+ *   "email": "ada.okafor@example.com",
+ *   "phone": "+2348012345678",
+ *   "source": "waitlist_modal",
+ *   "businessName": "Lekki Gardens Development Co.",
+ *   "userType": "property_buyer",
+ *   "transactionRange": "500k_5m",
+ *   "transactionNeed": "Deposit for an off-plan unit",
+ *   "expectations": "A clear record before I pay anything",
+ *   "consent": true,
+ *   "submittedAt": "2026-07-21T13:53:37.837Z"
+ * }
  *
- * Request body (contact):
- * { "type": "contact", "name": "Ada Okafor", "email": "ada.okafor@example.com", "subject": "Question about verification", "message": "How long does business verification usually take?", "source": "contact_page" }
+ * Response 201: { "statusCode": 201, "message": "Thanks — you're on the list.", "data": null, "isSuccessful": true }
+ * Response 409 (already on the list): { "statusCode": 409, "message": "This email is already on the waitlist.", "data": null, "isSuccessful": false }
+ * Response 422 (validation failure): { "statusCode": 422, "message": "Please provide a valid email address.", "data": null, "isSuccessful": false }
  *
- * Request body (newsletter subscription):
- * { "type": "subscription", "email": "ada.okafor@example.com", "consent": true, "source": "footer_newsletter" }
- *
- * Request body (feedback):
- * { "type": "feedback", "name": "Ada Okafor", "email": "ada.okafor@example.com", "rating": 5, "message": "Really clear transaction room, made the deposit process easy to follow.", "source": "feedback_page" }
- *
- * Request body (report a concern):
- * { "type": "concern", "name": "Ada Okafor", "email": "ada.okafor@example.com", "category": "suspicious_business", "message": "This profile is using another company's CAC number.", "source": "report_page" }
- *
- * Response 200 (all types):
- * { "message": "Thanks — you're on the list.", "reference": "SUB-2026-00123" }
- * (Note: this endpoint's response is NOT wrapped in { success, data } like the
- * others above — it returns the bare { message, reference } object.)
- *
- * Response 400 (validation failure):
- * { "message": "Please provide a valid email address." }
+ * NOTE: as of this writing, confirm with the backend engineer that
+ * businessName/userType/transactionRange/transactionNeed/expectations/
+ * submittedAt are actually persisted — the originally-documented
+ * JoinWaitlistRequest schema only had name/email/phone/source.
+ */
+
+/**
+ * POST /Public/contactUs (public — no auth)
+ * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "subject": "Question about verification", "message": "How long does business verification usually take?" }
+ * Response 201: { "statusCode": 201, "message": "Thanks — we'll be in touch.", "data": null, "isSuccessful": true }
+ * Response 422: { "statusCode": 422, "message": "Message is required.", "data": null, "isSuccessful": false }
+ */
+
+/**
+ * POST /Public/subscribe (public — no auth)
+ * Request body: { "email": "ada.okafor@example.com" }
+ * Response 201: { "statusCode": 201, "message": "Subscribed.", "data": null, "isSuccessful": true }
+ * Response 409 (already subscribed): { "statusCode": 409, "message": "This email is already subscribed.", "data": null, "isSuccessful": false }
+ * Response 422: { "statusCode": 422, "message": "Please provide a valid email address.", "data": null, "isSuccessful": false }
+ */
+
+/**
+ * POST /Public/submitFeedback (public — no auth)
+ * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "rating": 5, "message": "Really clear transaction room, made the deposit process easy to follow." }
+ * `rating` is a required integer (frontend blocks submit until a star is picked).
+ * Response 201: { "statusCode": 201, "message": "Thanks for the feedback.", "data": null, "isSuccessful": true }
+ * Response 422: { "statusCode": 422, "message": "Rating is required.", "data": null, "isSuccessful": false }
+ */
+
+/**
+ * POST /Public/reportConcern (public — no auth)
+ * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "category": "suspicious Naitrust payment request", "description": "This profile is using another company's CAC number." }
+ * (`category` is populated from the form's "What is the concern about?" field; `description` from "What happened?".)
+ * Response 201: { "statusCode": 201, "message": "Your concern has been recorded.", "data": null, "isSuccessful": true }
+ * Response 422: { "statusCode": 422, "message": "Description is required.", "data": null, "isSuccessful": false }
  */

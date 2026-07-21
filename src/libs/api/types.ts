@@ -9,6 +9,13 @@ export interface JoinWaitlistInput {
   email: string;
   phone?: string;
   source?: string;
+  businessName?: string;
+  userType?: string;
+  transactionRange?: string;
+  transactionNeed?: string;
+  expectations?: string;
+  consent?: boolean;
+  submittedAt?: string;
 }
 
 export interface ContactUsInput {

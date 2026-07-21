@@ -11,6 +11,9 @@ dist
 dist-ssr
 build
 
+# Cloudflare Wrangler local state
+.wrangler
+
 # Env
 .env
 .env.*

@@ -12,8 +12,7 @@ The default first screen is the new Naitrust product home screen. The coming-soo
 - React
 - TypeScript
 - Tailwind CSS
-- Netlify hosting
-- Vercel config retained as a secondary deploy option
+- Vercel and Cloudflare hosting
 
 ## App Modes
 
@@ -69,40 +68,25 @@ npm run dev:vercel
 npm run build
 ```
 
-The build output directory is `dist/`, matching the Netlify publish directory in `netlify.toml`.
+The build output directory is `dist/`, matching `vercel.json`'s `outputDirectory` and `wrangler.jsonc`'s `assets.directory`.
 
-## Netlify Deploy
+## Deploy
 
-Netlify uses:
+Two hosting targets are supported: **Vercel** and **Cloudflare**.
 
-```toml
-[build]
-  publish = "dist"
-  command = "npm run build"
+### Vercel
 
-[[redirects]]
-  from = "/api/waitlist"
-  to = "/.netlify/functions/waitlist"
-  status = 200
+Configured entirely by `vercel.json`: build command (includes the SEO prerender step), `outputDirectory: "dist"`, SPA rewrite (`/(.*) → /index.html`), and response headers. No dashboard configuration needed beyond connecting the repo.
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
+### Cloudflare
 
-## Waitlist Email
+Configured by `wrangler.jsonc` (static-assets deployment — no Worker script, just `assets.directory: "./dist"` with `not_found_handling: "single-page-application"` for SPA fallback) plus `public/_headers` (same response headers as Vercel, using Cloudflare's `_headers` file syntax — copied into `dist/_headers` automatically since it lives under `public/`).
 
-The waitlist form submits to `/api/waitlist` in `dev` and `prod` mode. On Netlify, that path redirects to `/.netlify/functions/waitlist`. The serverless function sends email to `contact@naitrust.com` with the subject prefix `[Wiatlist]`.
+In the Cloudflare dashboard, set the Build Command to `npm run build:seo` and Output Directory to `dist`. Presence of `wrangler.jsonc` is what stops Cloudflare's Workers Builds pipeline from trying to auto-detect a framework from `package.json` — without it, stray unused dependencies can cause the auto-detection step to guess wrong and fail the deploy.
 
-Required hosting environment variables:
+## Public Form Submissions
 
-```bash
-RESEND_API_KEY=re_your_resend_api_key
-WAITLIST_TO_EMAIL=contact@naitrust.com
-RESEND_FROM_EMAIL="Naitrust <hello@hello.naitrust.com>"
-ALLOWED_ORIGIN=https://your-netlify-site.netlify.app
-```
+The waitlist, contact, subscribe, feedback, and report-concern forms all call the backend directly via `POST {VITE_API_BASE_URL}/api/Public/*` (see `src/libs/api/home.api.ts`). There is no serverless proxy function on either host — both Vercel and Cloudflare just serve the static frontend, and the frontend talks to the real backend API over `VITE_API_BASE_URL`.
 
 ## Source of Truth
 

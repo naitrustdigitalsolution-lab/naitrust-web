@@ -22,6 +22,11 @@ export interface ApiError {
   errors?: Record<string, string[]>;
 }
 
+export interface RequestExtras {
+  /** Skip attaching the Authorization header — for genuinely public/anonymous endpoints. */
+  skipAuth?: boolean;
+}
+
 /**
  * Build a thrown value that is both a real `Error` (so `error instanceof Error`
  * checks work and the backend's message reaches the UI) and still carries the
@@ -110,13 +115,15 @@ function handleUnauthorized(): boolean {
  */
 async function request<T = any>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  extras: RequestExtras = {}
 ): Promise<ApiResponse<T>> {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-  const headers = withAuthHeader({
+  const baseHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> | undefined),
-  });
+  };
+  const headers = extras.skipAuth ? baseHeaders : withAuthHeader(baseHeaders);
 
   try {
     const controller = new AbortController();
@@ -174,20 +181,20 @@ async function request<T = any>(
  * HTTP Methods
  */
 export const httpClient = {
-  get: <T = any>(endpoint: string, headers?: HeadersInit) =>
-    request<T>(endpoint, { method: 'GET', headers }),
+  get: <T = any>(endpoint: string, headers?: HeadersInit, extras?: RequestExtras) =>
+    request<T>(endpoint, { method: 'GET', headers }, extras),
 
-  post: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, { method: 'POST', body: JSON.stringify(data), headers }),
+  post: <T = any>(endpoint: string, data?: any, headers?: HeadersInit, extras?: RequestExtras) =>
+    request<T>(endpoint, { method: 'POST', body: JSON.stringify(data), headers }, extras),
 
-  put: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data), headers }),
+  put: <T = any>(endpoint: string, data?: any, headers?: HeadersInit, extras?: RequestExtras) =>
+    request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data), headers }, extras),
 
-  patch: <T = any>(endpoint: string, data?: any, headers?: HeadersInit) =>
-    request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(data), headers }),
+  patch: <T = any>(endpoint: string, data?: any, headers?: HeadersInit, extras?: RequestExtras) =>
+    request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(data), headers }, extras),
 
-  delete: <T = any>(endpoint: string, headers?: HeadersInit) =>
-    request<T>(endpoint, { method: 'DELETE', headers }),
+  delete: <T = any>(endpoint: string, headers?: HeadersInit, extras?: RequestExtras) =>
+    request<T>(endpoint, { method: 'DELETE', headers }, extras),
 
   upload: async <T = any>(
     endpoint: string,

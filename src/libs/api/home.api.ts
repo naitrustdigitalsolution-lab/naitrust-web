@@ -12,31 +12,31 @@ import type {
 export const homeApi = {
   /** POST /Public/joinWaitlist */
   joinWaitlist: async (input: JoinWaitlistInput): Promise<ApiSuccess<JoinWaitlistInput>> => {
-    const res = await httpClient.post(endpoints.public.joinWaitlist, input);
+    const res = await httpClient.post(endpoints.public.joinWaitlist, input, undefined, { skipAuth: true });
     return res as ApiSuccess<JoinWaitlistInput>;
   },
 
   /** POST /Public/contactUs */
   contactUs: async (input: ContactUsInput): Promise<ApiSuccess<ContactUsInput>> => {
-    const res = await httpClient.post(endpoints.public.contactUs, input);
+    const res = await httpClient.post(endpoints.public.contactUs, input, undefined, { skipAuth: true });
     return res as ApiSuccess<ContactUsInput>;
   },
 
   /** POST /Public/subscribe */
   subscribe: async (input: SubscribeInput): Promise<ApiSuccess<SubscribeInput>> => {
-    const res = await httpClient.post(endpoints.public.subscribe, input);
+    const res = await httpClient.post(endpoints.public.subscribe, input, undefined, { skipAuth: true });
     return res as ApiSuccess<SubscribeInput>;
   },
 
   /** POST /Public/submitFeedback */
   submitFeedback: async (input: SubmitFeedbackInput): Promise<ApiSuccess<SubmitFeedbackInput>> => {
-    const res = await httpClient.post(endpoints.public.submitFeedback, input);
+    const res = await httpClient.post(endpoints.public.submitFeedback, input, undefined, { skipAuth: true });
      return res as ApiSuccess<SubmitFeedbackInput>;
   },
 
   /** POST /Public/reportConcern */
   reportConcern: async (input: ReportConcernInput): Promise<ApiSuccess<ReportConcernInput>> => {
-    const res = await httpClient.post(endpoints.public.reportConcern, input);
+    const res = await httpClient.post(endpoints.public.reportConcern, input, undefined, { skipAuth: true });
     return res as ApiSuccess<ReportConcernInput>;
   },
 };

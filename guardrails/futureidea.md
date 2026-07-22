@@ -50,13 +50,15 @@ Phase 1 default transaction type:
 Phase 1 should be technically capable of representing both individual and business counterparties,
 even if go-to-market starts with higher-value property purchase and deposit transactions first.
 
-Development payment partner:
+Live payment and verification partners (current app):
 
-> Korapay is the development adapter for virtual accounts/collection accounts, funding confirmation,
-> transfers, and webhooks.
+> Anchor is the regulated payment partner — it issues per-transaction virtual accounts, confirms
+> funding, and handles transfers. QoreID is the regulated identity/business verification partner —
+> CAC, BVN, liveness, and document checks run through it. Both are named directly on the public site
+> (Partners section: "Regulated Fintech Behind Every Property Transaction").
 
-Future adapters can include Providus Bank, Wema Bank, Anchor, and other licensed partners behind the
-same payment adapter interface.
+Future adapters can include Providus Bank, Wema Bank, and other licensed partners behind the same
+payment adapter interface, added alongside Anchor rather than replacing it.
 
 ## Company Promise
 
@@ -270,8 +272,7 @@ The first version should focus on the safest core workflow:
 3. Agree on the amount, terms, timeline, and delivery conditions.
 4. Verify both parties at the right risk level.
 5. Freeze the agreement.
-6. Issue a partner-provided virtual account or collection account through Korapay during
-   development.
+6. Issue a partner-provided virtual account through Anchor.
 7. Buyer funds the virtual account.
 8. Confirm funding through partner webhook.
 9. Track required property/evidence documents.
@@ -375,8 +376,8 @@ Important areas to confirm with legal and financial partners:
 - Customer communications.
 - Refund and reversal rules.
 - Marketing language.
-- Whether Korapay explicitly permits protected-transaction flows.
-- Whether future partners such as Providus Bank, Wema Bank, and Anchor permit the same flow.
+- Whether Anchor's terms explicitly permit protected-transaction/conditional-release flows.
+- Whether future partners such as Providus Bank and Wema Bank permit the same flow.
 
 ## What Not To Build First
 

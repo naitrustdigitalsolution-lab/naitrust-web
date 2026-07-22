@@ -4,47 +4,47 @@
 
 1. User signs up or logs in.
 2. User completes basic identity or business onboarding.
-3. User completes the verification required by the deal risk level.
-4. User chooses B2B or B2C party mode.
-5. User creates a safe deal.
-6. User invites counterparty by email, phone, or shareable link.
-7. Counterparty accepts invitation and completes required verification.
-8. Both parties review and agree terms.
+3. User completes the verification required by the transaction's risk level.
+4. User chooses individual or business account type.
+5. User creates a property transaction (on-app: "New property transaction").
+6. User invites the counterparty by email, phone, or shareable link.
+7. Counterparty accepts the invitation and completes required verification.
+8. Both parties review and agree terms (Transaction Room → Negotiations).
 9. Agreement is frozen.
-10. Backend issues a Korapay virtual account or collection account for the transaction.
-11. Buyer/customer funds the partner-issued virtual account.
-12. Transaction room shows partner funding status.
-13. Seller/vendor/service provider uploads required delivery evidence.
-14. Buyer/customer reviews evidence and confirms completion, or the auto-confirm window elapses.
+10. Backend issues an Anchor virtual account for the transaction.
+11. Buyer/tenant funds the partner-issued virtual account.
+12. Transaction room (Tracking tab) shows partner funding status.
+13. Seller/agent/developer/contractor uploads required delivery/milestone evidence.
+14. Buyer/tenant reviews evidence and confirms completion, or the auto-confirm window elapses.
 15. Release is requested through backend/partner.
-16. Both parties receive completion record and reputation update.
+16. Both parties receive a completion record and reputation update.
 
 ## Party Mode UX
 
-The create-deal flow must support:
+The create-transaction flow must support both individual and business counterparties on each side
+(see `futureidea.md` — "Approved Platform Focus"):
 
-- B2B: business buyer to supplier, contractor, wholesaler, vendor, agent, or service provider.
-- B2C: individual customer to business/vendor/service provider.
+- Buying side: individual buyers, tenants/renters, diaspora buyers.
+- Selling/facilitating side: individual sellers/landlords, real estate agents, property developers,
+  property contractors.
 
-B2C must still feel like a protected transaction room, not a wallet or checkout button. It must include terms, evidence, payment status, delivery confirmation, dispute action, and reputation.
+Every flow — whether the counterparty is an individual or a business — must still feel like a
+protected property-transaction room, not a wallet or checkout button. It must include terms,
+evidence, payment status, delivery/milestone confirmation, dispute action, and reputation.
 
 ## Transaction Room UX
 
-The transaction room is the heart of the product.
+The transaction room is the heart of the product. The current implementation
+(`src/components/pages/TransactionRoomPage.tsx`) organizes it into tabs:
 
-It must show:
-
-- transaction title and parties.
-- party mode: B2B or B2C.
-- amount and currency.
-- current status.
-- virtual account funding status.
-- evidence requirements.
-- evidence files.
-- chat or comments if enabled.
-- dispute action.
-- activity timeline.
-- final approval/release action.
+- **Overview** — transaction title, parties, party mode, amount/currency, current status.
+- **Negotiations** — terms discussion and agreement.
+- **Tracking** — virtual account funding status and payment progress.
+- **Evidence** — required and submitted evidence files.
+- **Chat** — messages between parties.
+- **Activity** — activity timeline.
+- **Dispute** — dispute action and case detail.
+- **Termination** — ending a transaction outside the normal completion flow.
 
 ## Main Statuses
 
@@ -96,17 +96,20 @@ Dispute status:
 - resolved_split
 - closed
 
-## Informal User Flow
+## Informal Agent/Landlord Flow (Phase 3, still property-scoped)
 
-For Instagram, WhatsApp, and market sellers:
+Naitrust is real-estate-only (see `futureidea.md` — "Approved Platform Focus"). There is no
+general-item or non-property "safe deal" flow. The lighter-weight flow for Phase 3 (informal
+agents, small landlords) is the same property-transaction flow above, simplified:
 
-1. Seller taps "Create safe deal."
-2. Seller enters item/service, amount, delivery date, and buyer contact.
-3. Naitrust creates a shareable deal link.
-4. Buyer opens link and sees simple terms.
-5. Buyer pays through partner.
-6. Seller delivers and uploads proof.
-7. Buyer confirms.
+1. Agent/landlord taps "Create property transaction."
+2. Agent/landlord enters the property, amount, timeline, and buyer/tenant contact.
+3. Naitrust creates a shareable transaction link.
+4. Buyer/tenant opens the link and sees simple terms.
+5. Buyer/tenant pays through the partner (Anchor).
+6. Agent/landlord confirms handover/viewing and uploads proof.
+7. Buyer/tenant confirms.
 8. Payment release is requested.
 
-Keep this version very simple. Avoid legal-heavy labels in the UI.
+Keep this version very simple. Avoid legal-heavy labels in the UI, but never drop the property
+context — every transaction still has a named property at its center.

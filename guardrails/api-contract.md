@@ -1,115 +1,68 @@
 # Frontend API Contract Expectations
 
-The frontend expects the backend to expose stable, typed REST endpoints with predictable response envelopes.
+> Rewritten to match the real backend contract already implemented in the frontend
+> (`src/libs/api/endpoints.ts`, `src/libs/api/backend-api.ts`, `src/libs/api/client.ts`) — the
+> previous version of this doc described an aspirational `{success,data,error}` REST contract that
+> does not match the actual .NET backend. `backend-api.ts` is the authoritative, fully-worked-out
+> reference (full request/response examples); this file is a short index into it.
 
-## Response Envelope
+## Response Envelope (confirmed against the live staging API)
+
+Every endpoint — public and authenticated alike — returns the backend's `NaitrustResponse<T>` shape:
 
 ```ts
-type ApiSuccess<T> = {
-  success: true;
-  data: T;
-  message?: string;
-};
-
-type ApiError = {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
+type NaitrustResponse<T> = {
+  statusCode: number;   // HTTP status echoed in the body
+  message: string;      // human-readable message
+  data: T | null;
+  isSuccessful: boolean; // mirrors 2xx vs 4xx/5xx
 };
 ```
 
-## Required Endpoint Groups
+This replaces the old assumed `{success, data, error}` shape everywhere in the app —
+`src/libs/api/client.ts` throws real `Error` instances built from `message` on failure
+(`apiError()` helper), so `error instanceof Error ? error.message : fallback` checks across the
+app surface the backend's actual message text.
 
-Auth:
+## Endpoint Groups (see `src/libs/api/endpoints.ts` for the exact paths, `backend-api.ts` for full examples)
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/logout`
-- `GET /auth/me`
-- `POST /auth/verify-email`
-- `POST /auth/forgot-password`
-- `POST /auth/reset-password`
+Auth (`/auth/*`): register, login, login/verify-2fa, logout, profile (get/update),
+verify-email, resend-verification-otp, forgot-password, verify-otp, reset-password,
+change-password.
 
-Users and businesses:
+Security (`/security/*`): email/phone OTP send+verify, 2FA start/verify, KYC submission,
+transaction PIN set/verify.
 
-- `GET /users/me`
-- `PATCH /users/me`
-- `POST /businesses`
-- `GET /businesses/me`
-- `PATCH /businesses/:id`
+Businesses (`/businesses*`): create, update (`PUT /businesses/:id`), list mine
+(`GET /businesses/my/businesses`).
 
-Transactions:
+Transactions (`/transactions*`) — the core resource, called "property transaction" / "safe deal"
+in the UI: create, list mine, get one, chat messages, tracking (advance/insert/edit/revert),
+termination (request/respond).
 
-- `POST /transactions`
-- `GET /transactions`
-- `GET /transactions/:id`
-- `PATCH /transactions/:id`
-- `GET /transaction-types`
-- `POST /transactions/:id/invite`
-- `POST /transactions/:id/accept`
-- `POST /transactions/:id/approve-terms`
-- `POST /transactions/:id/fund`
-- `POST /transactions/:id/deliver`
-- `POST /transactions/:id/confirm`
-- `POST /transactions/:id/cancel`
+Agreements: `POST /agreements/draft` — AI-assisted agreement drafting, advisory only.
 
-Milestones and evidence:
+Disputes: `GET/POST /transactions/:id/dispute`, `POST /transactions/:id/dispute/messages`.
 
-Milestone endpoints are Phase 2. Phase 1 uses required evidence for domestic single-release transactions.
+Negotiations: `GET /transactions/:id/negotiation`, propose/respond/withdraw.
 
-- `POST /transactions/:id/milestones`
-- `PATCH /transactions/:id/milestones/:milestoneId`
-- `POST /transactions/:id/evidence`
-- `GET /transactions/:id/evidence`
+Invitations (`/invitations*`): list, get one, accept, decline.
 
-Payments:
+Notifications (`/notifications*`): list, mark one read, mark all read.
 
-- `POST /transactions/:id/virtual-account`
-- `GET /transactions/:id/payment-status`
-- `POST /transactions/:id/request-release`
-- `GET /transactions/:id/reconciliation-status`
-- `POST /payments/webhook` style routes are backend-only and never called by frontend.
+Reputation: `GET /reputation/me`.
 
-Disputes:
+Upload: `POST /upload/verification-document`.
 
-- `POST /transactions/:id/disputes`
-- `GET /transactions/:id/disputes`
-- `POST /disputes/:id/evidence`
+Public (no auth, `/Public/*`, PascalCase to match the .NET controller — confirmed live):
+`joinWaitlist`, `contactUs`, `subscribe`, `submitFeedback`, `reportConcern`.
 
-Verification:
+## Not implemented / not confirmed
 
-- `POST /verification/start`
-- `GET /verification/status`
-- `POST /verification/business`
-- `POST /verification/individual`
-- `POST /verification/:requestId/facial`
-- `POST /verification/:requestId/documents`
-- `POST /verification/:requestId/ownership`
-- `POST /verification/:requestId/verify-code`
-- `GET /verification/requests/:requestId`
-
-Reputation:
-
-- `GET /reputation/:profileId`
-- `GET /reputation/me`
-
-Admin:
-
-- `GET /admin/transactions`
-- `GET /admin/disputes`
-- `PATCH /admin/disputes/:id`
-- `GET /admin/verifications`
-- `PATCH /admin/verifications/:id`
-
-AI intelligence:
-
-- `POST /ai/transactions/:id/risk-assessment`
-- `POST /ai/transactions/:id/evidence-checklist`
-- `POST /ai/disputes/:id/summary`
-- `POST /ai/verifications/:id/summary`
-- `POST /ai/reputation/:profileId/summary`
-- `POST /ai/admin/cases/:id/copilot`
-- `POST /ai/feedback`
+- **Admin endpoints** — no admin app exists in this frontend; there is no confirmed `/admin/*`
+  contract.
+- **AI intelligence endpoints** (risk-assessment, evidence-checklist, dispute/verification/
+  reputation summaries, admin copilot) — aspirational, not wired into any current UI. Treat as
+  future work, not a current contract.
+- **Milestone-specific endpoints** — the shipped model uses transaction "tracking" steps
+  (`/transactions/:id/tracking*`), not a separate milestones resource.

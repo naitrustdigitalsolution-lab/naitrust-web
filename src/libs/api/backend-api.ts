@@ -8,10 +8,13 @@
  *
  * Base URL:  {API_BASE_URL}/api
  * Auth:      Bearer <token> in the Authorization header (unless marked "public")
- * Envelope:  every response is { success, data, message, error } —
- *            success: boolean, data: the payload (or omitted on plain
- *            errors), message: optional human-readable string,
- *            error: present only when success is false.
+ * Envelope:  every response is the real backend's NaitrustResponse<T> shape —
+ *            { statusCode, message, data, isSuccessful }. statusCode is the
+ *            HTTP status echoed in the body, message is a human-readable
+ *            string, data is the payload (or null), isSuccessful mirrors
+ *            2xx vs 4xx/5xx. This is confirmed against the live staging API
+ *            (see src/libs/api/home.api.ts) and applies to every endpoint
+ *            below, not just the public ones.
  * Money:     amountMinor is always an integer in kobo (₦1 = 100).
  * Dates:     ISO 8601 strings, e.g. "2026-07-20T09:12:00.000Z".
  *
@@ -42,7 +45,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Account created.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": {
  *       "id": "usr_9f2c1a",
@@ -62,10 +67,7 @@
  * }
  *
  * Response 409 (email already registered):
- * {
- *   "success": false,
- *   "error": "An account with this email already exists"
- * }
+ * { "statusCode": 409, "message": "An account with this email already exists", "isSuccessful": false, "data": null }
  */
 
 /**
@@ -75,7 +77,9 @@
  *
  * Response 200 (no 2FA on this account):
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Login successful.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": {
  *       "id": "usr_9f2c1a", "email": "ada.okafor@example.com",
@@ -90,7 +94,9 @@
  *
  * Response 200 (2FA enabled — login incomplete, no token yet):
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Enter your 2FA code to continue.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": { "id": "usr_9f2c1a", "email": "ada.okafor@example.com", "name": "Ada Okafor", "role": "customer" },
  *     "requires2FA": true
@@ -98,7 +104,7 @@
  * }
  *
  * Response 401 (bad credentials):
- * { "success": false, "error": "Invalid email or password" }
+ * { "statusCode": 401, "message": "Invalid email or password", "isSuccessful": false, "data": null }
  */
 
 /**
@@ -108,7 +114,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Login successful.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": { "id": "usr_9f2c1a", "email": "ada.okafor@example.com", "name": "Ada Okafor", "role": "customer" },
  *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfOWYyYzFhIn0.4f3a9c"
@@ -116,19 +124,21 @@
  * }
  *
  * Response 401 (wrong code):
- * { "success": false, "error": "Invalid code. Please try again." }
+ * { "statusCode": 401, "message": "Invalid code. Please try again.", "isSuccessful": false, "data": null }
  */
 
 /**
  * POST /auth/logout
- * Response 200: { "success": true }
+ * Response 200: { "statusCode": 200, "message": "Logged out.", "isSuccessful": true, "data": null }
  */
 
 /**
  * GET /auth/profile
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": {
  *       "id": "usr_9f2c1a", "email": "ada.okafor@example.com",
@@ -157,7 +167,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Profile updated.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": {
  *       "id": "usr_9f2c1a", "email": "ada.okafor@example.com",
@@ -175,28 +187,28 @@
  * Request body:
  * { "oldPassword": "SecurePass123!", "newPassword": "NewSecurePass456!" }
  *
- * Response 200: { "success": true, "message": "Password changed successfully" }
- * Response 401 (wrong old password): { "success": false, "error": "Current password is incorrect" }
+ * Response 200: { "statusCode": 200, "message": "Password changed successfully", "isSuccessful": true, "data": null }
+ * Response 401 (wrong old password): { "statusCode": 401, "message": "Current password is incorrect", "isSuccessful": false, "data": null }
  */
 
 /**
  * POST /auth/forgot-password (public)
  * Request body: { "email": "ada.okafor@example.com" }
- * Response 200: { "success": true, "message": "A reset code has been sent to your email" }
+ * Response 200: { "statusCode": 200, "message": "A reset code has been sent to your email", "isSuccessful": true, "data": null }
  */
 
 /**
  * POST /auth/verify-otp (public)
  * Request body: { "email": "ada.okafor@example.com", "otp": "482913" }
- * Response 200: { "success": true, "data": { "resetToken": "rst_7f3a9c2e1b" } }
- * Response 400 (wrong/expired code): { "success": false, "error": "Invalid or expired code" }
+ * Response 200: { "statusCode": 200, "message": "Code verified.", "isSuccessful": true, "data": { "resetToken": "rst_7f3a9c2e1b" } }
+ * Response 400 (wrong/expired code): { "statusCode": 400, "message": "Invalid or expired code", "isSuccessful": false, "data": null }
  */
 
 /**
  * POST /auth/reset-password (public)
  * Request body:
  * { "email": "ada.okafor@example.com", "resetToken": "rst_7f3a9c2e1b", "newPassword": "NewSecurePass456!" }
- * Response 200: { "success": true, "message": "Password has been reset" }
+ * Response 200: { "statusCode": 200, "message": "Password has been reset", "isSuccessful": true, "data": null }
  */
 
 /**
@@ -204,7 +216,9 @@
  * Request body: { "email": "ada.okafor@example.com", "otp": "482913" }
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Email verified.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "user": { "id": "usr_9f2c1a", "email": "ada.okafor@example.com", "name": "Ada Okafor", "role": "customer", "isEmailVerified": true },
  *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfOWYyYzFhIn0.4f3a9c"
@@ -215,7 +229,7 @@
 /**
  * POST /auth/resend-verification-otp (public)
  * Request body: { "email": "ada.okafor@example.com" }
- * Response 200: { "success": true, "message": "A new verification code has been sent to ada.okafor@example.com" }
+ * Response 200: { "statusCode": 200, "message": "A new verification code has been sent to ada.okafor@example.com", "isSuccessful": true, "data": null }
  */
 
 
@@ -226,25 +240,25 @@
 /**
  * POST /security/email/send-otp
  * Request body: { "email": "ada.okafor@example.com" }
- * Response 200: { "success": true, "data": null, "message": "OTP sent to ada.okafor@example.com" }
+ * Response 200: { "statusCode": 200, "message": "OTP sent to ada.okafor@example.com", "isSuccessful": true, "data": null }
  */
 
 /**
  * POST /security/email/verify
  * Request body: { "code": "482913" }
- * Response 200: { "success": true, "data": { "verified": true } }
+ * Response 200: { "statusCode": 200, "message": "Email verified.", "isSuccessful": true, "data": { "verified": true } }
  */
 
 /**
  * POST /security/phone/send-otp
  * Request body: { "phone": "+2348012345678" }
- * Response 200: { "success": true, "data": null, "message": "OTP sent to +2348012345678" }
+ * Response 200: { "statusCode": 200, "message": "OTP sent to +2348012345678", "isSuccessful": true, "data": null }
  */
 
 /**
  * POST /security/phone/verify
  * Request body: { "code": "482913" }
- * Response 200: { "success": true, "data": { "verified": true } }
+ * Response 200: { "statusCode": 200, "message": "Phone verified.", "isSuccessful": true, "data": { "verified": true } }
  */
 
 /**
@@ -252,7 +266,9 @@
  * Request body: { "email": "ada.okafor@example.com" }
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Scan the QR code in your authenticator app.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "secret": "JBSWY3DPEHPK3PXP",
  *     "otpauthUri": "otpauth://totp/Naitrust:ada.okafor@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Naitrust"
@@ -263,7 +279,7 @@
 /**
  * POST /security/2fa/verify
  * Request body: { "code": "482913" }
- * Response 200: { "success": true, "data": { "enabled": true } }
+ * Response 200: { "statusCode": 200, "message": "2FA enabled.", "isSuccessful": true, "data": { "enabled": true } }
  */
 
 /**
@@ -283,21 +299,21 @@
  *   "documents": "cac-certificate.pdf, proof-of-address.pdf"
  * }
  *
- * Response 200: { "success": true, "data": { "status": "verified" } }
- * Response 200 (pending manual review): { "success": true, "data": { "status": "pending" } }
+ * Response 200: { "statusCode": 200, "message": "Verification complete.", "isSuccessful": true, "data": { "status": "verified" } }
+ * Response 200 (pending manual review): { "statusCode": 200, "message": "Verification submitted for review.", "isSuccessful": true, "data": { "status": "pending" } }
  */
 
 /**
  * POST /security/pin/set
  * Request body: { "pin": "4821" }
- * Response 200: { "success": true, "data": { "set": true } }
+ * Response 200: { "statusCode": 200, "message": "PIN set.", "isSuccessful": true, "data": { "set": true } }
  */
 
 /**
  * POST /security/pin/verify
  * Request body: { "pin": "4821" }
- * Response 200: { "success": true, "data": { "valid": true } }
- * Response 200 (wrong pin): { "success": true, "data": { "valid": false } }
+ * Response 200: { "statusCode": 200, "message": "PIN verified.", "isSuccessful": true, "data": { "valid": true } }
+ * Response 200 (wrong pin): { "statusCode": 200, "message": "Incorrect PIN.", "isSuccessful": true, "data": { "valid": false } }
  */
 
 
@@ -324,7 +340,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 201,
+ *   "message": "Business created.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "id": "biz_4471d2",
  *     "ownerUserId": "usr_9f2c1a",
@@ -350,7 +368,9 @@
  * GET /businesses/my/businesses
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": [
  *     {
  *       "id": "biz_4471d2",
@@ -378,7 +398,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Business updated.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "id": "biz_4471d2",
  *     "ownerUserId": "usr_9f2c1a",
@@ -395,14 +417,16 @@
 
 
 // ================================================================
-// 4. TRANSACTIONS (SAFE DEAL) — core resource
+// 4. TRANSACTIONS (SAFE DEAL / PROPERTY TRANSACTION) — core resource
 // ================================================================
 
 /**
  * GET /transactions/my
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": [
  *     {
  *       "id": "txn_7ab120",
@@ -427,7 +451,6 @@
  * {
  *   "useCase": "developer-instalments",
  *   "dealType": "milestone",
- *   "partyMode": "b2b",
  *   "role": "buyer",
  *   "participants": [ { "name": "Lekki Gardens Development Co.", "email": "contact@lekkigardens.example", "allocationMinor": 35000000 } ],
  *   "title": "Lekki off-plan unit deposit",
@@ -446,8 +469,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
- *   "message": "Safe deal created",
+ *   "statusCode": 201,
+ *   "message": "Property transaction created",
+ *   "isSuccessful": true,
  *   "data": {
  *     "id": "txn_7ab120",
  *     "reference": "NT-2026-004821",
@@ -465,7 +489,9 @@
  * GET /transactions/:id
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": {
  *     "id": "txn_7ab120",
  *     "reference": "NT-2026-004821",
@@ -478,7 +504,6 @@
  *     "description": "Off-plan unit deposit, held until allocation documents and inspection evidence are confirmed.",
  *     "useCase": "developer-instalments",
  *     "dealType": "milestone",
- *     "partyMode": "b2b",
  *     "deliveryDueDate": "2026-06-15",
  *     "releaseConditions": "Allocation letter and supporting documents confirmed by the buyer, with inspection evidence uploaded.",
  *     "expiresAt": "2026-05-15T09:12:00.000Z",
@@ -492,7 +517,7 @@
  *       "generatedByAi": true,
  *       "sections": [
  *         { "heading": "Parties and purpose", "body": "This safe deal agreement is between you (the Buyer) and Lekki Gardens Development Co. (the Seller)." },
- *         { "heading": "Protected payment", "body": "The Buyer funds ₦350,000.00 into a partner-issued virtual account. Naitrust never holds the funds directly." },
+ *         { "heading": "Protected payment", "body": "The Buyer funds ₦350,000.00 into a partner-issued virtual account through Anchor. Naitrust never holds the funds directly." },
  *         { "heading": "Release conditions", "body": "Allocation letter and supporting documents confirmed by the buyer, with inspection evidence uploaded." }
  *       ]
  *     },
@@ -510,9 +535,9 @@
  *       { "id": "ev_1", "fileName": "allocation-letter.pdf", "kind": "Allocation letter", "fileUrl": "https://cdn.naitrust.com/evidence/ev_1.pdf", "uploadedByName": "Lekki Gardens Development Co.", "note": "Signed allocation letter for Unit 14B.", "createdAt": "2026-05-03T12:00:00.000Z" }
  *     ],
  *     "activity": [
- *       { "id": "a0", "kind": "created", "message": "Safe deal created and counterparty invited.", "createdAt": "2026-05-01T09:12:00.000Z" },
+ *       { "id": "a0", "kind": "created", "message": "Property transaction created and counterparty invited.", "createdAt": "2026-05-01T09:12:00.000Z" },
  *       { "id": "a1", "kind": "accepted", "message": "Lekki Gardens Development Co. accepted the invitation and agreement.", "createdAt": "2026-05-01T15:40:00.000Z" },
- *       { "id": "a2", "kind": "funded", "message": "Buyer funded the partner virtual account (₦350,000.00).", "createdAt": "2026-05-02T08:00:00.000Z" }
+ *       { "id": "a2", "kind": "funded", "message": "Buyer funded the Anchor virtual account (₦350,000.00).", "createdAt": "2026-05-02T08:00:00.000Z" }
  *     ],
  *     "milestones": [
  *       { "id": "ms_0", "title": "Order confirmed", "description": "Both parties agreed the terms and the deal is funded.", "status": "done", "updatedByName": "Lekki Gardens Development Co.", "at": "2026-05-02T09:00:00.000Z" },
@@ -531,7 +556,9 @@
  * GET /transactions/:id/messages
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": [
  *     { "id": "txn_7ab120_m1", "dealId": "txn_7ab120", "senderId": "party_cp", "senderName": "Lekki Gardens Development Co.", "isYou": false, "body": "Thanks for setting up the deal — funding confirmed on our end.", "createdAt": "2026-05-02T08:10:00.000Z" },
  *     { "id": "txn_7ab120_m2", "dealId": "txn_7ab120", "senderId": "party_you", "senderName": "You", "isYou": true, "body": "Great, please share the allocation letter when ready.", "createdAt": "2026-05-02T08:15:00.000Z" }
@@ -542,7 +569,9 @@
  * Request body: { "body": "Any update on the allocation letter?" }
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 201,
+ *   "message": "Message sent.",
+ *   "isSuccessful": true,
  *   "data": { "id": "txn_7ab120_m3", "dealId": "txn_7ab120", "senderId": "party_you", "senderName": "You", "isYou": true, "body": "Any update on the allocation letter?", "createdAt": "2026-05-03T10:00:00.000Z" }
  * }
  */
@@ -553,7 +582,9 @@
  * POST /transactions/:id/tracking/advance
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Tracking updated.",
+ *   "isSuccessful": true,
  *   "data": [
  *     { "id": "ms_0", "title": "Order confirmed", "status": "done", "updatedByName": "Lekki Gardens Development Co.", "at": "2026-05-02T09:00:00.000Z" },
  *     { "id": "ms_1", "title": "Dispatched", "status": "done", "updatedByName": "Lekki Gardens Development Co.", "at": "2026-05-04T09:00:00.000Z" },
@@ -579,10 +610,12 @@
  * --- Termination (either party ends a deal early) ---
  *
  * GET /transactions/:id/termination
- * Response 200 (none yet): { "success": true, "data": null }
+ * Response 200 (none yet): { "statusCode": 200, "message": "OK", "isSuccessful": true, "data": null }
  * Response 200 (exists):
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": {
  *     "dealId": "txn_7ab120",
  *     "status": "requested",
@@ -595,13 +628,15 @@
  *
  * POST /transactions/:id/termination
  * Request body: { "reason": "Buyer no longer needs the unit." }
- * Response 200: same shape as GET above.
+ * Response 200: same shape as GET above, statusCode 201.
  *
  * POST /transactions/:id/termination/respond
  * Request body: { "accept": false, "reason": "Deposit already committed to construction costs." }
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Termination response recorded.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "dealId": "txn_7ab120",
  *     "status": "rejected",
@@ -626,7 +661,6 @@
  * Request body:
  * {
  *   "useCaseTitle": "Developer instalment plans",
- *   "partyModeLabel": "Business to Business",
  *   "buyerName": "Ada Okafor",
  *   "sellerName": "Lekki Gardens Development Co.",
  *   "title": "Lekki off-plan unit deposit",
@@ -639,13 +673,15 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Agreement drafted.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "version": 1,
  *     "generatedByAi": true,
  *     "sections": [
  *       { "heading": "Parties and purpose", "body": "This safe deal agreement is between Ada Okafor (the Buyer) and Lekki Gardens Development Co. (the Seller) for \"Lekki off-plan unit deposit\"." },
- *       { "heading": "Protected payment", "body": "The Buyer will fund ₦350,000.00 into a partner-issued virtual account operated by a regulated payment partner." },
+ *       { "heading": "Protected payment", "body": "The Buyer will fund ₦350,000.00 into a partner-issued virtual account operated by Anchor, the regulated payment partner." },
  *       { "heading": "Delivery obligations", "body": "The Seller must deliver as agreed on or before 2026-06-15." },
  *       { "heading": "Release conditions", "body": "Funds are released to the Seller only when: allocation letter and inspection evidence confirmed by the buyer." },
  *       { "heading": "Disputes", "body": "Either party may open a dispute in the transaction room before release." },
@@ -662,10 +698,12 @@
 
 /**
  * GET /transactions/:id/dispute
- * Response 200 (none): { "success": true, "data": null }
+ * Response 200 (none): { "statusCode": 200, "message": "OK", "isSuccessful": true, "data": null }
  * Response 200 (open):
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": {
  *     "dealId": "txn_7ab120",
  *     "status": "under_review",
@@ -683,13 +721,13 @@
 /**
  * POST /transactions/:id/dispute
  * Request body: { "reason": "Item not as described", "description": "The allocation letter lists a different unit number than agreed." }
- * Response 200: same shape as GET above (status starts at "under_review").
+ * Response 200: same shape as GET above (status starts at "under_review"), statusCode 201.
  */
 
 /**
  * POST /transactions/:id/dispute/messages
  * Request body: { "body": "Attached: original offer (offer.pdf) and the allocation letter received (allocation.pdf)." }
- * Response 200: full dispute object (as in GET above) with the new message appended to "messages".
+ * Response 200: full dispute object (as in GET above) with the new message appended to "messages", statusCode 201.
  */
 
 
@@ -699,10 +737,12 @@
 
 /**
  * GET /transactions/:id/negotiation
- * Response 200 (none): { "success": true, "data": null }
+ * Response 200 (none): { "statusCode": 200, "message": "OK", "isSuccessful": true, "data": null }
  * Response 200 (open):
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": {
  *     "dealId": "txn_7ab120",
  *     "status": "open",
@@ -725,7 +765,7 @@
  * POST /transactions/:id/negotiation/propose
  * Request body:
  * { "message": "Two weeks is fine, but please confirm in writing.", "changes": { "deliveryDueDate": "2026-06-29", "agreementNote": "Add a note confirming the revised delivery date." } }
- * Response 200: full negotiation object with the new proposal appended.
+ * Response 200: full negotiation object with the new proposal appended, statusCode 201.
  */
 
 /**
@@ -738,7 +778,9 @@
  * POST /transactions/:id/negotiation/withdraw
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "Negotiation withdrawn.",
+ *   "isSuccessful": true,
  *   "data": {
  *     "dealId": "txn_7ab120",
  *     "status": "withdrawn",
@@ -766,7 +808,9 @@
  * GET /invitations
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": [
  *     {
  *       "id": "inv_5c81f0",
@@ -774,7 +818,6 @@
  *       "fromName": "Bright Homes Realty Ltd",
  *       "fromRole": "seller",
  *       "yourRole": "buyer",
- *       "partyMode": "b2c",
  *       "title": "Magodo duplex sale",
  *       "amountMinor": 4500000000,
  *       "currency": "NGN",
@@ -796,8 +839,8 @@
 /**
  * POST /invitations/:id/accept
  * POST /invitations/:id/decline
- * Response 200: { "success": true, "data": { "id": "inv_5c81f0", "status": "accepted" } }
- * (or "status": "declined" for the decline endpoint)
+ * Response 200: { "statusCode": 200, "message": "Invitation accepted.", "isSuccessful": true, "data": { "id": "inv_5c81f0", "status": "accepted" } }
+ * (or "status": "declined" / message "Invitation declined." for the decline endpoint)
  */
 
 
@@ -809,7 +852,9 @@
  * GET /notifications
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 200,
+ *   "message": "OK",
+ *   "isSuccessful": true,
  *   "data": [
  *     { "id": "ntf_1", "type": "funding", "title": "Deal funded", "message": "Your deposit for the Lekki off-plan unit has been confirmed.", "read": false, "createdAt": "2026-05-02T08:00:00.000Z", "link": "/deals/txn_7ab120" },
  *     { "id": "ntf_2", "type": "evidence", "title": "New evidence uploaded", "message": "Lekki Gardens Development Co. uploaded an allocation letter.", "read": true, "createdAt": "2026-05-03T12:00:00.000Z", "link": "/deals/txn_7ab120" }
@@ -820,12 +865,12 @@
 
 /**
  * PATCH /notifications/:id/read
- * Response 200: { "success": true, "data": { "id": "ntf_1" } }
+ * Response 200: { "statusCode": 200, "message": "Marked as read.", "isSuccessful": true, "data": { "id": "ntf_1" } }
  */
 
 /**
  * PATCH /notifications/read-all
- * Response 200: { "success": true, "data": null }
+ * Response 200: { "statusCode": 200, "message": "All notifications marked as read.", "isSuccessful": true, "data": null }
  */
 
 
@@ -836,10 +881,10 @@
 /**
  * GET /reputation/me
  * Response 200:
- * { "success": true, "data": { "completedTransactionsCount": 7, "ratingAverage": 4.8, "ratingCount": 5 } }
+ * { "statusCode": 200, "message": "OK", "isSuccessful": true, "data": { "completedTransactionsCount": 7, "ratingAverage": 4.8, "ratingCount": 5 } }
  *
  * (a user/business with no completed deals yet):
- * { "success": true, "data": { "completedTransactionsCount": 0, "ratingAverage": null, "ratingCount": 0 } }
+ * { "statusCode": 200, "message": "OK", "isSuccessful": true, "data": { "completedTransactionsCount": 0, "ratingAverage": null, "ratingCount": 0 } }
  */
 
 
@@ -859,7 +904,9 @@
  *
  * Response 200:
  * {
- *   "success": true,
+ *   "statusCode": 201,
+ *   "message": "Evidence uploaded.",
+ *   "isSuccessful": true,
  *   "data": [
  *     {
  *       "id": "ev_2",
@@ -879,9 +926,8 @@
 // ================================================================
 // 12. PUBLIC SUBMISSIONS (marketing site: waitlist, contact, newsletter, feedback, concern)
 // Five separate endpoints under /api/Public/*, matching the real staging
-// backend (see src/libs/api/home.api.ts). Envelope is the real backend's
-// NaitrustResponse shape: { statusCode, message, data, isSuccessful } — NOT
-// the { success, data, error } shape the authenticated modules use.
+// backend (see src/libs/api/home.api.ts). Same NaitrustResponse envelope as
+// every other section above — { statusCode, message, data, isSuccessful }.
 // ================================================================
 
 /**
@@ -896,10 +942,10 @@
  *   "phone": "+2348012345678",
  *   "source": "waitlist_modal",
  *   "businessName": "Lekki Gardens Development Co.",
- *   "userType": "property_buyer",
+ *   "userType": "property_buyer, real_estate_agent",
  *   "transactionRange": "500k_5m",
  *   "transactionNeed": "Deposit for an off-plan unit",
- *   "expectations": "A clear record before I pay anything",
+ *   "expectations": "property-agent-payments, developer-instalments",
  *   "consent": true,
  *   "submittedAt": "2026-07-21T13:53:37.837Z"
  * }
@@ -908,10 +954,11 @@
  * Response 409 (already on the list): { "statusCode": 409, "message": "This email is already on the waitlist.", "data": null, "isSuccessful": false }
  * Response 422 (validation failure): { "statusCode": 422, "message": "Please provide a valid email address.", "data": null, "isSuccessful": false }
  *
- * NOTE: as of this writing, confirm with the backend engineer that
+ * NOTE: as of this writing, only name/email/phone/source are confirmed
+ * persisted by the live `JoinWaitlistRequest`/`WaitlistEntry` schema —
  * businessName/userType/transactionRange/transactionNeed/expectations/
- * submittedAt are actually persisted — the originally-documented
- * JoinWaitlistRequest schema only had name/email/phone/source.
+ * consent/submittedAt are accepted on the wire but silently dropped until
+ * the backend schema is extended to store them.
  */
 
 /**

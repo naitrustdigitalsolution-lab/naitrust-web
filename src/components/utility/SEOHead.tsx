@@ -15,7 +15,7 @@ const SITE_URL = 'https://naitrust.com';
 const DEFAULT_DESCRIPTION = 'Naitrust is trust infrastructure for Nigerian property transactions — a structured record of participants, agreements, payments, documents, and milestones from deal to completion.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS =
-  'Naitrust, property transactions Nigeria, real estate escrow Nigeria, fintech Nigeria, trust infrastructure, secure property payments, verified property transaction, real estate technology Nigeria, property transaction record';
+  'Naitrust, property transactions Nigeria, real estate trust infrastructure, escrow alternative Nigeria, fintech Nigeria, protected property payments, verified property transaction, real estate technology Nigeria, property transaction record';
 
 export function SEOHead({
   title,

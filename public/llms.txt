@@ -8,7 +8,7 @@ Naitrust Digital Solutions Limited (RC 9001392) is registered in Nigeria under C
 
 ## Key facts
 
-- Category: fintech / real estate / trust infrastructure (escrow-style transaction record) for Nigeria.
+- Category: fintech / real estate / trust infrastructure — a verified, protected-payment transaction record for Nigeria.
 - Audience: property buyers, sellers, real estate agents, property developers, real estate companies, and legal/transaction representatives.
 - Naitrust does not hold funds itself — payments move through regulated financial partners (e.g. Anchor for payment infrastructure), and identity/business verification runs through regulated providers (e.g. QoreID).
 - Status: pre-launch, early access via waiting list.

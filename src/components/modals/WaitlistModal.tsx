@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -11,6 +11,8 @@ import {
 } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
+import { Checkbox } from '../ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { joinWaitlist } from '../../services/publicService';
 import type {
   TransactionRange,
@@ -25,11 +27,11 @@ type WaitlistFormState = {
   businessName: string;
   email: string;
   phone: string;
-  userType: WaitlistUserType | '';
+  userType: WaitlistUserType[];
   transactionRange: TransactionRange | '';
   transactionNeed: string;
   expectations: string;
-  useCase: string;
+  useCase: string[];
   consent: boolean;
 };
 
@@ -44,13 +46,21 @@ const initialFormState: WaitlistFormState = {
   businessName: '',
   email: '',
   phone: '',
-  userType: '',
+  userType: [],
   transactionRange: '',
   transactionNeed: '',
   expectations: '',
-  useCase: '',
+  useCase: [],
   consent: true,
 };
+
+const transactionRanges: Array<{ value: TransactionRange; label: string }> = [
+  { value: 'below_100k', label: 'Below NGN 100k' },
+  { value: '100k_500k', label: 'NGN 100k - 500k' },
+  { value: '500k_5m', label: 'NGN 500k - 5m' },
+  { value: '5m_50m', label: 'NGN 5m - 50m' },
+  { value: 'above_50m', label: 'Above NGN 50m' },
+];
 
 const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
   { value: 'property_buyer', label: 'Property buyer' },
@@ -70,20 +80,39 @@ export function openWaitlistModal() {
 export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const [formState, setFormState] = useState<WaitlistFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rangeOpen, setRangeOpen] = useState(false);
 
   const updateField = <Key extends keyof WaitlistFormState>(key: Key, value: WaitlistFormState[Key]) => {
     setFormState((current) => ({ ...current, [key]: value }));
   };
 
+  const toggleUserType = (value: WaitlistUserType) => {
+    setFormState((current) => ({
+      ...current,
+      userType: current.userType.includes(value)
+        ? current.userType.filter((item) => item !== value)
+        : [...current.userType, value],
+    }));
+  };
+
+  const toggleUseCase = (value: string) => {
+    setFormState((current) => ({
+      ...current,
+      useCase: current.useCase.includes(value)
+        ? current.useCase.filter((item) => item !== value)
+        : [...current.useCase, value],
+    }));
+  };
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!formState.userType) {
+    if (formState.userType.length === 0) {
       toast.error('Please tell us how you will use Naitrust.');
       return;
     }
 
-    if (!formState.useCase) {
+    if (formState.useCase.length === 0) {
       toast.error('Please choose the property transaction closest to your needs.');
       return;
     }
@@ -100,10 +129,10 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
       businessName: formState.businessName,
       email: formState.email,
       phone: formState.phone,
-      userType: formState.userType,
+      userType: formState.userType.join(', '),
       transactionRange: formState.transactionRange,
       transactionNeed: formState.transactionNeed,
-      expectations: formState.useCase,
+      expectations: formState.useCase.join(', '),
       consent: formState.consent,
       source: 'public_header_waitlist',
       submittedAt: new Date().toISOString(),
@@ -151,6 +180,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               First name
               <Input
                 required
+                className="h-11"
                 value={formState.firstName}
                 onChange={(event) => updateField('firstName', event.target.value)}
                 placeholder="First name"
@@ -160,6 +190,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               Last name
               <Input
                 required
+                className="h-11"
                 value={formState.lastName}
                 onChange={(event) => updateField('lastName', event.target.value)}
                 placeholder="Last name"
@@ -168,8 +199,11 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-2 text-sm font-medium">
-              Business or company <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              <span className="flex items-baseline gap-1">
+                Business or company <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              </span>
               <Input
+                className="h-11"
                 value={formState.businessName}
                 onChange={(event) => updateField('businessName', event.target.value)}
                 placeholder="Company name"
@@ -180,6 +214,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               <Input
                 required
                 type="email"
+                className="h-11"
                 value={formState.email}
                 onChange={(event) => updateField('email', event.target.value)}
                 placeholder="you@example.com"
@@ -187,58 +222,126 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             </label>
           </div>
 
-          <div className="grid min-w-0 gap-2 text-sm font-medium">
-            How will you use Naitrust?
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {userTypes.map((type) => (
-                <button
-                  key={type.value}
-                  type="button"
-                  aria-pressed={formState.userType === type.value}
-                  onClick={() => updateField('userType', type.value)}
-                  className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
-                    formState.userType === type.value
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
-                  }`}
-                >
-                  {type.label}
-                </button>
-              ))}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid min-w-0 gap-2 text-sm font-medium">
+              How will you use Naitrust?
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                  >
+                    <span className="truncate">
+                      {formState.userType.length > 0
+                        ? userTypes
+                            .filter((type) => formState.userType.includes(type.value))
+                            .map((type) => type.label)
+                            .join(', ')
+                        : 'Select all that apply'}
+                    </span>
+                    <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
+                  <div className="grid gap-0.5">
+                    {userTypes.map((type) => (
+                      <label
+                        key={type.value}
+                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
+                      >
+                        <Checkbox
+                          checked={formState.userType.includes(type.value)}
+                          onCheckedChange={() => toggleUserType(type.value)}
+                        />
+                        {type.label}
+                      </label>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="grid min-w-0 gap-2 text-sm font-medium">
+              <span className="flex items-baseline gap-1">
+                Typical transaction size <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              </span>
+              <Popover open={rangeOpen} onOpenChange={setRangeOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                  >
+                    <span className="truncate">
+                      {formState.transactionRange
+                        ? transactionRanges.find((range) => range.value === formState.transactionRange)?.label
+                        : 'Select one'}
+                    </span>
+                    <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
+                  <div className="grid gap-0.5">
+                    {transactionRanges.map((range) => (
+                      <button
+                        key={range.value}
+                        type="button"
+                        onClick={() => {
+                          updateField('transactionRange', range.value);
+                          setRangeOpen(false);
+                        }}
+                        className={`flex w-full items-center rounded-md px-2 py-1.5 text-left text-xs font-medium leading-snug transition hover:bg-muted ${
+                          formState.transactionRange === range.value ? 'bg-primary/10 text-primary' : ''
+                        }`}
+                      >
+                        {range.label}
+                      </button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
           <div className="grid min-w-0 gap-2 text-sm font-medium">
             Which property transaction is closest to your needs?
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {useCases.map((item) => (
+            <Popover>
+              <PopoverTrigger asChild>
                 <button
-                  key={item.slug}
                   type="button"
-                  aria-pressed={formState.useCase === item.slug}
-                  onClick={() => updateField('useCase', item.slug)}
-                  className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
-                    formState.useCase === item.slug
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
-                  }`}
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
-                  {item.title}
+                  <span className="truncate">
+                    {formState.useCase.length > 0
+                      ? [...useCases.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title), ...(formState.useCase.includes('other') ? ['Something else'] : [])].join(', ')
+                      : 'Select all that apply'}
+                  </span>
+                  <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
                 </button>
-              ))}
-              <button
-                type="button"
-                aria-pressed={formState.useCase === 'other'}
-                onClick={() => updateField('useCase', 'other')}
-                className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
-                  formState.useCase === 'other'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
-                }`}
-              >
-                Something else
-              </button>
-            </div>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
+                <div className="grid gap-0.5">
+                  {useCases.map((item) => (
+                    <label
+                      key={item.slug}
+                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
+                    >
+                      <Checkbox
+                        checked={formState.useCase.includes(item.slug)}
+                        onCheckedChange={() => toggleUseCase(item.slug)}
+                      />
+                      {item.title}
+                    </label>
+                  ))}
+                  <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted">
+                    <Checkbox
+                      checked={formState.useCase.includes('other')}
+                      onCheckedChange={() => toggleUseCase('other')}
+                    />
+                    Something else
+                  </label>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <label className="grid gap-2 text-sm font-medium">

@@ -61,7 +61,7 @@ export interface WaitlistPayload {
   businessName: string;
   email: string;
   phone: string;
-  userType: WaitlistUserType | '';
+  userType: string;
   transactionRange: TransactionRange | '';
   transactionNeed: string;
   expectations?: string;

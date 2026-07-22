@@ -80,7 +80,16 @@ export function PaymentSuccessAnimation() {
       >
         <h2 className="text-primary mb-2">Payment Successful!</h2>
         <p className="text-muted-foreground">
-          Your payment is being held securely in escrow
+          Your payment is being held securely by{' '}
+          <a
+            href="https://getanchor.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary underline underline-offset-2 hover:no-underline"
+          >
+            Anchor
+          </a>
+          , our regulated payment partner
         </p>
       </motion.div>
     </div>

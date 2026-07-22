@@ -195,7 +195,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <div className="relative mx-auto w-full max-w-2xl">
               <div className="absolute -inset-6 rounded-[2.5rem] bg-primary/10 blur-3xl" />
-              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-0 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 lg:p-6">
+              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-0 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 lg:p-4 xl:p-6">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200"
                   alt="Modern residential property represented in a Naitrust transaction"

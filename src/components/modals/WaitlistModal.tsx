@@ -222,84 +222,53 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             </label>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="grid min-w-0 gap-2 text-sm font-medium">
-              How will you use Naitrust?
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
-                  >
-                    <span className="truncate">
-                      {formState.userType.length > 0
-                        ? userTypes
-                            .filter((type) => formState.userType.includes(type.value))
-                            .map((type) => type.label)
-                            .join(', ')
-                        : 'Select all that apply'}
+          <div className="grid min-w-0 gap-2 text-sm font-medium">
+            How will you use Naitrust?
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                >
+                  <span className="min-w-0 flex-1 truncate">
+                    {formState.userType.length > 0
+                      ? `${formState.userType.length} selected`
+                      : 'Select all that apply'}
+                  </span>
+                  <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
+                <div className="grid gap-0.5">
+                  {userTypes.map((type) => (
+                    <label
+                      key={type.value}
+                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
+                    >
+                      <Checkbox
+                        checked={formState.userType.includes(type.value)}
+                        onCheckedChange={() => toggleUserType(type.value)}
+                      />
+                      {type.label}
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            {formState.userType.length > 0 && (
+              <div className="scrollbar-none flex gap-1 overflow-x-auto pb-0.5">
+                {userTypes
+                  .filter((type) => formState.userType.includes(type.value))
+                  .map((type) => (
+                    <span
+                      key={type.value}
+                      className="shrink-0 whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                    >
+                      {type.label}
                     </span>
-                    <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
-                  <div className="grid gap-0.5">
-                    {userTypes.map((type) => (
-                      <label
-                        key={type.value}
-                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
-                      >
-                        <Checkbox
-                          checked={formState.userType.includes(type.value)}
-                          onCheckedChange={() => toggleUserType(type.value)}
-                        />
-                        {type.label}
-                      </label>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="grid min-w-0 gap-2 text-sm font-medium">
-              <span className="flex items-baseline gap-1">
-                Typical transaction size <span className="text-xs font-normal text-muted-foreground">(optional)</span>
-              </span>
-              <Popover open={rangeOpen} onOpenChange={setRangeOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
-                  >
-                    <span className="truncate">
-                      {formState.transactionRange
-                        ? transactionRanges.find((range) => range.value === formState.transactionRange)?.label
-                        : 'Select one'}
-                    </span>
-                    <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
-                  <div className="grid gap-0.5">
-                    {transactionRanges.map((range) => (
-                      <button
-                        key={range.value}
-                        type="button"
-                        onClick={() => {
-                          updateField('transactionRange', range.value);
-                          setRangeOpen(false);
-                        }}
-                        className={`flex w-full items-center rounded-md px-2 py-1.5 text-left text-xs font-medium leading-snug transition hover:bg-muted ${
-                          formState.transactionRange === range.value ? 'bg-primary/10 text-primary' : ''
-                        }`}
-                      >
-                        {range.label}
-                      </button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
+                  ))}
+              </div>
+            )}
           </div>
 
           <div className="grid min-w-0 gap-2 text-sm font-medium">
@@ -310,9 +279,9 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
                   type="button"
                   className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
-                  <span className="truncate">
+                  <span className="min-w-0 flex-1 truncate">
                     {formState.useCase.length > 0
-                      ? [...useCases.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title), ...(formState.useCase.includes('other') ? ['Something else'] : [])].join(', ')
+                      ? `${formState.useCase.length} selected`
                       : 'Select all that apply'}
                   </span>
                   <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
@@ -342,10 +311,67 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
                 </div>
               </PopoverContent>
             </Popover>
+            {formState.useCase.length > 0 && (
+              <div className="scrollbar-none flex gap-1 overflow-x-auto pb-0.5">
+                {[
+                  ...useCases.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title),
+                  ...(formState.useCase.includes('other') ? ['Something else'] : []),
+                ].map((label) => (
+                  <span
+                    key={label}
+                    className="shrink-0 whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="grid min-w-0 gap-2 text-sm font-medium">
+            <span className="flex items-baseline gap-1">
+              Typical transaction size <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+            </span>
+            <Popover open={rangeOpen} onOpenChange={setRangeOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                >
+                  <span className="min-w-0 flex-1 truncate">
+                    {formState.transactionRange
+                      ? transactionRanges.find((range) => range.value === formState.transactionRange)?.label
+                      : 'Select one'}
+                  </span>
+                  <ChevronDown size={14} className="shrink-0 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
+                <div className="grid gap-0.5">
+                  {transactionRanges.map((range) => (
+                    <button
+                      key={range.value}
+                      type="button"
+                      onClick={() => {
+                        updateField('transactionRange', range.value);
+                        setRangeOpen(false);
+                      }}
+                      className={`flex w-full items-center rounded-md px-2 py-1.5 text-left text-xs font-medium leading-snug transition hover:bg-muted ${
+                        formState.transactionRange === range.value ? 'bg-primary/10 text-primary' : ''
+                      }`}
+                    >
+                      {range.label}
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <label className="grid gap-2 text-sm font-medium">
-            What would make property transactions clearer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+            <span className="flex items-baseline gap-1">
+              What would make property transactions clearer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+            </span>
             <Textarea
               value={formState.transactionNeed}
               onChange={(event) => updateField('transactionNeed', event.target.value)}

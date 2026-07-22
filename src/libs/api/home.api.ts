@@ -14,7 +14,6 @@ export const homeApi = {
   joinWaitlist: async (input: JoinWaitlistInput): Promise<ApiSuccess<JoinWaitlistInput>> => {
     console.log(input, "joinWaitlist input");
     const res = await httpClient.post(endpoints.public.joinWaitlist, input, undefined, { skipAuth: true });
-    // const res = {}
     return res as ApiSuccess<JoinWaitlistInput>;
   },
 

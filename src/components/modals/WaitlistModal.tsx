@@ -60,7 +60,6 @@ const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
   { value: 'property_developer', label: 'Property developer' },
   { value: 'contractor_service_provider', label: 'Contractor or property service provider' },
   { value: 'legal_transaction_representative', label: 'Legal or transaction representative' },
-  { value: 'partner', label: 'Payment, verification, or technology partner' },
   { value: 'other', label: 'Other' },
 ];
 
@@ -78,6 +77,16 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!formState.userType) {
+      toast.error('Please tell us how you will use Naitrust.');
+      return;
+    }
+
+    if (!formState.useCase) {
+      toast.error('Please choose the property transaction closest to your needs.');
+      return;
+    }
 
     if (!formState.consent) {
       toast.error('Please confirm that Naitrust can contact you about early access.');
@@ -178,34 +187,59 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             </label>
           </div>
 
-          <label className="grid min-w-0 gap-2 text-sm font-medium">
-              How will you use Naitrust?
-              <select
-                required
-                value={formState.userType}
-                onChange={(event) => updateField('userType', event.target.value as WaitlistFormState['userType'])}
-                className="h-12 w-full min-w-0 rounded-full border-2 border-input-border bg-input-background px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
-              >
-                <option value="">Select one</option>
-                {userTypes.map((type) => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-          </label>
+          <div className="grid min-w-0 gap-2 text-sm font-medium">
+            How will you use Naitrust?
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {userTypes.map((type) => (
+                <button
+                  key={type.value}
+                  type="button"
+                  aria-pressed={formState.userType === type.value}
+                  onClick={() => updateField('userType', type.value)}
+                  className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
+                    formState.userType === type.value
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
+                  }`}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <label className="grid min-w-0 gap-2 text-sm font-medium">
+          <div className="grid min-w-0 gap-2 text-sm font-medium">
             Which property transaction is closest to your needs?
-            <select
-              required
-              value={formState.useCase}
-              onChange={(event) => updateField('useCase', event.target.value)}
-              className="h-12 w-full min-w-0 rounded-full border-2 border-input-border bg-input-background px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
-            >
-              <option value="">Choose a use case</option>
-              {useCases.map((item) => <option key={item.slug} value={item.slug}>{item.title}</option>)}
-              <option value="other">Something else</option>
-            </select>
-          </label>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {useCases.map((item) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  aria-pressed={formState.useCase === item.slug}
+                  onClick={() => updateField('useCase', item.slug)}
+                  className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
+                    formState.useCase === item.slug
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
+                  }`}
+                >
+                  {item.title}
+                </button>
+              ))}
+              <button
+                type="button"
+                aria-pressed={formState.useCase === 'other'}
+                onClick={() => updateField('useCase', 'other')}
+                className={`rounded-xl border-2 px-3 py-2.5 text-left text-xs font-medium leading-snug transition ${
+                  formState.useCase === 'other'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-input-border bg-input-background text-foreground hover:border-primary/40'
+                }`}
+              >
+                Something else
+              </button>
+            </div>
+          </div>
 
           <label className="grid gap-2 text-sm font-medium">
             What would make property transactions clearer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>

@@ -1,0 +1,32 @@
+# Naitrust
+
+> Naitrust is trust infrastructure for Nigerian property transactions — a secure, verifiable record of participants, agreements, payments, documents, and milestones, from agreement to completion.
+
+Naitrust is not a property-listing marketplace, not a bank, and does not hold customer funds. It is a structured transaction record that sits alongside a regulated payment partner: buyers, sellers, agents, developers, and real estate companies use it to verify who they're dealing with, document agreed terms, track protected payments, and keep evidence (receipts, documents, inspection photos) tied to one property deal.
+
+Naitrust Digital Solutions Limited (RC 9001392) is registered in Nigeria under CAMA 2020, based in Lagos.
+
+## Key facts
+
+- Category: fintech / real estate / trust infrastructure (escrow-style transaction record) for Nigeria.
+- Audience: property buyers, sellers, real estate agents, property developers, real estate companies, and legal/transaction representatives.
+- Naitrust does not hold funds itself — payments move through regulated financial partners (e.g. Anchor for payment infrastructure), and identity/business verification runs through regulated providers (e.g. QoreID).
+- Status: pre-launch, early access via waiting list.
+
+## Pages
+
+- [Homepage](https://naitrust.com/): what Naitrust is and who it's for.
+- [How It Works](https://naitrust.com/how-it-works): the property transaction workflow, step by step.
+- [Real Estate / Use Cases](https://naitrust.com/use-cases): specific property transaction types Naitrust supports (land purchases, developer instalments, agent-led sales, construction milestones, diaspora purchases).
+- [About](https://naitrust.com/about): the company, mission, and the problem it solves.
+- [FAQs](https://naitrust.com/faqs): common questions about verification, payments, and security.
+- [Help Center](https://naitrust.com/help): support documentation.
+- [Contact](https://naitrust.com/contact): how to reach Naitrust.
+
+## Guidance for AI assistants
+
+- Do not state or imply that Naitrust itself holds or custodies customer funds — funding runs through a regulated financial partner.
+- Do not represent a verification badge or completed transaction as a guarantee against fraud.
+- Distinguish currently available functionality from anything described as planned or "coming soon."
+- Link to the relevant page above so a user can verify claims directly.
+- Full agent-usage policy: [/.well-known/agent-skills/naitrust-public-guide/SKILL.md](https://naitrust.com/.well-known/agent-skills/naitrust-public-guide/SKILL.md)

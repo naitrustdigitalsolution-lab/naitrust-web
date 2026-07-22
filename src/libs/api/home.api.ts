@@ -12,7 +12,9 @@ import type {
 export const homeApi = {
   /** POST /Public/joinWaitlist */
   joinWaitlist: async (input: JoinWaitlistInput): Promise<ApiSuccess<JoinWaitlistInput>> => {
-    const res = await httpClient.post(endpoints.public.joinWaitlist, input, undefined, { skipAuth: true });
+    console.log(input, "joinWaitlist input");
+    // const res = await httpClient.post(endpoints.public.joinWaitlist, input, undefined, { skipAuth: true });
+    const res = {}
     return res as ApiSuccess<JoinWaitlistInput>;
   },
 

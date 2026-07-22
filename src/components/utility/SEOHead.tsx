@@ -14,11 +14,13 @@ const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
 const DEFAULT_DESCRIPTION = 'Naitrust is trust infrastructure for Nigerian property transactions — a structured record of participants, agreements, payments, documents, and milestones from deal to completion.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+const DEFAULT_KEYWORDS =
+  'Naitrust, property transactions Nigeria, real estate escrow Nigeria, fintech Nigeria, trust infrastructure, secure property payments, verified property transaction, real estate technology Nigeria, property transaction record';
 
 export function SEOHead({
   title,
   description = DEFAULT_DESCRIPTION,
-  keywords,
+  keywords = DEFAULT_KEYWORDS,
   canonicalPath,
   ogType = 'website',
   ogImage = DEFAULT_IMAGE,
@@ -31,7 +33,7 @@ export function SEOHead({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords} />}
+      <meta name="keywords" content={keywords} />
       {noindex && <meta name="robots" content="noindex, nofollow" />}
 
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
@@ -41,11 +43,15 @@ export function SEOHead({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="en_NG" />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@naitrust14419" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />

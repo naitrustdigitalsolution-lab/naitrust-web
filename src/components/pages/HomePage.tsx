@@ -176,7 +176,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button> */}
               <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group bg-primary text-white px-8 py-6 text-sm sm:text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
                 Get Early Access
-                <ArrowRight size={24} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={24} className="ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => onNavigate('how-it-works')} className="px-8 py-6 text-sm sm:text-lg font-semibold rounded-full">
                 See How It Works
@@ -195,13 +195,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <div className="relative mx-auto w-full max-w-2xl">
               <div className="absolute -inset-6 rounded-[2.5rem] bg-primary/10 blur-3xl" />
-              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-4 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 sm:p-6">
+              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-0 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 lg:p-6">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200"
                   alt="Modern residential property represented in a Naitrust transaction"
-                  className="h-52 w-full rounded-2xl object-cover sm:h-72"
+                  className="h-72 w-full rounded-2xl object-cover sm:h-72"
                 />
-                <div className="relative -mt-12 mx-3 rounded-2xl border bg-card p-4 shadow-xl sm:mx-6 sm:p-5">
+                <div className="relative -mt-12 mx-0 rounded-0 lg:rounded-2xl border bg-card p-4 shadow-xl lg:mx-2 lg:p-5">
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wider text-primary">Property transaction</p>
@@ -591,7 +591,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             >
               <Badge className="mb-4 bg-primary text-white text-base px-4 py-2">For Businesses</Badge>
               <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6">
-                Build Trust, Close Better Transactions
+                Build Trust, Close Better Property Deals
               </h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 Property companies, agents, and developers should be able to give buyers a professional and transparent transaction experience. Naitrust provides a structured way to record who is involved, what was agreed, what was paid, and which evidence exists.
@@ -660,7 +660,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             >
               <Badge className="mb-4 bg-primary text-white">New Feature</Badge>
               <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6 text-white">
-                Transaction Room — Your Deal Record
+                Transaction Room — Your Property Deal Record
               </h2>
               <p className="text-lg text-white mb-8 leading-relaxed text-justify">
                 Every property transaction gets a shared <strong className="text-white">Naitrust safe-deal room</strong> — a clear record of the property, who is involved, what was agreed, what evidence is required, and what happens next, reviewable by buyers, sellers, agents, and property companies from one place.
@@ -769,9 +769,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mb-12"
           >
             <Badge className="mb-4">Trusted Partners</Badge>
-            <h2 className="text-2xl sm:text-3xl naitrust-satoshi-bold mb-4 text-gray-900 dark:text-white">Powered by Industry Leaders</h2>
+            <h2 className="text-2xl sm:text-3xl naitrust-satoshi-bold mb-4 text-gray-900 dark:text-white">Regulated Fintech Behind Every Property Transaction</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Naitrust handles the trust workflow while regulated and trusted services support verification, payment, and intelligence around the deal
+              Naitrust handles the trust workflow while regulated and trusted financial services support verification, payment, and intelligence around every real estate deal
             </p>
           </motion.div>
 

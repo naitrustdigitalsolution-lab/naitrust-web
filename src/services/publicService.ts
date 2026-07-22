@@ -14,6 +14,7 @@ import type {
 import type { WaitlistPayload, WaitlistResponse } from '../types/global';
 
 export async function joinWaitlist(payload: WaitlistPayload): Promise<WaitlistResponse> {
+  
   const result = await homeApi.joinWaitlist({
     name: payload.fullName,
     email: payload.email,

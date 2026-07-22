@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react';
 import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart, Apple, Play } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { subscribe } from '../../../services/publicService';
+import { openWaitlistModal } from '../../modals/WaitlistModal';
 import { toast } from 'sonner';
 
 interface FooterProps {
@@ -35,8 +36,8 @@ export function Footer({ onNavigate }: FooterProps) {
       links: [
         { label: 'How It Works', page: 'how-it-works' },
         { label: 'Real Estate', page: 'use-cases' },
-        { label: 'Join Property Early Access', page: 'register' },
-        { label: 'For Property Companies', page: 'register-business' },
+        { label: 'Join Property Early Access', page: 'register', modal: true },
+        { label: 'For Property Companies', page: 'register-business', modal: true },
       ],
     },
     {
@@ -150,27 +151,33 @@ export function Footer({ onNavigate }: FooterProps) {
                 </a>
               </div>
             </div>
-            <div className="mb-5 flex flex-wrap gap-3">
+            <div className="mb-5 flex flex-wrap gap-x-3 gap-y-2">
               {appStoreLinks.map((store) => {
                 const Icon = store.icon;
 
                 return (
-                  <a
-                    key={store.label}
-                    href={store.href}
-                    aria-label={`${store.eyebrow} ${store.label}`}
-                    className="inline-flex min-h-12 items-center gap-3 rounded-md border border-white/15 bg-black px-4 py-2 text-white shadow-sm transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    <Icon size={24} className="shrink-0" fill={store.label === 'App Store' ? 'currentColor' : 'none'} />
-                    <span className="leading-none">
-                      <span className="block text-[10px] font-medium uppercase tracking-[0.08em] text-white/70">
-                        {store.eyebrow}
+                  <div key={store.label} className="flex flex-col items-start gap-1">
+                    <a
+                      href={store.href}
+                      aria-label={`${store.eyebrow} ${store.label} — coming soon`}
+                      onClick={(event) => event.preventDefault()}
+                      aria-disabled="true"
+                      className="inline-flex min-h-12 cursor-default items-center gap-3 rounded-md border border-white/15 bg-black px-4 py-2 text-white opacity-80 shadow-sm"
+                    >
+                      <Icon size={24} className="shrink-0" fill={store.label === 'App Store' ? 'currentColor' : 'none'} />
+                      <span className="leading-none">
+                        <span className="block text-[10px] font-medium uppercase tracking-[0.08em] text-white/70">
+                          {store.eyebrow}
+                        </span>
+                        <span className="mt-1 block text-sm font-semibold text-white">
+                          {store.label}
+                        </span>
                       </span>
-                      <span className="mt-1 block text-sm font-semibold text-white">
-                        {store.label}
-                      </span>
+                    </a>
+                      <span className="pl-1 text-[8px] font-medium uppercase tracking-[0.08em] text-white/50">
+                      Coming soon
                     </span>
-                  </a>
+                  </div>
                 );
               })}
             </div>
@@ -194,7 +201,10 @@ export function Footer({ onNavigate }: FooterProps) {
                 <ul className="space-y-2 text-sm lg:text-md text-white/80">
                   {group.links.map((link) => (
                     <li key={`${group.title}-${link.label}`}>
-                      <button onClick={() => onNavigate(link.page)} className="text-left hover:text-white transition-colors">
+                      <button
+                        onClick={() => ('modal' in link && link.modal ? openWaitlistModal() : onNavigate(link.page))}
+                        className="text-left hover:text-white transition-colors"
+                      >
                         {link.label}
                       </button>
                     </li>

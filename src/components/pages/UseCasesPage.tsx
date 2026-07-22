@@ -24,12 +24,12 @@ export function UseCasesPage() {
             Real estate first
           </Badge>
           <h1 className="max-w-4xl text-4xl font-bold leading-tight sm:text-5xl">
-            Clearer records for Nigerian property transactions
+            Trust Infrastructure for Nigerian Real Estate
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-blue-100">
-            Naitrust is being built for property transactions where participant identity,
-            clear terms, payment records, documents, and evidence matter. It does not list
-            or sell properties.
+            Naitrust is the trust layer underneath every Nigerian property deal — verifying
+            who's involved, documenting agreed terms, protecting payments, and keeping
+            evidence in one record. It does not list or sell properties.
           </p>
           <p className="mt-5 text-sm font-medium text-blue-300">
             Coming soon · Join the waiting list for launch updates

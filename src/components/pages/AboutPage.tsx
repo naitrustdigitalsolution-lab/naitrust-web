@@ -23,9 +23,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
        <section className="relative overflow-hidden bg-[#031335] dark:bg-[#0A0E1A] px-4 py-20 text-white sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative mx-auto max-w-5xl text-center">
           <Badge className="mb-5 border border-white/15 bg-white/10 text-white hover:bg-white/10">About Naitrust</Badge>
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">Trust Infrastructure for<br />Nigerian Real Estate</h1>
+          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">Why We're Building Naitrust</h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-blue-100">
-            Naitrust Digital Solutions Limited is building a clearer way for property buyers, sellers, agents, developers, and real estate companies to record agreements, payments, documents, milestones, and issues in one place.
+            Property deals in Nigeria still depend on verbal promises, scattered receipts, and payments sent on faith — with nothing to fall back on if something goes wrong. That's why we're building Naitrust: one secure, verifiable record for every agreement, payment, and milestone, and a clear way to see each property transaction through, from agreement to completion.
           </p>
         </motion.div>
       </section>

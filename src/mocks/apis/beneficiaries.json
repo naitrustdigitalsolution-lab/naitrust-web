@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "ben_mock_001",
+      "type": "naitrust_user",
+      "name": "Chioma Electronics",
+      "username": "chioma_electronics",
+      "isFavourite": true,
+      "createdAt": "2026-05-14T09:00:00Z"
+    },
+    {
+      "id": "ben_mock_002",
+      "type": "naitrust_user",
+      "name": "Tunde Bakare",
+      "phone": "+2348031234567",
+      "isFavourite": false,
+      "createdAt": "2026-06-02T13:20:00Z"
+    },
+    {
+      "id": "ben_mock_003",
+      "type": "bank_account",
+      "name": "Okonkwo & Sons Construction",
+      "bankName": "Zenith Bank",
+      "accountNumber": "•••• 7742",
+      "isFavourite": true,
+      "createdAt": "2026-06-20T16:45:00Z"
+    },
+    {
+      "id": "ben_mock_004",
+      "type": "bank_account",
+      "name": "Greenfield Estates Ltd",
+      "bankName": "UBA",
+      "accountNumber": "•••• 3305",
+      "isFavourite": false,
+      "createdAt": "2026-07-01T10:10:00Z"
+    }
+  ]
+}

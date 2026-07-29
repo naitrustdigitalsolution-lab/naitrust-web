@@ -73,17 +73,17 @@ function Frame({ children }: { children: React.ReactNode }) {
             Protected value by month
             <HelpHint title="Protected value by month">
               <p>
-                Each point is the total value of property transactions you created or joined that month —
+                Each point is the total value of Protected Deals you created or joined that month —
                 money held safely with a regulated partner until the agreed conditions are met.
               </p>
               <p>
                 It's a quick read on your monthly activity. Hover a point to see the exact amount and
-                number of property transactions.
+                number of Protected Deals.
               </p>
             </HelpHint>
           </h2>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            The value recorded through your property transactions each month.
+            The value recorded through your Protected Deals each month.
           </p>
         </div>
       </div>
@@ -108,7 +108,7 @@ export function ActivityChart({ deals, isLoading, currency = 'NGN' }: ActivityCh
         <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
           <p className="text-sm font-medium text-foreground">No activity yet</p>
           <p className="max-w-xs text-sm text-muted-foreground">
-            Your monthly recorded value will appear here as you create and fund property transactions.
+            Your monthly recorded value will appear here as you create and fund Protected Deals.
           </p>
         </div>
       </Frame>

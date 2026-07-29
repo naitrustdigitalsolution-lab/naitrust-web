@@ -44,7 +44,7 @@ export function LoginForm({
           <img src={icon} alt="Naitrust logo" className="h-full w-full" />
         </div>
         <h2 className="mb-2 text-2xl font-bold">Welcome back</h2>
-        <p className="text-sm leading-6 text-muted-foreground">Access your transaction rooms, evidence, and pending actions.</p>
+        <p className="text-sm leading-6 text-muted-foreground">Your balance, recipients, payments, and protected transactions are ready.</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
@@ -98,7 +98,7 @@ export function LoginForm({
             </>
           ) : (
             <>
-              Login to account
+              Sign in securely
               <ArrowRight size={18} className="ml-2" />
             </>
           )}

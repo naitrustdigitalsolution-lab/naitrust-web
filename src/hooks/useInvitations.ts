@@ -6,7 +6,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invitationsApi } from '../libs/api/invitations.api';
-import type { DealInvitation, InvitationStatus } from '../libs/store/types';
+import type { DealInvitation, InvitationStatus, PublicInvitationPreview, User } from '../libs/store/types';
 
 export const INVITATIONS_QUERY_KEY = ['invitations'] as const;
 
@@ -38,6 +38,24 @@ export function useRespondToInvitation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: INVITATIONS_QUERY_KEY });
     },
+  });
+}
+
+export function usePublicInvitation(token: string | undefined) {
+  return useQuery<PublicInvitationPreview | null>({
+    queryKey: ['public-invitation', token],
+    enabled: !!token,
+    retry: false,
+    queryFn: async () => (token ? (await invitationsApi.getPublicPreview(token)).data : null),
+  });
+}
+
+export function useClaimInvitation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ token, user }: { token: string; user: Pick<User, 'id' | 'email' | 'role' | 'kycVerified'> }) =>
+      invitationsApi.claim(token, user),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: INVITATIONS_QUERY_KEY }),
   });
 }
 

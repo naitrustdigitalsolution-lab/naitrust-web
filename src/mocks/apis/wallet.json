@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "data": {
+    "id": "wal_mock_001",
+    "ownerUserId": "usr_mock_004",
+    "businessId": "biz_mock_002",
+    "balance": {
+      "availableMinor": 84250000,
+      "pendingMinor": 6300000,
+      "protectedMinor": 312000000,
+      "currency": "NGN"
+    },
+    "totalInflowMinor": 512400000,
+    "totalOutflowMinor": 428150000,
+    "accountLimitMinor": 500000000,
+    "virtualAccount": {
+      "bankName": "Anchor Bank",
+      "accountNumber": "7012345678",
+      "accountName": "Naitrust / Emeka Trade & Logistics"
+    },
+    "createdAt": "2026-03-02T09:00:00Z"
+  }
+}

@@ -96,6 +96,7 @@ interface ParticipantForm {
   name: string;
   email: string;
   allocation: string;
+  profileId?: string;
 }
 
 interface FormState {
@@ -200,7 +201,18 @@ export function CreateDealPage() {
   const [showLiveness, setShowLiveness] = useState(!security.livenessFresh);
   const [showPin, setShowPin] = useState(false);
   const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
-  const [form, setForm] = useState<FormState>(() => recoveredDraft?.form ?? INITIAL);
+  const [form, setForm] = useState<FormState>(() => {
+    if (recoveredDraft?.form) return recoveredDraft.form;
+    const businessName = searchParams.get('name') ?? '';
+    const businessEmail = searchParams.get('email') ?? '';
+    const businessId = searchParams.get('business') ?? undefined;
+    return {
+      ...INITIAL,
+      partyMode: accountTypeOf(user) === 'customer' ? 'b2c' : null,
+      role: accountTypeOf(user) === 'customer' ? 'buyer' : null,
+      participants: [{ name: businessName, email: businessEmail, allocation: '', profileId: businessId }],
+    };
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [agreement, setAgreement] = useState<AgreementDraft | null>(null);
   const [agreementConfirmed, setAgreementConfirmed] = useState(false);
@@ -295,7 +307,7 @@ export function CreateDealPage() {
     try {
       const response = await agreementsApi.draft(
         {
-          useCaseTitle: selectedUseCase?.title ?? 'Property transaction',
+          useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
           partyModeLabel: form.partyMode ? partyModeLabel(form.partyMode) : 'Protected',
           buyerName,
           sellerName,
@@ -383,7 +395,7 @@ export function CreateDealPage() {
         MAX_DEAL_OPEN_DAYS,
         Math.max(1, differenceInCalendarDays(new Date(form.openUntil), today)),
       );
-      await createDeal.mutateAsync({
+      const created = await createDeal.mutateAsync({
         useCase: form.useCase,
         dealType: form.dealType!,
         partyMode: form.partyMode!,
@@ -391,6 +403,7 @@ export function CreateDealPage() {
         participants: form.participants.map((p) => ({
           name: p.name.trim(),
           email: p.email.trim(),
+          profileId: p.profileId,
           allocationMinor: multiParty ? Math.round(Number(p.allocation || 0) * 100) : amountMinor,
         })),
         title: form.title.trim(),
@@ -403,10 +416,16 @@ export function CreateDealPage() {
         agreement,
       });
       clearDealDraft(user?.id, draftId);
-      toast.success('Property transaction created — invitation and agreement sent to the participant.');
+      const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Protected Deal created. The secure invitation link was copied for sharing.');
+      } catch {
+        toast.success(`Protected Deal created. Share this invitation: ${shareUrl}`);
+      }
       navigate('/app/deals');
     } catch {
-      toast.error('Could not create the property transaction. Please try again.');
+      toast.error('Could not create the Protected Deal. Please try again.');
     }
   };
 
@@ -430,14 +449,14 @@ export function CreateDealPage() {
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
   if (startBlocked) {
     return (
-      <DashboardLayout title="New property transaction">
+      <DashboardLayout title="New Protected Deal">
         <VerificationGate missing={security.missingForDeal} />
       </DashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout title="New property transaction">
+    <DashboardLayout title="New Protected Deal">
       <LivenessCheckModal
         open={showLiveness}
         onOpenChange={setShowLiveness}
@@ -452,7 +471,7 @@ export function CreateDealPage() {
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description="Enter your 4-digit transaction PIN to create this property transaction."
+        description="Enter your 4-digit transaction PIN to create this Protected Deal."
       />
 
       <div className="mx-auto w-full max-w-9xl">
@@ -460,10 +479,10 @@ export function CreateDealPage() {
           {/* Left rail */}
           <aside className="lg:sticky lg:top-20 lg:self-start">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              New property transaction
+              New Protected Deal
             </p>
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground">
-              Create a property transaction
+              Create a Protected Deal
             </h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               Agree terms and protect payment through a regulated partner. Funds only release when
@@ -898,7 +917,7 @@ export function CreateDealPage() {
                 >
                   <ScanFace size={18} className="shrink-0 text-amber-600 dark:text-amber-400" />
                   <span className="text-sm leading-5 text-foreground">
-                    Complete a quick liveness check to create this property transaction.
+                    Complete a quick liveness check to create this Protected Deal.
                     <span className="ml-1 font-semibold text-primary underline">Start check</span>
                   </span>
                 </button>
@@ -929,7 +948,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           <ShieldCheck size={16} className="mr-1.5" />
-                          Create property transaction
+                          Create Protected Deal
                         </>
                       )}
                     </Button>

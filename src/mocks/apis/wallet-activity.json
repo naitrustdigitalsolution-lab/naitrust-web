@@ -1,0 +1,61 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "wact_mock_001",
+      "kind": "instant_transfer_out",
+      "amountMinor": 1500000,
+      "currency": "NGN",
+      "description": "Sent to Chioma Electronics",
+      "createdAt": "2026-07-23T10:12:00Z"
+    },
+    {
+      "id": "wact_mock_002",
+      "kind": "funding",
+      "amountMinor": 20000000,
+      "currency": "NGN",
+      "description": "Wallet funded from GTBank •••• 4821",
+      "createdAt": "2026-07-22T15:40:00Z"
+    },
+    {
+      "id": "wact_mock_003",
+      "kind": "protected_allocation",
+      "amountMinor": 45000000,
+      "currency": "NGN",
+      "description": "Allocated to protected deal NT-2026-000182",
+      "createdAt": "2026-07-21T09:05:00Z"
+    },
+    {
+      "id": "wact_mock_004",
+      "kind": "instant_transfer_in",
+      "amountMinor": 3200000,
+      "currency": "NGN",
+      "description": "Received from Tunde Bakare",
+      "createdAt": "2026-07-20T18:22:00Z"
+    },
+    {
+      "id": "wact_mock_005",
+      "kind": "withdrawal",
+      "amountMinor": 5000000,
+      "currency": "NGN",
+      "description": "Withdrawn to Access Bank •••• 1190",
+      "createdAt": "2026-07-19T11:47:00Z"
+    },
+    {
+      "id": "wact_mock_006",
+      "kind": "protected_release",
+      "amountMinor": 6300000,
+      "currency": "NGN",
+      "description": "Released from completed deal NT-2026-000144",
+      "createdAt": "2026-07-18T08:30:00Z"
+    },
+    {
+      "id": "wact_mock_007",
+      "kind": "fee",
+      "amountMinor": 15000,
+      "currency": "NGN",
+      "description": "Instant transfer fee",
+      "createdAt": "2026-07-18T08:31:00Z"
+    }
+  ]
+}

@@ -45,7 +45,7 @@ function EmptyState() {
       </div>
       <p className="font-semibold text-foreground">No invitations right now</p>
       <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-        When a property transaction participant invites you, it shows up here for you to review and
+        When a Protected Deal participant invites you, it shows up here for you to review and
         accept.
       </p>
     </Card>
@@ -121,7 +121,7 @@ export function InvitationsPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Deal invitations</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Review property transactions you have been invited to, then accept to agree the terms.
+            Review Protected Deals you have been invited to, then accept to agree the terms.
           </p>
         </div>
 

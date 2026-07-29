@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart, Apple, Play } from 'lucide-react';
+import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { subscribe } from '../../../services/publicService';
 import { openWaitlistModal } from '../../modals/WaitlistModal';
@@ -34,20 +34,10 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       title: 'Platform',
       links: [
-        { label: 'How It Works', page: 'how-it-works' },
-        { label: 'Real Estate', page: 'use-cases' },
-        { label: 'Join Property Early Access', page: 'register', modal: true },
-        { label: 'For Property Companies', page: 'register-business', modal: true },
-      ],
-    },
-    {
-      title: 'Real Estate',
-      links: [
-        { label: 'Property purchases', page: '/use-cases/property-agent-payments' },
-        { label: 'Developer instalments', page: '/use-cases/developer-instalments' },
-        { label: 'Land transactions', page: '/use-cases/land-transactions' },
-        { label: 'Agent-led transactions', page: '/use-cases/agent-led-property' },
-        { label: 'Construction milestones', page: '/use-cases/contractor-projects' },
+        { label: 'Send Instantly', page: 'register', modal: true },
+        { label: 'Protect a Payment', page: 'register', modal: true },
+        { label: 'Join Early Access', page: 'register', modal: true },
+        { label: 'For Businesses', page: 'register-business', modal: true },
       ],
     },
     {
@@ -76,61 +66,33 @@ export function Footer({ onNavigate }: FooterProps) {
   const trustNotes = [
     {
       icon: ShieldCheck,
-      title: 'Verified transaction identity',
-      text: 'Property participants, roles, and transaction information can be checked before money moves.',
+      title: 'Know who you trade with',
+      text: 'Review customer, supplier, and participant details before an important payment moves.',
     },
     {
       icon: Landmark,
-      title: 'Regulated payment rails',
-      text: 'Payment flows are designed to work through licensed financial partners, with clear release and refund instructions.',
+      title: 'Regulated money movement',
+      text: 'Licensed financial partners handle payment movement while Naitrust manages the business workflow.',
     },
     {
       icon: FileCheck,
-      title: 'Evidence for every transaction',
-      text: 'Agreements, receipts, property documents, inspection evidence, messages, and issue notes stay tied to the transaction.',
-    },
-  ];
-
-  const appStoreLinks = [
-    {
-      label: 'App Store',
-      eyebrow: 'Get it from',
-      href: '#',
-      icon: Apple,
-    },
-    {
-      label: 'Google Play',
-      eyebrow: 'Get it on',
-      href: '#',
-      icon: Play,
+      title: 'Order and payment evidence',
+      text: 'Terms, invoices, receipts, delivery evidence, and issue notes stay connected to the transaction.',
     },
   ];
 
   return (
-    <footer 
-      className="bg-[#031335] dark:bg-[#0A0E1A] text-white py-12 border-t border-border/50"
-      // className="relative bg-linear-to-br from-blue-10 via-background to-primary/5 pt-4 pb-8 sm:pb-12 overflow-hidden"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='800' viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='nigeria-verification' x='0' y='0' width='300' height='300' patternUnits='userSpaceOnUse'%3E%3Cpath d='M50 50 L100 100 L150 50 L200 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 150 L150 200 L200 150 L250 200' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Ccircle cx='150' cy='150' r='30' fill='%231e90ff' fill-opacity='0.03'/%3E%3Cpath d='M120 120 L150 150 L180 120' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.05' fill='none'/%3E%3Cpath d='M50 200 L100 250 L150 200 L200 250' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 50 L150 100 L200 50 L250 100' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M150 50 L200 100 L250 50 L300 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M50 100 L100 150 L150 100 L200 150' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23nigeria-verification)'/%3E%3Cpath d='M200 200 L250 250 L300 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M400 300 L450 350 L500 300' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M600 200 L650 250 L700 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M800 400 L850 450 L900 400' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M1000 250 L1050 300 L1100 250' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Ccircle cx='300' cy='400' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3Ccircle cx='600' cy='500' r='40' fill='%230b2b45' fill-opacity='0.03'/%3E%3Ccircle cx='900' cy='300' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3C/svg%3E")`,
-        backgroundSize: '600px 600px',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'repeat',
-        opacity: 1,
-      }}
-    >
-      <div className="max-w-440 mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="relative overflow-hidden bg-[#04162f] pb-10 pt-8 text-white">
+      <div className="relative z-10 mx-auto max-w-440 px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.35fr_2.65fr] mb-10">
           {/* Brand */}
           <div className="lg:max-w-lg">
             <div className="mb-4">
               <NaitrustLogo size="postMd" showText={true} textColor="text-white" />
             </div>
-            <div className="mb-4 space-y-3 text-sm lg:text-md leading-7 text-white/80">
+            <div className="mb-4 text-sm leading-7 text-white/80 lg:text-md">
               <p>
-                Naitrust is building trust infrastructure for Nigerian real estate. We help property buyers, sellers, agents, developers, and companies move beyond verbal promises and scattered records with one shared property transaction room.
-              </p>
-              <p>
-                From participant verification and documented terms to payment records, property documents, milestones, and issue-ready evidence, Naitrust makes important transaction activity easier to understand and verify.
+                Naitrust is the everyday business account for Nigerian traders and growing businesses—receive sales, pay trusted suppliers instantly, protect important orders, and build a stronger payment history in one place.
               </p>
             </div>
             <div className="space-y-3 text-sm text-white/70 mb-5">
@@ -151,36 +113,6 @@ export function Footer({ onNavigate }: FooterProps) {
                 </a>
               </div>
             </div>
-            <div className="mb-5 flex flex-wrap gap-x-3 gap-y-2">
-              {appStoreLinks.map((store) => {
-                const Icon = store.icon;
-
-                return (
-                  <div key={store.label} className="flex flex-col items-start gap-1">
-                    <a
-                      href={store.href}
-                      aria-label={`${store.eyebrow} ${store.label} — coming soon`}
-                      onClick={(event) => event.preventDefault()}
-                      aria-disabled="true"
-                      className="inline-flex min-h-12 cursor-default items-center gap-3 rounded-md border border-white/15 bg-black px-4 py-2 text-white opacity-80 shadow-sm"
-                    >
-                      <Icon size={24} className="shrink-0" fill={store.label === 'App Store' ? 'currentColor' : 'none'} />
-                      <span className="leading-none">
-                        <span className="block text-[10px] font-medium uppercase tracking-[0.08em] text-white/70">
-                          {store.eyebrow}
-                        </span>
-                        <span className="mt-1 block text-sm font-semibold text-white">
-                          {store.label}
-                        </span>
-                      </span>
-                    </a>
-                      <span className="pl-1 text-[8px] font-medium uppercase tracking-[0.08em] text-white/50">
-                      Coming soon
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
             <div className="flex gap-3">
               <a href="https://instagram.com/naitrust_digitalsolutions" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
                 <Instagram size={16} />
@@ -194,7 +126,7 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
             {footerGroups.map((group) => (
               <div key={group.title}>
                 <h4 className="font-semibold text-md lg:text-lg mb-4">{group.title}</h4>
@@ -258,7 +190,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <div>
                 <h4 className="text-base font-semibold">Subscribe to Naitrust updates</h4>
                 <p className="mt-1 max-w-sm text-xs leading-5 text-white/60">
-                  Property transaction guidance, product updates, and early-access notes.
+                  Practical payment guidance, product updates, and early-access news for Nigerian businesses.
                 </p>
               </div>
             </div>

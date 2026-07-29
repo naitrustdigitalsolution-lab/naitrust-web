@@ -8,7 +8,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Landmark, Moon, Plus, Sun } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { ProfileInfoSettings } from '../pieces/settings/ProfileInfoSettings';
@@ -17,8 +17,12 @@ import { NotificationSettings } from '../pieces/settings/NotificationSettings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Input } from '../ui/input';
 import { useAuth } from '../../libs/auth-context';
 import { useTheme } from '../../hooks/useTheme';
+import { useLinkedBankAccounts } from '../../hooks/useWallet';
 
 const MOCK_SAVE_MS = 600;
 
@@ -30,6 +34,7 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
+  const { data: linkedBankAccounts } = useLinkedBankAccounts();
 
   // Profile info
   const [firstName, setFirstName] = useState(user?.firstName ?? user?.name?.split(' ')[0] ?? '');
@@ -49,6 +54,10 @@ export function SettingsPage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [messageAlerts, setMessageAlerts] = useState(true);
   const [paymentUpdates, setPaymentUpdates] = useState(true);
+  const [bankDialogOpen, setBankDialogOpen] = useState(false);
+  const [addedBankAccounts, setAddedBankAccounts] = useState<Array<{ id: string; bankName: string; accountNumber: string; accountName: string }>>([]);
+  const [bankForm, setBankForm] = useState({ bankName: '', accountNumber: '', accountName: '' });
+  const visibleBankAccounts = [...(linkedBankAccounts ?? []), ...addedBankAccounts];
 
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);
@@ -78,6 +87,17 @@ export function SettingsPage() {
     setNewPassword('');
     setConfirmPassword('');
     toast.success('Password changed.');
+  };
+
+  const handleAddBankAccount = () => {
+    if (!bankForm.bankName.trim() || bankForm.accountNumber.length !== 10 || !bankForm.accountName.trim()) {
+      toast.error('Enter the bank, 10-digit account number, and account name.');
+      return;
+    }
+    setAddedBankAccounts((current) => [...current, { id: `local-${Date.now()}`, ...bankForm }]);
+    setBankForm({ bankName: '', accountNumber: '', accountName: '' });
+    setBankDialogOpen(false);
+    toast.success('Bank account added in sandbox.');
   };
 
   return (
@@ -136,6 +156,41 @@ export function SettingsPage() {
             />
 
             <Card>
+              <CardHeader className="flex-row items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Landmark size={18} /> Other bank accounts
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Save accounts you use for withdrawals, settlements, or business records.
+                  </CardDescription>
+                </div>
+                <Button size="sm" className="rounded-full" onClick={() => setBankDialogOpen(true)}>
+                  <Plus size={14} /> Add
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {visibleBankAccounts.length === 0 ? (
+                  <p className="rounded-xl border border-dashed p-5 text-center text-sm text-muted-foreground">
+                    No other bank accounts added yet.
+                  </p>
+                ) : (
+                  <div className="divide-y rounded-xl border">
+                    {visibleBankAccounts.map((account) => (
+                      <div key={account.id} className="flex items-center gap-3 p-3">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-muted-foreground"><Landmark size={16} /></span>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium">{account.accountName}</p>
+                          <p className="truncate text-xs text-muted-foreground">{account.bankName} · {account.accountNumber}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
@@ -158,6 +213,18 @@ export function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={bankDialogOpen} onOpenChange={setBankDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Add another bank account</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div><Label htmlFor="linked-bank-name">Bank</Label><Input id="linked-bank-name" value={bankForm.bankName} onChange={(e) => setBankForm({ ...bankForm, bankName: e.target.value })} placeholder="e.g. Zenith Bank" className="mt-1.5" /></div>
+            <div><Label htmlFor="linked-account-number">Account number</Label><Input id="linked-account-number" inputMode="numeric" maxLength={10} value={bankForm.accountNumber} onChange={(e) => setBankForm({ ...bankForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 10) })} placeholder="10-digit account number" className="mt-1.5" /></div>
+            <div><Label htmlFor="linked-account-name">Account name</Label><Input id="linked-account-name" value={bankForm.accountName} onChange={(e) => setBankForm({ ...bankForm, accountName: e.target.value })} placeholder="Name on the account" className="mt-1.5" /></div>
+          </div>
+          <DialogFooter><Button className="w-full rounded-full" onClick={handleAddBankAccount}>Add bank account</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

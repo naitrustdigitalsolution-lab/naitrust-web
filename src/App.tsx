@@ -13,7 +13,6 @@ import VerifyCodePage from "./pages/VerifyCodePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { AboutPage } from "./components/pages/AboutPage";
 import { FeedbackPage } from "./components/pages/FeedbackPage";
-import { HowItWorksPage } from "./components/pages/HowItWorksPage";
 import { HelpCenterPage } from "./components/pages/HelpCenterPage";
 import { FAQsPage } from "./components/pages/FAQsPage";
 import { ContactUsPage } from "./components/pages/ContactUsPage";
@@ -29,10 +28,11 @@ import { WaitlistModalHost } from "./components/modals/WaitlistModal";
 import { BlogPage } from "./components/pages/BlogPage";
 import { BlogArticlePage } from './components/pages/BlogArticlePage';
 import { AuthPageLoader, DashboardPageLoader } from "./components/pieces/auth/AuthPageLoader";
-import { UseCasesPage } from './components/pages/UseCasesPage';
-import { UseCaseDetailPage } from './components/pages/UseCaseDetailPage';
 import { ReportConcernPage } from './components/pages/ReportConcernPage';
 import { RequireAuth } from './components/utility/RequireAuth';
+import { PublicBusinessPaymentPage } from './components/pages/PublicBusinessPaymentPage';
+import { PublicInvitationPreviewPage } from './components/pages/PublicInvitationPreviewPage';
+import { RequireBusinessAccount } from './components/utility/RequireBusinessAccount';
 
 /**
  * Minimum time the branded AuthPageLoader stays on screen before a lazy route
@@ -71,6 +71,15 @@ const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPa
 const ProfilePage = lazyWithMinDelay(() => import("./pages/ProfilePage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
 const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
+const PaymentsHubPage = lazyWithMinDelay(() => import("./pages/PaymentsHubPage"));
+const SendInstantlyPage = lazyWithMinDelay(() => import("./pages/SendInstantlyPage"));
+const ReceiveMoneyPage = lazyWithMinDelay(() => import("./pages/ReceiveMoneyPage"));
+const BeneficiariesPage = lazyWithMinDelay(() => import("./pages/BeneficiariesPage"));
+const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentRequestsPage"));
+const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
+const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
+const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
+const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
 
 const queryClient = new QueryClient();
 
@@ -127,8 +136,8 @@ const simplePages: Record<
 const pagePaths: Record<string, string> = {
   home: "/",
   about: "/about",
-  "how-it-works": "/how-it-works",
-  "use-cases": "/use-cases",
+  "how-it-works": "/",
+  "use-cases": "/",
   pricing: "/",
   business: "/business",
   resources: "/resources",
@@ -202,7 +211,10 @@ function PublicAppContent() {
   const routerNavigate = useNavigate();
   const currentPage = getCurrentPage(location.pathname);
   const usesStandaloneHome =
-    standalonePaths.includes(location.pathname) || location.pathname.startsWith("/app");
+    standalonePaths.includes(location.pathname) ||
+    location.pathname.startsWith("/app") ||
+    location.pathname.startsWith("/pay/") ||
+    location.pathname.startsWith("/invite/");
 
   const handleNavigate = (page: string) => {
     routerNavigate(pagePaths[page] ?? page);
@@ -218,9 +230,9 @@ function PublicAppContent() {
           <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
           <Route path="/about" element={<AboutPage onNavigate={handleNavigate} />} />
           <Route path="/feedback" element={<FeedbackPage onNavigate={handleNavigate} />} />
-          <Route path="/how-it-works" element={<HowItWorksPage onNavigate={handleNavigate} />} />
-          <Route path="/use-cases" element={<UseCasesPage />} />
-          <Route path="/use-cases/:slug" element={<UseCaseDetailPage />} />
+          <Route path="/how-it-works" element={<Navigate to="/" replace />} />
+          <Route path="/use-cases" element={<Navigate to="/" replace />} />
+          <Route path="/use-cases/:slug" element={<Navigate to="/" replace />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogArticlePage />} />
           <Route path="/help" element={<HelpCenterPage onNavigate={handleNavigate} />} />
@@ -239,6 +251,8 @@ function PublicAppContent() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/verify-code" element={<VerifyCodePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
+          <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
           <Route element={<RequireAuth />}>
             <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
             <Route path="/app/deals" element={<DashboardRouteSuspense><DealsPage /></DashboardRouteSuspense>} />
@@ -251,6 +265,17 @@ function PublicAppContent() {
             <Route path="/app/profile" element={<DashboardRouteSuspense><ProfilePage /></DashboardRouteSuspense>} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />
+            <Route path="/app/wallet" element={<Navigate to="/app/payments/send" replace />} />
+            <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
+            <Route path="/app/payments/send" element={<RequireBusinessAccount><DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/payments/receive" element={<RequireBusinessAccount><DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/payments/beneficiaries" element={<RequireBusinessAccount><DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
+            <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
           </Route>
           <Route path="/business" element={<SimpleRoutePage />} />
           <Route path="/resources" element={<SimpleRoutePage />} />

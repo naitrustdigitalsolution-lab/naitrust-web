@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "itr_mock_001",
+      "reference": "IT-2026-000045",
+      "recipient": {
+        "method": "naitrust_username",
+        "identifier": "chioma_electronics",
+        "resolvedName": "Chioma Electronics"
+      },
+      "amountMinor": 1500000,
+      "currency": "NGN",
+      "feeMinor": 15000,
+      "narration": "Stock payment",
+      "status": "successful",
+      "provider": "mock",
+      "isMock": true,
+      "createdAt": "2026-07-23T10:12:00Z",
+      "completedAt": "2026-07-23T10:12:04Z"
+    },
+    {
+      "id": "itr_mock_002",
+      "reference": "IT-2026-000044",
+      "recipient": {
+        "method": "phone_number",
+        "identifier": "+2348031234567",
+        "resolvedName": "Tunde Bakare"
+      },
+      "amountMinor": 3200000,
+      "currency": "NGN",
+      "feeMinor": 25000,
+      "narration": "",
+      "status": "successful",
+      "provider": "mock",
+      "isMock": true,
+      "createdAt": "2026-07-20T18:22:00Z",
+      "completedAt": "2026-07-20T18:22:03Z"
+    },
+    {
+      "id": "itr_mock_003",
+      "reference": "IT-2026-000043",
+      "recipient": {
+        "method": "bank_transfer",
+        "identifier": "0123456789",
+        "resolvedName": "Okonkwo & Sons Construction",
+        "bankName": "Zenith Bank"
+      },
+      "amountMinor": 8000000,
+      "currency": "NGN",
+      "feeMinor": 50000,
+      "narration": "Materials advance",
+      "status": "pending",
+      "provider": "mock",
+      "isMock": true,
+      "createdAt": "2026-07-24T09:05:00Z"
+    },
+    {
+      "id": "itr_mock_004",
+      "reference": "IT-2026-000042",
+      "recipient": {
+        "method": "beneficiary",
+        "identifier": "ben_mock_004",
+        "resolvedName": "Greenfield Estates Ltd",
+        "bankName": "UBA"
+      },
+      "amountMinor": 12000000,
+      "currency": "NGN",
+      "feeMinor": 50000,
+      "narration": "Refund",
+      "status": "failed",
+      "provider": "mock",
+      "isMock": true,
+      "createdAt": "2026-07-17T14:00:00Z"
+    }
+  ]
+}

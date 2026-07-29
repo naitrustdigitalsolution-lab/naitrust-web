@@ -7,12 +7,20 @@
  */
 import { endpoints } from '../../libs/api/endpoints';
 import authUsers from './auth-users.json';
+import beneficiaries from './beneficiaries.json';
 import businesses from './businesses.json';
+import counterparties from './counterparties.json';
 import dealDrafts from './deal-drafts.json';
+import instantTransfers from './instant-transfers.json';
 import invitations from './invitations.json';
 import notifications from './notifications.json';
+import paymentRequests from './payment-requests.json';
 import reputation from './reputation.json';
 import transactions from './transactions.json';
+import trustProfile from './trust-profile.json';
+import wallet from './wallet.json';
+import walletActivity from './wallet-activity.json';
+import walletBankAccounts from './wallet-bank-accounts.json';
 
 /** VITE_API_BASE_URL is the origin; the frontend appends this API prefix. */
 export const MOCK_API_PREFIX = '/api' as const;
@@ -23,12 +31,20 @@ export const mockApiEndpoints = endpoints;
 /** Every mock response/seed currently used by the frontend. */
 export const mockApiFixtures = {
   authUsers,
+  beneficiaries,
   businesses,
+  counterparties,
   dealDrafts,
+  instantTransfers,
   invitations,
   notifications,
+  paymentRequests,
   reputation,
   transactions,
+  trustProfile,
+  wallet,
+  walletActivity,
+  walletBankAccounts,
 } as const;
 
 export const mockApi = {
@@ -39,12 +55,20 @@ export const mockApi = {
 
 export {
   authUsers as mockAuthUsers,
+  beneficiaries as mockBeneficiaries,
   businesses as mockBusinesses,
+  counterparties as mockCounterparties,
   dealDrafts as mockDealDrafts,
+  instantTransfers as mockInstantTransfers,
   invitations as mockInvitations,
   notifications as mockNotifications,
+  paymentRequests as mockPaymentRequests,
   reputation as mockReputation,
   transactions as mockTransactions,
+  trustProfile as mockTrustProfile,
+  wallet as mockWallet,
+  walletActivity as mockWalletActivity,
+  walletBankAccounts as mockWalletBankAccounts,
 };
 
 /**

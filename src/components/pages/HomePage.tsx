@@ -1,374 +1,326 @@
-import { lazy, Suspense } from 'react';
-import { Shield, Search, CheckCircle2, Users, TrendingUp, Lock, Award, ArrowRight, Star, ChevronRight, BarChart3, UserCheck, MessageSquare, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Home } from 'lucide-react';
+import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { ImageWithFallback } from '../utility/ImageWithFallback';
 import { TrustHeroAnimation } from '../pieces/general/TrustHeroAnimation';
 import { AnimatedHeroText } from '../pieces/general/AnimatedHeroText';
-import { CACLogo, QoreIDLogo, AnchorLogo } from '../pieces/general/TrustedPartnerLogo';
+import { QoreIDLogo, AnchorLogo } from '../pieces/general/TrustedPartnerLogo';
 import { FloatingFeedbackButton } from '../utility/FloatingFeedbackButton';
 import { SEOHead } from '../utility/SEOHead';
 import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
-import { useTheme } from '@/hooks/useTheme';
 import spiralBackground from '../../assets/spiral.svg';
 import { openWaitlistModal } from '../modals/WaitlistModal';
 import { useIsMobile } from '../ui/use-mobile';
+import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
+import shopPaymentImage from "../images/hero/nigerian-shop-payment.webp";
+import  qrPaymentImage from "../images/hero/nigerian-qr-payment.webp"
 
+const saferDealsImage = '/images/blog/safer-deals.png';
+const deliveryEvidenceImage = '/images/blog/delivery-evidence.png';
+const businessVerificationImage = '/images/blog/business-verification.png';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
-  const { isDarkMode, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
-
-  const features = [
-    {
-      icon: Shield,
-      title: 'Verified Participants',
-      description: 'Use identity, business, document, and liveness checks to better understand the buyers, sellers, agents, and companies involved.',
-      color: 'text-blue-500',
-    },
-    {
-      icon: Search,
-      title: 'Property Transaction Room',
-      description: 'Keep the property, participants, amount, terms, payment state, milestones, and supporting evidence in one shared record.',
-      color: 'text-green-500',
-    },
-    {
-      icon: MessageSquare,
-      title: 'Agreement Record',
-      description: 'Document the price, payment plan, responsibilities, milestones, and confirmation rules before money moves.',
-      color: 'text-purple-500',
-    },
-    {
-      icon: Award,
-      title: 'Property Document Trail',
-      description: 'Receipts, offers, allocation letters, inspection photos, messages, approvals, and issue reports stay attached to the transaction.',
-      color: 'text-orange-500',
-    },
-    {
-      icon: UserCheck,
-      title: 'Clear Participant Roles',
-      description: 'Review who you are dealing with, their claimed role, verification status, and relevant transaction history.',
-      color: 'text-pink-500',
-    },
-    {
-      icon: BarChart3,
-      title: 'Funding Status',
-      description: 'Track payment instructions, confirmations, agreed conditions, refund paths, and partner-led payment updates.',
-      color: 'text-indigo-500',
-    },
-    {
-      icon: Fingerprint,
-      title: 'Reputation Layer',
-      description: 'Completed property transactions create a history that participants can carry into future dealings.',
-      color: 'text-teal-500',
-    },
-    {
-      icon: QrCode,
-      title: 'Shareable Deal Access',
-      description: 'Give property transaction participants a clear link to review terms, document requirements, and current status.',
-      color: 'text-cyan-500',
-    },
-  ];
 
   const howItWorks = [
     {
       step: '1',
-      title: 'Create a Property Transaction',
-      description: 'Record the property and invite the buyer, seller, agent, developer, or property company.',
-      icon: Search,
+      title: 'Request Payment from Any Conversation',
+      description: 'Share a verified account through WhatsApp, a payment link or a QR code—your customer does not need a Naitrust account.',
+      icon: ArrowDownToLine,
     },
     {
       step: '2',
-      title: 'Confirm the Participants',
-      description: 'Record roles and use identity, business, liveness, and document checks appropriate to the transaction.',
-      icon: Shield,
+      title: 'Pay Regular Suppliers',
+      description: 'Send instantly to suppliers and business contacts whose work you already know and trust.',
+      icon: Send,
     },
     {
       step: '3',
-      title: 'Fund the Transaction Safely',
-      description: 'Payment is held in a protected account — not released to the other party until the agreed conditions are met.',
-      icon: MessageSquare,
+      title: 'Protect Important Orders',
+      description: 'For a new supplier or larger order, record the terms and protect the payment until delivery is confirmed.',
+      icon: Shield,
     },
     {
       step: '4',
-      title: 'Release on Confirmed Evidence',
-      description: 'Funds are released only once milestones, documents, receipts, and approvals confirm the conditions were met.',
+      title: 'Build a Trusted History',
+      description: 'Completed payments and Protected Deals strengthen the business record you carry into the next transaction.',
       icon: CheckCircle2,
     },
   ];
 
-    //   {
-    //   step: '3',
-    //   title: 'Record Terms and Payments',
-    //   description: 'Keep agreements, payment instructions, confirmations, milestones, and refund conditions visible.',
-    //   icon: MessageSquare,
-    // },
-    // {
-    //   step: '4',
-    //   title: 'Complete with Evidence',
-    //   description: 'Attach property documents, receipts, inspection evidence, approvals, issues, and completion confirmations.',
-    //   icon: CheckCircle2,
-    // },
-
   const faqs = [
     {
-      question: 'What is a Naitrust property transaction?',
-      answer: 'It is a shared safe-deal transaction room where participants can see the property, roles, amount, terms, payment records, document requirements, milestones, and issue history.',
+      question: 'What is a Naitrust Protected Deal?',
+      answer: 'It is a shared transaction room where participants can see the deal, roles, amount, terms, payment records, document requirements, milestones, and issue history.',
+    },
+    {
+      question: 'What is the difference between Instant and Protected payments?',
+      answer: 'Send Instantly for people and businesses you already trust — it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order — funds are held until the agreed conditions are met.',
     },
     {
       question: 'Does Naitrust hold customer funds?',
-      answer: 'No. Naitrust manages the transaction workflow and record. Any funding or payment movement is designed to run through the regulated financial partner identified for that transaction.',
-    },
-    {
-      question: 'What happens if there is a problem?',
-      answer: 'The property transaction room keeps terms, supporting evidence, activity, and issue reports together so participants can review what happened and follow the available dispute path.',
+      answer: 'No. Naitrust manages the transaction workflow and record. Funding and payment movement run through the regulated payment partners identified for that transaction.',
     },
     {
       question: 'Who is Naitrust for?',
-      answer: 'Naitrust is being built for Nigerian property buyers, sellers, agents, developers, real estate companies, and transaction representatives. It is not a property-listing marketplace.',
+      answer: 'Naitrust is built for Nigerian traders and local businesses—from market stalls and shops to wholesalers, service providers, and online sellers. Customers can pay a Naitrust business without opening an account.',
     },
   ];
 
   return (
     <div className="min-h-screen relative">
       <SEOHead
-        title="Naitrust | Secure Property Transactions in Nigeria"
-        description="Create secure, verifiable property transaction records for buyers, sellers, agents and developers in Nigeria."
-        keywords="Nigeria property transactions, real estate transaction record, property payment evidence, property agreement records, verified property participants"
+        title="Naitrust | Verified Payments for Nigerian Businesses"
+        description="Receive customer transfers from WhatsApp, payment links and QR codes, pay suppliers, and protect important business transactions with Naitrust."
+        keywords="WhatsApp payments Nigeria, Nigerian business account, verified business payments, QR payments Nigeria, protected transactions, local business payments"
         canonicalPath="/"
       />
       
       {/* Floating Feedback Button */}
       <FloatingFeedbackButton onNavigate={onNavigate} />
       
-      {/* Hero Section - Emotional Trust-First Marketing */}
-      <section
-        className="relative pt-4 pb-8 sm:pb-12 overflow-hidden"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='800' viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='nigeria-verification' x='0' y='0' width='300' height='300' patternUnits='userSpaceOnUse'%3E%3Cpath d='M50 50 L100 100 L150 50 L200 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 150 L150 200 L200 150 L250 200' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Ccircle cx='150' cy='150' r='30' fill='%231e90ff' fill-opacity='0.03'/%3E%3Cpath d='M120 120 L150 150 L180 120' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.05' fill='none'/%3E%3Cpath d='M50 200 L100 250 L150 200 L200 250' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M100 50 L150 100 L200 50 L250 100' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M150 50 L200 100 L250 50 L300 100' stroke='%231e90ff' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3Cpath d='M50 100 L100 150 L150 100 L200 150' stroke='%230b2b45' stroke-width='2' stroke-opacity='0.04' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23nigeria-verification)'/%3E%3Cpath d='M200 200 L250 250 L300 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M400 300 L450 350 L500 300' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M600 200 L650 250 L700 200' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M800 400 L850 450 L900 400' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Cpath d='M1000 250 L1050 300 L1100 250' stroke='%231e90ff' stroke-width='3' stroke-opacity='0.06' fill='none'/%3E%3Ccircle cx='300' cy='400' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3Ccircle cx='600' cy='500' r='40' fill='%230b2b45' fill-opacity='0.03'/%3E%3Ccircle cx='900' cy='300' r='40' fill='%231e90ff' fill-opacity='0.03'/%3E%3C/svg%3E")`,
-          backgroundSize: '800px 800px',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'repeat',
-          opacity: 1
-        }}
-      >
-        
-        <div className="relative z-10 mx-auto max-w-[96rem] px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+      {/* Hero — a deliberately loose collage of real business moments and product UI */}
+      <section className="relative min-h-[94vh] overflow-hidden bg-[#04162f] text-white">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[110px]" />
+          <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[130px]" />
+          <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.35)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.35)_1px,transparent_1px)] [background-size:72px_72px]" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
+        </div>
+
+        <div className="relative z-10 mx-auto grid min-h-[100vh] w-full max-w-[96rem] items-center gap-14 px-4 pb-16 pt-32 sm:px-6 sm:pt-36 lg:grid-cols-[0.88fr_1.12fr] lg:gap-8 lg:px-8 lg:pb-20 lg:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12"
+            className="relative z-20 max-w-2xl text-center lg:text-left"
           >
-            <div className="min-w-0 text-center lg:text-left">
-              <Badge className="mb-4 inline-block bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary dark:bg-[#1a1a1a] dark:text-white">The Trust Layer for Nigerian Property Transactions</Badge>
-              <AnimatedHeroText />
-              
-            <div className="mt-8 flex justify-center gap-2 sm:gap-4 flex-row lg:justify-start">
-              {/* <Button size="lg" onClick={() => onNavigate('register')} className="group bg-primary text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
-                Start a Safer Deal
-              </Button> */}
-              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group bg-primary text-white px-8 py-6 text-sm sm:text-lg font-semibold rounded-full shadow-[0_10px_25px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_35px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-0.5">
-                Get Early Access
+            <Badge className="mb-3 inline-flex rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08]">
+              Verified payments for Nigerian traders and local businesses
+            </Badge>
+            <AnimatedHeroText />
+
+            <div className="mt-7 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
+              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group h-14 rounded-full bg-[#1e90ff] px-7 text-base font-bold text-white shadow-[0_14px_40px_rgba(30,144,255,.35)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff]">
+                Join the waitlist
                 <ArrowRight size={24} className="ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => onNavigate('how-it-works')} className="px-8 py-6 text-sm sm:text-lg font-semibold rounded-full">
-                See How It Works
-              </Button>
+              <button
+                type="button"
+                onClick={() => document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                className="inline-flex h-14 items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
+              >
+                See how it works
+                <ChevronRight size={18} />
+              </button>
             </div>
 
-              <div className="mt-7 flex flex-wrap justify-center gap-3 text-xs font-medium sm:text-sm lg:justify-start">
-                {['Every agreement documented', 'Every payment recorded', 'Every milestone verified'].map((item) => (
-                  <span key={item} className="flex items-center gap-1.5 rounded-full border border-[#e5edf5] bg-white/70 px-3 py-2 dark:border-white/10 dark:bg-white/5">
-                    <CheckCircle2 size={15} className="text-green-600" />
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-2xl">
-              <div className="absolute -inset-6 rounded-[2.5rem] bg-primary/10 blur-3xl" />
-              <Card className="relative overflow-hidden rounded-[1.75rem] border-primary/15 bg-white/90 p-0 shadow-2xl backdrop-blur dark:bg-[#08152b]/95 lg:p-4 xl:p-6">
-                <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200"
-                  alt="Modern residential property represented in a Naitrust transaction"
-                  className="h-72 w-full rounded-2xl object-cover sm:h-72"
-                />
-                <div className="relative -mt-12 mx-0 rounded-0 lg:rounded-2xl border bg-card p-4 shadow-xl lg:mx-2 lg:p-5">
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-primary">Property transaction</p>
-                      <h2 className="mt-1 text-lg font-bold sm:text-xl">Lekki residential purchase</h2>
-                      <p className="mt-1 text-sm text-muted-foreground">Buyer, seller, terms, documents, and payments in one record</p>
-                    </div>
-                    <VerifiedBadge tier="premium" variant="small" />
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    {['Buyer', 'Seller', 'Agreement', 'Payment', 'Documents', 'Verified'].map((item) => (
-                      <div key={item} className="flex items-center justify-center gap-1 rounded-xl bg-primary/5 p-3">
-                        <CheckCircle2 className="text-green-600" size={14} />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Card>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-white/65 lg:justify-start">
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Collect from WhatsApp</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay suppliers</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Protect important orders</span>
             </div>
           </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="relative mx-auto h-[32rem] w-full max-w-[44rem] sm:h-[38rem] lg:h-[42rem]"
+          >
+            <motion.div
+              animate={{ y: [0, -8, 0], rotate: [-5, -4, -5] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute left-[2%] top-[4%] z-10 h-[38%] w-[36%] overflow-hidden rounded-[1.7rem] border-[6px] border-white shadow-2xl"
+            >
+              <ImageWithFallback
+                src={businessVerificationImage}
+                alt="A verified Nigerian business owner serving a customer"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/65 via-transparent to-transparent" />
+              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Verified to trade</span>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 10, 0], rotate: [4, 3, 4] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+              className="absolute right-[1%] top-[1%] z-0 h-[32%] w-[34%] overflow-hidden rounded-[1.6rem] border-[6px] border-white/90 shadow-2xl"
+            >
+              <ImageWithFallback
+                src={deliveryEvidenceImage}
+                alt="A Nigerian business recording delivery evidence"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/55 via-transparent to-transparent" />
+              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Delivery recorded</span>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ y: -6, rotate: 0 }}
+              className="absolute left-[18%] top-[25%] z-30 w-[66%] rotate-[-1deg] overflow-hidden rounded-[2rem] border border-white/80 bg-white p-5 text-[#0b203b] shadow-[0_35px_90px_rgba(0,0,0,.42)] sm:p-7"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Available balance</p>
+                  <p className="mt-1 text-3xl font-black tracking-[-0.04em] sm:text-4xl">₦842,500</p>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eaf5ff] text-[#1e90ff]"><WalletIcon size={21} /></div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-2">
+                <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1e90ff] px-3 py-3 text-[10px] font-bold text-white sm:text-xs"><Send size={14} /> Send instantly</span>
+                <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#eaf5ff] px-3 py-3 text-[10px] font-bold text-[#0877db] sm:text-xs"><Shield size={14} /> Protect payment</span>
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-3.5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                  CE
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold sm:text-sm">Chioma Electronics</p>
+                    <p className="mt-0.5 text-[10px] text-slate-500 sm:text-xs">Protected deal · fully funded</p>
+                  </div>
+                  <VerifiedBadge tier="premium" variant="small" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, -9, 0], rotate: [5, 6, 5] }}
+              transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+              className="absolute bottom-[1%] right-[2%] z-20 h-[34%] w-[37%] overflow-hidden rounded-[1.7rem] border-[6px] border-white shadow-2xl"
+            >
+              <ImageWithFallback
+                src={saferDealsImage}
+                alt="A customer and Nigerian business completing a safer deal"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/70 via-transparent to-transparent" />
+              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Trade with confidence</span>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 7, 0], rotate: [-4, -5, -4] }}
+              transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[7%] left-[1%] z-40 rounded-2xl border border-white/20 bg-[#0d2b4f]/90 p-4 shadow-2xl backdrop-blur-xl"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/15 text-emerald-300"><CheckCircle2 size={19} /></span>
+                <div><p className="text-[10px] text-white/55">Milestone confirmed</p><p className="text-xs font-bold text-white">Payment protected</p></div>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
 
-      {/* Hero Section - Emotional Trust-First Marketing */}
-      <section className="relative px-4 sm:px-6 lg:px-8 pb-4 pt-10 sm:pt-5 overflow-hidden">
+      {/* Product pillars */}
+      <section className="relative overflow-hidden bg-[#f5f8fc] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 dark:bg-[#0d0f13]">
+        <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
       
           {/* Platform-Focused Trust Blocks */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-4"
+            className="relative mx-auto max-w-[90rem]"
           >
-            <div className="text-center mb-8 pt-8">
-              <Badge className="mb-4 bg-primary text-white">Why Naitrust Exists</Badge>
-              <h2 className="text-3xl sm:text-4xl mb-4 naitrust-satoshi-bold">
-                Financial Infrastructure for Property Deals
-              </h2>
-              <p className="text-base text-muted-foreground max-w-3xl mx-auto">
-                Naitrust brings bank-grade verification and record-keeping to every property transaction — so buyers, sellers, agents, and developers can move money with confidence, not guesswork.
+            <div className="mb-12 grid items-end gap-6 lg:grid-cols-[1fr_0.8fr]">
+              <div>
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">One trusted platform</p>
+                <h2 className="max-w-3xl text-4xl leading-[1.03] tracking-[-0.045em] sm:text-5xl lg:text-6xl naitrust-satoshi-bold">
+                  Money moves fast.<br /><span className="text-muted-foreground">Trust should keep up.</span>
+                </h2>
+              </div>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground lg:justify-self-end lg:text-lg">
+                Naitrust brings verification, payment tools, business relationships, and reputation into one connected account.
               </p>
             </div>
-            
-            <div className="grid md:grid-cols-2 xl:grid-cols-5 gap-4 mx-auto max-w-7xl py-4">
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
               {[
-                { 
-                  platform: 'Land purchases',
+                {
+                  platform: 'Get Paid',
+                  kicker: 'Bring money in',
                   iconComponent: Landmark,
-                  description: 'Record the land, participants, agreed price, documents, payment stages, and confirmations.',
-                  gradient: 'from-green-500 to-emerald-700'
+                  description: 'Receive customer payments and requests through one account built for the way you trade.',
+                  gradient: 'from-emerald-400 to-emerald-600',
+                  className: 'lg:col-span-7 bg-[#09243b] text-white'
                 },
-                { 
-                  platform: 'Property deposits',
-                  iconComponent: Home,
-                  description: 'Keep reservation terms, deposit evidence, deadlines, and refund conditions visible.',
-                  gradient: 'from-pink-500 to-purple-600'
-                }, 
-                { 
-                  platform: 'Developer instalments',
+                {
+                  platform: 'Pay Suppliers',
+                  kicker: 'Keep business moving',
+                  iconComponent: Shield,
+                  description: 'Send money instantly to the suppliers and business contacts you already know.',
+                  gradient: 'from-blue-400 to-blue-600',
+                  className: 'lg:col-span-5 bg-[#1e90ff] text-white'
+                },
+                {
+                  platform: 'Protect Important Orders',
+                  kicker: 'When trust is still new',
                   iconComponent: Handshake,
-                  description: 'Maintain a consistent record of instalment schedules, receipts, progress, and outstanding amounts.',
-                  gradient: 'from-amber-500 to-orange-700'
+                  description: 'Record what you ordered, protect the payment, and confirm delivery before release.',
+                  gradient: 'from-amber-400 to-orange-500',
+                  className: 'lg:col-span-5 bg-white dark:bg-card'
                 },
-                { 
-                  platform: 'Agent-led transactions',
-                  iconComponent: Handshake,
-                  description: 'Identify the agent, buyer, seller, developer, and the authority each person claims to hold.',
-                  gradient: 'from-blue-600 to-cyan-700'
-                },
-                { 
-                  platform: 'Property documentation',
-                  iconComponent: Globe,
-                  description: 'Keep offers, receipts, allocation letters, inspections, and supporting evidence with the transaction.',
-                  gradient: 'from-indigo-500 to-violet-700'
+                {
+                  platform: 'Build Business History',
+                  kicker: 'Proof that grows',
+                  iconComponent: Fingerprint,
+                  description: 'Turn verified details and completed transactions into a stronger, reusable reputation.',
+                  gradient: 'from-violet-400 to-indigo-600',
+                  className: 'lg:col-span-7 bg-white dark:bg-card'
                 },
               ].map((platform, index) => (
                 <motion.div
                   key={platform.platform}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 * index }}
-                  whileHover={{ y: -4 }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.08 * index }}
+                  whileHover={{ y: -5 }}
+                  className={`group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-black/5 p-7 shadow-[0_18px_50px_rgba(11,43,69,.07)] sm:p-9 ${platform.className}`}
                 >
-                  <Card className="relative overflow-hidden rounded-lg p-5 min-h-[172px] h-full border-2 bg-card hover:shadow-xl transition-all hover:border-primary/50">
-                    <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${platform.gradient}`} />
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className={`w-11 h-11 shrink-0 bg-gradient-to-br ${platform.gradient} rounded-lg flex items-center justify-center shadow-lg`}>
-                        <platform.iconComponent size={24} className="text-white" />
-                      </div>
-                      <h3 className="text-base font-bold leading-tight pt-1">
-                        {platform.platform}
-                      </h3>
+                  <div className={`absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br opacity-20 blur-2xl ${platform.gradient}`} />
+                  <div className="relative flex h-full flex-col">
+                    <div className={`mb-12 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg ${platform.gradient}`}>
+                      <platform.iconComponent size={23} />
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {platform.description}
-                    </p>
-                  </Card>
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] opacity-55">{platform.kicker}</p>
+                    <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">{platform.platform}</h3>
+                    <p className="mt-3 max-w-xl text-sm leading-6 opacity-70 sm:text-base">{platform.description}</p>
+                  </div>
                 </motion.div>
               ))}
             </div>
-
-            <div className="text-center mt-8">
-              <Button variant="outline" onClick={() => onNavigate('use-cases')}>
-                See All Use Cases
-                <ChevronRight size={18} className="ml-2" />
-              </Button>
-            </div>
           </motion.div>
-      </section>
-
-      {/* Features Section - Enhanced with Brighter Colors */}
-      <section className="py-20 bg-background dark:from-background dark:to-blue-950/20">
-        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-        
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <Badge className="mb-4 bg-primary text-white">Property Transaction Infrastructure</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4">A Clear Record from Agreement to Completion</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Naitrust creates a structured record of who is involved, what was agreed, what payments and documents exist, and what happens next in your property transaction.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card className="p-6 h-full hover:shadow-xl transition-all border-2 hover:border-primary/50 bg-white dark:bg-card">
-                    <div className={`w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                      <Icon size={28} className={`${feature.color}`} />
-                    </div>
-                    <h3 className="mb-3 text-lg font-bold ">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-muted/30">
+      <section id="how-it-works" className="relative overflow-hidden bg-[#071a32] py-24 text-white sm:py-28">
+        <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full bg-primary/20 blur-[120px]" />
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="relative mb-16 grid items-end gap-6 lg:grid-cols-2 lg:text-left"
           >
-            <Badge className="mb-4">Simple Process</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 ">How Naitrust Works</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Four steps to create a clearer, verifiable property transaction record
+            <div>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Simple by design</p>
+              <h2 className="text-4xl leading-[1.05] tracking-[-0.045em] sm:text-5xl">From today’s sale<br />to tomorrow’s stock.</h2>
+            </div>
+            <p className="max-w-xl text-lg leading-8 text-white/60 lg:justify-self-end">
+              One account connects the money you receive, the suppliers you pay, and the important orders you need to protect.
             </p>
           </motion.div>
 
@@ -377,12 +329,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="mb-12 flex justify-center"
+            className="relative mb-16 flex justify-center rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 backdrop-blur sm:p-8"
           >
             <TrustHeroAnimation />
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="relative grid gap-0 overflow-hidden rounded-[2rem] border border-white/10 md:grid-cols-2 lg:grid-cols-4">
             {howItWorks.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -392,26 +344,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="relative"
+                  className="relative border-b border-white/10 p-7 last:border-b-0 md:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
                 >
-                  <Card className="p-6 h-full">
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                        <Icon size={28} className="text-primary" />
+                  <div className="h-full">
+                    <div className="mb-10 flex items-center justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-[#53b0ff]">
+                        <Icon size={23} />
                       </div>
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-primary">
-                        {item.step}
-                      </div>
+                      <span className="text-3xl font-black text-white/10">0{item.step}</span>
                     </div>
-                    <h3 className="text-center mb-2">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground text-center">{item.description}</p>
-                  </Card>
-                  
-                  {index < howItWorks.length - 1 && (
-                    <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                      <ChevronRight size={24} className="text-muted-foreground" />
-                    </div>
-                  )}
+                    <h3 className="mb-3 text-lg text-white">{item.title}</h3>
+                    <p className="text-sm leading-6 text-white/55">{item.description}</p>
+                  </div>
                 </motion.div>
               );
             })}
@@ -421,203 +365,102 @@ export function HomePage({ onNavigate }: HomePageProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="mt-12 text-center"
           >
-            <Button className='rounded-full' size="lg" onClick={() => onNavigate('how-it-works')}>
-              Learn More Details
+            <Button className="h-13 rounded-full px-7 shadow-[0_12px_34px_rgba(30,144,255,.25)]" size="lg" onClick={openWaitlistModal}>
+              Get Early Access
               <ArrowRight size={20} className="ml-2" />
             </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* Visual Trust Section */}
-      <section className="relative overflow-hidden py-20 bg-[#031335] dark:bg-[#0A0E1A]">
-        <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
-          <img
-            src={spiralBackground}
-            alt=""
-            aria-hidden="true"
-            className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
-          />
-        </div>
-        <div className="relative z-10 max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Instant Payments Showcase — mirrors the actual Wallet/Dashboard screens, not stock photography */}
+      <section className="bg-[#f5f8fc] py-24 dark:bg-[#0d0f13] sm:py-28">
+        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="order-2 lg:order-1 relative"
             >
-              <Badge className="mb-4">For Property Buyers</Badge>
-              <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6 text-white">
-                Keep the Property, People, Terms, and Payments in View
-              </h2>
-              <p className="text-lg text-white mb-6">
-                Buyers can document the property and participants, review agreed terms, keep payment evidence, and retain supporting records throughout the transaction.
-              </p>
-              
-              <div className="space-y-4 mb-8">
+              <Card className="gap-4 overflow-hidden rounded-[2rem] border-0 bg-linear-to-br from-[#087ff5] to-[#075cb5] p-6 text-primary-foreground shadow-[0_30px_70px_rgba(8,127,245,.28)] sm:p-8">
+                <p className="text-sm font-medium text-primary-foreground/80">Available balance</p>
+                <p className="text-4xl font-bold tracking-tight sm:text-5xl">₦842,500.00</p>
+                <div className="flex flex-wrap gap-4 text-sm text-primary-foreground/80">
+                  <span>
+                    Pending: <strong className="font-semibold text-primary-foreground">₦63,000.00</strong>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Shield size={14} />
+                    Protected: <strong className="font-semibold text-primary-foreground">₦3,120,000.00</strong>
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
+                    <Send size={14} /> Send Instantly
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
+                    <ArrowDownToLine size={14} /> Receive
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
+                    <Landmark size={14} /> Account details
+                  </span>
+                </div>
+              </Card>
+
+              <Card className="relative -mt-2 ml-4 gap-0 overflow-hidden rounded-[1.5rem] border-0 p-0 shadow-xl sm:ml-10">
                 {[
-                  'Create a property transaction before paying',
-                  'Confirm the seller, agent, or developer and their role',
-                  'Record the property, amount, payment plan, and timeline',
-                  'Track payment confirmations and agreed conditions',
-                  'Keep receipts, property documents, inspections, and approvals attached',
-                  'Raise an issue with structured evidence',
-                  'Build a reusable list of trusted counterparties'
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 size={16} className="text-white" />
+                  { name: 'Chioma Electronics', amount: '- ₦15,000.00', positive: false },
+                  { name: 'Received from Tunde Bakare', amount: '+ ₦32,000.00', positive: true },
+                ].map((row) => (
+                  <div key={row.name} className="flex items-center gap-3 border-b p-4 last:border-b-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                      {row.name.slice(0, 2).toUpperCase()}
                     </div>
-                    <span className="text-white">{item}</span>
-                  </motion.div>
+                    <p className="flex-1 truncate text-sm font-medium">{row.name}</p>
+                    <p className={`text-sm font-semibold ${row.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
+                      {row.amount}
+                    </p>
+                  </div>
                 ))}
-              </div>
-
-              <Button className='rounded-full' onClick={() => onNavigate('register-customer')}>
-                Create Buyer Account
-                <ArrowRight size={18} className="ml-2" />
-              </Button>
+              </Card>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative min-w-0"
-            >
-              <div className="mx-auto grid w-full max-w-xl grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-4">
-                  <Card className="min-w-0 overflow-hidden p-4">
-                    <ImageWithFallback
-                      src="https://images.unsplash.com/photo-1520528105264-de3db89485f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
-                      alt="Property buyer reviewing a transaction"
-                      className="mb-3 h-52 w-full rounded-lg object-cover sm:h-52"
-                    />
-                    {/* <div className="flex items-center gap-2 mb-2">
-                      <VerifiedBadge tier="premium" variant="small" />
-                      <div className="flex gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                    </div> */}
-                    <p className="text-sm font-medium">Lagos Property Purchase</p>
-                    <p className="text-xs text-muted-foreground">Deposit confirmation recorded</p>
-                  </Card>
-                  
-                  <Card className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                        <Shield size={20} className="text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium">Terms Accepted</p>
-                        <p className="text-xs text-muted-foreground">Property documents pending</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Badge variant="outline" className="text-xs">Property purchase</Badge>
-                      <Badge variant="outline" className="text-xs">Lagos</Badge>
-                    </div>
-                  </Card>
-                </div>
-
-                <div className="space-y-4 sm:mt-12">
-                  <Card className="min-w-0 overflow-hidden p-4">
-                    <ImageWithFallback
-                      src="https://images.unsplash.com/photo-1637328613628-bc050ce89953?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"
-                      alt="Property professional supporting a Nigerian transaction"
-                      className="mb-3 h-52 w-full rounded-lg object-cover sm:h-52"
-                    />
-                    {/* <div className="flex items-center gap-2 mb-2">
-                      <VerifiedBadge tier="basic" variant="small" />
-                      <div className="flex gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                    </div> */}
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">Verified Property Company</p>
-                    <p className="text-xs text-muted-foreground">Participant details available to review</p>
-                  </Card>
-
-                  <Card className="p-4 bg-primary text-white">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Lock size={16} />
-                      <span className="text-xs font-medium">Protected Transaction</span>
-                    </div>
-                    <p className="text-xs leading-relaxed opacity-90">Terms, property documents, payment status, milestones, and supporting evidence stay attached to the transaction.</p>
-                  </Card>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-4 -right-4 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10"></div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* For Business Section - Enhanced */}
-      <section className="py-20 bg-linear-to-br ">
-        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="order-2 lg:order-1"
-            >
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1657448721969-b42c9bd2e03a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200"
-                alt="Young Nigerian entrepreneur smiling in business setting"
-                className="w-full h-[500px] object-cover rounded-2xl shadow-2xl"
-              />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               className="order-1 lg:order-2"
             >
-              <Badge className="mb-4 bg-primary text-white text-base px-4 py-2">For Businesses</Badge>
-              <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6">
-                Build Trust, Close Better Property Deals
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Everyday payments</p>
+              <h2 className="mb-6 text-4xl leading-tight tracking-[-0.04em] sm:text-5xl">
+                Everyday money movement for the people who keep your business running.
               </h2>
-              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Property companies, agents, and developers should be able to give buyers a professional and transparent transaction experience. Naitrust provides a structured way to record who is involved, what was agreed, what was paid, and which evidence exists.
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                Receive customer money and pay regular suppliers quickly through one simple account. Save the people you trade with and make the next payment easier.
               </p>
-              
+
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
-                  { icon: TrendingUp, text: 'Active Deal Pipeline', color: 'text-green-600 dark:text-green-400' },
-                  { icon: Users, text: 'Counterparty Trust Panel', color: 'text-blue-600 dark:text-blue-400' },
-                  { icon: Shield, text: 'Reusable Verification Checks', color: 'text-primary' },
-                  { icon: BarChart3, text: 'Evidence & Action Insights', color: 'text-purple-600 dark:text-purple-400' },
-                  { icon: MessageSquare, text: 'Deal Activity Log', color: 'text-pink-600 dark:text-pink-400' },
-                  { icon: Fingerprint, text: 'Transaction Reputation', color: 'text-teal-600 dark:text-teal-400' },
+                  { icon: ArrowDownToLine, text: 'Receive sales and customer payments' },
+                  { icon: Send, text: 'Pay suppliers by username, phone, or bank' },
+                  { icon: MessageCircle, text: 'Request payment directly from a conversation' },
+                  { icon: Users, text: 'Save regular recipients for faster payments' },
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center gap-3 p-3 border bg-card rounded-xl"
+                      transition={{ delay: index * 0.08 }}
+                      className="flex items-center gap-3 rounded-2xl border bg-card p-4"
                     >
-                      <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Icon size={24} className={item.color} />
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon size={20} className="text-primary" />
                       </div>
                       <span className="text-sm font-medium">{item.text}</span>
                     </motion.div>
@@ -626,12 +469,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" onClick={() => onNavigate('register-business')}>
-                  Start as Seller
+                <Button size="lg" onClick={openWaitlistModal}>
+                  Get Early Access
                   <ArrowRight size={18} className="ml-2" />
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => onNavigate('use-cases')}>
-                  Explore Use Cases
                 </Button>
               </div>
             </motion.div>
@@ -640,8 +480,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Digital Print Highlight */}
-      <section className="py-20 bg-[#031335] dark:bg-[#0A0E1A] overflow-hidden relative"
- 
+      <section className="relative overflow-hidden bg-[#071a32] py-24 sm:py-28"
+
       >
           <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
           <img
@@ -658,19 +498,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <Badge className="mb-4 bg-primary text-white">New Feature</Badge>
-              <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-6 text-white">
-                Transaction Room — Your Property Deal Record
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Protected deal room</p>
+              <h2 className="mb-6 text-4xl leading-tight tracking-[-0.04em] text-white sm:text-5xl">
+                Protect the orders your business cannot afford to get wrong.
               </h2>
-              <p className="text-lg text-white mb-8 leading-relaxed text-justify">
-                Every property transaction gets a shared <strong className="text-white">Naitrust safe-deal room</strong> — a clear record of the property, who is involved, what was agreed, what evidence is required, and what happens next, reviewable by buyers, sellers, agents, and property companies from one place.
+              <p className="mb-8 text-lg leading-8 text-white/65">
+                When you are ordering from a new supplier or committing more money than usual, a <strong className="text-white">Naitrust Protected Deal</strong> keeps the order, supplier, amount, delivery terms, evidence, and payment status in one shared record.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
-                  { icon: Fingerprint, text: 'Every action logged to the deal' },
-                  { icon: QrCode, text: 'Shareable property transaction access' },
-                  { icon: ScanLine, text: 'Milestone and delivery tracking' },
+                  { icon: Fingerprint, text: 'Every order action kept on record' },
+                  { icon: QrCode, text: 'Shareable Protected Deal access' },
+                  { icon: ScanLine, text: 'Delivery and evidence tracking' },
                   { icon: Lock, text: 'Dispute-ready from day one' },
                 ].map((item, index) => {
                   const Icon = item.icon;
@@ -681,7 +521,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: index * 0.08 }}
-                      className="flex items-center gap-3 p-3 dark:bg-card/80 rounded-xl border border-white/20 transition-colors"
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-colors hover:bg-white/[0.07]"
                     >
                       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <Icon size={20} className="text-primary" />
@@ -694,11 +534,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" onClick={() => onNavigate('register-business')}>
-                  Create Transaction Room
+                  Create a Protected Deal
                   <ArrowRight size={18} className="ml-2" />
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => onNavigate('how-it-works')} className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white">
-                  See How It Works
                 </Button>
               </div>
             </motion.div>
@@ -707,48 +544,49 @@ export function HomePage({ onNavigate }: HomePageProps) {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative"
+              className="relative min-h-[34rem]"
             >
-              <Card className="p-8 max-w-md mx-auto bg-white dark:bg-card border-2 shadow-2xl">
-                <div className="text-center mb-6">
-                  <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Fingerprint size={40} className="text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold">Transaction Room</h3>
-                  <p className="text-sm text-muted-foreground">Property Transaction Record</p>
+              <div className="absolute inset-x-4 top-0 h-[27rem] overflow-hidden rounded-[2rem] border border-white/15 shadow-[0_35px_90px_rgba(0,0,0,.4)] sm:inset-x-8">
+                <ImageWithFallback
+                  src={saferDealsImage}
+                  alt="Customer and business reviewing a protected transaction"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#04162f] via-[#04162f]/10 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7fc5ff]">A shared record for both sides</p>
+                  <p className="mt-2 max-w-sm text-xl font-bold">The order, evidence, payment status, and next action stay together.</p>
                 </div>
+              </div>
 
-                <div className="space-y-4 mb-6">
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Shield size={18} className="text-green-600 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Party Verified</p>
-                      <p className="text-xs text-muted-foreground">Buyer and seller checks complete</p>
-                    </div>
-                    <Badge variant="outline" className="ml-auto text-xs text-green-600 border-green-200">Done</Badge>
+              <Card className="absolute bottom-0 left-0 z-10 w-[78%] gap-0 rounded-[1.5rem] border-0 bg-white p-5 shadow-2xl sm:w-[68%] sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                    <CheckCircle2 size={21} />
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Star size={18} className="text-yellow-500 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Risk Readiness</p>
-                      <p className="text-xs text-muted-foreground">Based on terms and evidence</p>
-                    </div>
-                    <span className="ml-auto font-bold text-sm">4.8/5</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Globe size={18} className="text-blue-500 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Proof Items</p>
-                      <p className="text-xs text-muted-foreground">4 required before release</p>
-                    </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Protected Deal</p>
+                    <p className="font-bold">Delivery evidence added</p>
                   </div>
                 </div>
+                <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-full w-3/4 rounded-full bg-emerald-500" />
+                </div>
+                <div className="mt-2 flex justify-between text-[10px] font-semibold text-slate-500">
+                  <span>Terms agreed</span>
+                  <span>Awaiting confirmation</span>
+                </div>
+              </Card>
 
-                <div className="border-t pt-6 text-center">
-                  <div className="w-32 h-32 mx-auto bg-muted rounded-xl flex items-center justify-center mb-3">
-                    <QrCode size={64} className="text-muted-foreground/60" />
+              <Card className="absolute bottom-10 right-0 z-20 w-[45%] gap-0 rounded-[1.4rem] border border-white/70 bg-white/95 p-4 shadow-2xl backdrop-blur sm:w-[38%]">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#eaf5ff] text-primary">
+                    <Shield size={17} />
                   </div>
-                  <p className="text-xs text-muted-foreground">Scan to verify this business</p>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground">Payment status</p>
+                    <p className="text-xs font-bold text-emerald-700">Protected</p>
+                  </div>
                 </div>
               </Card>
 
@@ -760,7 +598,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Partners Section */}
-      <section className="py-16">
+      <section className="border-b bg-background py-20">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -768,14 +606,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <Badge className="mb-4">Trusted Partners</Badge>
-            <h2 className="text-2xl sm:text-3xl naitrust-satoshi-bold mb-4 text-gray-900 dark:text-white">Regulated Fintech Behind Every Property Transaction</h2>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Infrastructure partners</p>
+            <h2 className="mb-4 text-3xl tracking-tight text-gray-900 sm:text-4xl dark:text-white">Trust in front. Regulated rails underneath.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Naitrust handles the trust workflow while regulated and trusted financial services support verification, payment, and intelligence around every real estate deal
+              Naitrust works with regulated payment infrastructure partners, including Anchor and Kora, to support account, collection, transfer, and protected-payment services — Naitrust handles the trust workflow while regulated partners handle verification, payment, and fund movement.
             </p>
           </motion.div>
 
-          <div className="flex flex-wrap gap-4 justify-center mx-auto overflow-x-auto py-4">
+          <div className="mx-auto grid max-w-3xl gap-4 py-4 sm:grid-cols-2">
             {/* <motion.a
               href="https://www.cac.gov.ng/"
               target="_blank"
@@ -786,10 +624,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileHover={{ scale: 1.05 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 * 1 }}
-              className="flex-shrink-0"
-              style={{ minWidth: '190px', maxWidth: '80px' }}
+              className="block"
             >
-              <Card className="p-4 h-full flex justify-center items-center hover:shadow-xl transition-all hoverborder-2 hover:border-primary/50 dark:from-card dark:to-gray-900/50">
+              <Card className="flex h-full min-h-40 items-center justify-center rounded-[1.5rem] p-6 transition-all hover:-translate-y-1 hover:shadow-xl dark:from-card dark:to-gray-900/50">
                 <CACLogo className="w-16 h-16"/>
                 <p className="font-semibold text-sm text-center">CAC Nigeria</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Official Registry</p>
@@ -806,10 +643,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileHover={{ scale: 1.05 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 * 1 }}
-              className="flex-shrink-0"
-              style={{ minWidth: '190px', maxWidth: '80px' }}
+              className="block"
             >
-              <Card className="p-4 h-full flex justify-center items-center hover:shadow-xl transition-all hoverborder-2 hover:border-primary/50 dark:from-card dark:to-gray-900/50">
+              <Card className="flex h-full min-h-40 items-center justify-center rounded-[1.5rem] p-6 transition-all hover:-translate-y-1 hover:shadow-xl dark:from-card dark:to-gray-900/50">
                 <QoreIDLogo className="w-16 h-16 bg-[#141414] rounded-full p-2" />
                 <p className="font-semibold text-sm group-hover:text-primary transition-colors">QoreID</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Identity and business checks</p>
@@ -840,22 +676,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-[#f5f8fc] py-24 dark:bg-[#0d0f13] sm:py-28">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="mb-12 grid gap-5 text-left md:grid-cols-[0.7fr_1fr] md:items-end"
           >
-            <Badge className="mb-4">FAQ</Badge>
-            <h2 className="text-3xl sm:text-4xl naitrust-satoshi-bold mb-4 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
-            <p className="text-lg text-muted-foreground">
-              Everything you need to know about Naitrust
-            </p>
+            <div><p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Questions, answered</p><h2 className="text-4xl tracking-[-0.04em] text-gray-900 sm:text-5xl dark:text-white">The important stuff.</h2></div>
+            <p className="text-lg text-muted-foreground md:justify-self-end">Clear answers about receiving money, paying suppliers, and protecting important transactions.</p>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="overflow-hidden rounded-[2rem] border bg-background">
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
@@ -864,10 +697,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6">
-                  <h4 className="mb-2">{faq.question}</h4>
-                  <p className="text-sm text-muted-foreground">{faq.answer}</p>
-                </Card>
+                <div className="grid gap-3 border-b p-6 last:border-b-0 sm:grid-cols-[3rem_0.8fr_1.2fr] sm:gap-5 sm:p-8">
+                  <span className="text-sm font-bold text-primary">0{index + 1}</span>
+                  <h4>{faq.question}</h4>
+                  <p className="text-sm leading-6 text-muted-foreground">{faq.answer}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -882,7 +716,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Final CTA - Enhanced with Slogan */}
-      <section className={`py-14 sm:py-20 ${isDarkMode ? "bg-card-foreground" : "bg-[#eef3f8]"} text-[#0b2b45] relative overflow-hidden`}>
+      <section className="relative overflow-hidden bg-[#04162f] py-20 text-white sm:pb-20 sm:pt-24">
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/18 blur-[95px]" />
 
         <div className="max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
@@ -891,17 +726,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
           >
             {/* Slogan - Prominent */}
-            <div className="mb-7 sm:mb-8 p-4 lg:p-4 xl:p-6 bg-white/75 backdrop-blur-sm rounded-full border-2 border-primary/20 shadow-[0_18px_50px_rgba(11,43,69,0.08)]">
-              <p className="text-lg md:text-xl lg:text-2xl font-bold leading-tight text-[#0b2b45] text-balance">
-                "Create a clear property record before money moves."
+            <div className="mb-8 inline-flex rounded-full border border-white/15 bg-white/[0.06] px-5 py-2.5 backdrop-blur">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7dc1ff]">
+                Send instantly when you trust them. Protect it when you don't.
               </p>
             </div>
 
-            <h2 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 leading-tight text-[#0b2b45] text-balance">
-              Ready to Approach Your Next <br/> Property Transaction with More Confidence?
+            <h2 className="mb-5 text-4xl font-bold leading-[1.02] tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+              Run today’s business.<br />Build tomorrow’s trust.
             </h2>
-            <p className="text-base lg:text-lg leading-7 mb-7 sm:mb-8 text-[#496274] text-pretty">
-              Record the property and participants, agree the terms, verify the basics, and keep payments, documents, milestones, and supporting evidence in one trusted record.
+            <p className="mx-auto mb-9 max-w-2xl text-base leading-7 text-white/60 lg:text-lg">
+              Receive sales, pay trusted suppliers instantly, and protect important orders—all from one business account.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
@@ -909,7 +744,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 size="lg"
                 variant="secondary"
                 onClick={openWaitlistModal}
-                className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold shadow-[0_14px_32px_rgba(30,144,255,0.24)]"
+                className="w-full rounded-full bg-primary px-8 py-5 text-base font-semibold text-white shadow-[0_14px_32px_rgba(30,144,255,0.24)] hover:bg-primary/90 sm:w-auto sm:py-6 sm:text-lg"
               >
                 Join Early Access
                 <ArrowRight size={22} className="ml-2" />
@@ -917,16 +752,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <Button
                 size="lg"
                 onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
-                className="w-full sm:w-auto border border-primary/40 bg-white hover:bg-primary/10 hover:text-primary px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold text-[#0b2b45]"
+                className="w-full rounded-full border border-white/20 bg-white/[0.06] px-8 py-5 text-base font-semibold text-white hover:bg-white/10 hover:text-white sm:w-auto sm:py-6 sm:text-lg"
               >
-                Join as a Property Company
+                Join as a Business
               </Button>
             </div>
 
             {/* Feedback Link */}
-            <div className="mt-9 sm:mt-12 pt-7 sm:pt-8 border-t border-primary/20">
-              <p className="text-sm sm:text-base text-[#496274] mb-3 sm:mb-4">
-                Have feedback about property transactions in Nigeria?
+            <div className="mt-9 border-t border-white/10 pt-7 sm:mt-12 sm:pt-8">
+              <p className="mb-3 text-sm text-white/45 sm:mb-4 sm:text-base">
+                Have feedback about business payments in Nigeria?
               </p>
               <Button
                 variant="ghost"

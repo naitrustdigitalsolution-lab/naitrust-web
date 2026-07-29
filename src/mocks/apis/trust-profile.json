@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "data": {
+    "identityVerificationLevel": "full",
+    "businessVerificationLevel": "verified",
+    "completedDealsCount": 27,
+    "cancelledDealsCount": 2,
+    "activeDealsCount": 5,
+    "resolvedDisputesCount": 1,
+    "repeatCounterpartiesCount": 9,
+    "memberSince": "2025-08-12T00:00:00Z",
+    "averageCompletionDays": 6,
+    "averageResponseTimeHours": 3,
+    "ratingAverage": 4.8,
+    "ratingCount": 22
+  }
+}

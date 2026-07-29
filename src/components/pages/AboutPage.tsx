@@ -1,245 +1,207 @@
-import { Shield, Users, Target, Eye, CheckCircle, Building2, Globe, Award } from 'lucide-react';
+import {
+  ArrowDownToLine,
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  CheckCircle2,
+  Handshake,
+  Send,
+  ShieldCheck,
+  Store,
+} from 'lucide-react';
+import { motion } from 'motion/react';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { motion } from 'motion/react';
 import { SEOHead } from '../utility/SEOHead';
 import { openWaitlistModal } from '../modals/WaitlistModal';
 
 interface AboutPageProps {
-  onNavigate: (page: string, params?: any) => void;
+  onNavigate: (page: string, params?: unknown) => void;
 }
+
+const audiences = [
+  'Market and shop traders',
+  'Wholesalers and distributors',
+  'Instagram and WhatsApp sellers',
+  'Registered and informal businesses',
+];
 
 export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Us — Naitrust"
-        description="Naitrust is building trust infrastructure for Nigerian property transactions, with shared records for participants, agreements, payments, documents, and milestones."
+        title="About Naitrust | Built for Nigerian Traders"
+        description="Naitrust is the everyday business account for Nigerian traders—receive sales, pay suppliers, protect important orders, and build a trusted payment history."
         canonicalPath="/about"
       />
 
-      {/* Hero Section */}
-       <section className="relative overflow-hidden bg-[#031335] dark:bg-[#0A0E1A] px-4 py-20 text-white sm:px-6 lg:px-8">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative mx-auto max-w-5xl text-center">
-          <Badge className="mb-5 border border-white/15 bg-white/10 text-white hover:bg-white/10">About Naitrust</Badge>
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">Why We're Building Naitrust</h1>
-          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-blue-100">
-            Property deals in Nigeria still depend on verbal promises, scattered receipts, and payments sent on faith — with nothing to fall back on if something goes wrong. That's why we're building Naitrust: one secure, verifiable record for every agreement, payment, and milestone, and a clear way to see each property transaction through, from agreement to completion.
-          </p>
+      <section className="relative overflow-hidden bg-[#04162f] px-4 pb-24 pt-20 text-white sm:px-6 sm:py-28 lg:px-8">
+        <div className="pointer-events-none absolute -right-28 top-0 h-[28rem] w-[28rem] rounded-full bg-primary/15 blur-[120px]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.3)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.3)_1px,transparent_1px)] [background-size:72px_72px]" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65 }}
+          className="relative mx-auto max-w-6xl"
+        >
+          <Badge className="mb-6 border border-white/15 bg-white/[0.08] px-4 py-2 text-white hover:bg-white/[0.08]">
+            Why Naitrust exists
+          </Badge>
+          <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr]">
+            <h1 className="max-w-4xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+              Nigerian businesses deserve more than a bank transfer screenshot.
+            </h1>
+            <div>
+              <p className="text-lg leading-8 text-white/68">
+                Traders move money every day—receiving sales, restocking, paying suppliers, and taking chances on new business relationships. Naitrust brings those moments into one account built around speed when trust exists and protection when it does not.
+              </p>
+              <Button className="mt-7 h-12 rounded-full px-6" onClick={openWaitlistModal}>
+                Join early access
+                <ArrowRight size={17} className="ml-2" />
+              </Button>
+            </div>
+          </div>
         </motion.div>
       </section>
 
-      {/* Mission, Vision, Values */}
-      <section className="py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+      <section className="bg-[#f5f8fc] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 dark:bg-[#0d0f13]">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">The problem</p>
+              <h2 className="text-4xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-5xl">
+                Business moves fast. Its records rarely keep up.
+              </h2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid gap-4 sm:grid-cols-2"
+            >
+              {[
+                'Customer payments arrive across different accounts and chats.',
+                'Supplier orders are agreed verbally or buried in WhatsApp.',
+                'Large advance payments are sent before delivery is certain.',
+                'Honest traders have little structured history to prove reliability.',
+              ].map((problem, index) => (
+                <Card key={problem} className="rounded-2xl border-0 p-6 shadow-[0_14px_40px_rgba(11,43,69,.07)]">
+                  <span className="text-xs font-bold text-primary">0{index + 1}</span>
+                  <p className="mt-8 text-base font-semibold leading-7">{problem}</p>
+                </Card>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 max-w-3xl">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">One business account</p>
+            <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
+              Everyday payments keep you moving. Protection helps you move boldly.
+            </h2>
+          </div>
+          <div className="grid gap-px overflow-hidden rounded-[2rem] border bg-border md:grid-cols-2 lg:grid-cols-4">
             {[
-              {
-                icon: Target,
-                title: 'Our Mission',
-                text: 'To support safer Nigerian property transactions by giving participants one shared place to record terms, identities, payments, documents, milestones, and evidence.',
-              },
-              {
-                icon: Eye,
-                title: 'Our Vision',
-                text: 'A Nigeria where property participants can move from informal conversations into a clear, accessible, and verifiable transaction record.',
-              },
-              {
-                icon: Shield,
-                title: 'Our Values',
-                text: 'Clarity, integrity, and responsible protection. We help participants keep evidence visible and make each stage of a property transaction easier to understand.',
-              },
-            ].map((item, i) => (
+              { icon: ArrowDownToLine, title: 'Receive sales', text: 'Bring customer and requested payments into one account.' },
+              { icon: Send, title: 'Pay suppliers', text: 'Send instantly to the people and businesses you already trust.' },
+              { icon: ShieldCheck, title: 'Protect orders', text: 'Keep terms, evidence, delivery, and payment status together.' },
+              { icon: BadgeCheck, title: 'Build history', text: 'Turn completed business into a reputation you can carry forward.' },
+            ].map((item, index) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: index * 0.08 }}
+                className="bg-background p-7 sm:p-8"
               >
-                <Card className="p-8 h-full text-center hover:shadow-lg transition-shadow">
-                  <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <item.icon size={28} className="text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-3">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.text}</p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* The Problem We Solve */}
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">The Problem We Solve</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Nigerian property transactions can involve large payments, multiple representatives, informal conversations, and documents spread across chats and email. That makes it difficult to prove who said what, what was paid, and what should happen next.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <Users size={20} className="text-primary" />
-                For Buyers
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Start a shared deal room before money moves</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Confirm the seller, agent, or developer, the terms, milestones, and document requirements</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Track payment status and release conditions with clear evidence</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Raise an issue with structured records instead of scattered chats</li>
-              </ul>
-            </Card>
-            <Card className="p-6">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <Building2 size={20} className="text-primary" />
-                For Sellers
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Show readiness with verified identity, business information, and deal history</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Agree terms in one place and attach property documents, milestone evidence, and completion records</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Make payment release and dispute steps clearer for both sides</li>
-                <li className="flex items-start gap-2"><CheckCircle size={14} className="text-primary mt-0.5 shrink-0" /> Build a history from completed property transactions</li>
-              </ul>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* How Verification Works */}
-      <section className="py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">How a Safer Transaction Works</h2>
-            <p className="text-muted-foreground">
-              A simple 3-step flow that helps two parties move from agreement to completion with clarity.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: '1', title: 'Create the Property Transaction', desc: 'Record the property, participants, amount, terms, timeline, documents, and required evidence.' },
-              { step: '2', title: 'Verify and Align', desc: 'Each side confirms identity, business details, and transaction expectations before payment or release happens.' },
-              { step: '3', title: 'Complete with Evidence', desc: 'Payments, property documents, milestones, approvals, and issue records stay attached to the transaction for participants to review.' },
-            ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center"
-              >
-                <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-lg font-bold">
-                  {item.step}
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <item.icon size={22} />
                 </div>
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
+                <h3 className="mt-10 text-xl font-bold">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.text}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Long-Term Vision */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <Badge className="mb-4">Our Roadmap</Badge>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              Built for Real Estate. Designed for Every High-Value Transaction.
+      <section className="bg-[#071a32] px-4 py-20 text-white sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+          <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Built for the people who trade</p>
+            <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
+              Informal or registered, your business is still a real business.
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Naitrust begins by making property transactions safer. Over time, the same trust infrastructure will support vehicles, equipment, business transactions, and other high-value exchanges.
+            <p className="mt-6 max-w-xl text-lg leading-8 text-white/60">
+              Naitrust is trader-first, not trader-exclusive. It is designed to feel useful whether you run a market stall, a neighbourhood shop, a wholesale operation, an online storefront, or a growing company.
             </p>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Company Info */}
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Company Information</h2>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Building2 size={20} className="text-primary" />
-                <h3 className="font-semibold">Legal Details</h3>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p><strong>Company:</strong> Naitrust Digital Solutions Limited</p>
-                <p><strong>RC Number:</strong> 9001392</p>
-                <p><strong>Registered under:</strong> CAMA 2020, Nigeria</p>
-                <p><strong>Headquarters:</strong> Lagos, Nigeria</p>
-              </div>
-            </Card>
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Globe size={20} className="text-primary" />
-                <h3 className="font-semibold">Get in Touch</h3>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p><strong>Email:</strong> contact@naitrust.com</p>
-                <p><strong>Phone:</strong> +234 707 587 3258</p>
-                <p><strong>Website:</strong> <a href="https://www.naitrust.com" className="text-primary hover:underline">www.naitrust.com</a></p>
-                <p><strong>Hours:</strong> Mon–Fri, 9 AM – 5 PM WAT</p>
-              </div>
-            </Card>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {audiences.map((audience, index) => (
+              <motion.div
+                key={audience}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.07 }}
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-5"
+              >
+                {index === 0 ? <Store className="text-[#67b7ff]" size={20} /> : index === 3 ? <Building2 className="text-[#67b7ff]" size={20} /> : <Handshake className="text-[#67b7ff]" size={20} />}
+                <span className="text-sm font-semibold">{audience}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <Award size={48} className="text-primary mx-auto mb-4" />
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              Help Shape Better Property Transactions
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Join Naitrust early access if you want a clearer way to record property participants, agreements, payments, documents, milestones, and supporting evidence in Nigeria.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button size="lg" onClick={openWaitlistModal}>
-                Join Property Early Access
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => onNavigate('register-business')}>
-                Join as a Property Company
-              </Button>
+      <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mx-auto max-w-5xl rounded-[2rem] bg-[#eef6ff] p-8 dark:bg-card sm:p-12"
+        >
+          <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+            <div>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Our responsibility</p>
+              <h2 className="text-3xl font-bold tracking-[-0.035em] sm:text-4xl">Trust must be clear, not exaggerated.</h2>
+              <p className="mt-5 max-w-2xl leading-7 text-muted-foreground">
+                Naitrust manages the account experience, transaction workflow, participant record, and supporting evidence. Licensed financial partners handle regulated funding and money movement.
+              </p>
             </div>
-          </motion.div>
-        </div>
+            <div className="space-y-3">
+              {['Clear participant roles', 'Visible payment status', 'Evidence tied to the transaction'].map((item) => (
+                <div key={item} className="flex items-center gap-3 text-sm font-semibold">
+                  <CheckCircle2 size={18} className="text-emerald-600" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      <section className="bg-[#04162f] px-4 py-20 text-center text-white sm:px-6 sm:py-24 lg:px-8">
+        <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-3xl">
+          <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">Built for today’s trade—and the business you are becoming.</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/60">
+            Receive sales. Pay suppliers. Protect important orders. Build a business history.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Button size="lg" className="rounded-full px-7" onClick={openWaitlistModal}>
+              Join early access
+              <ArrowRight size={18} className="ml-2" />
+            </Button>
+            <Button size="lg" variant="outline" className="rounded-full border-white/20 bg-white/[0.05] px-7 text-white hover:bg-white/10 hover:text-white" onClick={() => onNavigate('contact')}>
+              Talk to us
+            </Button>
+          </div>
+        </motion.div>
       </section>
     </div>
   );

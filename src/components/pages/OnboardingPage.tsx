@@ -58,19 +58,19 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 Start with the right profile
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                Create clearer property transactions with Naitrust.
+                One account for the way you do business.
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                Choose how you participate in property transactions so your profile and transaction guidance fit your needs.
+                Choose the profile that best reflects how you work. Both options can send instantly and protect important payments.
               </p>
             </div>
 
             {/* Desktop only — on mobile these bullets move BELOW the choice cards. */}
             <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
-                'Shared transaction rooms before money moves',
+                'Instant transfers, plus Protected Deals before money moves',
                 'Identity, business, and evidence records in one place',
-                'Property workflows built for buyers, sellers, agents, and companies',
+                'Built for informal traders, registered businesses, and everyone between',
               ].map((item) => (
                 <div
                   key={item}
@@ -107,9 +107,9 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 <User size={28} />
               </div>
               <p className="mb-2 text-sm font-semibold text-primary">Profile setup</p>
-              <h2 className="text-2xl font-bold">How do you want to use Naitrust?</h2>
+              <h2 className="text-2xl font-bold">Which profile fits you best?</h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Choose the profile that best fits how you transact today. You can add more capabilities later from your dashboard.
+                Start with the option that matches you today. You can expand your account as your needs grow.
               </p>
             </div>
 
@@ -129,21 +129,21 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg lg:text-md xl:text-lg font-semibold">As a property buyer or seller</h3>
+                        <h3 className="text-lg lg:text-md xl:text-lg font-semibold">As an individual</h3>
                         <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Individual
                           <ArrowRight size={14} className="ml-1" />
                         </Button>
                       </div>
                       <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
-                        Buying or selling property? Create a clear record of the property, participants, terms, payments, documents, milestones, and supporting evidence.
+                        Receive money, pay people you trust instantly, or protect an important payment when you are dealing with someone new.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify who you are dealing with',
-                          'Record the property, price, and payment plan',
-                          'Follow payments and transaction milestones',
-                          'Keep receipts, documents, evidence, and messages',
+                          'Record what the payment is for',
+                          'Follow payments and agreed delivery',
+                          'Keep receipts, evidence, and messages',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
@@ -172,7 +172,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap justify-between items-center gap-2">
-                        <h3 className="text-lg font-semibold">As a property business</h3>
+                        <h3 className="text-lg font-semibold">As a business</h3>
                         <Button className="rounded-full sm:mt-1 text-xs" size="sm">
                           Choose Business
                           <ArrowRight size={16} className="ml-1" />
@@ -180,14 +180,15 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Give property clients a professional experience. Verify your organisation or role, structure each transaction, and build a history of completed activity.
+                        Registered or informal—whether you run a shop, market stall, wholesale business, or WhatsApp storefront—manage customer and supplier payments professionally.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify your business and representatives',
-                          'Set clear property transaction terms',
-                          'Manage buyer, seller, agent, and developer records',
-                          'Build portable transaction reputation',
+                          'Receive sales and pay regular suppliers',
+                          'Protect larger orders and unfamiliar payments',
+                          'Manage customers, suppliers, and business contacts',
+                          'Build a reusable Trust Profile',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-primary" />
@@ -202,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Individuals and businesses can both pay, receive, and complete transactions. Choose the profile that matches how you want records and reputation to appear.
+              Individuals and businesses — registered or informal — can both send instantly and complete Protected Deals. Choose the profile that matches how you want records and reputation to appear.
             </div>
           </motion.div>
         </main>
@@ -210,9 +211,9 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
         {/* Mobile: supporting points + login link sit BELOW the choice cards. */}
         <section className="lg:hidden">
           {[
-            'Shared transaction rooms before money moves',
+            'Instant transfers, plus Protected Deals before money moves',
             'Identity, business, and evidence records in one place',
-            'Property workflows built for Nigerian buyers and businesses',
+            'Built for informal traders, registered businesses, and everyone between',
           ].map((item) => (
             <div
               key={item}

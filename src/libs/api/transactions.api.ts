@@ -11,7 +11,7 @@
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
-import type { CreateSafeDealInput, SafeDealSummary } from '../store/types';
+import type { CreateSafeDealInput, CreateSafeDealResult, SafeDealSummary } from '../store/types';
 import mockTransactions from '../../mocks/apis/transactions.json';
 import type { ApiSuccess } from './types';
 
@@ -42,7 +42,7 @@ export const transactionsApi = {
    * Real endpoint: POST /transactions
    * In mock mode returns a freshly-created summary in `pending_counterparty`.
    */
-  createTransaction: async (input: CreateSafeDealInput): Promise<ApiSuccess<SafeDealSummary>> => {
+  createTransaction: async (input: CreateSafeDealInput): Promise<ApiSuccess<CreateSafeDealResult>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const now = new Date();
@@ -51,7 +51,8 @@ export const transactionsApi = {
         input.participants.length > 1
           ? `${first?.name ?? 'Counterparty'} +${input.participants.length - 1}`
           : (first?.name ?? 'Counterparty');
-      const summary: SafeDealSummary = {
+      const token = `nt-invite-new-${crypto.randomUUID()}`;
+      const summary: CreateSafeDealResult = {
         id: `txn_${crypto.randomUUID()}`,
         reference: `NT-${now.getFullYear()}-${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`,
         title: input.title,
@@ -60,10 +61,11 @@ export const transactionsApi = {
         currency: input.currency,
         status: 'pending_counterparty',
         createdAt: now.toISOString(),
+        publicInvitePath: `/invite/${token}`,
       };
       return { success: true, data: summary, message: 'Safe deal created' };
     }
-    const response = await httpClient.post<SafeDealSummary>(endpoints.transactions.create, input);
-    return response as ApiSuccess<SafeDealSummary>;
+    const response = await httpClient.post<CreateSafeDealResult>(endpoints.transactions.create, input);
+    return response as ApiSuccess<CreateSafeDealResult>;
   },
 };

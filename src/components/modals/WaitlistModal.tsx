@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { CheckCircle2, ChevronDown } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -19,7 +19,6 @@ import type {
   WaitlistPayload,
   WaitlistUserType,
 } from '../../types/global';
-import { useCases } from '../../libs/use-cases';
 
 type WaitlistFormState = {
   firstName: string;
@@ -63,15 +62,22 @@ const transactionRanges: Array<{ value: TransactionRange; label: string }> = [
 ];
 
 const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
-  { value: 'property_buyer', label: 'Property buyer' },
-  { value: 'property_seller', label: 'Property seller or owner' },
-  { value: 'real_estate_agent', label: 'Real estate agent' },
-  { value: 'real_estate_company', label: 'Real estate company' },
-  { value: 'property_developer', label: 'Property developer' },
-  { value: 'contractor_service_provider', label: 'Contractor or property service provider' },
-  { value: 'legal_transaction_representative', label: 'Legal or transaction representative' },
-  { value: 'other', label: 'Other' },
+  { value: 'informal_business', label: 'Market trader or stall owner' },
+  { value: 'business_buyer', label: 'Shop, retail business or company' },
+  { value: 'supplier_vendor', label: 'Wholesaler, supplier or distributor' },
+  { value: 'marketplace_social_seller', label: 'Online or social seller' },
+  { value: 'contractor_service_provider', label: 'Service business or contractor' },
+  { value: 'individual_customer', label: 'Individual buying or paying a business' },
+  { value: 'other', label: 'Another kind of Nigerian business' },
 ];
+
+const paymentNeeds = [
+  { slug: 'conversation-payments', title: 'Receive customer transfers from WhatsApp or social conversations' },
+  { slug: 'payment-links-qr', title: 'Share payment links and shop QR codes' },
+  { slug: 'supplier-payments', title: 'Pay suppliers and saved business contacts' },
+  { slug: 'protected-transactions', title: 'Protect an important order or business transaction' },
+  { slug: 'payment-reconciliation', title: 'Confirm and reconcile incoming transfers automatically' },
+] as const;
 
 export function openWaitlistModal() {
   window.dispatchEvent(new CustomEvent('naitrust:open-waitlist'));
@@ -81,6 +87,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const [formState, setFormState] = useState<WaitlistFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rangeOpen, setRangeOpen] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const updateField = <Key extends keyof WaitlistFormState>(key: Key, value: WaitlistFormState[Key]) => {
     setFormState((current) => ({ ...current, [key]: value }));
@@ -113,7 +120,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
     }
 
     if (formState.useCase.length === 0) {
-      toast.error('Please choose the property transaction closest to your needs.');
+      toast.error('Please choose what would help your business most.');
       return;
     }
 
@@ -142,7 +149,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
       await joinWaitlist(payload);
       toast.success('You are on the Naitrust waiting list.');
       setFormState(initialFormState);
-      onOpenChange(false);
+      setIsComplete(true);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to submit waitlist request.');
     } finally {
@@ -152,18 +159,42 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] gap-6 overflow-y-auto p-6 sm:max-w-2xl sm:p-8 lg:max-w-3xl">
+      <DialogContent className="max-h-[92vh] gap-0 overflow-y-auto rounded-[1.75rem] border-0 p-0 shadow-[0_30px_100px_rgba(3,19,53,.28)] sm:max-w-2xl">
+        {isComplete ? (
+          <div className="grid min-h-[28rem] place-items-center p-8 text-center sm:p-12">
+            <div>
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600">
+                <CheckCircle2 size={38} />
+              </div>
+              <DialogTitle className="text-3xl">Your place is saved.</DialogTitle>
+              <DialogDescription className="mx-auto mt-3 max-w-md text-base leading-7">
+                We’ll keep you updated and let you know when your Naitrust early access is ready.
+              </DialogDescription>
+              <Button
+                className="mt-8 h-12 rounded-full px-7"
+                onClick={() => {
+                  setIsComplete(false);
+                  onOpenChange(false);
+                }}
+              >
+                Back to Naitrust
+                <ArrowRight size={17} className="ml-2" />
+              </Button>
+            </div>
+          </div>
+        ) : (
+        <div className="p-6 sm:p-8">
         <DialogHeader>
           <div className="mb-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             Get early access
           </div>
-          <DialogTitle className="text-2xl sm:text-3xl">Make your next property transaction clearer</DialogTitle>
+          <DialogTitle className="text-2xl tracking-tight sm:text-3xl">Be first to move money with more confidence.</DialogTitle>
           <DialogDescription>
-            Join for early access to clearer participant records, agreements, payments, property documents, and transaction evidence in one place.
+            Join for early access to instant payments and protected payments — participant records, agreements, evidence, and milestones in one place.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-2 rounded-full border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
+        <div className="my-6 grid gap-2 rounded-2xl border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
             Early-access priority
@@ -174,7 +205,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
         </div>
 
-        <form className="grid gap-5" onSubmit={handleSubmit}>
+        <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-2 text-sm font-medium">
               First name
@@ -272,7 +303,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
 
           <div className="grid min-w-0 gap-2 text-sm font-medium">
-            Which property transaction is closest to your needs?
+            What would help your business most?
             <Popover>
               <PopoverTrigger asChild>
                 <button
@@ -289,7 +320,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               </PopoverTrigger>
               <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
                 <div className="grid gap-0.5">
-                  {useCases.map((item) => (
+                  {paymentNeeds.map((item) => (
                     <label
                       key={item.slug}
                       className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
@@ -314,7 +345,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             {formState.useCase.length > 0 && (
               <div className="scrollbar-none flex gap-1 overflow-x-auto pb-0.5">
                 {[
-                  ...useCases.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title),
+                  ...paymentNeeds.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title),
                   ...(formState.useCase.includes('other') ? ['Something else'] : []),
                 ].map((label) => (
                   <span
@@ -370,7 +401,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
           <label className="grid gap-2 text-sm font-medium">
             <span className="flex items-baseline gap-1">
-              What would make property transactions clearer for you? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              What would make your business payments clearer? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
             </span>
             <Textarea
               value={formState.transactionNeed}
@@ -387,16 +418,18 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               type="checkbox"
               onChange={(event) => updateField('consent', event.target.checked)}
             />
-            Naitrust can contact me about property-transaction early access and product updates.
+            Naitrust can contact me about business-payments early access and product updates.
           </label>
 
           <Button type="submit" size="lg" disabled={isSubmitting} className="rounded-full">
-            {isSubmitting ? 'Saving your place...' : 'Join property early access'}
+            {isSubmitting ? 'Saving your place...' : 'Join early access'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">
             No spam. We will only send useful launch and early-access updates.
           </p>
         </form>
+        </div>
+        )}
       </DialogContent>
     </Dialog>
   );

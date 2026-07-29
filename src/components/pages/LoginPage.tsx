@@ -43,7 +43,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const { isDarkMode, toggleTheme } = useTheme();
   const fromPath = (location.state as any)?.from?.pathname as string | undefined;
   const fromSearch = (location.state as any)?.from?.search as string | undefined;
-  const shouldRedirectBack = fromPath === '/business/subscription' && fromSearch?.includes('source=email');
+  const returnToParam = new URLSearchParams(location.search).get('returnTo');
+  const isSafeReturnPath = (path?: string | null) => Boolean(path?.startsWith('/') && !path.startsWith('//'));
+  const returnPath = isSafeReturnPath(returnToParam)
+    ? returnToParam!
+    : isSafeReturnPath(fromPath)
+      ? `${fromPath}${fromSearch || ''}`
+      : null;
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [resetToken, setResetToken] = useState('');
@@ -55,18 +61,18 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const trustHighlights = [
     {
       icon: ShieldCheck,
-      title: 'Verified parties',
-      text: 'Review who you are dealing with before the transaction moves forward.',
+      title: 'Know who you’re paying',
+      text: 'Review identity and business details before an important transaction moves forward.',
     },
     {
       icon: Landmark,
-      title: 'Partner payment rails',
-      text: 'Track funding, release, and refund instructions through trusted workflows.',
+      title: 'Stay in control',
+      text: 'Follow funding, release, and refund activity through one clear workflow.',
     },
     {
       icon: FileCheck,
-      title: 'Evidence trail',
-      text: 'Keep property terms, receipts, documents, milestones, and issue notes tied to the transaction.',
+      title: 'Keep the full story',
+      text: 'Terms, receipts, milestones, approvals, and issue notes stay connected to the payment.',
     },
   ];
 
@@ -125,8 +131,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
             }
           }
 
-          if (shouldRedirectBack && fromPath) {
-            routerNavigate(fromPath + (fromSearch || ''), { replace: true });
+          if (returnPath) {
+            routerNavigate(returnPath, { replace: true });
             return;
           }
 
@@ -180,8 +186,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
         if (loggedInUser) {
           setPending2FAUserId(null);
 
-          if (shouldRedirectBack && fromPath) {
-            routerNavigate(fromPath + (fromSearch || ''), { replace: true });
+          if (returnPath) {
+            routerNavigate(returnPath, { replace: true });
             return;
           }
 
@@ -338,13 +344,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               <div className="space-y-3 lg:space-y-4">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
                   <ShieldCheck size={15} />
-                  Clearer property transactions for Nigerian participants
+                  Your business money, organised
                 </div>
                 <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                  Return to your property transaction room.
+                  Welcome back to your business account.
                 </h1>
                 <p className="text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:text-md xl:text-lg lg:leading-8">
-                  Sign in to review property terms, participant verification, payment updates, documents, milestones, and supporting evidence in one trusted record.
+                  Receive sales, pay suppliers, review protected transactions, and take care of anything waiting for your attention.
                 </p>
               </div>
 

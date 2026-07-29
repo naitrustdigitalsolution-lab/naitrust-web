@@ -31,7 +31,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-1',
       category: 'getting-started',
       question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust is trust infrastructure for Nigerian real estate transactions. It helps property buyers, sellers, agents, developers, and companies create a shared safe-deal room for participants, terms, payments, property documents, milestones, evidence, and issues. Naitrust does not list or sell properties.'
+      answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal — a shared deal room for participants, terms, payments, evidence, milestones, and issues — when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
     },
     {
       id: 'gs-2',
@@ -49,13 +49,13 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-4',
       category: 'getting-started',
       question: 'What is an NT ID and how do I use it?',
-      answer: 'Your NT ID is a unique Naitrust identifier assigned at registration. Property businesses and professionals can share it so participants can confirm they are dealing with the intended profile before starting a property transaction.'
+      answer: 'Your NT ID is a unique Naitrust identifier assigned at registration. Businesses and professionals can share it so participants can confirm they are dealing with the intended profile before starting a Protected Deal.'
     },
     {
       id: 'gs-5',
       category: 'getting-started',
       question: 'Who is eligible to use Naitrust?',
-      answer: 'Naitrust is being built first for Nigerian property buyers, sellers, agents, developers, real estate companies, and professional transaction representatives. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
+      answer: 'Naitrust is being built for Nigerian businesses and individuals — informal traders, independent contractors, suppliers, agents, developers, and registered companies. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
     },
 
     {
@@ -105,7 +105,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-1',
       category: 'payments',
       question: 'What does Naitrust charge for?',
-      answer: 'Public package details are not shown while the launch offer is being finalised. The core product is property transaction coordination: participant verification, documented terms, partner-led payment status, supporting evidence, confirmation, and issues.'
+      answer: 'Public package details are not shown while the launch offer is being finalised. The core product is instant payments plus Protected Deal coordination: participant verification, documented terms, partner-led payment status, supporting evidence, confirmation, and issues.'
     },
     {
       id: 'p-2',
@@ -124,6 +124,12 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       category: 'payments',
       question: 'Does Naitrust handle payments between customers and businesses?',
       answer: 'Naitrust coordinates protected transaction workflows and payment status, but it does not present itself as a bank or wallet. Regulated partners handle payment or banking activity where protected funding is used.'
+    },
+    {
+      id: 'p-5',
+      category: 'payments',
+      question: 'What is the difference between Send Instantly and Protect a Payment?',
+      answer: 'Send Instantly is for people and businesses you already trust — it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order — funds are held by the regulated partner and only released once the agreed conditions are met.'
     },
 
     {
@@ -161,7 +167,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-1',
       category: 'features',
       question: 'What is the shareable profile link?',
-      answer: 'A shareable profile link helps property participants confirm they are dealing with the intended person or business. It can lead into a property transaction room where the property, roles, terms, payments, documents, milestones, and evidence are tracked.'
+      answer: 'A shareable profile link helps participants confirm they are dealing with the intended person or business. It can lead into a Protected Deal room where the roles, terms, payments, evidence, milestones, and documents are tracked.'
     },
     {
       id: 'f-2',
@@ -173,7 +179,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-3',
       category: 'features',
       question: 'Can I message businesses on Naitrust?',
-      answer: 'Yes. Use messaging to clarify the property, participant roles, terms, payment plan, documents, milestones, and evidence. Important messages should stay attached to the property transaction where possible.'
+      answer: 'Yes. Use messaging to clarify participant roles, terms, payment plan, evidence, and milestones. Important messages should stay attached to the Protected Deal where possible.'
     },
     {
       id: 'f-4',
@@ -185,7 +191,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-5',
       category: 'features',
       question: 'Can I save favourite businesses?',
-      answer: 'Yes. Save a property business or professional profile for later review. A saved profile is a convenience feature and is not an endorsement, ownership confirmation, or guarantee.'
+      answer: 'Yes. Save a business or professional profile to your Business Network for later review. A saved profile is a convenience feature and is not an endorsement, ownership confirmation, or guarantee.'
     },
 
     {
@@ -252,7 +258,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     <div className="min-h-screen bg-background relative py-12">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers about Naitrust property transactions, participant verification, payment records, supporting evidence, issues, and account management."
+        description="Find answers about Naitrust instant payments, Protected Deals, participant verification, payment records, supporting evidence, issues, and account management."
         keywords="Naitrust FAQ, business verification questions, CAC verification FAQ, fraud reporting help"
         canonicalPath="/faqs"
       />

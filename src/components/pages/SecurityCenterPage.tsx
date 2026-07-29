@@ -694,7 +694,7 @@ export function SecurityCenterPage() {
                 <Badge className="mb-3 bg-primary/10 text-primary hover:bg-primary/10">Account protection</Badge>
                 <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Security Center</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                  Verify who you are and protect sensitive property transaction actions. Identity,
+                  Verify who you are and protect sensitive Protected Deal actions. Identity,
                   email, and a transaction PIN are required before creating a transaction.
                 </p>
               </div>

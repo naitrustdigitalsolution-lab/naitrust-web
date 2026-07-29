@@ -16,7 +16,7 @@ const REASONS = [
   'Not delivered',
   'Damaged on arrival',
   'Wrong quantity',
-  'Missed property milestone',
+  'Missed deal milestone',
   'Other',
 ];
 

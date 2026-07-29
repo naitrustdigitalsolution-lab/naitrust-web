@@ -20,6 +20,14 @@ import {
   ShieldCheck,
   Lock,
   FileClock,
+  Send,
+  ArrowDownToLine,
+  Users,
+  HandCoins,
+  Receipt,
+  Building2,
+  BadgeCheck,
+  Search,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -66,31 +74,70 @@ interface NavGroup {
   items: NavItem[];
 }
 
-const NAV_GROUPS: NavGroup[] = [
+const SHARED_ACCOUNT_GROUP: NavGroup = {
+  label: 'Account',
+  items: [
+    { label: 'Security', path: '/app/security', icon: Lock, matchPrefix: true },
+    { label: 'Profile', path: '/app/profile', icon: UserRound, matchPrefix: true },
+    { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
+  ],
+};
+
+const BUSINESS_NAV_GROUPS: NavGroup[] = [
   {
     items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }],
   },
   {
-    label: 'Property',
+    label: 'Business money',
     items: [
-      { label: 'Property transactions', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'New property transaction', path: '/app/deals/new', icon: PlusCircle },
-      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
+      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
+      { label: 'Send Instantly', path: '/app/payments/send', icon: Send },
+    ],
+  },
+  {
+    label: 'Protected Deals',
+    items: [
+      { label: 'Active Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Create Protected Deal', path: '/app/deals/new', icon: PlusCircle },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },
   {
-    label: 'Account',
+    label: 'Trading',
     items: [
-      { label: 'Notifications', path: '/app/notifications', icon: Bell, matchPrefix: true },
-      { label: 'Security', path: '/app/security', icon: Lock, matchPrefix: true },
-      { label: 'Profile', path: '/app/profile', icon: UserRound, matchPrefix: true },
-      { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
+      { label: 'Transactions', path: '/app/transactions', icon: Receipt },
+      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2 },
+      { label: 'Trust Profile', path: '/app/trust-profile', icon: BadgeCheck },
     ],
   },
+  SHARED_ACCOUNT_GROUP,
 ];
 
-const NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((g) => g.items);
+const CUSTOMER_NAV_GROUPS: NavGroup[] = [
+  { items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }] },
+  {
+    label: 'Businesses',
+    items: [
+      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
+      { label: 'Payments & Receipts', path: '/app/transactions', icon: Receipt },
+    ],
+  },
+  {
+    label: 'Protected payments',
+    items: [
+      { label: 'Protected Purchases', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Protect a Purchase', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
+    ],
+  },
+  {
+    label: 'Support',
+    items: [
+      { label: 'Messages & Issues', path: '/app/notifications', icon: Bell },
+    ],
+  },
+  SHARED_ACCOUNT_GROUP,
+];
 
 function initialsOf(name: string | undefined): string {
   if (!name) return 'NT';
@@ -110,6 +157,10 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const pendingInvitations = usePendingInvitationCount();
   const unreadNotifications = useUnreadNotificationCount();
   const { data: business } = useMyBusiness();
+  const isBusinessAccount = accountTypeOf(user) !== 'customer';
+  const displayName = isBusinessAccount ? (business?.name ?? user?.name) : user?.name;
+  const navGroups = isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
+  const navItems = navGroups.flatMap((group) => group.items);
 
   // Tablets (iPad portrait/landscape included) default to the collapsed icon
   // rail so page content isn't squeezed behind a full 256px sidebar; only
@@ -121,7 +172,7 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
 
   // An exact nav match (e.g. /app/deals/new) wins so a prefix item
   // (/app/deals) doesn't also highlight.
-  const exactMatch = NAV_ITEMS.some((i) => i.path === location.pathname);
+  const exactMatch = navItems.some((i) => i.path === location.pathname);
   const isActive = (item: NavItem) =>
     exactMatch
       ? item.path === location.pathname
@@ -141,16 +192,16 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
       <Sidebar collapsible="icon">
         <SidebarHeader className="gap-3 px-3 py-4">
           <NaitrustLogo size="sm" showText className="group-data-[collapsible=icon]:[&>span]:hidden" />
-          {/* Account identity — business name + account type, like a merchant console. */}
+          {/* Account identity is deliberately personal for customers and business-led for merchants. */}
           <div className="flex items-center gap-2 rounded-xl border bg-muted/40 px-2.5 py-2 group-data-[collapsible=icon]:hidden">
             <Avatar className="h-8 w-8">
               <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                {initialsOf(business?.name ?? user?.name)}
+                {initialsOf(displayName)}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-foreground">
-                {business?.name ?? user?.name}
+                {displayName}
               </p>
               <p className="truncate text-xs text-muted-foreground">
                 {accountTypeLabel(accountTypeOf(user))}
@@ -160,7 +211,7 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
         </SidebarHeader>
 
         <SidebarContent>
-          {NAV_GROUPS.map((group, gi) => (
+          {navGroups.map((group, gi) => (
             <SidebarGroup key={group.label ?? `group-${gi}`}>
               {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
               <SidebarMenu>

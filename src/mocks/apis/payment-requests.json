@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "preq_mock_001",
+      "reference": "PR-2026-000012",
+      "requestedFromName": "Chioma Electronics",
+      "amountMinor": 2500000,
+      "currency": "NGN",
+      "reason": "Balance on last order",
+      "status": "pending",
+      "createdAt": "2026-07-22T12:00:00Z",
+      "expiresAt": "2026-07-29T12:00:00Z"
+    },
+    {
+      "id": "preq_mock_002",
+      "reference": "PR-2026-000011",
+      "requestedFromName": "Tunde Bakare",
+      "amountMinor": 750000,
+      "currency": "NGN",
+      "reason": "",
+      "status": "fulfilled",
+      "createdAt": "2026-07-15T09:30:00Z",
+      "expiresAt": "2026-07-22T09:30:00Z"
+    }
+  ]
+}

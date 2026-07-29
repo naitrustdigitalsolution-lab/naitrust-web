@@ -102,6 +102,7 @@ export type DealType = 'single' | 'milestone' | 'recurring';
 export interface DealParticipantInput {
   name: string;
   email: string;
+  profileId?: string;
   allocationMinor?: number;
 }
 
@@ -149,6 +150,11 @@ export interface CreateSafeDealInput {
   /** Days the invitation stays open (1..MAX_DEAL_OPEN_DAYS). */
   expiresInDays: number;
   agreement: AgreementDraft;
+}
+
+export interface CreateSafeDealResult extends SafeDealSummary {
+  /** Opaque-token path safe to share outside Naitrust; no sensitive terms are encoded in it. */
+  publicInvitePath: string;
 }
 
 /* ------------------------------------------------------------------ *
@@ -320,10 +326,24 @@ export interface DealTermination {
  * Invitation — incoming request to join a counterparty's safe deal
  * ------------------------------------------------------------------ */
 
-export type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'expired';
+export type InvitationStatus =
+  | 'pending'
+  | 'accepted'
+  | 'declined'
+  | 'expired'
+  | 'withdrawn'
+  | 'already_claimed'
+  | 'wrong_recipient';
 
 export interface DealInvitation {
   id: string;
+  publicToken?: string;
+  recipientUserId?: string;
+  intendedContact?: string;
+  intendedAccountType?: 'customer' | 'business';
+  inviterProfileId?: string;
+  inviteeProfileId?: string;
+  postAuthDestination?: string;
   reference: string; // the deal's reference
   /** Who sent the invitation (the counterparty). */
   fromName: string;
@@ -340,6 +360,24 @@ export interface DealInvitation {
   createdAt: string; // ISO 8601
   expiresAt: string; // ISO 8601
   status: InvitationStatus;
+}
+
+/** Safe subset returned before authentication for a tokenised invitation. */
+export interface PublicInvitationPreview {
+  token: string;
+  invitationId: string;
+  reference: string;
+  inviterName: string;
+  inviterVerified: boolean;
+  inviterAccountType: 'customer' | 'business';
+  intendedAccountType: 'customer' | 'business';
+  yourRole: DealRole;
+  title: string;
+  amountMinor: number;
+  currency: string;
+  expiresAt: string;
+  status: InvitationStatus | 'invalid';
+  maskedContact?: string;
 }
 
 /* ------------------------------------------------------------------ *
@@ -418,6 +456,8 @@ export interface BusinessProfile {
   /** Foreign key to the user account that owns this business. */
   ownerUserId: string;
   name: string;
+  slug?: string;
+  ntId?: string;
   rcNumber: string; // CAC registration number
   category: string;
   /** Everything below is captured at registration and shown on the profile. */
@@ -432,5 +472,255 @@ export interface BusinessProfile {
   country?: string;
   socialHandles?: { platform: string; value: string }[];
   verified: boolean;
+  paymentAccount?: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+  };
   createdAt: string;
+}
+
+/* ------------------------------------------------------------------ *
+ * Payment Provider — internal/admin-only. The frontend never sends
+ * provider-specific payloads; this is purely a label surfaced on
+ * transaction detail for internal administration, sourced from the
+ * backend response once a real field exists there.
+ * ------------------------------------------------------------------ */
+
+export type PaymentProvider = 'anchor' | 'kora' | 'mock';
+
+/* ------------------------------------------------------------------ *
+ * Wallet — everyday account balance and activity.
+ *
+ * `available`, `pending` and `protected` are always kept as separate
+ * numeric fields and must never be merged in the UI: protected funds are
+ * allocated to open Protected Deals and are never available for ordinary
+ * withdrawal or instant transfer.
+ * ------------------------------------------------------------------ */
+
+export interface WalletBalance {
+  availableMinor: number;
+  pendingMinor: number;
+  protectedMinor: number;
+  currency: string;
+}
+
+export interface WalletAccount {
+  id: string;
+  ownerUserId: string;
+  businessId?: string;
+  balance: WalletBalance;
+  totalInflowMinor: number;
+  totalOutflowMinor: number;
+  /** Maximum a single funding/withdrawal action may move, minor units. */
+  accountLimitMinor: number;
+  virtualAccount?: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+  };
+  createdAt: string;
+}
+
+export interface LinkedBankAccount {
+  id: string;
+  bankName: string;
+  /** Masked in the UI (e.g. "•••• 4821"). */
+  accountNumber: string;
+  accountName: string;
+  isDefault: boolean;
+}
+
+export type WalletActivityKind =
+  | 'funding'
+  | 'withdrawal'
+  | 'instant_transfer_out'
+  | 'instant_transfer_in'
+  | 'protected_allocation'
+  | 'protected_release'
+  | 'fee';
+
+export interface WalletActivityEvent {
+  id: string;
+  kind: WalletActivityKind;
+  amountMinor: number;
+  currency: string;
+  description: string;
+  createdAt: string; // ISO 8601
+}
+
+/* ------------------------------------------------------------------ *
+ * Beneficiary — a saved instant-payment recipient
+ * ------------------------------------------------------------------ */
+
+export type BeneficiaryType = 'naitrust_user' | 'bank_account';
+
+export interface Beneficiary {
+  id: string;
+  type: BeneficiaryType;
+  name: string;
+  username?: string;
+  phone?: string;
+  bankName?: string;
+  accountNumber?: string;
+  isFavourite: boolean;
+  createdAt: string; // ISO 8601
+}
+
+/* ------------------------------------------------------------------ *
+ * Instant Transfer — everyday payment between parties who already
+ * trust each other. Kept as its own model, separate from SafeDeal*
+ * (Protected Payment): they share only low-level transaction fields,
+ * not business rules.
+ * ------------------------------------------------------------------ */
+
+export type InstantTransferStatus =
+  | 'draft'
+  | 'recipient_validation'
+  | 'recipient_confirmed'
+  | 'awaiting_confirmation'
+  | 'processing'
+  | 'successful'
+  | 'pending'
+  | 'failed'
+  | 'reversed'
+  | 'cancelled'
+  | 'refunded';
+
+export type RecipientMethod = 'naitrust_username' | 'phone_number' | 'bank_transfer' | 'beneficiary';
+
+export interface TransferRecipient {
+  method: RecipientMethod;
+  /** Username, phone number, or bank account number depending on `method`. */
+  identifier: string;
+  resolvedName?: string;
+  bankName?: string;
+}
+
+export interface CreateInstantTransferInput {
+  recipient: TransferRecipient;
+  amountMinor: number;
+  currency: string;
+  narration?: string;
+}
+
+export interface InstantTransfer {
+  id: string;
+  reference: string;
+  recipient: TransferRecipient;
+  amountMinor: number;
+  currency: string;
+  feeMinor: number;
+  narration?: string;
+  status: InstantTransferStatus;
+  provider: PaymentProvider;
+  /** True whenever this record was produced by the mock adapter. */
+  isMock: boolean;
+  createdAt: string; // ISO 8601
+  completedAt?: string;
+}
+
+/* ------------------------------------------------------------------ *
+ * Payment Request — asking a counterparty to send an instant payment
+ * ------------------------------------------------------------------ */
+
+export type PaymentRequestStatus = 'pending' | 'fulfilled' | 'declined' | 'expired' | 'cancelled';
+
+export interface PaymentRequest {
+  id: string;
+  reference: string;
+  requestedFromName: string;
+  amountMinor: number;
+  currency: string;
+  reason?: string;
+  status: PaymentRequestStatus;
+  createdAt: string; // ISO 8601
+  expiresAt: string; // ISO 8601
+}
+
+/* ------------------------------------------------------------------ *
+ * Unified Transaction record — the shape the Transactions history
+ * screen renders, aggregating instant transfers, protected deals,
+ * wallet funding/withdrawals and fees behind one list/filter/detail UI.
+ * ------------------------------------------------------------------ */
+
+export type TransactionType =
+  | 'instant_transfer'
+  | 'incoming_transfer'
+  | 'wallet_funding'
+  | 'withdrawal'
+  | 'protected_funding'
+  | 'milestone_release'
+  | 'final_release'
+  | 'refund'
+  | 'reversal'
+  | 'fee';
+
+export type TransactionMethod = 'instant' | 'protected';
+
+export interface TransactionRecord {
+  id: string;
+  reference: string;
+  type: TransactionType;
+  method: TransactionMethod;
+  amountMinor: number;
+  feeMinor: number;
+  currency: string;
+  counterpartyName: string;
+  /** Human-readable status label for this record's underlying status. */
+  statusLabel: string;
+  /** Admin-administration-only; never rendered to ordinary users. */
+  provider: PaymentProvider;
+  relatedDealId?: string;
+  createdAt: string; // ISO 8601
+}
+
+/* ------------------------------------------------------------------ *
+ * Business Network — saved counterparties (suppliers, buyers,
+ * contractors, customers, agents). Factual, observable fields only —
+ * no "guaranteed safe"/"risk free" style claims belong on this model.
+ * ------------------------------------------------------------------ */
+
+export type CounterpartyRelation = 'supplier' | 'buyer' | 'contractor' | 'customer' | 'agent' | 'other';
+
+export interface CounterpartyProfile {
+  id: string;
+  name: string;
+  businessName?: string;
+  avatarInitials: string;
+  relation: CounterpartyRelation;
+  identityVerified: boolean;
+  businessVerified: boolean;
+  /** ISO date this counterparty first transacted on the platform. */
+  memberSince: string;
+  completedDealsCount: number;
+  hasPriorTransactionWithYou: boolean;
+  averageResponseTimeHours?: number;
+  resolvedDisputesCount: number;
+  ratingAverage?: number;
+  isFavourite: boolean;
+  isBlocked: boolean;
+}
+
+/* ------------------------------------------------------------------ *
+ * Trust Profile — observable platform-activity summary. Never framed
+ * as a credit score; informational only, not a guarantee.
+ * ------------------------------------------------------------------ */
+
+export type VerificationLevel = 'unverified' | 'basic' | 'full';
+export type BusinessVerificationLevel = 'none' | 'pending' | 'verified';
+
+export interface TrustProfile {
+  identityVerificationLevel: VerificationLevel;
+  businessVerificationLevel: BusinessVerificationLevel;
+  completedDealsCount: number;
+  cancelledDealsCount: number;
+  activeDealsCount: number;
+  resolvedDisputesCount: number;
+  repeatCounterpartiesCount: number;
+  memberSince: string; // ISO date
+  averageCompletionDays?: number;
+  averageResponseTimeHours?: number;
+  ratingAverage?: number;
+  ratingCount: number;
 }

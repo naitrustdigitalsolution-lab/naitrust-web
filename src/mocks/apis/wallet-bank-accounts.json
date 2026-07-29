@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "bank_mock_001",
+      "bankName": "GTBank",
+      "accountNumber": "•••• 4821",
+      "accountName": "Adaeze Nwosu",
+      "isDefault": true
+    },
+    {
+      "id": "bank_mock_002",
+      "bankName": "Access Bank",
+      "accountNumber": "•••• 1190",
+      "accountName": "Adaeze Nwosu",
+      "isDefault": false
+    }
+  ]
+}

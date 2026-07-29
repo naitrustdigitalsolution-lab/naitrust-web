@@ -53,6 +53,45 @@ export const businessApi = {
   create: (data: CreateBusinessData) => httpClient.post(endpoints.businesses.create, data),
   getMyBusinesses: () => httpClient.get(endpoints.businesses.myBusinesses),
 
+  search: async (query: string): Promise<ApiSuccess<BusinessProfile[]>> => {
+    if (appConfig.isMock) {
+      await delay(MOCK_LATENCY_MS);
+      const term = query.trim().toLowerCase();
+      const verified = mockList.filter((business) => business.verified);
+      const data = !term
+        ? verified
+        : verified.filter((business) =>
+            [business.name, business.ntId, business.phone, business.category, business.city]
+              .filter(Boolean)
+              .some((value) => value!.toLowerCase().includes(term)),
+          );
+      return { success: true, data };
+    }
+    const response = await httpClient.get<BusinessProfile[]>(
+      `${endpoints.businesses.search}?q=${encodeURIComponent(query)}`,
+    );
+    return response as ApiSuccess<BusinessProfile[]>;
+  },
+
+  getPublicProfile: async (slugOrId: string): Promise<ApiSuccess<BusinessProfile | null>> => {
+    if (appConfig.isMock) {
+      await delay(MOCK_LATENCY_MS);
+      const normalized = slugOrId.toLowerCase();
+      const found = mockList.find(
+        (business) =>
+          business.verified &&
+          (business.id.toLowerCase() === normalized ||
+            business.slug?.toLowerCase() === normalized ||
+            business.ntId?.toLowerCase() === normalized),
+      );
+      return { success: true, data: found ?? null };
+    }
+    const response = await httpClient.get<BusinessProfile>(
+      endpoints.businesses.publicProfile(slugOrId),
+    );
+    return response as ApiSuccess<BusinessProfile | null>;
+  },
+
   /**
    * The business tied to the current account. Mock resolves by owner user ID.
    * Real endpoint: GET /businesses/my/businesses (first record).

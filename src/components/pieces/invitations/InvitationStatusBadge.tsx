@@ -12,6 +12,9 @@ const PRESENTATION: Record<InvitationStatus, { label: string; variant: StatusBad
   accepted: { label: 'Accepted', variant: 'success' },
   declined: { label: 'Declined', variant: 'secondary' },
   expired: { label: 'Expired', variant: 'secondary' },
+  withdrawn: { label: 'Withdrawn', variant: 'secondary' },
+  already_claimed: { label: 'Claimed', variant: 'secondary' },
+  wrong_recipient: { label: 'Different recipient', variant: 'destructive' },
 };
 
 export function InvitationStatusBadge({ status }: { status: InvitationStatus }) {

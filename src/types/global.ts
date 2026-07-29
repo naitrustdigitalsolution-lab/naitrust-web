@@ -36,6 +36,7 @@ export type PagePhase = 'app' | 'coming-soon' | 'be-back';
 
 export type WaitlistUserType =
   | 'individual_customer'
+  | 'informal_business'
   | 'business_buyer'
   | 'supplier_vendor'
   | 'contractor_service_provider'

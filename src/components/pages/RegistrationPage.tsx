@@ -509,7 +509,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <div>
                   <h4 className="font-medium">Verify Businesses</h4>
                   <p className="text-sm text-muted-foreground">
-                    Create documented property transactions with sellers, agents, developers, and property companies.
+                    Create documented transactions with suppliers, customers, contractors, and other business partners.
                   </p>
                 </div>
               </div>
@@ -576,7 +576,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <UserIcon size={32} className="text-primary" />
               </div>
               <h2>Personal Information</h2>
-              <p className="text-muted-foreground">Tell us about the authorised property business representative</p>
+              <p className="text-muted-foreground">Tell us about the person authorised to manage this business account.</p>
             </div>
 
             <div className="space-y-4">
@@ -658,7 +658,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <Building size={32} className="text-primary" />
               </div>
               <h2>Business Information</h2>
-              <p className="text-muted-foreground">Tell us about your real estate, development, agency, or professional business</p>
+              <p className="text-muted-foreground">Tell us about your shop, trading business, company, or professional service.</p>
             </div>
 
             <div className="space-y-4">
@@ -971,7 +971,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   };
 
   const customerSteps = [
-    { title: 'Personal Information', description: 'Create your buyer account.' },
+    { title: 'Personal Information', description: 'Create your individual account.' },
     { title: 'Terms & Conditions', description: 'Review privacy and account terms.' },
   ];
   const businessSteps = [
@@ -1008,13 +1008,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
             <div className="max-w-md hidden lg:block">
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
-                Setup a profile
+                Create your profile
               </p>
               <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                {registrationType === 'business' ? 'Create your property business trust profile.' : 'Create your property buyer or seller account.'}
+                {registrationType === 'business' ? 'Give your business a stronger way to get paid.' : 'One account for safer everyday and business payments.'}
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
-                Follow the steps below to get started with Naitrust. Your information helps keep buyers, sellers, and transaction records easier to trust.
+                Tell us the essentials so we can tailor your account, verification, and payment experience to how you work.
               </p>
             </div>
 
@@ -1063,8 +1063,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               </h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {registrationType === 'business'
-                  ? 'For real estate companies, agents, developers, and transaction professionals.'
-                  : 'For individuals buying or selling property in Nigeria.'}
+                  ? 'For registered companies, informal businesses, suppliers, sellers, contractors, and service providers.'
+                  : 'For individuals who want to send instantly or protect important payments.'}
               </p>
             </div>
 

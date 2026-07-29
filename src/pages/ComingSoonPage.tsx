@@ -102,12 +102,11 @@ function ComingSoonPage() {
 
         <div className="hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">Coming soon for Nigerian real estate</p>
-            <h1 id="hero-title">Buy property with greater confidence.</h1>
+            <p className="eyebrow">Built for Nigerian businesses</p>
+            <h1 id="hero-title">Receive sales. Pay suppliers. Protect important orders.</h1>
             <p className="lede">
-              Naitrust is building one trusted platform for property buyers, sellers, agents,
-              developers, and real estate companies to record participants, agreements, payments,
-              documents, milestones, and supporting evidence.
+              Naitrust gives traders, shops, wholesalers, online sellers, service businesses and
+              their customers one account for everyday payments and protected business orders.
             </p>
 
             <div className="hero-actions">

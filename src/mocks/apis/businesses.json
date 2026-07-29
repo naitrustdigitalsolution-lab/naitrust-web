@@ -5,6 +5,8 @@
       "id": "biz_mock_001",
       "ownerUserId": "usr_mock_003",
       "name": "Adaeze Homes & Properties Ltd",
+      "slug": "adaeze-homes-properties",
+      "ntId": "NT-BIZ-10482",
       "rcNumber": "RC-1948221",
       "category": "Real estate development",
       "description": "Residential property development and documented sales transactions for buyers in Lagos and Ogun State.",
@@ -21,19 +23,26 @@
         { "platform": "whatsapp", "value": "+2348031234567" }
       ],
       "verified": true,
+      "paymentAccount": {
+        "bankName": "Anchor MFB",
+        "accountNumber": "7012345678",
+        "accountName": "Adaeze Homes & Properties Ltd"
+      },
       "createdAt": "2025-11-02T09:00:00Z"
     },
     {
       "id": "biz_mock_002",
       "ownerUserId": "usr_mock_004",
       "name": "Emeka Trade & Logistics",
+      "slug": "emeka-trade-logistics",
+      "ntId": "NT-BIZ-20891",
       "rcNumber": "RC-2211564",
-      "category": "Real estate agency",
-      "description": "Property transaction coordination for buyers, sellers, landlords, developers, and diaspora clients across Nigeria.",
+      "category": "Wholesale trading and logistics",
+      "description": "Wholesale stock supply and distribution for shops, market traders, online sellers, and growing businesses across Nigeria.",
       "ownerName": "Emeka Nwosu",
-      "email": "transactions@emekaproperty.example",
+      "email": "payments@emekatrade.example",
       "phone": "+2347089887766",
-      "website": "https://emekaproperty.example",
+      "website": "https://emekatrade.example",
       "address": "Plot 7 Trade Fair Complex, Aspamda",
       "city": "Lagos",
       "state": "Lagos",
@@ -42,12 +51,19 @@
         { "platform": "twitter", "value": "@emekalogistics" }
       ],
       "verified": true,
+      "paymentAccount": {
+        "bankName": "Anchor MFB",
+        "accountNumber": "7012345686",
+        "accountName": "Emeka Trade & Logistics"
+      },
       "createdAt": "2025-09-18T09:00:00Z"
     },
     {
       "id": "biz_mock_003",
       "ownerUserId": "usr_mock_006",
       "name": "Balogun Ventures Ltd",
+      "slug": "balogun-ventures",
+      "ntId": "NT-BIZ-31107",
       "rcNumber": "RC-3390877",
       "category": "Property development",
       "description": "Emerging residential property company preparing clearer buyer records, instalment schedules, and handover documentation.",

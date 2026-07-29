@@ -12,10 +12,10 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust is trust infrastructure for Nigerian property transactions — a structured record of participants, agreements, payments, documents, and milestones from deal to completion.';
+const DEFAULT_DESCRIPTION = 'Naitrust is a trusted business payments platform for Nigerian businesses — send instantly when you trust them, or protect a payment with verified terms, evidence, and milestones when you don\'t.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS =
-  'Naitrust, property transactions Nigeria, real estate trust infrastructure, escrow alternative Nigeria, fintech Nigeria, protected property payments, verified property transaction, real estate technology Nigeria, property transaction record';
+  'Naitrust, business payments Nigeria, protected payments, instant payments Nigeria, escrow alternative Nigeria, fintech Nigeria, trusted business transactions, protected deal, supplier payment protection, property transaction Nigeria';
 
 export function SEOHead({
   title,
@@ -26,7 +26,7 @@ export function SEOHead({
   ogImage = DEFAULT_IMAGE,
   noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Trust Infrastructure for Property Transactions`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Trusted Business Payments`;
   const canonicalUrl = canonicalPath ? `${SITE_URL}${canonicalPath}` : undefined;
 
   return (

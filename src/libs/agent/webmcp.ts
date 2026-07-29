@@ -13,8 +13,6 @@ type WebModelContext = {
 
 const PUBLIC_PAGES = {
   home: '/',
-  'how-it-works': '/how-it-works',
-  'use-cases': '/use-cases',
   help: '/help',
   faqs: '/faqs',
   contact: '/contact',

@@ -57,7 +57,7 @@ export function InvitationDetailPage() {
     try {
       await respond.mutateAsync({ id, action });
       if (action === 'accepted') {
-        toast.success('Invitation accepted — the property transaction is now in your dashboard.');
+        toast.success('Invitation accepted — the Protected Deal is now in your dashboard.');
         navigate('/app');
       } else {
         toast.info('Invitation declined.');
@@ -126,7 +126,7 @@ export function InvitationDetailPage() {
                 <CounterpartyAvatar name={invitation.fromName} className="h-11 w-11 text-sm" />
                 <div>
                   <p className="font-semibold text-foreground">{invitation.fromName}</p>
-                  <p className="text-sm text-muted-foreground">invited you to a property transaction</p>
+                  <p className="text-sm text-muted-foreground">invited you to a Protected Deal</p>
                 </div>
               </div>
               <InvitationStatusBadge status={invitation.status} />

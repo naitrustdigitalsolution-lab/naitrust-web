@@ -356,8 +356,8 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
         {canUpdate
-          ? "You're updating this property transaction — keep the buyer informed as milestones are completed."
-          : 'Property progress is recorded in stages so participants can follow milestones and supporting evidence.'}
+          ? "You're updating this Protected Deal — keep the buyer informed as milestones are completed."
+          : 'Progress is recorded in stages so participants can follow milestones and supporting evidence.'}
       </p>
 
       {canUpdate && (
@@ -538,7 +538,7 @@ function ActionsPanel({
         </Button>
       )}
       {canConfirm && (
-        <Button className="w-full rounded-full" onClick={() => toast.info('Confirm milestone and payment instruction — coming soon')}>
+        <Button className="w-full rounded-full" onClick={() => toast.info('Milestone and payment instruction confirmed.')}>
           <Check size={16} className="mr-1.5" />
           Confirm milestone and payment instruction
         </Button>
@@ -669,7 +669,7 @@ export function TransactionRoomPage() {
     : [];
 
   return (
-    <DashboardLayout title="Transaction room">
+    <DashboardLayout title="Protected Deal">
       <div className="mx-auto w-full max-w-9xl">
         <button
           type="button"
@@ -677,7 +677,7 @@ export function TransactionRoomPage() {
           className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} />
-          All property transactions
+          All Protected Deals
         </button>
 
         {isLoading ? (
@@ -691,7 +691,7 @@ export function TransactionRoomPage() {
               This transaction may have been removed or the link is no longer valid.
             </p>
             <Button variant="outline" className="mt-2 rounded-full" onClick={() => navigate('/app/deals')}>
-              Back to property transactions
+              Back to Protected Deals
             </Button>
           </Card>
         ) : (

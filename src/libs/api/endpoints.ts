@@ -37,6 +37,8 @@ export const endpoints = {
     create: '/businesses',
     update: (id: string) => `/businesses/${id}`,
     myBusinesses: '/businesses/my/businesses',
+    search: '/businesses/search',
+    publicProfile: (slugOrId: string) => `/businesses/public/${slugOrId}`,
   },
 
   transactions: {
@@ -75,6 +77,8 @@ export const endpoints = {
     getOne: (id: string) => `/invitations/${id}`,
     accept: (id: string) => `/invitations/${id}/accept`,
     decline: (id: string) => `/invitations/${id}/decline`,
+    publicPreview: (token: string) => `/invitations/public/${token}`,
+    claim: (token: string) => `/invitations/public/${token}/claim`,
   },
 
   notifications: {
@@ -89,6 +93,46 @@ export const endpoints = {
 
   upload: {
     verificationDocument: '/upload/verification-document',
+  },
+
+  // Not yet implemented on the backend — mock-only for this phase. Paths are
+  // placeholders for the eventual .NET controllers (see the frontend's
+  // backend-requirements report for what still needs building).
+  wallet: {
+    getMine: '/wallet/me',
+    fund: '/wallet/fund',
+    withdraw: '/wallet/withdraw',
+    linkedBankAccounts: '/wallet/bank-accounts',
+    activity: '/wallet/activity',
+  },
+
+  instantTransfers: {
+    validateRecipient: '/instant-transfers/validate-recipient',
+    create: '/instant-transfers',
+    getOne: (id: string) => `/instant-transfers/${id}`,
+    getMyTransfers: '/instant-transfers/my',
+  },
+
+  beneficiaries: {
+    list: '/beneficiaries',
+    create: '/beneficiaries',
+    remove: (id: string) => `/beneficiaries/${id}`,
+  },
+
+  paymentRequests: {
+    list: '/payment-requests',
+    create: '/payment-requests',
+    respond: (id: string) => `/payment-requests/${id}/respond`,
+  },
+
+  counterparties: {
+    list: '/counterparties',
+    toggleFavourite: (id: string) => `/counterparties/${id}/favourite`,
+    toggleBlocked: (id: string) => `/counterparties/${id}/block`,
+  },
+
+  trustProfile: {
+    getMine: '/trust-profile/me',
   },
 
   public: {

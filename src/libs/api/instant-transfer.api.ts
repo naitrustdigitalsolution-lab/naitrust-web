@@ -35,7 +35,10 @@ function mockReference(): string {
 /** Resolves a display name for a recipient in mock mode. */
 function resolveMockRecipientName(recipient: TransferRecipient): string {
   if (recipient.resolvedName) return recipient.resolvedName;
+  if (recipient.method === 'naitrust_account_number') return `Naitrust account (${recipient.identifier})`;
+  if (recipient.method === 'naitrust_id') return `Naitrust user (${recipient.identifier})`;
   if (recipient.method === 'phone_number') return `NaiTrust user (${recipient.identifier})`;
+  if (recipient.method === 'email_address') return `NaiTrust user (${recipient.identifier})`;
   if (recipient.method === 'bank_transfer') return `Bank recipient (${recipient.identifier})`;
   return recipient.identifier;
 }

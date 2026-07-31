@@ -80,12 +80,12 @@ export function BusinessDiscoveryPage() {
             <div className="mb-7">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Verified business directory</p>
               <h1 className="mt-2 text-2xl font-bold tracking-tight">Find a business</h1>
-              <p className="mt-1 text-sm text-muted-foreground">Search by business name, NT ID, phone number, location, or scan its Naitrust QR code.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Search by business name, account number, email, phone number, location, or scan its Naitrust QR code.</p>
             </div>
             <div className="mb-6 flex gap-2">
               <div className="relative flex-1">
                 <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input value={query} onChange={(event) => setQuery(event.target.value)} className="h-12 pl-10" placeholder="Business name, NT ID, phone or location" />
+                <Input value={query} onChange={(event) => setQuery(event.target.value)} className="h-12 pl-10" placeholder="Business name, account number, email or phone" />
               </div>
               <Button variant="outline" className="h-12 px-4" title="Scan business QR"><QrCode size={19} /><span className="hidden sm:inline">Scan QR</span></Button>
             </div>

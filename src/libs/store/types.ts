@@ -559,7 +559,7 @@ export interface Beneficiary {
   id: string;
   type: BeneficiaryType;
   name: string;
-  username?: string;
+  email?: string;
   phone?: string;
   bankName?: string;
   accountNumber?: string;
@@ -587,11 +587,17 @@ export type InstantTransferStatus =
   | 'cancelled'
   | 'refunded';
 
-export type RecipientMethod = 'naitrust_username' | 'phone_number' | 'bank_transfer' | 'beneficiary';
+export type RecipientMethod =
+  | 'naitrust_account_number'
+  | 'naitrust_id'
+  | 'email_address'
+  | 'phone_number'
+  | 'bank_transfer'
+  | 'beneficiary';
 
 export interface TransferRecipient {
   method: RecipientMethod;
-  /** Username, phone number, or bank account number depending on `method`. */
+  /** Email, phone number, or bank account number depending on `method`. */
   identifier: string;
   resolvedName?: string;
   bankName?: string;

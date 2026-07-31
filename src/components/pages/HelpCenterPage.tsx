@@ -16,7 +16,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
   const categories = [
     { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
     { id: 'payments', name: 'Protected Funding', icon: CreditCard, description: 'Partner-issued virtual accounts, payment status, release, and refunds' },
-    { id: 'account', name: 'Account', icon: Users, description: 'Registration, NT IDs, profile settings, and account management' },
+    { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
     { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
     { id: 'general', name: 'General', icon: FileText, description: 'Platform basics, features, and how Naitrust works' },
@@ -85,8 +85,8 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       },
       {
         id: 'a2',
-        question: 'What is my NT ID and where do I find it?',
-        answer: 'Your NT ID (format: NT-XXXXXX) is your unique Naitrust identifier, assigned at registration. Find it on your dashboard or profile page. Share it on social media so customers can easily look up your verified business. It\'s permanent and cannot be changed.'
+        question: 'Which details can people use to pay me?',
+        answer: 'People can send a Naitrust transfer using your account number, registered email address, or verified phone number. Confirm these details in your profile before sharing them.'
       },
       {
         id: 'a3',
@@ -118,7 +118,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 's3',
         question: 'How do I report a fraudulent business?',
-        answer: 'Tap "Report" on the business profile, or visit the Report a Concern page, or email contact@naitrust.com. Include the NT ID, screenshots, and a description. All reports are reviewed internally by the Naitrust team — typically within 24-48 hours.'
+        answer: 'Tap "Report" on the business profile, visit the Report a Concern page, or email contact@naitrust.com. Include the business name or account number, screenshots, and a description. Reports are reviewed internally by the Naitrust team.'
       },
       {
         id: 's4',
@@ -152,7 +152,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g2',
         question: 'How can I verify a business I found on social media?',
-        answer: 'Use the participant’s NT ID or Naitrust profile link to review the intended person or business and their verification status. A Protected Deal room can then keep the terms, payments, evidence, and confirmations together.'
+        answer: 'Use the participant’s account number, email, phone number, or Naitrust profile link to review the intended person or business. A Protected Deal room can then keep the terms, payments, evidence, and confirmations together.'
       },
       {
         id: 'g3',

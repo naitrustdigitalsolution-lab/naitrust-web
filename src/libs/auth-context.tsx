@@ -16,6 +16,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,12 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const token = useAuthStore((state) => state.token);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const isHydrated = useAuthStore((state) => state.isHydrated);
   const login = useAuthStore((state) => state.login);
   const verify2FALogin = useAuthStore((state) => state.verify2FALogin);
   const logout = useAuthStore((state) => state.logout);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, verify2FALogin, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, verify2FALogin, logout, isAuthenticated, isLoading, isHydrated }}>
       {children}
     </AuthContext.Provider>
   );

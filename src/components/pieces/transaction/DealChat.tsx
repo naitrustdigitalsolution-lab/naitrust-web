@@ -14,13 +14,15 @@ import { Textarea } from '../../ui/textarea';
 import { Skeleton } from '../../ui/skeleton';
 import { CounterpartyAvatar } from '../dashboard/CounterpartyAvatar';
 import { useDealMessages, useSendDealMessage } from '../../../hooks/useDealDetail';
+import { cn } from '../../ui/utils';
 
 interface DealChatProps {
   dealId: string;
   counterpartyName: string;
+  className?: string;
 }
 
-export function DealChat({ dealId, counterpartyName }: DealChatProps) {
+export function DealChat({ dealId, counterpartyName, className }: DealChatProps) {
   const { data: messages, isLoading } = useDealMessages(dealId, counterpartyName);
   const send = useSendDealMessage(dealId);
   const [draft, setDraft] = useState('');
@@ -38,7 +40,7 @@ export function DealChat({ dealId, counterpartyName }: DealChatProps) {
   };
 
   return (
-    <div className="flex h-[520px] flex-col">
+    <div className={cn('flex h-[520px] flex-col', className)}>
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-1 py-2">
         {isLoading ? (
           <div className="space-y-4">

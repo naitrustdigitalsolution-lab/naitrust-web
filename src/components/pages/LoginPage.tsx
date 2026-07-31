@@ -61,13 +61,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const trustHighlights = [
     {
       icon: ShieldCheck,
-      title: 'Know who you’re paying',
-      text: 'Review identity and business details before an important transaction moves forward.',
+      title: 'Know who is on the other side',
+      text: 'Review verified identity or business details before an important transaction moves forward.',
     },
     {
       icon: Landmark,
-      title: 'Stay in control',
-      text: 'Follow funding, release, and refund activity through one clear workflow.',
+      title: 'Protect the transactions that matter',
+      text: 'Agree the terms, follow payment and delivery, and keep both sides in one shared record.',
     },
     {
       icon: FileCheck,
@@ -344,13 +344,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               <div className="space-y-3 lg:space-y-4">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
                   <ShieldCheck size={15} />
-                  Your business money, organised
+                  Trust for every side of the transaction
                 </div>
                 <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                  Welcome back to your business account.
+                  Welcome back. Pick up with confidence.
                 </h1>
                 <p className="text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:text-md xl:text-lg lg:leading-8">
-                  Receive sales, pay suppliers, review protected transactions, and take care of anything waiting for your attention.
+                  Pay someone you trust, collect from a customer, or continue a Protected Transaction with the full story still attached.
                 </p>
               </div>
 

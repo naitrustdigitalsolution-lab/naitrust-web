@@ -273,7 +273,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-border bg-background overflow-hidden w-full md:w-1/2 absolute right-0 top-[7.25rem] rounded-bl-lg shadow-lg z-50 backdrop-blur-md supports-backdrop-filter:bg-background/80"
+                className="absolute right-0 top-full z-50 w-full overflow-hidden border-t border-border bg-background shadow-lg backdrop-blur-md supports-backdrop-filter:bg-background/80 sm:w-96 sm:rounded-bl-xl lg:hidden"
             >
               <div className="px-4 py-4 space-y-2">
                 {publicNavItems.map((item) => (

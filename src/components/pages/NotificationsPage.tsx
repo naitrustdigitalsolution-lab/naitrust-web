@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import {
   AlertTriangle,
-  ArrowLeft,
   Bell,
   CheckCheck,
   ChevronLeft,
@@ -22,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
+import { PageHero } from '../pieces/dashboard/PageHero';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -125,26 +125,12 @@ export function NotificationsPage() {
   return (
     <DashboardLayout title="Notifications">
       <div className="mx-auto w-full max-w-9xl">
-        <button
-          type="button"
-          onClick={() => navigate('/app')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={16} />
-          Back to dashboard
-        </button>
-
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">Notifications</h1>
-              {unreadCount > 0 && <Badge>{unreadCount} unread</Badge>}
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Deal updates, funding confirmations, evidence, and dispute alerts.
-            </p>
-          </div>
-          {unreadCount > 0 && (
+        <PageHero
+          eyebrow={unreadCount > 0 ? `${unreadCount} unread` : 'You are up to date'}
+          title="Notifications"
+          description="Deal updates, funding confirmations, evidence, and dispute alerts."
+          icon={Bell}
+          actions={unreadCount > 0 ? (
             <Button
               variant="outline"
               size="sm"
@@ -155,8 +141,8 @@ export function NotificationsPage() {
               <CheckCheck size={14} className="mr-1.5" />
               Mark all read
             </Button>
-          )}
-        </div>
+          ) : undefined}
+        />
 
         {isLoading ? (
           <LoadingRows />

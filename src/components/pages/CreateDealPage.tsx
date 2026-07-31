@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
+import { PageHero } from '../pieces/dashboard/PageHero';
 import { VerticalStepper, type StepMeta } from '../pieces/general/VerticalStepper';
 import { AgreementDocument } from '../pieces/agreement/AgreementDocument';
 import { LivenessCheckModal } from '../pieces/verification/LivenessCheckModal';
@@ -155,20 +156,22 @@ function ChoiceCard({
       onClick={onClick}
       aria-pressed={selected}
       className={
-        'flex flex-1 items-start gap-3 rounded-xl border p-3.5 text-left transition-colors ' +
-        (selected ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-border hover:bg-accent/40')
+        'group flex flex-1 items-start gap-3 rounded-2xl border p-4 text-left transition-all duration-200 ' +
+        (selected
+          ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30'
+          : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')
       }
     >
       <div
         className={
-          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ' +
-          (selected ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground')
+          'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors ' +
+          (selected ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/20' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary')
         }
       >
         <Icon size={18} />
       </div>
       <div>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="text-sm font-bold text-foreground">{title}</p>
         <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{description}</p>
       </div>
     </button>
@@ -383,6 +386,11 @@ export function CreateDealPage() {
   };
 
   const handleSaveDraft = () => {
+    if (!form.title.trim()) {
+      setErrors((current) => ({ ...current, title: 'Enter a deal title before saving this draft.' }));
+      toast.error('Enter a deal title to save this deal to drafts.');
+      return;
+    }
     saveDealDraft(user?.id, draftId, form, step);
     toast.success('Deal saved to drafts.');
     navigate('/app/drafts');
@@ -475,41 +483,69 @@ export function CreateDealPage() {
       />
 
       <div className="mx-auto w-full max-w-9xl">
-        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+        <PageHero
+          eyebrow="Protected payments"
+          title="Create a Protected Deal"
+          description="Turn an agreement into a clear, trackable payment journey for everyone involved."
+          icon={ShieldCheck}
+          actions={
+            <>
+              <span className="hidden items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400 sm:inline-flex">
+                <ShieldCheck size={13} /> Private setup
+              </span>
+              <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
+                <ArrowLeft size={15} /> Active Deals
+              </Button>
+            </>
+          }
+        />
+
+        <div className="grid items-start gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
           {/* Left rail */}
-          <aside className="lg:sticky lg:top-20 lg:self-start">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              New Protected Deal
-            </p>
-            <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground">
-              Create a Protected Deal
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Agree terms and protect payment through a regulated partner. Funds only release when
-              the agreed conditions are met.
-            </p>
-            <div className="mt-8">
+          <aside className="rounded-3xl border border-primary/10 bg-card p-5 shadow-sm xl:sticky xl:top-20 xl:self-start">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Deal setup</p>
+                <p className="mt-1 text-sm font-semibold text-foreground">{Math.round((step / STEPS.length) * 100)}% complete</p>
+              </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ShieldCheck size={18} />
+              </span>
+            </div>
+            <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-gradient-to-r from-primary to-sky-400 transition-all duration-500" style={{ width: `${(step / STEPS.length) * 100}%` }} />
+            </div>
+            <div>
               <VerticalStepper steps={STEPS} currentStep={step} />
             </div>
-            <div className="mt-8 hidden gap-3 rounded-xl border border-primary/15 bg-primary/5 p-4 lg:flex">
-              <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
+            <div className="mt-7 hidden gap-3 rounded-2xl bg-gradient-to-br from-[#071b31] to-[#0b4d91] p-4 text-white xl:flex">
+              <ShieldCheck size={18} className="mt-0.5 shrink-0 text-sky-300" />
               <p className="text-xs leading-5 text-muted-foreground">
-                Payment goes into a partner-issued virtual account with a regulated partner. Naitrust
-                never holds your funds directly.
+                <span className="text-white/80">Funds move through a partner-issued account with a regulated provider. Naitrust never holds them directly.</span>
               </p>
             </div>
           </aside>
 
           {/* Right — step card (fills the column) */}
           <main className="w-full">
-            <Card className="gap-0 p-5 shadow-sm md:p-7">
-              <div className="mb-5">
-                <p className="text-xs font-semibold text-primary">
-                  Step {step} of {STEPS.length}
-                </p>
-                <h2 className="mt-1 text-lg font-bold text-foreground">{STEPS[step - 1].title}</h2>
+            <Card className="gap-0 overflow-hidden rounded-3xl border-border/80 p-0 shadow-[0_16px_45px_rgba(7,27,49,.08)]">
+              <div className="relative overflow-hidden border-b bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-5 sm:px-7">
+                <div className="pointer-events-none absolute -right-14 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-2xl" />
+                <div className="relative flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20">
+                    {step}
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
+                      Step {step} of {STEPS.length}
+                    </p>
+                    <h2 className="mt-1 text-xl font-bold tracking-tight text-foreground">{STEPS[step - 1].title}</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">{STEPS[step - 1].description}</p>
+                  </div>
+                </div>
               </div>
 
+              <div className="p-5 sm:p-7">
               {step === 1 && (
                 <div className="flex flex-col gap-6">
                   <div>
@@ -524,12 +560,12 @@ export function CreateDealPage() {
                             type="button"
                             onClick={() => selectUseCase(useCase.slug)}
                             aria-pressed={selected}
-                            className={
-                              'flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-colors ' +
-                              (selected ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-border hover:bg-accent/40')
-                            }
+                            className={'group flex min-h-28 flex-col items-start gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200 ' +
+                              (selected ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30' : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')}
                           >
-                            <Icon size={18} className={selected ? 'text-primary' : 'text-muted-foreground'} />
+                            <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'}`}>
+                              <Icon size={17} />
+                            </span>
                             <span className="text-xs font-semibold leading-4 text-foreground">
                               {USE_CASE_SHORT[useCase.slug] ?? useCase.title}
                             </span>
@@ -710,7 +746,7 @@ export function CreateDealPage() {
 
                     <div className="grid gap-3 md:grid-cols-2">
                       {form.participants.map((p, i) => (
-                        <div key={i} className="rounded-xl border p-3">
+                        <div key={i} className="rounded-2xl border bg-muted/20 p-4">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                               {isReleaser ? 'Recipient' : 'Payer'} {i + 1}
@@ -771,7 +807,6 @@ export function CreateDealPage() {
                         }
                       >
                         {isReleaser ? 'Allocated' : 'Assigned'} {formatMinorAmount(allocatedMinor, 'NGN')} of{' '}
-                        {formatMinorAmount(amountMinor, 'NGN')}
                         {remainderMinor !== 0 && ` · ${formatMinorAmount(Math.abs(remainderMinor), 'NGN')} ${remainderMinor > 0 ? 'left' : 'over'}`}
                       </p>
                     )}
@@ -923,16 +958,18 @@ export function CreateDealPage() {
                 </button>
               )}
 
-              <div className="mt-6 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-7 flex flex-col-reverse gap-3 border-t bg-muted/20 -mx-5 -mb-5 px-5 py-5 sm:-mx-7 sm:-mb-7 sm:flex-row sm:items-center sm:justify-between sm:px-7">
                 <Button type="button" variant="ghost" onClick={handleBack} disabled={createDeal.isPending}>
                   <ArrowLeft size={16} className="mr-1" />
                   {step === 1 ? 'Cancel' : 'Back'}
                 </Button>
                 <div className="flex flex-wrap items-center justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-full">
-                    <Save size={16} className="mr-1.5" />
-                    Save to drafts
-                  </Button>
+                  {step > 1 && (
+                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-full">
+                      <Save size={16} className="mr-1.5" />
+                      Save to drafts
+                    </Button>
+                  )}
                   {step < STEPS.length ? (
                     <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-full">
                       Continue
@@ -954,6 +991,7 @@ export function CreateDealPage() {
                     </Button>
                   )}
                 </div>
+              </div>
               </div>
             </Card>
           </main>

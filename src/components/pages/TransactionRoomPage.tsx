@@ -7,9 +7,9 @@
  * Reads the deal detail query; actions are mocked until the backend lands.
  */
 
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatDistanceToNow, format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowLeft,
   Ban,
@@ -23,7 +23,9 @@ import {
   GitPullRequestArrow,
   Landmark,
   MapPin,
+  Maximize2,
   MessageSquare,
+  Minimize2,
   Paperclip,
   Pencil,
   Plus,
@@ -580,6 +582,7 @@ function ActionsPanel({
 export function TransactionRoomPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: deal, isLoading, isError } = useDealDetail(id);
   const { data: negotiation } = useNegotiation(id);
   const { data: dispute } = useDispute(id);
@@ -592,6 +595,31 @@ export function TransactionRoomPage() {
   const [showDispute, setShowDispute] = useState(false);
   const [showTerminate, setShowTerminate] = useState(false);
   const [showReject, setShowReject] = useState(false);
+  const requestedTab = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
+  const [chatFullscreen, setChatFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (requestedTab === 'chat') setActiveTab('chat');
+  }, [requestedTab]);
+
+  useEffect(() => {
+    if (!chatFullscreen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setChatFullscreen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [chatFullscreen]);
+
+  const changeTab = (value: string) => {
+    setActiveTab(value);
+    const next = new URLSearchParams(searchParams);
+    if (value === 'overview') next.delete('tab');
+    else next.set('tab', value);
+    setSearchParams(next, { replace: true });
+    if (value !== 'chat') setChatFullscreen(false);
+  };
 
   const counterparty = deal?.parties.find((p) => !p.isYou);
   const youParty = deal?.parties.find((p) => p.isYou);
@@ -788,7 +816,7 @@ export function TransactionRoomPage() {
 
             {/* Body */}
             <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
-              <Tabs defaultValue="overview" className="w-full min-w-0">
+              <Tabs value={activeTab} onValueChange={changeTab} className="w-full min-w-0">
                 <TabsList className="w-full justify-start overflow-x-auto">
                   <TabsTrigger value="overview">
                     <ScrollText size={15} className="mr-1.5" />
@@ -820,7 +848,7 @@ export function TransactionRoomPage() {
                   )}
                   <TabsTrigger value="chat">
                     <MessageSquare size={15} className="mr-1.5" />
-                    Chat
+                    Messages
                   </TabsTrigger>
                   <TabsTrigger value="evidence">
                     <Paperclip size={15} className="mr-1.5" />
@@ -871,8 +899,48 @@ export function TransactionRoomPage() {
                   </TabsContent>
                 )}
                 <TabsContent value="chat">
-                  <Card className="p-5 shadow-sm">
-                    <DealChat dealId={deal.id} counterpartyName={counterparty?.name ?? deal.counterpartyName} />
+                  <Card
+                    className={
+                      chatFullscreen
+                        ? 'fixed inset-0 z-[100] flex h-dvh flex-col gap-0 rounded-none border-0 bg-background p-0 shadow-none'
+                        : 'gap-0 overflow-hidden p-0 shadow-sm'
+                    }
+                  >
+                    <div className="flex items-center justify-between gap-4 border-b px-4 py-3 sm:px-5">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <CounterpartyAvatar
+                          name={counterparty?.name ?? deal.counterpartyName}
+                          className="h-9 w-9 shrink-0 text-xs"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-foreground">
+                            {counterparty?.name ?? deal.counterpartyName}
+                          </p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            Protected Deal · {deal.reference}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 rounded-full"
+                        onClick={() => setChatFullscreen((current) => !current)}
+                      >
+                        {chatFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                        <span className="hidden sm:inline">
+                          {chatFullscreen ? 'Return to deal' : 'Open full screen'}
+                        </span>
+                      </Button>
+                    </div>
+                    <div className={chatFullscreen ? 'min-h-0 flex-1 px-4 py-3 sm:px-8 lg:px-16' : 'p-5'}>
+                      <DealChat
+                        dealId={deal.id}
+                        counterpartyName={counterparty?.name ?? deal.counterpartyName}
+                        className={chatFullscreen ? 'mx-auto h-full max-w-5xl' : undefined}
+                      />
+                    </div>
                   </Card>
                 </TabsContent>
                 <TabsContent value="evidence">

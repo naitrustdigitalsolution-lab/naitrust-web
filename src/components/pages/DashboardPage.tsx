@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowDownToLine,
@@ -14,15 +15,19 @@ import {
   Clock3,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { BusinessVerificationModal } from '../pieces/business/BusinessVerificationModal';
 import { SecureAccountModal } from '../pieces/security/SecureAccountModal';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
+import { ActivityChart } from '../pieces/dashboard/ActivityChart';
+import { DealBreakdown } from '../pieces/dashboard/DealBreakdown';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { useAuth } from '../../libs/auth-context';
 import { useMyBusiness } from '../../hooks/useMyBusiness';
 import { useSecurity } from '../../hooks/useSecurity';
@@ -33,27 +38,39 @@ import { accountTypeOf } from '../../libs/utils/account';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import type { SafeDealSummary } from '../../libs/store/types';
 
-const COLLECTION_ACTIONS = [
+function slugify(value: string) {
+  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+type CollectionActionKind = 'whatsapp' | 'qr' | 'copy';
+
+const COLLECTION_ACTIONS: {
+  title: string;
+  description: string;
+  icon: typeof MessageCircle;
+  accent: string;
+  kind: CollectionActionKind;
+}[] = [
   {
     title: 'WhatsApp request',
     description: 'Create a request and share it in the conversation.',
     icon: MessageCircle,
     accent: 'bg-[#eaf8f1] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400',
-    query: '?share=whatsapp',
+    kind: 'whatsapp',
   },
   {
     title: 'Show payment QR',
-    description: 'Let a customer scan and pay your business.',
+    description: 'Pull up your scan-to-pay code right here — no page change.',
     icon: QrCode,
     accent: 'bg-[#edf4ff] text-primary',
-    query: '?share=qr',
+    kind: 'qr',
   },
   {
-    title: 'Account details',
-    description: 'Share your verified business account number.',
+    title: 'Copy account number',
+    description: 'One tap to copy your verified account number to send anywhere.',
     icon: Landmark,
     accent: 'bg-[#f5efff] text-violet-700 dark:bg-violet-500/10 dark:text-violet-300',
-    query: '?share=account',
+    kind: 'copy',
   },
 ];
 
@@ -74,18 +91,32 @@ export function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const security = useSecurity();
-  const { data: business } = useMyBusiness();
+  const { data: business, isLoading: isBusinessLoading } = useMyBusiness();
   const { data: deals, isLoading, isError } = useTransactions();
   const { data: wallet, isLoading: isWalletLoading } = useWallet();
   const { data: invitations } = useInvitations();
+  const [qrDialogOpen, setQrDialogOpen] = useState(false);
 
   const isBusiness = accountTypeOf(user) !== 'customer';
-  const businessName = business?.name || user?.name || 'Your business';
+  const businessName = business?.name ?? (isBusinessLoading ? '' : 'Your business');
   const firstName = user?.firstName || user?.name?.split(' ')[0] || 'there';
   const account = wallet?.virtualAccount;
+  const paymentLink = typeof window === 'undefined'
+    ? ''
+    : `${window.location.origin}/pay/${slugify(businessName)}`;
 
   const handleOpenDeal = (deal: SafeDealSummary) => {
     navigate(`/app/deals/${deal.id}`);
+  };
+
+  const handleCollectionAction = (kind: CollectionActionKind) => {
+    if (kind === 'whatsapp') {
+      navigate('/app/payments/receive?share=whatsapp');
+    } else if (kind === 'qr') {
+      setQrDialogOpen(true);
+    } else {
+      void copyAccount();
+    }
   };
 
   const copyAccount = async () => {
@@ -108,7 +139,7 @@ export function DashboardPage() {
     return (
       <DashboardLayout title="Dashboard">
         <SecureAccountModal />
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-7">
+        <div className="mx-auto flex w-full max-w-9xl flex-col gap-7">
           <header className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Good day, {firstName}</p>
@@ -119,26 +150,94 @@ export function DashboardPage() {
                 Find verified businesses, review invitations, and follow every important purchase.
               </p>
             </div>
-            <Button className="rounded-full" onClick={() => navigate('/app/businesses')}>
-              <Search size={15} /> Find a business
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/payments')}>
+                <Send size={15} /> Send money
+              </Button>
+              <Button className="rounded-full" onClick={() => navigate('/app/businesses')}>
+                <Search size={15} /> Find a business
+              </Button>
+            </div>
           </header>
 
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#087ff5] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
+              <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-2xl" />
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-white/65">Available balance</p>
+                  {isWalletLoading || !wallet ? (
+                    <Skeleton className="mt-3 h-10 w-52" />
+                  ) : (
+                    <p className="mt-2 text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+                      {formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency)}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  className="rounded-full bg-white text-[#073158] hover:bg-white/90"
+                  onClick={() => navigate('/app/payments/receive')}
+                >
+                  <ArrowDownToLine size={14} /> Receive money
+                </Button>
+              </div>
+
+              {wallet && (
+                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4 text-sm">
+                  <div>
+                    <p className="text-white/55">Pending</p>
+                    <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</p>
+                  </div>
+                  <div>
+                    <p className="text-white/55">Protected</p>
+                    <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</p>
+                  </div>
+                </div>
+              )}
+            </Card>
+
+            <Card className="rounded-3xl border-primary/10 bg-gradient-to-br from-white to-[#edf6ff] p-5 shadow-sm dark:from-card dark:to-primary/10 sm:p-7">
+              <div className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Landmark size={19} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Your account</p>
+                  <p className="mt-2 font-mono text-xl font-bold tracking-[0.1em]">
+                    {account?.accountNumber ?? 'Account setup pending'}
+                  </p>
+                  <p className="mt-1 truncate text-xs text-muted-foreground">
+                    {account ? `${account.bankName} · ${account.accountName}` : 'Complete setup to receive your account number'}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-5 flex gap-2">
+                <Button variant="outline" size="sm" className="rounded-full" onClick={() => void copyAccount()}>
+                  <Copy size={14} /> Copy
+                </Button>
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => navigate('/app/payments/receive')}>
+                  View details
+                </Button>
+              </div>
+            </Card>
+          </div>
+
           <section className="grid gap-3 sm:grid-cols-3">
-            <Card className="rounded-2xl p-5 shadow-sm bg-[#04162f]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-white"><ShieldCheck size={19} /></span>
-              <p className="mt-4 text-3xl font-bold text-white">{activeDeals.length}</p>
-              <p className="mt-1 text-sm text-white">Active Protected Deals</p>
+            <Card className="rounded-3xl border-blue-500/15 bg-gradient-to-br from-[#eaf5ff] to-white p-5 shadow-sm dark:from-blue-500/15 dark:to-card">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-700 dark:text-blue-300"><ShieldCheck size={19} /></span>
+              <p className="mt-4 text-3xl font-bold text-foreground">{activeDeals.length}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Active Protected Deals</p>
             </Card>
-            <Card className="rounded-2xl p-5 shadow-sm bg-[#04162f]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-white"><Inbox size={19} /></span>
-              <p className="mt-4 text-3xl font-bold text-white">{pendingInvitations.length}</p>
-              <p className="mt-1 text-sm text-white">Invitations to review</p>
+            <Card className="rounded-3xl border-violet-500/15 bg-gradient-to-br from-[#f3edff] to-white p-5 shadow-sm dark:from-violet-500/15 dark:to-card">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/15 text-violet-700 dark:text-violet-300"><Inbox size={19} /></span>
+              <p className="mt-4 text-3xl font-bold text-foreground">{pendingInvitations.length}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Invitations to review</p>
             </Card>
-            <Card className="rounded-2xl p-5 shadow-sm bg-[#04162f]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-white"><Clock3 size={19} /></span>
-              <p className="mt-4 text-3xl font-bold text-white">{needsAction.length}</p>
-              <p className="mt-1 text-sm text-white">Need your attention</p>
+            <Card className="rounded-3xl border-amber-500/15 bg-gradient-to-br from-[#fff6df] to-white p-5 shadow-sm dark:from-amber-500/15 dark:to-card">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-300"><Clock3 size={19} /></span>
+              <p className="mt-4 text-3xl font-bold text-foreground">{needsAction.length}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Need your attention</p>
             </Card>
           </section>
 
@@ -146,7 +245,7 @@ export function DashboardPage() {
             <button type="button" onClick={() => navigate('/app/businesses')} className="group rounded-2xl border bg-card p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Search size={19} /></span>
               <span className="mt-4 flex items-center gap-1 font-semibold">Find a verified business <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" /></span>
-              <span className="mt-1 block text-sm leading-5 text-muted-foreground">Search by business name or NT ID, then pay normally or propose a Protected Deal.</span>
+              <span className="mt-1 block text-sm leading-5 text-muted-foreground">Search by business name, account number, email, or phone, then pay normally or propose a Protected Deal.</span>
             </button>
             <button type="button" onClick={() => navigate('/app/invitations')} className="group rounded-2xl border bg-card p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400"><Inbox size={19} /></span>
@@ -186,12 +285,33 @@ export function DashboardPage() {
       <BusinessVerificationModal />
       <SecureAccountModal />
 
+      <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Customer payment QR</DialogTitle>
+            <DialogDescription>Let a customer scan this with their phone to pay {businessName}.</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center rounded-2xl border bg-white p-6 text-[#071b31]">
+            <QRCode value={paymentLink} size={192} fgColor="#071b31" />
+            <p className="mt-4 text-center text-sm font-semibold">{businessName}</p>
+            <p className="mt-1 text-center text-xs text-slate-500">Verify before you transfer</p>
+          </div>
+          <Button variant="outline" className="w-full rounded-full" onClick={() => navigate('/app/payments/receive?share=qr')}>
+            More ways to get paid
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <div className="mx-auto flex w-full max-w-9xl flex-col gap-7">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-sm text-muted-foreground">Good day, {firstName}</p>
             <div className="mt-1 flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-[-0.025em] text-foreground">{businessName}</h1>
+              {isBusinessLoading ? (
+                <Skeleton className="h-8 w-56" />
+              ) : (
+                <h1 className="text-2xl font-bold tracking-[-0.025em] text-foreground">{businessName}</h1>
+              )}
               {security.kycStatus === 'verified' && (
                 <Badge variant="success" className="gap-1 rounded-full">
                   <BadgeCheck size={12} /> Verified business
@@ -202,7 +322,7 @@ export function DashboardPage() {
           <Button
             variant="outline"
             className="rounded-full"
-            onClick={() => navigate('/app/payments/send')}
+            onClick={() => navigate('/app/payments')}
           >
             <Send size={15} /> Send money
           </Button>
@@ -223,7 +343,7 @@ export function DashboardPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                onClick={() => navigate(`/app/payments/receive${action.query}`)}
+                onClick={() => handleCollectionAction(action.kind)}
                 className="group flex min-h-36 flex-col rounded-2xl border bg-card p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
               >
                 <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.accent}`}>
@@ -240,23 +360,24 @@ export function DashboardPage() {
         </section>
 
         <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-          <Card className="rounded-2xl p-5 shadow-sm sm:p-6">
+          <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#087ff5] to-[#064d9d] p-5 text-white shadow-[0_24px_65px_rgba(8,127,245,.24)] sm:p-7">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  {isBusiness ? 'Available business balance' : 'Available balance'}
+                  <span className="text-white/65">{isBusiness ? 'Available business balance' : 'Available balance'}</span>
                 </p>
                 {isWalletLoading || !wallet ? (
                   <Skeleton className="mt-3 h-10 w-52" />
                 ) : (
-                  <p className="mt-2 text-3xl font-bold tracking-[-0.035em] text-foreground">
+                  <p className="mt-2 text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
                     {formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency)}
                   </p>
                 )}
               </div>
               <Button
                 size="sm"
-                className="rounded-full"
+                className="rounded-full bg-white text-[#075cb5] hover:bg-white/90"
                 onClick={() => navigate('/app/payments/receive?share=whatsapp')}
               >
                 <ArrowDownToLine size={14} /> Request payment
@@ -264,20 +385,20 @@ export function DashboardPage() {
             </div>
 
             {wallet && (
-              <div className="mt-5 grid grid-cols-2 gap-3 border-t pt-4 text-sm">
+              <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/20 pt-4 text-sm">
                 <div>
-                  <p className="text-muted-foreground">Pending</p>
-                  <p className="mt-1 font-semibold">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</p>
+                  <p className="text-white/60">Pending</p>
+                  <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Protected</p>
-                  <p className="mt-1 font-semibold">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</p>
+                  <p className="text-white/60">Protected</p>
+                  <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</p>
                 </div>
               </div>
             )}
           </Card>
 
-          <Card className="rounded-2xl border-primary/10 p-5 shadow-sm sm:p-6">
+          <Card className="rounded-3xl border-primary/10 bg-gradient-to-br from-white to-[#edf6ff] p-5 shadow-sm dark:from-card dark:to-primary/10 sm:p-7">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Landmark size={19} />
@@ -302,6 +423,17 @@ export function DashboardPage() {
             </div>
           </Card>
         </div>
+
+        <section>
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold">Business performance</h2>
+            <p className="mt-1 text-sm text-muted-foreground">How your Protected Deals are trending, at a glance.</p>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+            <ActivityChart deals={deals} isLoading={isLoading} currency={wallet?.balance.currency ?? 'NGN'} />
+            <DealBreakdown deals={deals} isLoading={isLoading} currency={wallet?.balance.currency ?? 'NGN'} />
+          </div>
+        </section>
 
         <Card className="flex flex-col gap-4 rounded-2xl border-emerald-500/20 bg-emerald-500/[0.04] p-5 shadow-none sm:flex-row sm:items-center sm:p-6">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">

@@ -61,7 +61,7 @@ export function TrustHeroAnimation({ className = '' }: TrustHeroAnimationProps) 
         {/* Left connector: Customer → Handshake */}
         <motion.div
           className="absolute top-1/2 -translate-y-1/2 z-0"
-          style={{ left: '72px', width: '300px', height: '40px' }}
+          style={{ left: '72px', width: 'calc(50% - 100px)', height: '40px' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
@@ -111,7 +111,7 @@ export function TrustHeroAnimation({ className = '' }: TrustHeroAnimationProps) 
         {/* Right connector: Handshake → Business */}
         <motion.div
           className="absolute top-1/2 -translate-y-1/2 z-0"
-          style={{ right: '72px', width: '300px', height: '40px' }}
+          style={{ right: '72px', width: 'calc(50% - 100px)', height: '40px' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1 }}

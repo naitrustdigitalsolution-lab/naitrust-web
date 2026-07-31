@@ -33,7 +33,7 @@ export function PaymentRequestsPage() {
 
   return (
     <DashboardLayout title="Payment Requests">
-      <div className="mx-auto w-full max-w-2xl">
+      <div className="mx-auto w-full max-w-9xl">
         <button
           type="button"
           onClick={() => navigate('/app/payments')}
@@ -88,7 +88,7 @@ export function PaymentRequestsPage() {
                 </div>
                 {r.status === 'pending' && (
                   <div className="flex flex-col gap-1">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info('Reminder sent (sandbox)')}>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info('Reminder sent')}>
                       <Bell size={12} className="mr-1" />
                       Remind
                     </Button>

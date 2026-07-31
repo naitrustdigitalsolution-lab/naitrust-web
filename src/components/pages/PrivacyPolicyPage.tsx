@@ -205,7 +205,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
                   <li>Verifying individuals and business representatives through identity, facial-match, and liveness checks</li>
                   <li>Verifying business identity and registration through CAC, TIN, ownership, and representative checks</li>
-                <li>Creating and maintaining user accounts and NT IDs</li>
+                <li>Creating and maintaining user accounts and payment account details</li>
                 <li>Processing verification fee payments and subscription billing</li>
                 <li>Facilitating communications between customers and businesses</li>
                 <li>Detecting, preventing, and investigating fraud and unauthorised activities</li>

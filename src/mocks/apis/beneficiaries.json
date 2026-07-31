@@ -5,7 +5,7 @@
       "id": "ben_mock_001",
       "type": "naitrust_user",
       "name": "Chioma Electronics",
-      "username": "chioma_electronics",
+      "email": "payments@chiomaelectronics.example",
       "isFavourite": true,
       "createdAt": "2026-05-14T09:00:00Z"
     },

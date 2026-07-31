@@ -109,51 +109,44 @@ export function CookieConsent() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-lg"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background shadow-[0_-12px_40px_rgba(3,19,53,.14)]"
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+              <div className="flex flex-col items-start gap-3 lg:flex-row lg:items-center lg:gap-4">
                 <div className="flex items-start gap-3 flex-1">
-                  <Cookie className="text-primary mt-1 shrink-0" size={24} />
+                  <Cookie className="mt-0.5 shrink-0 text-primary" size={20} />
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1">We use cookies</h3>
-                    <p className="text-sm text-muted-foreground">
-                      We use cookies to personalize content and ads, to provide social media features, and to analyze our traffic. We also share information about your use of our site with our partners in social media, advertising, and analytics. By continuing to use our website, you accept the use of all cookies. You can always access and change your cookie preferences in the footer of this website.
+                    <h3 className="mb-0.5 text-sm font-semibold sm:text-base">We use cookies</h3>
+                    <p className="text-xs leading-5 text-muted-foreground sm:text-sm">
+                      We use necessary cookies and, with your permission, analytics and marketing cookies. You can change your choices anytime.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="grid w-full grid-cols-3 gap-2 lg:flex lg:w-auto lg:shrink-0 lg:items-center">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowPreferences(true)}
-                    className="gap-2"
+                    className="min-w-0 gap-1 px-2 sm:gap-2 sm:px-3"
                   >
                     <Settings size={16} />
-                    Preferences
+                    <span className="truncate">Preferences</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleRejectOptional}
                   >
-                    Reject Optional
+                    <span className="truncate">Reject optional</span>
                   </Button>
                   <Button
                     size="sm"
                     onClick={handleAcceptAll}
                   >
-                    Accept All
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsVisible(false)}
-                    className="p-1 h-8 w-8"
-                  >
-                    <X size={16} />
+                    <span className="truncate">Accept all</span>
                   </Button>
                 </div>
+                <button type="button" onClick={() => setIsVisible(false)} className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-muted" aria-label="Dismiss cookie notice"><X size={15} /></button>
               </div>
             </div>
           </motion.div>

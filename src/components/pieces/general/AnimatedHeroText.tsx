@@ -6,20 +6,21 @@ import { motion } from 'motion/react';
  */
 export function AnimatedHeroText() {
   return (
-    <div className="relative">
+    <div className="relative min-w-0 w-full">
       <div className="grid place-items-center px-2 lg:place-items-start lg:px-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="mt-4 flex h-auto flex-col items-center lg:items-start"
+          className="mt-4 flex h-auto min-w-0 w-full flex-col items-center xl:items-start"
         >
-          <h1 className="naitrust-satoshi-bold max-w-3xl text-center text-[clamp(2.65rem,8vw,4.25rem)] leading-[0.98] tracking-[-0.065em] text-white sm:leading-[0.96] lg:text-left lg:text-[clamp(3.15rem,4.6vw,5rem)]">
-            One account for every move{' '}
-            <span className="text-[#50adff]">your business makes.</span>
+          <h1 className="naitrust-satoshi-bold w-full max-w-3xl text-center text-[clamp(2.25rem,10.5vw,4.25rem)] leading-[0.98] tracking-[-0.055em] text-white sm:leading-[0.96] md:text-[clamp(3rem,7vw,4.25rem)] xl:text-left xl:text-[clamp(3.15rem,4.6vw,5rem)]">
+            <span className="block sm:inline">One account for</span>{' '}
+            <span className="block sm:inline">every move</span>{' '}
+            <span className="block text-[#50adff]">your money makes.</span>
           </h1>
-          <p className="mt-6 max-w-[34rem] text-center text-base font-medium leading-7 text-white/68 sm:text-lg sm:leading-8 lg:text-left">
-            Receive sales, pay suppliers, and protect important orders—all from one verified business account.
+          <p className="mt-5 max-w-[34rem] text-center text-sm font-medium leading-6 text-white/68 sm:mt-6 sm:text-lg sm:leading-8 xl:text-left">
+            Receive, pay, and protect important transactions from one trusted account—whether you trade as a person or a business.
           </p>
         </motion.div>
       </div>

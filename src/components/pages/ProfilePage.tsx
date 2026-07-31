@@ -6,18 +6,13 @@
  */
 
 import { useNavigate } from 'react-router-dom';
+import type { ReactNode } from 'react';
 import {
-  ArrowLeft,
   BadgeCheck,
   CircleDashed,
-  Mail,
-  Phone,
-  Settings,
   ShieldCheck,
   Star,
-  User as UserIcon,
 } from 'lucide-react';
-import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { BusinessProfileCard } from '../pieces/business/BusinessProfileCard';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -27,25 +22,8 @@ import { useAuth } from '../../libs/auth-context';
 import { useReputation } from '../../hooks/useReputation';
 import { useTransactions } from '../../hooks/useTransactions';
 import { useSecurity } from '../../hooks/useSecurity';
-import { accountTypeLabel, accountTypeOf } from '../../libs/utils/account';
+import { accountTypeOf } from '../../libs/utils/account';
 import { summarizeDeals } from '../../libs/utils/safe-deal-presentation';
-
-function initialsOf(name: string | undefined): string {
-  if (!name) return 'NT';
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
-}
-
-const ROLE_LABEL: Record<string, string> = {
-  customer: 'Customer',
-  business: 'Business',
-  'business-member': 'Team member',
-  admin: 'Admin',
-};
 
 function VerificationRow({
   label,
@@ -74,7 +52,7 @@ function VerificationRow({
   );
 }
 
-export function ProfilePage() {
+export function AccountProfileOverview({ profileEditor }: { profileEditor?: ReactNode }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const security = useSecurity();
@@ -86,59 +64,8 @@ export function ProfilePage() {
   const isBusiness = accountTypeOf(user) === 'business';
 
   return (
-    <DashboardLayout title="Profile">
-      <div className="mx-auto w-full max-w-9xl">
-        <button
-          type="button"
-          onClick={() => navigate('/app')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={16} />
-          Back to dashboard
-        </button>
-
         <div className="grid gap-6 lg:grid-cols-[minmax(280px,1fr)_1.4fr]">
-          {/* Identity card */}
-          <Card className="gap-4 p-6 shadow-sm lg:sticky lg:top-20 lg:self-start">
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-xl font-bold text-primary">
-                {initialsOf(user?.name)}
-              </div>
-              <div className="min-w-0">
-                <h1 className="truncate text-lg font-bold text-foreground">{user?.name}</h1>
-                <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                  <Badge variant="outline">{accountTypeLabel(accountTypeOf(user))}</Badge>
-                  {ROLE_LABEL[user?.role ?? ''] === 'Team member' && (
-                    <Badge variant="secondary">Team member</Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2 border-t pt-4 text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Mail size={15} className="shrink-0" />
-                <span className="truncate">{user?.email}</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Phone size={15} className="shrink-0" />
-                <span>{user?.phone || 'No phone number added'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <UserIcon size={15} className="shrink-0" />
-                <span>Naitrust member</span>
-              </div>
-            </div>
-
-            <Button
-              variant="outline"
-              className="rounded-full"
-              onClick={() => navigate('/app/settings')}
-            >
-              <Settings size={15} className="mr-1.5" />
-              Edit in settings
-            </Button>
-          </Card>
+          <div className="lg:sticky lg:top-20 lg:self-start">{profileEditor}</div>
 
           <div className="flex flex-col gap-6">
             {/* Business profile (business accounts only) */}
@@ -248,7 +175,9 @@ export function ProfilePage() {
             </Card>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
   );
+}
+
+export function ProfilePage() {
+  return <AccountProfileOverview />;
 }

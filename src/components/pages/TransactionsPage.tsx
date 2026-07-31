@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowDownLeft, ArrowUpRight, Receipt, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
+import { PageHero } from '../pieces/dashboard/PageHero';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -47,7 +48,7 @@ const CUSTOMER_TYPE_OPTIONS: TransactionType[] = [
   'fee',
 ];
 
-const PROVIDER_LABEL: Record<string, string> = { anchor: 'Anchor', kora: 'Kora', mock: 'Sandbox' };
+const PROVIDER_LABEL: Record<string, string> = { anchor: 'Anchor', kora: 'Kora', mock: 'Naitrust' };
 
 export function TransactionsPage() {
   const navigate = useNavigate();
@@ -76,17 +77,15 @@ export function TransactionsPage() {
 
   return (
     <DashboardLayout title="Transactions">
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            {isCustomer ? 'Protected payment activity' : 'Transactions'}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isCustomer
-              ? 'Payment activity connected only to your Protected Deals.'
-              : 'Every Instant Payment, Protected Deal, and business account movement in one place.'}
-          </p>
-        </div>
+      <div className="mx-auto w-full max-w-9xl">
+        <PageHero
+          eyebrow={isCustomer ? 'Protected payments' : 'Money activity'}
+          title={isCustomer ? 'Protected payment activity' : 'Transactions'}
+          description={isCustomer
+            ? 'Payment activity connected only to your Protected Deals.'
+            : 'Every Instant Payment, Protected Deal, and business account movement in one place.'}
+          icon={Receipt}
+        />
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Input

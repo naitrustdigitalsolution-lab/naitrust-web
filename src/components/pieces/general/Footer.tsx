@@ -34,7 +34,7 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       title: 'Platform',
       links: [
-        { label: 'Send Instantly', page: 'register', modal: true },
+        { label: 'Send Money', page: 'register', modal: true },
         { label: 'Protect a Payment', page: 'register', modal: true },
         { label: 'Join Early Access', page: 'register', modal: true },
         { label: 'For Businesses', page: 'register-business', modal: true },

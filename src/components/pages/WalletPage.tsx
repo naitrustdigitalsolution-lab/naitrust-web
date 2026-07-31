@@ -66,7 +66,7 @@ export function WalletPage() {
     if (!defaultBankAccount || !amountMinor) return;
     try {
       await fundWallet.mutateAsync({ linkedBankAccountId: defaultBankAccount.id, amountMinor });
-      toast.success('Sandbox funding recorded — added to your pending balance');
+      toast.success('Funding recorded — added to your pending balance');
       setFundOpen(false);
       setAmount('');
     } catch {
@@ -82,7 +82,7 @@ export function WalletPage() {
     }
     try {
       await withdraw.mutateAsync({ linkedBankAccountId: defaultBankAccount.id, amountMinor });
-      toast.success('Sandbox withdrawal recorded');
+      toast.success('Withdrawal recorded');
       setWithdrawOpen(false);
       setAmount('');
     } catch {

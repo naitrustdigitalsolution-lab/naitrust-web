@@ -21,18 +21,18 @@ interface AboutPageProps {
 }
 
 const audiences = [
+  'Everyday customers and buyers',
   'Market and shop traders',
-  'Wholesalers and distributors',
-  'Instagram and WhatsApp sellers',
-  'Registered and informal businesses',
+  'Online sellers and service providers',
+  'Wholesalers and growing companies',
 ];
 
 export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust | Built for Nigerian Traders"
-        description="Naitrust is the everyday business account for Nigerian traders—receive sales, pay suppliers, protect important orders, and build a trusted payment history."
+        title="About Naitrust | Trust Infrastructure for Nigerian Transactions"
+        description="Naitrust helps Nigerian customers and businesses verify who they are dealing with, move money normally, and protect important transactions."
         canonicalPath="/about"
       />
 
@@ -50,14 +50,14 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           </Badge>
           <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <h1 className="max-w-4xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              Nigerian businesses deserve more than a bank transfer screenshot.
+              Nigeria’s digital economy deserves trust built into every transaction.
             </h1>
             <div>
               <p className="text-lg leading-8 text-white/68">
-                Traders move money every day—receiving sales, restocking, paying suppliers, and taking chances on new business relationships. Naitrust brings those moments into one account built around speed when trust exists and protection when it does not.
+                Customers should know who they are paying. Businesses should be able to prove who they are. Naitrust connects verified identity, everyday payments, and Protected Transactions so both sides can move with greater confidence.
               </p>
               <Button className="mt-7 h-12 rounded-full px-6" onClick={openWaitlistModal}>
-                Join early access
+                Join Naitrust
                 <ArrowRight size={17} className="ml-2" />
               </Button>
             </div>
@@ -71,7 +71,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">The problem</p>
               <h2 className="text-4xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-5xl">
-                Business moves fast. Its records rarely keep up.
+                Money moves quickly. Trust signals rarely move with it.
               </h2>
             </motion.div>
             <motion.div
@@ -81,10 +81,10 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               className="grid gap-4 sm:grid-cols-2"
             >
               {[
-                'Customer payments arrive across different accounts and chats.',
-                'Supplier orders are agreed verbally or buried in WhatsApp.',
-                'Large advance payments are sent before delivery is certain.',
-                'Honest traders have little structured history to prove reliability.',
+                'Customers often pay before they can confidently verify the seller.',
+                'Important terms are agreed verbally or buried inside chats.',
+                'Businesses struggle to turn honest work into visible credibility.',
+                'Payment, delivery evidence, and issue history live in separate places.',
               ].map((problem, index) => (
                 <Card key={problem} className="rounded-2xl border-0 p-6 shadow-[0_14px_40px_rgba(11,43,69,.07)]">
                   <span className="text-xs font-bold text-primary">0{index + 1}</span>
@@ -99,17 +99,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 max-w-3xl">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">One business account</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Trust infrastructure for both sides</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-              Everyday payments keep you moving. Protection helps you move boldly.
+              Move normally when trust exists. Add protection when it matters.
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden rounded-[2rem] border bg-border md:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: ArrowDownToLine, title: 'Receive sales', text: 'Bring customer and requested payments into one account.' },
-              { icon: Send, title: 'Pay suppliers', text: 'Send instantly to the people and businesses you already trust.' },
-              { icon: ShieldCheck, title: 'Protect orders', text: 'Keep terms, evidence, delivery, and payment status together.' },
-              { icon: BadgeCheck, title: 'Build history', text: 'Turn completed business into a reputation you can carry forward.' },
+              { icon: BadgeCheck, title: 'Verify both sides', text: 'Give customers and businesses clearer identity signals before money moves.' },
+              { icon: Send, title: 'Pay normally', text: 'Send money quickly when you already know and trust the recipient.' },
+              { icon: ShieldCheck, title: 'Protect transactions', text: 'Keep terms, evidence, delivery, messages, and payment status together.' },
+              { icon: ArrowDownToLine, title: 'Build confidence', text: 'Turn verified details and completed activity into a stronger platform history.' },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -133,12 +133,12 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       <section className="bg-[#071a32] px-4 py-20 text-white sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
           <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Built for the people who trade</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Built for people who buy and sell</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-              Informal or registered, your business is still a real business.
+              Trust should not depend on the size of the transaction or business.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/60">
-              Naitrust is trader-first, not trader-exclusive. It is designed to feel useful whether you run a market stall, a neighbourhood shop, a wholesale operation, an online storefront, or a growing company.
+              Naitrust supports the customer making an important purchase and the business working to earn that customer’s confidence—from informal sellers to registered companies.
             </p>
           </motion.div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -188,9 +188,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
 
       <section className="bg-[#04162f] px-4 py-20 text-center text-white sm:px-6 sm:py-24 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-3xl">
-          <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">Built for today’s trade—and the business you are becoming.</h2>
+          <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">Know who you are dealing with. Protect what matters.</h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/60">
-            Receive sales. Pay suppliers. Protect important orders. Build a business history.
+            One trust layer for customers, businesses, everyday payments, and important transactions.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button size="lg" className="rounded-full px-7" onClick={openWaitlistModal}>

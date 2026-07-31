@@ -42,7 +42,7 @@ export function BeneficiariesPage() {
     try {
       await createBeneficiary.mutateAsync(
         type === 'naitrust_user'
-          ? { type, name, username: handle }
+          ? { type, name, email: handle }
           : { type, name, bankName, accountNumber: handle },
       );
       toast.success('Recipient saved');
@@ -55,7 +55,7 @@ export function BeneficiariesPage() {
 
   return (
     <DashboardLayout title="Saved Recipients">
-      <div className="mx-auto w-full max-w-2xl">
+      <div className="mx-auto w-full max-w-9xl">
         <button
           type="button"
           onClick={() => navigate('/app/payments')}
@@ -104,7 +104,7 @@ export function BeneficiariesPage() {
                   </p>
                   <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
                     {b.type === 'naitrust_user' ? (
-                      <>@{b.username}</>
+                      <>{b.email ?? b.phone ?? 'Naitrust recipient'}</>
                     ) : (
                       <>
                         <Landmark size={11} />
@@ -146,8 +146,8 @@ export function BeneficiariesPage() {
             </div>
             {type === 'naitrust_user' ? (
               <div>
-                <Label htmlFor="ben-username">Username</Label>
-                <Input id="ben-username" value={handle} onChange={(e) => setHandle(e.target.value)} className="mt-1.5" />
+                <Label htmlFor="ben-email">Registered email or phone number</Label>
+                <Input id="ben-email" value={handle} onChange={(e) => setHandle(e.target.value)} placeholder="Email address or phone number" className="mt-1.5" />
               </div>
             ) : (
               <>

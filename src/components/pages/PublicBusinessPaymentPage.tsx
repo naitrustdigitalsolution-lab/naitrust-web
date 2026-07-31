@@ -5,6 +5,7 @@ import {
   Check,
   Clock3,
   Copy,
+  CreditCard,
   Landmark,
   Loader2,
   LockKeyhole,
@@ -39,6 +40,7 @@ export function PublicBusinessPaymentPage() {
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'transfer' | 'card'>('transfer');
   const { data: business, isLoading } = usePublicBusiness(businessSlug);
   const businessName = useMemo(
     () => business?.name || titleFromSlug(businessSlug) || 'Naitrust Business',
@@ -151,7 +153,19 @@ export function PublicBusinessPaymentPage() {
               <Input id="payer-name" value={payerName} onChange={(event) => setPayerName(event.target.value)} className="mt-2" placeholder="Who is making this payment?" />
             </div>
 
-            <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
+            <div>
+              <Label>Choose how to pay</Label>
+              <div className="mt-2 grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
+                <button type="button" onClick={() => setPaymentMethod('transfer')} className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${paymentMethod === 'transfer' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground'}`}>
+                  <Landmark size={15} /> Bank transfer
+                </button>
+                <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${paymentMethod === 'card' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground'}`}>
+                  <CreditCard size={15} /> Debit card
+                </button>
+              </div>
+            </div>
+
+            {paymentMethod === 'transfer' ? <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Landmark size={16} className="text-primary" /> Transfer to this account
               </div>
@@ -166,7 +180,13 @@ export function PublicBusinessPaymentPage() {
                   {copied ? 'Copied' : 'Copy number'}
                 </Button>
               </div>
-            </div>
+            </div> : (
+              <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold"><CreditCard size={16} className="text-primary" /> Pay securely by card</div>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">You’ll continue through the payment provider’s secure checkout. Naitrust never stores your card number or CVV.</p>
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground"><LockKeyhole size={13} /> Visa, Mastercard and Verve eligibility is confirmed by the provider.</div>
+              </div>
+            )}
 
             {confirmed ? (
               <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-100">
@@ -189,7 +209,7 @@ export function PublicBusinessPaymentPage() {
                 disabled={Number(amount) <= 0 || !payerName.trim()}
                 onClick={checkTransfer}
               >
-                I have made the transfer
+                {paymentMethod === 'card' ? `Pay ₦${Number(amount).toLocaleString()} by card` : 'I have made the transfer'}
               </Button>
             )}
 

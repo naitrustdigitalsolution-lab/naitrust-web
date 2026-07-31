@@ -34,19 +34,11 @@ const VERIFICATION_LABEL: Record<string, string> = {
   verified: 'Verified',
 };
 
-export function TrustProfilePage() {
+export function TrustProfileSummary() {
   const { data: profile, isLoading } = useTrustProfile();
 
   return (
-    <DashboardLayout title="Trust Profile">
-      <div className="mx-auto w-full max-w-3xl">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Trust Profile</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Build a stronger business reputation through verified information and successfully completed transactions.
-          </p>
-        </div>
-
+    <>
         {isLoading || !profile ? (
           <Skeleton className="h-64 w-full rounded-2xl" />
         ) : (
@@ -133,6 +125,15 @@ export function TrustProfilePage() {
             </Card>
           </>
         )}
+    </>
+  );
+}
+
+export function TrustProfilePage() {
+  return (
+    <DashboardLayout title="Trust Profile">
+      <div className="mx-auto w-full max-w-3xl">
+        <TrustProfileSummary />
       </div>
     </DashboardLayout>
   );

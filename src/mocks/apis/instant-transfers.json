@@ -5,8 +5,8 @@
       "id": "itr_mock_001",
       "reference": "IT-2026-000045",
       "recipient": {
-        "method": "naitrust_username",
-        "identifier": "chioma_electronics",
+        "method": "email_address",
+        "identifier": "payments@chiomaelectronics.example",
         "resolvedName": "Chioma Electronics"
       },
       "amountMinor": 1500000,

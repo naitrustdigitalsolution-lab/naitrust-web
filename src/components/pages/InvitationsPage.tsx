@@ -8,8 +8,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, ChevronLeft, ChevronRight, Inbox } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Inbox, Plus } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
+import { PageHero } from '../pieces/dashboard/PageHero';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { InvitationStatusBadge } from '../pieces/invitations/InvitationStatusBadge';
 import { Badge } from '../ui/badge';
@@ -109,21 +110,17 @@ export function InvitationsPage() {
   return (
     <DashboardLayout title="Invitations">
       <div className="mx-auto w-full max-w-9xl">
-        <button
-          type="button"
-          onClick={() => navigate('/app')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={16} />
-          Back to dashboard
-        </button>
-
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Deal invitations</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Review Protected Deals you have been invited to, then accept to agree the terms.
-          </p>
-        </div>
+        <PageHero
+          eyebrow="Protected payments"
+          title="Deal invitations"
+          description="Review Protected Deals you have been invited to, then accept to agree the terms."
+          icon={Inbox}
+          actions={
+            <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
+              <Plus size={15} /> Create a deal
+            </Button>
+          }
+        />
 
         {isLoading ? (
           <LoadingRows />

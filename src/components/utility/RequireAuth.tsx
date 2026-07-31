@@ -11,12 +11,12 @@ import { useAuth } from '../../libs/auth-context';
 import Spinner from '../ui/spinner';
 
 export function RequireAuth() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isHydrated } = useAuth();
   const location = useLocation();
 
   // Wait for the persisted auth store to hydrate before deciding,
   // to avoid a flash-redirect for already-logged-in users.
-  if (isLoading) {
+  if (!isHydrated || isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="lg" />

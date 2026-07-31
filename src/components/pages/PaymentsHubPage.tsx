@@ -12,32 +12,51 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Download, HandCoins, Send, ShieldCheck, Users } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
-import { SandboxBadge } from '../pieces/general/SandboxBadge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import { useAuth } from '../../libs/auth-context';
 import { useInstantTransfers } from '../../hooks/useInstantTransfer';
+import { accountTypeOf } from '../../libs/utils/account';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 
-const QUICK_LINKS = [
+const BUSINESS_QUICK_LINKS = [
   { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
   { label: 'Saved Recipients', path: '/app/payments/beneficiaries', icon: Users },
   { label: 'Payment Requests', path: '/app/payments/requests', icon: HandCoins },
 ];
 
+const CUSTOMER_QUICK_LINKS = [
+  { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
+];
+
 export function PaymentsHubPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: transfers } = useInstantTransfers();
   const recent = (transfers ?? []).slice(0, 5);
+  const isBusiness = accountTypeOf(user) !== 'customer';
+  const quickLinks = isBusiness ? BUSINESS_QUICK_LINKS : CUSTOMER_QUICK_LINKS;
 
   return (
     <DashboardLayout title="Payments">
-      <div className="mx-auto w-full max-w-5xl">
-        <div className="mb-8">
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">Your business payments</p>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Move money the way the moment requires.</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            Receive sales, pay regular suppliers instantly, or protect an important order when the relationship or delivery is still new.
-          </p>
+      <div className="mx-auto w-full max-w-7xl">
+        <div className="mb-7 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-6 shadow-sm sm:px-7 lg:px-9 lg:py-8">
+          <div className="flex items-start gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">
+              <Send size={21} />
+            </span>
+            <div>
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary">
+                {isBusiness ? 'Your business payments' : 'Your payments'}
+              </p>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Move money the way the moment requires.</h1>
+              <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+                {isBusiness
+                  ? 'Receive sales, pay regular suppliers instantly, or protect an important order when the relationship or delivery is still new.'
+                  : 'Send money to people and businesses you trust, receive money from anyone, or protect an important purchase when the seller is still new to you.'}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -51,7 +70,9 @@ export function PaymentsHubPage() {
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Send size={20} />
             </div>
-            <p className="text-xl font-semibold text-foreground">Pay a trusted supplier</p>
+            <p className="text-xl font-semibold text-foreground">
+              {isBusiness ? 'Pay a trusted supplier' : 'Pay someone you trust'}
+            </p>
             <p className="text-sm leading-6 text-muted-foreground">
               Send instantly when you already know the person or business and do not need delivery conditions.
             </p>
@@ -70,9 +91,13 @@ export function PaymentsHubPage() {
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
               <ShieldCheck size={20} />
             </div>
-            <p className="text-xl font-semibold text-foreground">Protect an important order</p>
+            <p className="text-xl font-semibold text-foreground">
+              {isBusiness ? 'Protect an important order' : 'Protect an important purchase'}
+            </p>
             <p className="text-sm leading-6 text-muted-foreground">
-              Record the order, supplier, terms, evidence, and payment when delivery needs to be confirmed.
+              {isBusiness
+                ? 'Record the order, supplier, terms, evidence, and payment when delivery needs to be confirmed.'
+                : 'Record the order, seller, terms, evidence, and payment when delivery needs to be confirmed.'}
             </p>
             <span className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary">
               Start a Protected Deal <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
@@ -81,7 +106,7 @@ export function PaymentsHubPage() {
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {QUICK_LINKS.map((link) => (
+          {quickLinks.map((link) => (
             <Button
               key={link.path}
               variant="outline"
@@ -118,7 +143,6 @@ export function PaymentsHubPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-foreground">{formatMinorAmount(t.amountMinor, t.currency)}</p>
-                    {t.isMock && <SandboxBadge className="mt-1" />}
                   </div>
                 </div>
               ))}

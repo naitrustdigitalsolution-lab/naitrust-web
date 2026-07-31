@@ -15,7 +15,6 @@ import {
   Sun,
   Inbox,
   PlusCircle,
-  UserRound,
   Settings,
   ShieldCheck,
   Lock,
@@ -26,8 +25,8 @@ import {
   HandCoins,
   Receipt,
   Building2,
-  BadgeCheck,
   Search,
+  MessageCircle,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -47,6 +46,7 @@ import {
 import { Avatar, AvatarFallback } from '../../ui/avatar';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
+import { Skeleton } from '../../ui/skeleton';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { SEOHead } from '../../utility/SEOHead';
 import { useAuth } from '../../../libs/auth-context';
@@ -78,7 +78,6 @@ const SHARED_ACCOUNT_GROUP: NavGroup = {
   label: 'Account',
   items: [
     { label: 'Security', path: '/app/security', icon: Lock, matchPrefix: true },
-    { label: 'Profile', path: '/app/profile', icon: UserRound, matchPrefix: true },
     { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
   ],
 };
@@ -91,7 +90,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     label: 'Business money',
     items: [
       { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
-      { label: 'Send Instantly', path: '/app/payments/send', icon: Send },
+      { label: 'Send Money', path: '/app/payments', icon: Send },
     ],
   },
   {
@@ -107,7 +106,13 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Transactions', path: '/app/transactions', icon: Receipt },
       { label: 'Customers & Suppliers', path: '/app/network', icon: Building2 },
-      { label: 'Trust Profile', path: '/app/trust-profile', icon: BadgeCheck },
+    ],
+  },
+  {
+    label: 'Support',
+    items: [
+      { label: 'Messages', path: '/app/messages', icon: MessageCircle },
+      { label: 'Notifications', path: '/app/notifications', icon: Bell },
     ],
   },
   SHARED_ACCOUNT_GROUP,
@@ -116,10 +121,17 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
 const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   { items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }] },
   {
+    label: 'Payments',
+    items: [
+      { label: 'Send Money', path: '/app/payments', icon: Send },
+      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
+      { label: 'Transaction History', path: '/app/transactions', icon: Receipt },
+    ],
+  },
+  {
     label: 'Businesses',
     items: [
       { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
-      { label: 'Payments & Receipts', path: '/app/transactions', icon: Receipt },
     ],
   },
   {
@@ -133,7 +145,8 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Support',
     items: [
-      { label: 'Messages & Issues', path: '/app/notifications', icon: Bell },
+      { label: 'Messages', path: '/app/messages', icon: MessageCircle },
+      { label: 'Notifications', path: '/app/notifications', icon: Bell },
     ],
   },
   SHARED_ACCOUNT_GROUP,
@@ -156,9 +169,10 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const pendingInvitations = usePendingInvitationCount();
   const unreadNotifications = useUnreadNotificationCount();
-  const { data: business } = useMyBusiness();
+  const { data: business, isLoading: isBusinessLoading } = useMyBusiness();
   const isBusinessAccount = accountTypeOf(user) !== 'customer';
-  const displayName = isBusinessAccount ? (business?.name ?? user?.name) : user?.name;
+  const displayName = isBusinessAccount ? business?.name : user?.name;
+  const accountIdentityLoading = isBusinessAccount && isBusinessLoading;
   const navGroups = isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
   const navItems = navGroups.flatMap((group) => group.items);
 
@@ -194,19 +208,29 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
           <NaitrustLogo size="sm" showText className="group-data-[collapsible=icon]:[&>span]:hidden" />
           {/* Account identity is deliberately personal for customers and business-led for merchants. */}
           <div className="flex items-center gap-2 rounded-xl border bg-muted/40 px-2.5 py-2 group-data-[collapsible=icon]:hidden">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                {initialsOf(displayName)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-foreground">
-                {displayName}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {accountTypeLabel(accountTypeOf(user))}
-              </p>
-            </div>
+            {accountIdentityLoading ? (
+              <>
+                <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-3.5 w-28" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </>
+            ) : (
+              <>
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
+                    {initialsOf(displayName)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">{displayName}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {accountTypeLabel(accountTypeOf(user))}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </SidebarHeader>
 

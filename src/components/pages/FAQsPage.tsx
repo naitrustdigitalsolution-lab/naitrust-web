@@ -48,8 +48,8 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 'gs-4',
       category: 'getting-started',
-      question: 'What is an NT ID and how do I use it?',
-      answer: 'Your NT ID is a unique Naitrust identifier assigned at registration. Businesses and professionals can share it so participants can confirm they are dealing with the intended profile before starting a Protected Deal.'
+      question: 'How do I find the right Naitrust recipient?',
+      answer: 'Use a verified account number, email address, or phone number to find the intended recipient. Naitrust shows the resolved recipient details for confirmation before money moves.'
     },
     {
       id: 'gs-5',
@@ -128,8 +128,8 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 'p-5',
       category: 'payments',
-      question: 'What is the difference between Send Instantly and Protect a Payment?',
-      answer: 'Send Instantly is for people and businesses you already trust — it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order — funds are held by the regulated partner and only released once the agreed conditions are met.'
+      question: 'What is the difference between Send Money and Protect a Payment?',
+      answer: 'Send Money is for people and businesses you already trust — it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order — funds are held by the regulated partner and only released once the agreed conditions are met.'
     },
 
     {
@@ -160,7 +160,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 's-5',
       category: 'security',
       question: 'How do I report fraud or a suspicious business?',
-      answer: 'Use the "Report" button on any business profile, visit the Report a Concern page from the menu, or email contact@naitrust.com. Include as much detail as possible: the business\'s NT ID, screenshots, and a description of the issue. All reports are reviewed internally by the Naitrust team, typically within 24-48 hours.'
+      answer: 'Use the "Report" button on any business profile, visit the Report a Concern page from the menu, or email contact@naitrust.com. Include the business name or account number, screenshots, and a description of the issue. All reports are reviewed internally by the Naitrust team, typically within 24-48 hours.'
     },
 
     {
@@ -203,14 +203,14 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 't-2',
       category: 'troubleshooting',
-      question: 'I can\'t find a business by NT ID — what should I do?',
-      answer: 'Make sure you\'re using the correct format (NT-XXXXXX, with the "NT-" prefix). The business may not yet be registered or verified on Naitrust, or their account may be suspended. Try searching by business name or category instead. If you believe the business should be listed, contact the business directly to confirm their NT ID or ask them to register.'
+      question: 'I can\'t find a business — what should I do?',
+      answer: 'Check the account number, email, or phone number and try again. You can also search by business name or category. If the business should be listed, contact it directly to confirm the details registered on Naitrust.'
     },
     {
       id: 't-3',
       category: 'troubleshooting',
       question: 'My verification is taking longer than expected',
-      answer: 'Delays usually happen when documents are incomplete, blurry, inconsistent, or require manual ownership review. Check your email and dashboard for requests from the verification team. If it has been longer than expected, contact contact@naitrust.com with your NT ID.'
+      answer: 'Delays usually happen when documents are incomplete, blurry, inconsistent, or require manual ownership review. Check your email and dashboard for requests from the verification team. If it has been longer than expected, contact contact@naitrust.com using your registered email or phone number.'
     },
     {
       id: 't-4',

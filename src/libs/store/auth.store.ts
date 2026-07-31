@@ -17,6 +17,7 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean;
   
   // Actions
   setUser: (user: User | null) => void;
@@ -29,6 +30,7 @@ interface AuthState {
   updateProfile: (data: any) => Promise<void>;
   changePassword: (data: any) => Promise<void>;
   reset: () => void;
+  setHydrated: (hydrated: boolean) => void;
 }
 
 const initialState = {
@@ -36,6 +38,7 @@ const initialState = {
   token: null,
   isAuthenticated: false,
   isLoading: false,
+  isHydrated: false,
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -43,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
     persist(
       (set, get) => ({
         ...initialState,
+        setHydrated: (isHydrated) => set({ isHydrated }),
 
         setUser: (user) => {
           set({ user, isAuthenticated: !!user });
@@ -228,7 +232,7 @@ export const useAuthStore = create<AuthState>()(
             removeUserData();
             // Clear persisted business selection on logout
             localStorage.removeItem('naitrust_selected_business_id');
-            set(initialState);
+            set({ ...initialState, isHydrated: true });
             console.log('✅ Logged out successfully');
           }
         },
@@ -282,7 +286,7 @@ export const useAuthStore = create<AuthState>()(
         reset: () => {
           removeAuthToken();
           removeUserData();
-          set(initialState);
+          set({ ...initialState, isHydrated: true });
         },
       }),
       {
@@ -294,6 +298,9 @@ export const useAuthStore = create<AuthState>()(
           token: state.token,
           isAuthenticated: state.isAuthenticated,
         }),
+        onRehydrateStorage: () => (state) => {
+          state?.setHydrated(true);
+        },
       }
     )
   )

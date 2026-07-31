@@ -68,7 +68,7 @@ const TransactionRoomPage = lazyWithMinDelay(() => import("./pages/TransactionRo
 const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage"));
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
-const ProfilePage = lazyWithMinDelay(() => import("./pages/ProfilePage"));
+const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
 const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
 const PaymentsHubPage = lazyWithMinDelay(() => import("./pages/PaymentsHubPage"));
@@ -78,7 +78,6 @@ const BeneficiariesPage = lazyWithMinDelay(() => import("./pages/BeneficiariesPa
 const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentRequestsPage"));
 const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
 const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
-const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
 
 const queryClient = new QueryClient();
@@ -262,18 +261,19 @@ function PublicAppContent() {
             <Route path="/app/invitations" element={<DashboardRouteSuspense><InvitationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
             <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/profile" element={<DashboardRouteSuspense><ProfilePage /></DashboardRouteSuspense>} />
+            <Route path="/app/messages" element={<DashboardRouteSuspense><MessagesPage /></DashboardRouteSuspense>} />
+            <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />
             <Route path="/app/wallet" element={<Navigate to="/app/payments/send" replace />} />
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/send" element={<RequireBusinessAccount><DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/payments/receive" element={<RequireBusinessAccount><DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />
+            <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/beneficiaries" element={<RequireBusinessAccount><DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
             <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/trust-profile" element={<Navigate to="/app/settings?tab=trust" replace />} />
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
           </Route>

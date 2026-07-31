@@ -971,8 +971,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   };
 
   const customerSteps = [
-    { title: 'Personal Information', description: 'Create your individual account.' },
-    { title: 'Terms & Conditions', description: 'Review privacy and account terms.' },
+    { title: 'Create your account', description: 'Start with the details that identify you.' },
+    { title: 'Review and continue', description: 'Confirm how Naitrust protects your information.' },
   ];
   const businessSteps = [
     { title: 'Owner Information', description: 'Tell us who owns the account.' },
@@ -1008,13 +1008,17 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
             <div className="max-w-md hidden lg:block">
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
-                Create your profile
+                Start with trust
               </p>
               <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-                {registrationType === 'business' ? 'Give your business a stronger way to get paid.' : 'One account for safer everyday and business payments.'}
+                {registrationType === 'business'
+                  ? 'Turn customer confidence into stronger business.'
+                  : 'Pay with confidence—even when the seller is new.'}
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
-                Tell us the essentials so we can tailor your account, verification, and payment experience to how you work.
+                {registrationType === 'business'
+                  ? 'Get paid, show customers who they are dealing with, and protect important orders in one place.'
+                  : 'Verify who you are, check who you are paying, and protect important purchases when delivery still matters.'}
               </p>
             </div>
 
@@ -1064,7 +1068,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {registrationType === 'business'
                   ? 'For registered companies, informal businesses, suppliers, sellers, contractors, and service providers.'
-                  : 'For individuals who want to send instantly or protect important payments.'}
+                  : 'For customers who want to pay trusted people quickly and protect important purchases when trust is still new.'}
               </p>
             </div>
 

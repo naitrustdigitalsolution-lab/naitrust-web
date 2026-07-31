@@ -7,8 +7,8 @@
  */
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Landmark, Moon, Plus, Sun } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { BadgeCheck, Bell, Landmark, Lock, Moon, Palette, Plus, Settings, Sun, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { ProfileInfoSettings } from '../pieces/settings/ProfileInfoSettings';
@@ -20,6 +20,10 @@ import { Switch } from '../ui/switch';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { PageHero } from '../pieces/dashboard/PageHero';
+import { TrustProfileSummary } from './TrustProfilePage';
+import { AccountProfileOverview } from './ProfilePage';
 import { useAuth } from '../../libs/auth-context';
 import { useTheme } from '../../hooks/useTheme';
 import { useLinkedBankAccounts } from '../../hooks/useWallet';
@@ -31,7 +35,7 @@ function delay(ms: number): Promise<void> {
 }
 
 export function SettingsPage() {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
   const { data: linkedBankAccounts } = useLinkedBankAccounts();
@@ -58,6 +62,10 @@ export function SettingsPage() {
   const [addedBankAccounts, setAddedBankAccounts] = useState<Array<{ id: string; bankName: string; accountNumber: string; accountName: string }>>([]);
   const [bankForm, setBankForm] = useState({ bankName: '', accountNumber: '', accountName: '' });
   const visibleBankAccounts = [...(linkedBankAccounts ?? []), ...addedBankAccounts];
+  const requestedTab = searchParams.get('tab');
+  const activeTab = ['profile', 'security', 'notifications', 'payments', 'trust', 'appearance'].includes(requestedTab ?? '')
+    ? requestedTab!
+    : 'profile';
 
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);
@@ -97,41 +105,50 @@ export function SettingsPage() {
     setAddedBankAccounts((current) => [...current, { id: `local-${Date.now()}`, ...bankForm }]);
     setBankForm({ bankName: '', accountNumber: '', accountName: '' });
     setBankDialogOpen(false);
-    toast.success('Bank account added in sandbox.');
+    toast.success('Bank account added.');
   };
 
   return (
     <DashboardLayout title="Settings">
       <div className="mx-auto w-full max-w-9xl">
-        <button
-          type="button"
-          onClick={() => navigate('/app')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={16} />
-          Back to dashboard
-        </button>
+        <PageHero
+          eyebrow="Your account"
+          title="Settings"
+          description="Manage your profile, security, payment preferences, notifications, and Trust Profile."
+          icon={Settings}
+        />
 
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage your profile, security, and notification preferences.
-          </p>
-        </div>
+        <Tabs value={activeTab} onValueChange={(tab) => setSearchParams(tab === 'profile' ? {} : { tab })} className="gap-5">
+          <div className="overflow-x-auto pb-1">
+            <TabsList className="h-auto min-w-max gap-1 rounded-2xl border bg-card p-1.5 shadow-sm">
+              <TabsTrigger value="profile" className="gap-2 rounded-xl px-4 py-2.5"><UserRound size={15} /> Profile</TabsTrigger>
+              <TabsTrigger value="security" className="gap-2 rounded-xl px-4 py-2.5"><Lock size={15} /> Security</TabsTrigger>
+              <TabsTrigger value="notifications" className="gap-2 rounded-xl px-4 py-2.5"><Bell size={15} /> Notifications</TabsTrigger>
+              <TabsTrigger value="payments" className="gap-2 rounded-xl px-4 py-2.5"><Landmark size={15} /> Bank accounts</TabsTrigger>
+              <TabsTrigger value="trust" className="gap-2 rounded-xl px-4 py-2.5"><BadgeCheck size={15} /> Trust Profile</TabsTrigger>
+              <TabsTrigger value="appearance" className="gap-2 rounded-xl px-4 py-2.5"><Palette size={15} /> Appearance</TabsTrigger>
+            </TabsList>
+          </div>
 
-        <div className="grid items-start gap-6 xl:grid-cols-2">
-          <div className="flex flex-col gap-6">
-            <ProfileInfoSettings
-              firstName={firstName}
-              lastName={lastName}
-              email={user?.email ?? ''}
-              phone={phone}
-              onFirstNameChange={setFirstName}
-              onLastNameChange={setLastName}
-              onPhoneChange={setPhone}
-              onSave={handleSaveProfile}
-              isSaving={isSavingProfile}
+          <TabsContent value="profile">
+            <AccountProfileOverview
+              profileEditor={
+                <ProfileInfoSettings
+                  firstName={firstName}
+                  lastName={lastName}
+                  email={user?.email ?? ''}
+                  phone={phone}
+                  onFirstNameChange={setFirstName}
+                  onLastNameChange={setLastName}
+                  onPhoneChange={setPhone}
+                  onSave={handleSaveProfile}
+                  isSaving={isSavingProfile}
+                />
+              }
             />
+          </TabsContent>
+
+          <TabsContent value="security" className="max-w-3xl">
             <PasswordSettings
               currentPassword={currentPassword}
               newPassword={newPassword}
@@ -142,9 +159,9 @@ export function SettingsPage() {
               onSubmit={handleChangePassword}
               isChanging={isChangingPassword}
             />
-          </div>
+          </TabsContent>
 
-          <div className="flex flex-col gap-6">
+          <TabsContent value="notifications" className="max-w-3xl">
             <NotificationSettings
               emailNotifications={emailNotifications}
               messageAlerts={messageAlerts}
@@ -154,7 +171,9 @@ export function SettingsPage() {
               onMessageAlertsChange={setMessageAlerts}
               onPaymentUpdatesChange={setPaymentUpdates}
             />
+          </TabsContent>
 
+          <TabsContent value="payments" className="max-w-3xl">
             <Card>
               <CardHeader className="flex-row items-start justify-between gap-3">
                 <div>
@@ -189,7 +208,13 @@ export function SettingsPage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
 
+          <TabsContent value="trust" className="max-w-3xl">
+            <TrustProfileSummary />
+          </TabsContent>
+
+          <TabsContent value="appearance" className="max-w-3xl">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -210,8 +235,8 @@ export function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <Dialog open={bankDialogOpen} onOpenChange={setBankDialogOpen}>

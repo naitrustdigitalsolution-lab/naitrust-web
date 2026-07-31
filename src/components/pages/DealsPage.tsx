@@ -8,8 +8,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarRange, ChevronLeft, ChevronRight, Plus, Search, X } from 'lucide-react';
+import { CalendarRange, ChevronLeft, ChevronRight, Plus, Search, ShieldCheck, X } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
+import { PageHero } from '../pieces/dashboard/PageHero';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -101,18 +102,16 @@ export function DealsPage() {
   return (
     <DashboardLayout title="Protected Deals">
       <div className="mx-auto w-full max-w-9xl">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">All Protected Deals</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Every protected transaction you're part of, in one place.
-            </p>
-          </div>
-          <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
+        <PageHero
+          eyebrow="Protected payments"
+          title="Active Deals"
+          description="Review every protected transaction, track progress, and respond when a deal needs your attention."
+          icon={ShieldCheck}
+          actions={<Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
             <Plus size={16} className="mr-1" />
             New Protected Deal
-          </Button>
-        </div>
+          </Button>}
+        />
 
         {/* Toolbar */}
         <div className="mb-4 space-y-3 rounded-xl border bg-card p-3 shadow-sm sm:p-4">

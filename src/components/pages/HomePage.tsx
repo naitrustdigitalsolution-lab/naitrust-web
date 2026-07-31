@@ -1,4 +1,4 @@
-import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle } from 'lucide-react';
+import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -32,19 +32,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
     {
       step: '1',
       title: 'Request Payment from Any Conversation',
-      description: 'Share a verified account through WhatsApp, a payment link or a QR code—your customer does not need a Naitrust account.',
+      description: 'Share your account through WhatsApp, a payment link or a QR code so anyone can pay you.',
       icon: ArrowDownToLine,
     },
     {
       step: '2',
       title: 'Pay Regular Suppliers',
-      description: 'Send instantly to suppliers and business contacts whose work you already know and trust.',
+      description: 'Send instantly to people, suppliers, and businesses you already know and trust.',
       icon: Send,
     },
     {
       step: '3',
       title: 'Protect Important Orders',
-      description: 'For a new supplier or larger order, record the terms and protect the payment until delivery is confirmed.',
+      description: 'For an important deal, record the terms and protect the payment until both sides complete what they agreed.',
       icon: Shield,
     },
     {
@@ -62,7 +62,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     {
       question: 'What is the difference between Instant and Protected payments?',
-      answer: 'Send Instantly for people and businesses you already trust — it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order — funds are held until the agreed conditions are met.',
+      answer: 'Send Money for people and businesses you already trust — it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order — funds are held until the agreed conditions are met.',
     },
     {
       question: 'Does Naitrust hold customer funds?',
@@ -70,7 +70,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     {
       question: 'Who is Naitrust for?',
-      answer: 'Naitrust is built for Nigerian traders and local businesses—from market stalls and shops to wholesalers, service providers, and online sellers. Customers can pay a Naitrust business without opening an account.',
+      answer: 'Naitrust is for people and businesses across Nigeria—from everyday customers to traders, shops, wholesalers, service providers, and online sellers.',
     },
   ];
 
@@ -95,37 +95,37 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
         </div>
 
-        <div className="relative z-10 mx-auto grid min-h-[100vh] w-full max-w-[96rem] items-center gap-14 px-4 pb-16 pt-32 sm:px-6 sm:pt-36 lg:grid-cols-[0.88fr_1.12fr] lg:gap-8 lg:px-8 lg:pb-20 lg:pt-28">
+        <div className="relative z-10 mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)] items-center gap-8 px-4 pb-10 pt-24 sm:gap-10 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:min-h-[100vh] xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 xl:pb-20 xl:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative z-20 max-w-2xl text-center lg:text-left"
+            className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
-            <Badge className="mb-3 inline-flex rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08]">
-              Verified payments for Nigerian traders and local businesses
+            <Badge className="mb-3 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-2 text-center text-[7.5px] font-semibold uppercase leading-4 tracking-[0.045em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8.5px] sm:px-4 sm:text-xs sm:tracking-[0.12em]">
+              Verified payments for Nigerian people and businesses
             </Badge>
             <AnimatedHeroText />
 
-            <div className="mt-7 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
-              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group h-14 rounded-full bg-[#1e90ff] px-7 text-base font-bold text-white shadow-[0_14px_40px_rgba(30,144,255,.35)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff]">
+            <div className="mt-6 flex w-full items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
+              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group h-11 min-w-0 flex-1 rounded-full bg-[#1e90ff] px-3 text-xs font-bold text-white shadow-[0_14px_40px_rgba(30,144,255,.35)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:flex-none sm:px-7 sm:text-base">
                 Join the waitlist
-                <ArrowRight size={24} className="ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6" />
               </Button>
               <button
                 type="button"
                 onClick={() => document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex h-14 items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
+                className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-3 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-14 sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
               >
                 See how it works
                 <ChevronRight size={18} />
               </button>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-white/65 lg:justify-start">
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Collect from WhatsApp</span>
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay suppliers</span>
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Protect important orders</span>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-medium text-white/65 sm:text-xs xl:justify-start">
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay people and businesses</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Get paid by any customer</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect important transactions</span>
             </div>
           </motion.div>
 
@@ -133,12 +133,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="relative mx-auto h-[32rem] w-full max-w-[44rem] sm:h-[38rem] lg:h-[42rem]"
+            className="relative mx-auto h-[25rem] min-w-0 w-full max-w-[44rem] sm:h-[34rem] md:h-[38rem] xl:h-[42rem]"
           >
             <motion.div
               animate={{ y: [0, -8, 0], rotate: [-5, -4, -5] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-[2%] top-[4%] z-10 h-[38%] w-[36%] overflow-hidden rounded-[1.7rem] border-[6px] border-white shadow-2xl"
+              className="absolute left-[1%] top-[4%] z-10 h-[36%] w-[38%] overflow-hidden rounded-[1.25rem] border-4 border-white shadow-2xl sm:rounded-[1.7rem] sm:border-[6px]"
             >
               <ImageWithFallback
                 src={businessVerificationImage}
@@ -152,7 +152,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={{ y: [0, 10, 0], rotate: [4, 3, 4] }}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-              className="absolute right-[1%] top-[1%] z-0 h-[32%] w-[34%] overflow-hidden rounded-[1.6rem] border-[6px] border-white/90 shadow-2xl"
+              className="absolute right-[1%] top-[1%] z-0 h-[31%] w-[36%] overflow-hidden rounded-[1.25rem] border-4 border-white/90 shadow-2xl sm:rounded-[1.6rem] sm:border-[6px]"
             >
               <ImageWithFallback
                 src={deliveryEvidenceImage}
@@ -165,22 +165,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <motion.div
               whileHover={{ y: -6, rotate: 0 }}
-              className="absolute left-[18%] top-[25%] z-30 w-[66%] rotate-[-1deg] overflow-hidden rounded-[2rem] border border-white/80 bg-white p-5 text-[#0b203b] shadow-[0_35px_90px_rgba(0,0,0,.42)] sm:p-7"
+              className="absolute left-[12%] top-[24%] z-30 w-[76%] rotate-[-1deg] overflow-hidden rounded-[1.5rem] border border-white/80 bg-white p-4 text-[#0b203b] shadow-[0_35px_90px_rgba(0,0,0,.42)] sm:left-[18%] sm:w-[66%] sm:rounded-[2rem] sm:p-7"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Available balance</p>
-                  <p className="mt-1 text-3xl font-black tracking-[-0.04em] sm:text-4xl">₦842,500</p>
+                  <p className="mt-1 text-2xl font-black tracking-[-0.04em] sm:text-4xl">₦842,500</p>
                 </div>
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eaf5ff] text-[#1e90ff]"><WalletIcon size={21} /></div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-6">
                 <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1e90ff] px-3 py-3 text-[10px] font-bold text-white sm:text-xs"><Send size={14} /> Send instantly</span>
                 <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#eaf5ff] px-3 py-3 text-[10px] font-bold text-[#0877db] sm:text-xs"><Shield size={14} /> Protect payment</span>
               </div>
 
-              <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-3.5">
+              <div className="mt-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:mt-5 sm:p-3.5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
                   CE
@@ -197,7 +197,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={{ y: [0, -9, 0], rotate: [5, 6, 5] }}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute bottom-[1%] right-[2%] z-20 h-[34%] w-[37%] overflow-hidden rounded-[1.7rem] border-[6px] border-white shadow-2xl"
+              className="absolute bottom-[1%] right-[1%] z-20 h-[33%] w-[39%] overflow-hidden rounded-[1.25rem] border-4 border-white shadow-2xl sm:rounded-[1.7rem] sm:border-[6px]"
             >
               <ImageWithFallback
                 src={saferDealsImage}
@@ -211,7 +211,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={{ y: [0, 7, 0], rotate: [-4, -5, -4] }}
               transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-[7%] left-[1%] z-40 rounded-2xl border border-white/20 bg-[#0d2b4f]/90 p-4 shadow-2xl backdrop-blur-xl"
+              className="absolute bottom-[7%] left-[1%] z-40 rounded-xl border border-white/20 bg-[#0d2b4f]/90 p-3 shadow-2xl backdrop-blur-xl sm:rounded-2xl sm:p-4"
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/15 text-emerald-300"><CheckCircle2 size={19} /></span>
@@ -222,9 +222,94 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
+      {/* Clear customer/business positioning */}
+      <section className="relative overflow-hidden border-b bg-background py-16 sm:py-20">
+        <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">One platform, both sides of the deal</p>
+            <h2 className="mt-4 text-3xl font-bold tracking-[-0.045em] sm:text-5xl">
+              Built for customers. Built for business.
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+              Pay and get paid normally when trust already exists. When the transaction matters more, bring both sides into one Protected Deal.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-[1fr_.9fr_1fr]">
+            <Card className="group rounded-3xl border-primary/10 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Users size={23} /></span>
+              <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-primary">For customers</p>
+              <h3 className="mt-2 text-2xl font-bold">Buy, pay, and follow every important purchase.</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">Send money to people you trust, pay verified businesses, and protect a purchase when delivery still needs to be proven.</p>
+              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('register-customer')}>Open a customer account <ArrowRight size={15} /></Button>
+            </Card>
+
+            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#087ff5] p-6 text-white shadow-[0_24px_60px_rgba(7,49,88,.24)] sm:p-8">
+              <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+              <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white"><Shield size={23} /></span>
+              <p className="relative mt-6 text-xs font-bold uppercase tracking-[0.15em] text-sky-300">Protected Transactions</p>
+              <h3 className="relative mt-2 text-2xl font-bold">One shared record. Clear terms. Protected payment.</h3>
+              <p className="relative mt-3 text-sm leading-6 text-white/70">Customers and businesses see the same agreement, milestones, messages, evidence, payment status, and issue history.</p>
+              <Button className="relative mt-6 rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => onNavigate('register')}>Protect a transaction <ArrowRight size={15} /></Button>
+            </Card>
+
+            <Card className="group rounded-3xl border-emerald-500/15 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600"><Landmark size={23} /></span>
+              <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">For businesses</p>
+              <h3 className="mt-2 text-2xl font-bold">Collect sales, pay suppliers, and trade with confidence.</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">Share an account, link, or QR code with customers. Use Protected Deals for new suppliers, contractors, and high-value orders.</p>
+              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('register-business')}>Open a business account <ArrowRight size={15} /></Button>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer journey */}
+      <section className="bg-[#071a32] px-4 py-16 text-white sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-[90rem]">
+          <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Customer journey</p>
+              <h2 className="mt-4 text-3xl font-bold tracking-[-0.045em] sm:text-5xl">From “Can I trust them?” to a transaction you can follow.</h2>
+            </div>
+            <p className="max-w-2xl text-base leading-7 text-white/60 lg:justify-self-end sm:text-lg">
+              Naitrust helps a customer move from discovery to payment with clearer identity, shared terms, and a visible record when the purchase needs protection.
+            </p>
+          </div>
+
+          <div className="mt-10 grid overflow-hidden rounded-3xl border border-white/10 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Fingerprint, step: '01', title: 'Create and verify', text: 'Set up your customer account and confirm the details that identify you.' },
+              { icon: Building2, step: '02', title: 'Check the business', text: 'Review the business identity and profile before deciding how to pay.' },
+              { icon: Shield, step: '03', title: 'Choose the right protection', text: 'Send normally when you trust them, or create a Protected Transaction for an important purchase.' },
+              { icon: CheckCircle2, step: '04', title: 'Follow it to completion', text: 'Keep the agreement, messages, evidence, payment status, and outcome in one place.' },
+            ].map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+                className="border-b border-white/10 p-6 last:border-b-0 md:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0 sm:p-7"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-[#67b7ff]"><item.icon size={21} /></span>
+                  <span className="text-2xl font-black text-white/10">{item.step}</span>
+                </div>
+                <h3 className="mt-8 text-lg font-bold">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/55">{item.text}</p>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Button className="rounded-full" onClick={() => onNavigate('register-customer')}>Start as a customer <ArrowRight size={16} /></Button>
+          </div>
+        </div>
+      </section>
+
 
       {/* Product pillars */}
-      <section className="relative overflow-hidden bg-[#f5f8fc] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 dark:bg-[#0d0f13]">
+      <section className="relative overflow-hidden bg-[#f5f8fc] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 dark:bg-[#0d0f13]">
         <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
       
           {/* Platform-Focused Trust Blocks */}
@@ -234,15 +319,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative mx-auto max-w-[90rem]"
           >
-            <div className="mb-12 grid items-end gap-6 lg:grid-cols-[1fr_0.8fr]">
+            <div className="mb-9 grid items-end gap-4 sm:mb-12 sm:gap-6 lg:grid-cols-[1fr_0.8fr]">
               <div>
                 <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">One trusted platform</p>
-                <h2 className="max-w-3xl text-4xl leading-[1.03] tracking-[-0.045em] sm:text-5xl lg:text-6xl naitrust-satoshi-bold">
+                <h2 className="max-w-3xl text-3xl leading-[1.03] tracking-[-0.045em] sm:text-5xl lg:text-6xl naitrust-satoshi-bold">
                   Money moves fast.<br /><span className="text-muted-foreground">Trust should keep up.</span>
                 </h2>
               </div>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground lg:justify-self-end lg:text-lg">
-                Naitrust brings verification, payment tools, business relationships, and reputation into one connected account.
+                Naitrust connects verified identity, everyday payments, protected transactions, and reputation for people and businesses.
               </p>
             </div>
 
@@ -252,7 +337,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   platform: 'Get Paid',
                   kicker: 'Bring money in',
                   iconComponent: Landmark,
-                  description: 'Receive customer payments and requests through one account built for the way you trade.',
+                  description: 'Receive money and payment requests whether you sell as a business or collect as an individual.',
                   gradient: 'from-emerald-400 to-emerald-600',
                   className: 'lg:col-span-7 bg-[#09243b] text-white'
                 },
@@ -260,7 +345,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   platform: 'Pay Suppliers',
                   kicker: 'Keep business moving',
                   iconComponent: Shield,
-                  description: 'Send money instantly to the suppliers and business contacts you already know.',
+                  description: 'Send money instantly to people, suppliers, and businesses you already know.',
                   gradient: 'from-blue-400 to-blue-600',
                   className: 'lg:col-span-5 bg-[#1e90ff] text-white'
                 },
@@ -268,7 +353,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   platform: 'Protect Important Orders',
                   kicker: 'When trust is still new',
                   iconComponent: Handshake,
-                  description: 'Record what you ordered, protect the payment, and confirm delivery before release.',
+                  description: 'Use a shared protected transaction for B2B, person-to-person, or business-to-person deals.',
                   gradient: 'from-amber-400 to-orange-500',
                   className: 'lg:col-span-5 bg-white dark:bg-card'
                 },
@@ -288,11 +373,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   viewport={{ once: true }}
                   transition={{ delay: 0.08 * index }}
                   whileHover={{ y: -5 }}
-                  className={`group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-black/5 p-7 shadow-[0_18px_50px_rgba(11,43,69,.07)] sm:p-9 ${platform.className}`}
+                  className={`group relative min-h-[215px] overflow-hidden rounded-[1.5rem] border border-black/5 p-6 shadow-[0_18px_50px_rgba(11,43,69,.07)] sm:min-h-[240px] sm:rounded-[2rem] sm:p-8 lg:p-9 ${platform.className}`}
                 >
                   <div className={`absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br opacity-20 blur-2xl ${platform.gradient}`} />
                   <div className="relative flex h-full flex-col">
-                    <div className={`mb-12 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg ${platform.gradient}`}>
+                    <div className={`mb-8 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-lg sm:mb-12 sm:h-12 sm:w-12 sm:rounded-2xl ${platform.gradient}`}>
                       <platform.iconComponent size={23} />
                     </div>
                     <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] opacity-55">{platform.kicker}</p>
@@ -306,21 +391,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="relative overflow-hidden bg-[#071a32] py-24 text-white sm:py-28">
+      <section id="how-it-works" className="relative overflow-hidden bg-[#071a32] py-16 text-white sm:py-20 lg:py-28">
         <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full bg-primary/20 blur-[120px]" />
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative mb-16 grid items-end gap-6 lg:grid-cols-2 lg:text-left"
+            className="relative mb-10 grid items-end gap-4 sm:mb-14 sm:gap-6 lg:grid-cols-2 lg:text-left"
           >
             <div>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Simple by design</p>
-              <h2 className="text-4xl leading-[1.05] tracking-[-0.045em] sm:text-5xl">From today’s sale<br />to tomorrow’s stock.</h2>
+              <h2 className="text-3xl leading-[1.05] tracking-[-0.045em] sm:text-5xl">From today’s sale<br />to tomorrow’s stock.</h2>
             </div>
             <p className="max-w-xl text-lg leading-8 text-white/60 lg:justify-self-end">
-              One account connects the money you receive, the suppliers you pay, and the important orders you need to protect.
+              One account connects what you receive, who you pay, and the important transactions you choose to protect.
             </p>
           </motion.div>
 
@@ -329,7 +414,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="relative mb-16 flex justify-center rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 backdrop-blur sm:p-8"
+            className="relative mb-10 hidden justify-center rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-3 backdrop-blur sm:mb-16 sm:flex sm:rounded-[2rem] sm:p-8"
           >
             <TrustHeroAnimation />
           </motion.div>
@@ -376,9 +461,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Instant Payments Showcase — mirrors the actual Wallet/Dashboard screens, not stock photography */}
-      <section className="bg-[#f5f8fc] py-24 dark:bg-[#0d0f13] sm:py-28">
+      <section className="bg-[#f5f8fc] py-16 dark:bg-[#0d0f13] sm:py-20 lg:py-28">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid items-center gap-9 lg:grid-cols-2 lg:gap-12">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -399,7 +484,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
-                    <Send size={14} /> Send Instantly
+                    <Send size={14} /> Send Money
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
                     <ArrowDownToLine size={14} /> Receive
@@ -435,7 +520,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="order-1 lg:order-2"
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Everyday payments</p>
-              <h2 className="mb-6 text-4xl leading-tight tracking-[-0.04em] sm:text-5xl">
+              <h2 className="mb-5 text-3xl leading-tight tracking-[-0.04em] sm:text-5xl">
                 Everyday money movement for the people who keep your business running.
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
@@ -445,7 +530,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
                   { icon: ArrowDownToLine, text: 'Receive sales and customer payments' },
-                  { icon: Send, text: 'Pay suppliers by username, phone, or bank' },
+                  { icon: Send, text: 'Pay suppliers by account number, email, or phone' },
                   { icon: MessageCircle, text: 'Request payment directly from a conversation' },
                   { icon: Users, text: 'Save regular recipients for faster payments' },
                 ].map((item, index) => {
@@ -480,7 +565,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Digital Print Highlight */}
-      <section className="relative overflow-hidden bg-[#071a32] py-24 sm:py-28"
+      <section className="relative overflow-hidden bg-[#071a32] py-16 sm:py-20 lg:py-28"
 
       >
           <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
@@ -492,14 +577,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
           />
         </div>
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <div className="grid items-start gap-9 lg:grid-cols-2 lg:gap-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Protected deal room</p>
-              <h2 className="mb-6 text-4xl leading-tight tracking-[-0.04em] text-white sm:text-5xl">
+              <h2 className="mb-5 text-3xl leading-tight tracking-[-0.04em] text-white sm:text-5xl">
                 Protect the orders your business cannot afford to get wrong.
               </h2>
               <p className="mb-8 text-lg leading-8 text-white/65">
@@ -544,9 +629,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative min-h-[34rem]"
+              className="relative min-h-[28rem] sm:min-h-[34rem]"
             >
-              <div className="absolute inset-x-4 top-0 h-[27rem] overflow-hidden rounded-[2rem] border border-white/15 shadow-[0_35px_90px_rgba(0,0,0,.4)] sm:inset-x-8">
+              <div className="absolute inset-x-0 top-0 h-[22rem] overflow-hidden rounded-[1.5rem] border border-white/15 shadow-[0_35px_90px_rgba(0,0,0,.4)] sm:inset-x-8 sm:h-[27rem] sm:rounded-[2rem]">
                 <ImageWithFallback
                   src={saferDealsImage}
                   alt="Customer and business reviewing a protected transaction"
@@ -559,7 +644,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
               </div>
 
-              <Card className="absolute bottom-0 left-0 z-10 w-[78%] gap-0 rounded-[1.5rem] border-0 bg-white p-5 shadow-2xl sm:w-[68%] sm:p-6">
+              <Card className="absolute bottom-0 left-0 z-10 w-[82%] gap-0 rounded-[1.25rem] border-0 bg-white p-4 shadow-2xl sm:w-[68%] sm:rounded-[1.5rem] sm:p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                     <CheckCircle2 size={21} />
@@ -578,7 +663,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
               </Card>
 
-              <Card className="absolute bottom-10 right-0 z-20 w-[45%] gap-0 rounded-[1.4rem] border border-white/70 bg-white/95 p-4 shadow-2xl backdrop-blur sm:w-[38%]">
+              <Card className="absolute bottom-8 right-0 z-20 w-[47%] gap-0 rounded-[1.15rem] border border-white/70 bg-white/95 p-3 shadow-2xl backdrop-blur sm:bottom-10 sm:w-[38%] sm:rounded-[1.4rem] sm:p-4">
                 <div className="flex items-center gap-2">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#eaf5ff] text-primary">
                     <Shield size={17} />
@@ -598,7 +683,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Partners Section */}
-      <section className="border-b bg-background py-20">
+      <section className="border-b bg-background py-16 sm:py-20">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -662,10 +747,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileHover={{ scale: 1.05 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 * 1 }}
-              className="flex-shrink-0"
-              style={{ minWidth: '190px', maxWidth: '80px' }}
+              className="block"
             >
-              <Card className="p-4 h-full flex justify-center items-center hover:shadow-xl transition-all hoverborder-2 hover:border-primary/50 dark:from-card dark:to-gray-900/50">
+              <Card className="flex h-full min-h-40 items-center justify-center rounded-[1.5rem] p-6 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl dark:from-card dark:to-gray-900/50">
                 <AnchorLogo className="w-16 h-16 object-contain rounded-full" />
                 <p className="font-semibold text-sm group-hover:text-primary transition-colors">Anchor</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Payment infrastructure</p>
@@ -676,7 +760,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-[#f5f8fc] py-24 dark:bg-[#0d0f13] sm:py-28">
+      <section className="bg-[#f5f8fc] py-16 dark:bg-[#0d0f13] sm:py-20 lg:py-28">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -716,8 +800,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Final CTA - Enhanced with Slogan */}
-      <section className="relative overflow-hidden bg-[#04162f] py-20 text-white sm:pb-20 sm:pt-24">
-        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/18 blur-[95px]" />
+      <section className="relative overflow-hidden bg-[#04162f] py-16 text-white sm:pb-20 sm:pt-24">
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
+        <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/1 8 blur-[95px]" />
 
         <div className="max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div

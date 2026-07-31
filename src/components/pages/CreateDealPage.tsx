@@ -560,7 +560,7 @@ export function CreateDealPage() {
                             type="button"
                             onClick={() => selectUseCase(useCase.slug)}
                             aria-pressed={selected}
-                            className={'group flex min-h-28 flex-col items-start gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200 ' +
+                            className={'group flex min-h-18 flex-row items-center gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200 ' +
                               (selected ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30' : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')}
                           >
                             <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'}`}>

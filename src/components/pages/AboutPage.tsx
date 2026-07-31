@@ -31,7 +31,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust | Trust Infrastructure for Nigerian Transactions"
+        title="About Naitrust — Payments and Trust Infrastructure"
         description="Naitrust helps Nigerian customers and businesses verify who they are dealing with, move money normally, and protect important transactions."
         canonicalPath="/about"
       />

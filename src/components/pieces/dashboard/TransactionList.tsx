@@ -73,11 +73,11 @@ function DealRow({ deal, onSelect }: { deal: SafeDealSummary; onSelect?: (deal: 
           }
         : {})}
       className={
-        'flex items-center justify-between gap-4 border-b px-5 py-4 last:border-b-0 ' +
+        'flex items-center gap-3 border-b px-4 py-4 last:border-b-0 sm:px-5 ' +
         (interactive ? 'cursor-pointer transition-colors hover:bg-accent/40' : '')
       }
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <CounterpartyAvatar name={deal.counterpartyName} />
         <div className="min-w-0">
           <p className="truncate font-semibold text-foreground">{deal.title}</p>
@@ -87,12 +87,10 @@ function DealRow({ deal, onSelect }: { deal: SafeDealSummary; onSelect?: (deal: 
           </p>
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-4">
-        <span className="hidden text-sm font-semibold text-foreground tabular-nums sm:inline">
-          {formatMinorAmount(deal.amountMinor, deal.currency)}
-        </span>
-        <TransactionStatusBadge status={deal.status} />
-        {interactive && <ChevronRight size={16} className="text-muted-foreground" />}
+      <div className="grid shrink-0 grid-cols-[minmax(110px,auto)_150px_18px] items-center gap-3">
+        <span className="hidden text-right text-sm font-semibold text-foreground tabular-nums sm:block">{formatMinorAmount(deal.amountMinor, deal.currency)}</span>
+        <div className="justify-self-end"><TransactionStatusBadge status={deal.status} /></div>
+        {interactive && <ChevronRight size={16} className="justify-self-end text-muted-foreground" />}
       </div>
     </div>
   );

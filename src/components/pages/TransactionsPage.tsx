@@ -6,9 +6,9 @@
  * no new transaction data of its own.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowDownLeft, ArrowUpRight, Receipt, X } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
 import { format } from 'date-fns';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
@@ -49,6 +49,7 @@ const CUSTOMER_TYPE_OPTIONS: TransactionType[] = [
 ];
 
 const PROVIDER_LABEL: Record<string, string> = { anchor: 'Anchor', kora: 'Kora', mock: 'Naitrust' };
+const PAGE_SIZE = 10;
 
 export function TransactionsPage() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export function TransactionsPage() {
   const [method, setMethod] = useState<'all' | TransactionMethod>('all');
   const [type, setType] = useState<'all' | TransactionType>('all');
   const [selected, setSelected] = useState<TransactionRecord | null>(null);
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const visibleRecords = isCustomer ? records.filter((record) => record.method === 'protected') : records;
@@ -71,6 +73,15 @@ export function TransactionsPage() {
       return true;
     });
   }, [records, method, type, search, isCustomer]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, method, type, isCustomer]);
+
+  const total = filtered.length;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const paged = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
 
   const isCredit = (r: TransactionRecord) =>
     ['wallet_funding', 'final_release', 'milestone_release', 'refund', 'incoming_transfer'].includes(r.type);
@@ -135,19 +146,16 @@ export function TransactionsPage() {
             </p>
           </Card>
         ) : (
+          <>
           <Card className="gap-0 overflow-hidden p-0 shadow-sm">
-            {filtered.map((r) => (
+            {paged.map((r) => (
               <button
                 key={r.id}
                 type="button"
                 onClick={() => setSelected(r)}
                 className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-accent/40"
               >
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    isCredit(r) ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground'
-                  }`}
-                >
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isCredit(r) ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
                   {isCredit(r) ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -168,6 +176,20 @@ export function TransactionsPage() {
               </button>
             ))}
           </Card>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-sm text-muted-foreground">
+              Showing {(current - 1) * PAGE_SIZE + 1}–{Math.min(current * PAGE_SIZE, total)} of {total} · Page {current} of {pageCount}
+            </span>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="rounded-full" disabled={current <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>
+                <ChevronLeft size={15} /> Previous
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-full" disabled={current >= pageCount} onClick={() => setPage((value) => Math.min(pageCount, value + 1))}>
+                Next <ChevronRight size={15} />
+              </Button>
+            </div>
+          </div>
+          </>
         )}
       </div>
 

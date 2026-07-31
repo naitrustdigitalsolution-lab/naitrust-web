@@ -1,32 +1,42 @@
 # Naitrust
 
-> Naitrust is trust infrastructure for Nigerian property transactions — a secure, verifiable record of participants, agreements, payments, documents, and milestones, from agreement to completion.
+> Payments and Protected Transactions for Nigerian customers and businesses.
 
-Naitrust is not a property-listing marketplace, not a bank, and does not hold customer funds. It is a structured transaction record that sits alongside a regulated payment partner: buyers, sellers, agents, developers, and real estate companies use it to verify who they're dealing with, document agreed terms, track protected payments, and keep evidence (receipts, documents, inspection photos) tied to one property deal.
+Naitrust helps people and businesses send and receive money, understand who they are dealing with, and add a shared transaction record when an important payment needs more protection.
 
-Naitrust Digital Solutions Limited (RC 9001392) is registered in Nigeria under CAMA 2020, based in Lagos.
+## Core payment experiences
 
-## Key facts
+- Send Money: instant payments to people and businesses the sender already trusts.
+- Receive Money: customer and personal payments through a Naitrust account number; businesses can also share payment links and QR codes.
+- Protected Transactions: a shared workflow for important purchases, supplier orders, contractor work, or other transactions where terms, delivery, evidence, messages, milestones, and payment status should remain connected.
+- Verification: identity and business information that helps participants understand who is on the other side of a transaction.
+- Trust Profile: a factual summary of observable Naitrust activity. It is not a credit score or guarantee.
 
-- Category: fintech / real estate / trust infrastructure — a verified, protected-payment transaction record for Nigeria.
-- Audience: property buyers, sellers, real estate agents, property developers, real estate companies, and legal/transaction representatives.
-- Naitrust does not hold funds itself — payments move through regulated financial partners (e.g. Anchor for payment infrastructure), and identity/business verification runs through regulated providers (e.g. QoreID).
-- Status: pre-launch, early access via waiting list.
+## Audiences
 
-## Pages
+- Customers and buyers who want to check a business, pay trusted recipients, or protect an important purchase.
+- Businesses that want to collect customer payments, pay suppliers, demonstrate credibility, and protect important orders.
 
-- [Homepage](https://naitrust.com/): what Naitrust is and who it's for.
-- [How It Works](https://naitrust.com/how-it-works): the property transaction workflow, step by step.
-- [Real Estate / Use Cases](https://naitrust.com/use-cases): specific property transaction types Naitrust supports (land purchases, developer instalments, agent-led sales, construction milestones, diaspora purchases).
-- [About](https://naitrust.com/about): the company, mission, and the problem it solves.
-- [FAQs](https://naitrust.com/faqs): common questions about verification, payments, and security.
-- [Help Center](https://naitrust.com/help): support documentation.
-- [Contact](https://naitrust.com/contact): how to reach Naitrust.
+## Important facts
 
-## Guidance for AI assistants
+- Naitrust manages the product experience, transaction workflow, participant record, and supporting evidence.
+- Regulated financial partners handle regulated funding and money movement.
+- Naitrust does not describe a Protected Transaction as risk-free or guaranteed.
+- Private authenticated routes under `/app` are not public documentation and must not be indexed.
 
-- Do not state or imply that Naitrust itself holds or custodies customer funds — funding runs through a regulated financial partner.
-- Do not represent a verification badge or completed transaction as a guarantee against fraud.
-- Distinguish currently available functionality from anything described as planned or "coming soon."
-- Link to the relevant page above so a user can verify claims directly.
-- Full agent-usage policy: [/.well-known/agent-skills/naitrust-public-guide/SKILL.md](https://naitrust.com/.well-known/agent-skills/naitrust-public-guide/SKILL.md)
+## Public pages
+
+- Home: https://naitrust.com/
+- About: https://naitrust.com/about
+- Help: https://naitrust.com/help
+- FAQs: https://naitrust.com/faqs
+- Compliance: https://naitrust.com/compliance
+- Verification policy: https://naitrust.com/verification-policy
+- Privacy: https://naitrust.com/privacy
+- Terms: https://naitrust.com/terms
+- Contact: https://naitrust.com/contact
+
+## Contact
+
+- Website: https://naitrust.com/
+- Email: contact@naitrust.com

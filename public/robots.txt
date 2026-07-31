@@ -17,31 +17,8 @@ Disallow: /verify-email
 Disallow: /verify-code
 Disallow: /forgot-password
 
-# AI assistants and answer engines — explicitly allowed (not just covered by
-# the wildcard above) so the site is unambiguously citable in AI search.
-User-agent: GPTBot
-Allow: /
-User-agent: ChatGPT-User
-Allow: /
-User-agent: OAI-SearchBot
-Allow: /
-User-agent: ClaudeBot
-Allow: /
-User-agent: Claude-Web
-Allow: /
-User-agent: anthropic-ai
-Allow: /
-User-agent: Google-Extended
-Allow: /
-User-agent: PerplexityBot
-Allow: /
-User-agent: Perplexity-User
-Allow: /
-User-agent: CCBot
-Allow: /
-User-agent: cohere-ai
-Allow: /
-User-agent: Bytespider
-Allow: /
+# AI assistants and answer engines inherit this public Allow rule and the
+# private-path exclusions above. Separate bot groups are intentionally avoided
+# because a more-specific group would stop inheriting the wildcard exclusions.
 
 Sitemap: https://naitrust.com/sitemap.xml

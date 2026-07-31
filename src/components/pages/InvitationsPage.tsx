@@ -65,27 +65,25 @@ function InvitationRow({ invitation, onOpen }: { invitation: DealInvitation; onO
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => e.key === 'Enter' && onOpen()}
-      className="flex cursor-pointer items-center gap-3 border-b px-5 py-4 transition-colors last:border-b-0 hover:bg-accent/40"
+      className="flex cursor-pointer items-center gap-3 border-b px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:px-5"
     >
       <CounterpartyAvatar name={invitation.fromName} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <p className="truncate font-semibold text-foreground">{invitation.fromName}</p>
-          <Badge variant="outline" className="shrink-0">
-            {partyModeShort(invitation.partyMode)}
-          </Badge>
+          <Badge variant="outline" className="shrink-0">{partyModeShort(invitation.partyMode)}</Badge>
         </div>
         <p className="mt-0.5 truncate text-sm text-muted-foreground">{invitation.title}</p>
         <p className="mt-0.5 text-xs text-muted-foreground">
           You’d join as {roleLabel(invitation.yourRole)} · {expiryLabel}
         </p>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
-        <span className="hidden text-sm font-semibold text-foreground tabular-nums sm:inline">
+      <div className="grid shrink-0 grid-cols-[minmax(110px,auto)_130px_18px] items-center gap-3">
+        <span className="hidden text-right text-sm font-semibold text-foreground tabular-nums sm:block">
           {formatMinorAmount(invitation.amountMinor, invitation.currency)}
         </span>
-        <InvitationStatusBadge status={invitation.status} />
-        <ChevronRight size={16} className="text-muted-foreground" />
+        <div className="justify-self-end"><InvitationStatusBadge status={invitation.status} /></div>
+        <ChevronRight size={16} className="justify-self-end text-muted-foreground" />
       </div>
     </div>
   );

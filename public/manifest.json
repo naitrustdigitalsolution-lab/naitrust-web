@@ -1,7 +1,7 @@
 {
-  "name": "Naitrust — Trust Infrastructure for Property Transactions",
+  "name": "Naitrust — Payments and Protected Transactions",
   "short_name": "Naitrust",
-  "description": "Naitrust creates a structured record of participants, agreements, payments, documents, and milestones for Nigerian property transactions.",
+  "description": "Send and receive money, get paid by account, link or QR, and protect important transactions with Naitrust.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -28,8 +28,8 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["business", "finance", "productivity", "real estate", "security"],
-  "lang": "en",
+  "categories": ["finance", "business", "productivity", "shopping", "security"],
+  "lang": "en-NG",
   "dir": "ltr",
   "iarc_rating_id": "",
   "prefer_related_applications": false,
@@ -52,9 +52,9 @@
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Start a Transaction",
-      "short_name": "New Deal",
-      "description": "Start a new property transaction record",
+      "name": "Create a Protected Transaction",
+      "short_name": "Protect",
+      "description": "Create a protected transaction with shared terms and payment status",
       "url": "/app/deals/new",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },

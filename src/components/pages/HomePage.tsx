@@ -77,9 +77,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen relative">
       <SEOHead
-        title="Naitrust | Verified Payments for Nigerian Businesses"
-        description="Receive customer transfers from WhatsApp, payment links and QR codes, pay suppliers, and protect important business transactions with Naitrust."
-        keywords="WhatsApp payments Nigeria, Nigerian business account, verified business payments, QR payments Nigeria, protected transactions, local business payments"
+        title="Payments and Protected Transactions in Nigeria"
+        description="Naitrust helps Nigerian customers and businesses send and receive money, get paid by account, link or QR, verify who they are dealing with, and protect important transactions."
+        keywords="send money Nigeria, receive money Nigeria, payment links Nigeria, QR payments Nigeria, business payments Nigeria, customer payments Nigeria, protected transactions, verified businesses Nigeria"
         canonicalPath="/"
       />
       

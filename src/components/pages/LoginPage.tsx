@@ -12,6 +12,7 @@ import { ForgotPasswordForm } from '../pieces/auth/ForgotPasswordForm';
 import { VerifyOtpForm } from '../pieces/auth/VerifyOtpForm';
 import { ResetPasswordForm } from '../pieces/auth/ResetPasswordForm';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
+import { SEOHead } from '../utility/SEOHead';
 import spiralBackground from '../../assets/spiral.svg';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -315,6 +316,11 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+      <SEOHead
+        title="Sign in to Payments and Protected Transactions"
+        description="Sign in to Naitrust to send and receive money, manage customer or business payments, and continue your Protected Transactions."
+        canonicalPath="/login"
+      />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
        <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
           <img

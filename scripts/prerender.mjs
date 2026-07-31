@@ -25,13 +25,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
 const PORT = 4183;
 const BASE = `http://localhost:${PORT}`;
+const VITE_BIN = join(ROOT, 'node_modules', 'vite', 'bin', 'vite.js');
 
 // Public, crawlable routes only. No /app, /admin, or transient verify flows.
 const ROUTES = [
   '/',
   '/about',
-  '/how-it-works',
-  '/use-cases',
   '/business',
   '/resources',
   '/blog',
@@ -45,7 +44,6 @@ const ROUTES = [
   '/compliance',
   '/feedback',
   '/login',
-  '/register',
   '/register-business',
   '/register-customer',
 ];
@@ -75,8 +73,8 @@ async function main() {
 
   // Serve the built app with SPA fallback so unrendered routes still resolve.
   const preview = spawn(
-    'npx',
-    ['vite', 'preview', '--port', String(PORT), '--strictPort'],
+    process.execPath,
+    [VITE_BIN, 'preview', '--port', String(PORT), '--strictPort'],
     { cwd: ROOT, stdio: 'ignore' },
   );
 

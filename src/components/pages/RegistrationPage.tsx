@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { toast } from 'sonner';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
+import { SEOHead } from '../utility/SEOHead';
 import { CATEGORIES } from '../../libs/constant';
 import { NIGERIAN_STATES } from '../../libs/constant';
 import { authApi, businessApi } from '../../libs/api';
@@ -985,6 +986,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+      <SEOHead
+        title={registrationType === 'business' ? 'Open a Naitrust Business Payment Account' : 'Open a Naitrust Customer Payment Account'}
+        description={registrationType === 'business'
+          ? 'Create a Naitrust business account to receive customer payments, pay suppliers, build credibility, and protect important transactions.'
+          : 'Create a Naitrust customer account to pay trusted recipients, verify businesses, and protect important purchases.'}
+        canonicalPath={registrationType === 'business' ? '/register-business' : '/register-customer'}
+      />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
        <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
           <img

@@ -18,7 +18,7 @@ import { useBusinessStore } from '../../libs/store/business.store';
 import { PhoneField } from '../pieces/general/PhoneField';
 import { RegistrationStepper } from '../pieces/registration/RegistrationStepper';
 import { BeforeYouStartCard } from '../pieces/registration/BeforeYouStartCard';
-import { openWaitlistModal } from '../modals/WaitlistModal';
+import { openWaitlistModal } from '../modals/waitlist-events';
 import type { SocialHandleInterface } from '../../interfaces/SocialHandleInterface';
 import type { TeamMemberInterface } from '../../interfaces/TeamMemberInterface';
 import { useLocation } from 'react-router-dom';

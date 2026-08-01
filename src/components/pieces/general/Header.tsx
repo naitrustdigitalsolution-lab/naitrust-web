@@ -7,7 +7,7 @@ import { User, LogOut, Menu, X, Sun, Moon, ArrowLeft, ArrowRight, Building2 } fr
 import { motion, AnimatePresence } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../hooks/useTheme';
-import { openWaitlistModal } from '../../modals/WaitlistModal';
+import { openWaitlistModal } from '../../modals/waitlist-events';
 
 interface HeaderProps {
   onNavigate: (page: string, params?: any) => void;

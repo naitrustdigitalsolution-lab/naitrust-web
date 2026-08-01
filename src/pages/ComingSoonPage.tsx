@@ -1,4 +1,4 @@
-import { createElement, useMemo, useState } from "react";
+import { createElement, useEffect, useMemo, useState } from "react";
 import { appConfig } from "../configs/env";
 import { joinWaitlist } from "../services/publicService";
 import type { WaitlistPayload } from '../types/global';
@@ -51,6 +51,16 @@ function ComingSoonPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const modeLabel = useMemo(() => appConfig.mode.toUpperCase(), []);
+
+  useEffect(() => {
+    if (!appConfig.splineSceneUrl || document.querySelector('script[data-naitrust-spline]')) return;
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://unpkg.com/@splinetool/viewer@1.10.2/build/spline-viewer.js';
+    script.dataset.naitrustSpline = 'true';
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, []);
 
   function updateField(field: keyof FormState, value: string | boolean) {
     setFormState((current) => ({ ...current, [field]: value }));

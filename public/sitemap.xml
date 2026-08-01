@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://naitrust.com/</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,7 +12,7 @@
   <!-- Core Public Pages -->
   <url>
     <loc>https://naitrust.com/blog</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -20,7 +20,7 @@
   <!-- About / Business / Resources -->
   <url>
     <loc>https://naitrust.com/about</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

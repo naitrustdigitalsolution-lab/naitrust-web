@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -11,20 +12,30 @@ import { FloatingFeedbackButton } from '../utility/FloatingFeedbackButton';
 import { SEOHead } from '../utility/SEOHead';
 import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
 import spiralBackground from '../../assets/spiral.svg';
-import { openWaitlistModal } from '../modals/WaitlistModal';
+import { openWaitlistModal } from '../modals/waitlist-events';
 import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
 import shopPaymentImage from "../images/hero/nigerian-shop-payment.webp";
 import  qrPaymentImage from "../images/hero/nigerian-qr-payment.webp"
 
-const saferDealsImage = '/images/blog/safer-deals.png';
-const deliveryEvidenceImage = '/images/blog/delivery-evidence.png';
-const businessVerificationImage = '/images/blog/business-verification.png';
+const saferDealsImage = '/images/blog/safer-deals.webp';
+const deliveryEvidenceImage = '/images/blog/delivery-evidence.webp';
+const businessVerificationImage = '/images/blog/business-verification.webp';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
+  const [allowAmbientMotion, setAllowAmbientMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px) and (prefers-reduced-motion: no-preference)');
+    const updateMotionPreference = () => setAllowAmbientMotion(media.matches);
+    updateMotionPreference();
+    media.addEventListener('change', updateMotionPreference);
+    return () => media.removeEventListener('change', updateMotionPreference);
+  }, []);
+
   const howItWorks = [
     {
       step: '1',
@@ -72,11 +83,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
   ];
 
   return (
-    <div className="min-h-screen relative">
+    <div className="home-page relative min-h-screen">
       <SEOHead
-        title="Nigerian Fintech for Payments and Protected Transactions"
-        description="Naitrust helps Nigerian customers and businesses send and receive money, get paid by account, link or QR, verify who they are dealing with, and protect important transactions."
-        keywords="send money Nigeria, receive money Nigeria, payment links Nigeria, QR payments Nigeria, business payments Nigeria, customer payments Nigeria, protected transactions, verified businesses Nigeria"
+        title="Protected Payments and Trusted Transactions"
+        description="Know who you are paying with Naitrust. Create Protected Payments, trusted payment links, and clear transaction records for customers and businesses in Nigeria."
+        keywords="Naitrust, Protected Payments Nigeria, trusted transactions, know who you are paying, trusted payment links, verified payment participants, business payments Nigeria"
         canonicalPath="/"
       />
       
@@ -86,8 +97,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Hero — a deliberately loose collage of real business moments and product UI */}
       <section className="relative overflow-hidden bg-[#04162f] text-white xl:min-h-[94vh]">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[110px]" />
-          <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[130px]" />
+          <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[55px] sm:blur-[110px]" />
+          <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[60px] sm:blur-[130px]" />
           <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.35)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.35)_1px,transparent_1px)] [background-size:72px_72px]" />
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
         </div>
@@ -133,7 +144,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative mx-auto h-[22rem] min-w-0 w-full max-w-[25rem] sm:h-[34rem] sm:max-w-[44rem] md:h-[38rem] xl:h-[42rem]"
           >
             <motion.div
-              animate={{ y: [0, -8, 0], rotate: [-5, -4, -5] }}
+              animate={allowAmbientMotion ? { y: [0, -8, 0], rotate: [-5, -4, -5] } : undefined}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute left-[1%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
@@ -141,13 +152,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 src={businessVerificationImage}
                 alt="A verified Nigerian business owner serving a customer"
                 className="h-full w-full object-cover"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/65 via-transparent to-transparent" />
               <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Verified to trade</span>
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, 10, 0], rotate: [4, 3, 4] }}
+              animate={allowAmbientMotion ? { y: [0, 10, 0], rotate: [4, 3, 4] } : undefined}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
               className="absolute right-[1%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
             >
@@ -155,6 +167,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 src={deliveryEvidenceImage}
                 alt="A Nigerian business recording delivery evidence"
                 className="h-full w-full object-cover"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/55 via-transparent to-transparent" />
               <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Delivery recorded</span>
@@ -192,7 +205,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, -9, 0], rotate: [5, 6, 5] }}
+              animate={allowAmbientMotion ? { y: [0, -9, 0], rotate: [5, 6, 5] } : undefined}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
               className="absolute bottom-[1%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
@@ -200,13 +213,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 src={saferDealsImage}
                 alt="A customer and Nigerian business completing a safer deal"
                 className="h-full w-full object-cover"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/70 via-transparent to-transparent" />
               <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Trade with confidence</span>
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, 7, 0], rotate: [-4, -5, -4] }}
+              animate={allowAmbientMotion ? { y: [0, 7, 0], rotate: [-4, -5, -4] } : undefined}
               transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute bottom-[7%] left-[1%] z-40 hidden rounded-2xl border border-white/20 bg-[#0d2b4f]/90 p-4 shadow-2xl backdrop-blur-xl sm:block"
             >
@@ -413,7 +427,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             transition={{ delay: 0.08 }}
             className="relative mb-10 hidden justify-center rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-3 backdrop-blur sm:mb-16 sm:flex sm:rounded-[2rem] sm:p-8"
           >
-            <TrustHeroAnimation />
+            {allowAmbientMotion && <TrustHeroAnimation />}
           </motion.div>
 
           <div className="relative grid gap-0 overflow-hidden rounded-[1.5rem] border border-white/10 sm:rounded-[2rem] md:grid-cols-2 lg:grid-cols-4">
@@ -628,21 +642,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
               viewport={{ once: true }}
               className="relative min-h-[31rem] sm:min-h-[34rem]"
             >
-              <motion.div
+              {allowAmbientMotion && <motion.div
                 aria-hidden="true"
                 animate={{ rotate: 360, scale: [1, 1.08, 1] }}
                 transition={{ rotate: { duration: 28, repeat: Infinity, ease: 'linear' }, scale: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
                 className="pointer-events-none absolute -inset-8 rounded-full border border-[#53b0ff]/15"
-              />
-              <motion.div
+              />}
+              {allowAmbientMotion && <motion.div
                 aria-hidden="true"
                 animate={{ rotate: -360 }}
                 transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
                 className="pointer-events-none absolute -inset-3 rounded-[3rem] border border-dashed border-white/10"
-              />
+              />}
               <div className="absolute inset-x-0 top-0 h-[22rem] overflow-hidden rounded-[1.5rem] border border-white/15 shadow-[0_35px_90px_rgba(0,0,0,.4)] sm:inset-x-8 sm:h-[27rem] sm:rounded-[2rem]">
                 <motion.div
-                  animate={{ scale: [1, 1.045, 1], x: [0, -5, 0] }}
+                  animate={allowAmbientMotion ? { scale: [1, 1.045, 1], x: [0, -5, 0] } : undefined}
                   transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute inset-0"
                 >
@@ -650,6 +664,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     src={saferDealsImage}
                     alt="Customer and business reviewing a protected transaction"
                     className="h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </motion.div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#04162f] via-[#04162f]/10 to-transparent" />
@@ -660,7 +676,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
 
               <motion.div
-                animate={{ y: [0, -8, 0] }}
+                animate={allowAmbientMotion ? { y: [0, -8, 0] } : undefined}
                 transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute bottom-0 left-0 z-10 w-[82%] sm:w-[68%]"
               >
@@ -685,7 +701,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, 7, 0], rotate: [0, 0.6, 0] }}
+                animate={allowAmbientMotion ? { y: [0, 7, 0], rotate: [0, 0.6, 0] } : undefined}
                 transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
                 className="absolute bottom-8 right-0 z-20 w-[47%] sm:bottom-10 sm:w-[38%]"
               >

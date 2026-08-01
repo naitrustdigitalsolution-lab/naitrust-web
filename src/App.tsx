@@ -7,32 +7,15 @@ import { AuthProvider } from './libs/auth-context';
 import { useAuth } from './libs/auth-context';
 import BeBackPage from "./pages/BeBackPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { HomePage } from './components/pages/HomePage';
 import SimplePage from "./pages/SimplePage";
-import VerifyCodePage from "./pages/VerifyCodePage";
-import VerifyEmailPage from "./pages/VerifyEmailPage";
-import { AboutPage } from "./components/pages/AboutPage";
-import { FeedbackPage } from "./components/pages/FeedbackPage";
-import { HelpCenterPage } from "./components/pages/HelpCenterPage";
-import { FAQsPage } from "./components/pages/FAQsPage";
-import { ContactUsPage } from "./components/pages/ContactUsPage";
-import { TermsOfServicePage } from "./components/pages/TermsOfServicePage";
-import { PrivacyPolicyPage } from "./components/pages/PrivacyPolicyPage";
-import { VerificationPolicyPage } from "./components/pages/VerificationPolicyPage";
-import { CompliancePage } from "./components/pages/CompliancePage";
 import { Header } from "./components/pieces/general/Header";
 import { Footer } from "./components/pieces/general/Footer";
 import { CookieConsent } from "./components/utility/CookieConsent";
 import { Toaster } from "./components/ui/sonner";
-import { WaitlistModalHost } from "./components/modals/WaitlistModal";
-import { BlogPage } from "./components/pages/BlogPage";
-import { BlogArticlePage } from './components/pages/BlogArticlePage';
+import { LazyWaitlistModalHost } from "./components/modals/LazyWaitlistModalHost";
 import { AuthPageLoader, DashboardPageLoader } from "./components/pieces/auth/AuthPageLoader";
-import { ReportConcernPage } from './components/pages/ReportConcernPage';
 import { RequireAuth } from './components/utility/RequireAuth';
-import { PublicBusinessPaymentPage } from './components/pages/PublicBusinessPaymentPage';
-import { PublicInvitationPreviewPage } from './components/pages/PublicInvitationPreviewPage';
 import { RequireBusinessAccount } from './components/utility/RequireBusinessAccount';
 
 /**
@@ -80,6 +63,27 @@ const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentReques
 const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
 const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
+
+// Public pages outside the landing-page critical path load only when visited.
+// This keeps their forms, article data and policy content out of the mobile
+// homepage bundle.
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const VerifyCodePage = lazy(() => import("./pages/VerifyCodePage"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
+const AboutPage = lazy(() => import("./components/pages/AboutPage").then((module) => ({ default: module.AboutPage })));
+const FeedbackPage = lazy(() => import("./components/pages/FeedbackPage").then((module) => ({ default: module.FeedbackPage })));
+const HelpCenterPage = lazy(() => import("./components/pages/HelpCenterPage").then((module) => ({ default: module.HelpCenterPage })));
+const FAQsPage = lazy(() => import("./components/pages/FAQsPage").then((module) => ({ default: module.FAQsPage })));
+const ContactUsPage = lazy(() => import("./components/pages/ContactUsPage").then((module) => ({ default: module.ContactUsPage })));
+const TermsOfServicePage = lazy(() => import("./components/pages/TermsOfServicePage").then((module) => ({ default: module.TermsOfServicePage })));
+const PrivacyPolicyPage = lazy(() => import("./components/pages/PrivacyPolicyPage").then((module) => ({ default: module.PrivacyPolicyPage })));
+const VerificationPolicyPage = lazy(() => import("./components/pages/VerificationPolicyPage").then((module) => ({ default: module.VerificationPolicyPage })));
+const CompliancePage = lazy(() => import("./components/pages/CompliancePage").then((module) => ({ default: module.CompliancePage })));
+const BlogPage = lazy(() => import("./components/pages/BlogPage").then((module) => ({ default: module.BlogPage })));
+const BlogArticlePage = lazy(() => import("./components/pages/BlogArticlePage").then((module) => ({ default: module.BlogArticlePage })));
+const ReportConcernPage = lazy(() => import("./components/pages/ReportConcernPage").then((module) => ({ default: module.ReportConcernPage })));
+const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBusinessPaymentPage").then((module) => ({ default: module.PublicBusinessPaymentPage })));
+const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
 
 const queryClient = new QueryClient();
 
@@ -240,6 +244,7 @@ function PublicAppContent() {
       {!usesStandaloneHome && <Header onNavigate={handleNavigate} currentPage={currentPage} />}
 
       <main>
+        <Suspense fallback={<AuthPageLoader />}>
         <Routes>
           <Route
             path="/"
@@ -301,11 +306,12 @@ function PublicAppContent() {
           <Route path="/resources" element={<SimpleRoutePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </main>
 
       {!usesStandaloneHome && <Footer onNavigate={handleNavigate} />}
       <CookieConsent />
-      <WaitlistModalHost />
+      <LazyWaitlistModalHost />
       <Toaster />
     </div>
   );

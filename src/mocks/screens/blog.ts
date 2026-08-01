@@ -16,7 +16,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'what-makes-a-property-transaction-clearer', category: 'Property Transactions',
     title: 'What makes a property transaction clearer?',
     summary: 'A practical guide to participants, terms, payments, property documents, and evidence before money moves.',
-    image: '/images/blog/safer-deals.png', imageAlt: 'Nigerian property participants reviewing transaction information', readTime: '8 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/safer-deals.webp', imageAlt: 'Nigerian property participants reviewing transaction information', readTime: '8 min read', publishedAt: '18 July 2026',
     intro: 'A property transaction needs more than a transfer receipt. Clarity begins when everyone involved can identify the property and each other, understand exactly what was agreed, and review what actually happened at every stage — not just at the end.',
     sections: [
       {
@@ -72,7 +72,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'property-company-verification-what-buyers-should-check', category: 'Verification',
     title: 'Property company verification: what buyers should check',
     summary: 'Company registration is useful, but buyers should also understand representatives, authority, property details, and transaction evidence.',
-    image: '/images/blog/business-verification.png', imageAlt: 'Nigerian property professional reviewing company and identity documents', readTime: '7 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/business-verification.webp', imageAlt: 'Nigerian property professional reviewing company and identity documents', readTime: '7 min read', publishedAt: '18 July 2026',
     intro: 'Verification confirms specific information at a specific point in time. Used well, it supports a more careful property decision — but it is one input among several, not a replacement for legal, document, or physical due diligence.',
     sections: [
       {
@@ -120,7 +120,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'before-paying-property-deposit', category: 'Buyer Guides',
     title: 'Before paying a property deposit: a practical checklist',
     summary: 'Questions and records worth collecting before a reservation, agency, land, or property payment.',
-    image: '/images/blog/safer-deals.png', imageAlt: 'Property buyer reviewing payment and property details', readTime: '7 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/safer-deals.webp', imageAlt: 'Property buyer reviewing payment and property details', readTime: '7 min read', publishedAt: '18 July 2026',
     intro: 'Property-payment risk usually becomes expensive for one simple reason: an important detail is discovered only after the money has already moved. Most of that risk can be reduced with a short set of checks done beforehand.',
     sections: [
       {
@@ -166,7 +166,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'how-property-companies-build-buyer-confidence', category: 'Property Companies',
     title: 'How property companies can build buyer confidence',
     summary: 'Create a professional buyer experience with consistent identity, terms, payment records, documents, and milestones.',
-    image: '/images/blog/business-verification.png', imageAlt: 'Nigerian real estate professional preparing a buyer transaction record', readTime: '6 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/business-verification.webp', imageAlt: 'Nigerian real estate professional preparing a buyer transaction record', readTime: '6 min read', publishedAt: '18 July 2026',
     intro: 'Buyer confidence is rarely won with a single reassurance. It is built from consistent, checkable facts and a clear sense of what should happen next at every stage of a property transaction.',
     sections: [
       {
@@ -205,7 +205,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'why-screenshots-are-weak-property-evidence', category: 'Transaction Evidence',
     title: 'Why screenshots alone are weak property transaction evidence',
     summary: 'Screenshots can help, but they rarely explain the complete property transaction history.',
-    image: '/images/blog/delivery-evidence.png', imageAlt: 'Property participant organising transaction documents and evidence', readTime: '6 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/delivery-evidence.webp', imageAlt: 'Property participant organising transaction documents and evidence', readTime: '6 min read', publishedAt: '18 July 2026',
     intro: 'A screenshot can be cropped, edited, taken out of order, or separated entirely from the context that gave it meaning. Stronger property evidence is connected, dated, and kept in the sequence it actually happened.',
     sections: [
       {
@@ -250,7 +250,7 @@ export const blogArticles: BlogArticle[] = [
     slug: 'one-record-for-property-transaction', category: 'Product',
     title: 'Building Naitrust: one record for a property transaction',
     summary: 'Why Naitrust is bringing participants, agreements, payments, documents, milestones, and evidence into one workflow.',
-    image: '/images/blog/delivery-evidence.png', imageAlt: 'Nigerian property buyer reviewing a digital transaction record', readTime: '5 min read', publishedAt: '18 July 2026',
+    image: '/images/blog/delivery-evidence.webp', imageAlt: 'Nigerian property buyer reviewing a digital transaction record', readTime: '5 min read', publishedAt: '18 July 2026',
     intro: 'Many Nigerian property transactions begin in a chat, continue through one or more bank transfers, and produce documents that end up scattered across email, WhatsApp, and paper. Naitrust is being designed to make that history clearer, from the first conversation to completion.',
     sections: [
       {

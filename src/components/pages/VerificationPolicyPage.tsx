@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowRight, Building2, FileCheck2, ScanFace, ShieldCheck, UserCheck } from 'lucide-react';
-import { openWaitlistModal } from '../modals/WaitlistModal';
+import { openWaitlistModal } from '../modals/waitlist-events';
 import { SEOHead } from '../utility/SEOHead';
 
 interface VerificationPolicyPageProps {

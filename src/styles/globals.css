@@ -3,17 +3,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@font-face {
-  font-family: "Naitrust Roboto";
-  src: url("../assets/fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf") format("truetype");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 100 900;
+/* Do not lay out and paint the entire long marketing page during the first
+   mobile frame. Sections become fully rendered as they approach the viewport. */
+.home-page > section:nth-of-type(n + 3) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
 }
 
 @font-face {
   font-family: "Naitrust Satoshi";
-  src: url("../assets/fonts/Satoshi_Complete/Fonts/TTF/Satoshi-Variable.ttf") format("truetype");
+  src: url("../assets/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 300 900;
@@ -272,10 +271,6 @@ html {
 .naitrust-satoshi-bold {
   font-family: "Naitrust Satoshi", ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
-}
-
-.naitrust-roboto {
-  font-family: "Naitrust Roboto", ui-sans-serif, system-ui, sans-serif;
 }
 
 .naitrust-dark-hero {

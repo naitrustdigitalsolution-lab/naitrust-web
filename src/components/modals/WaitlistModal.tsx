@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ArrowRight, CheckCircle2, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -79,19 +79,53 @@ const paymentNeeds = [
   { slug: 'payment-reconciliation', title: 'Confirm and reconcile incoming transfers automatically' },
 ] as const;
 
-export function openWaitlistModal() {
-  window.dispatchEvent(new CustomEvent('naitrust:open-waitlist'));
-}
-
 export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const [formState, setFormState] = useState<WaitlistFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rangeOpen, setRangeOpen] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const dragStartY = useRef<number | null>(null);
+  const dragDistance = useRef(0);
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) setRangeOpen(false);
     onOpenChange(nextOpen);
+  };
+
+  const resetSheetPosition = () => {
+    const sheet = contentRef.current;
+    if (!sheet) return;
+    sheet.style.transition = 'transform 180ms ease-out';
+    sheet.style.transform = 'translate3d(0, 0, 0)';
+    window.setTimeout(() => {
+      if (sheet) sheet.style.removeProperty('transition');
+    }, 190);
+  };
+
+  const handleDragStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    dragStartY.current = event.touches[0]?.clientY ?? null;
+    dragDistance.current = 0;
+    if (contentRef.current) contentRef.current.style.transition = 'none';
+  };
+
+  const handleDragMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (dragStartY.current === null) return;
+    const distance = Math.max(0, (event.touches[0]?.clientY ?? dragStartY.current) - dragStartY.current);
+    dragDistance.current = distance;
+    if (distance > 0) {
+      event.preventDefault();
+      if (contentRef.current) contentRef.current.style.transform = `translate3d(0, ${distance}px, 0)`;
+    }
+  };
+
+  const handleDragEnd = () => {
+    dragStartY.current = null;
+    if (dragDistance.current >= 96) {
+      handleOpenChange(false);
+      return;
+    }
+    resetSheetPosition();
   };
 
   const updateField = <Key extends keyof WaitlistFormState>(key: Key, value: WaitlistFormState[Key]) => {
@@ -164,15 +198,28 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[92vh] touch-pan-y overscroll-contain gap-0 overflow-y-auto rounded-[1.75rem] border-0 p-0 shadow-[0_30px_100px_rgba(3,19,53,.28)] sm:max-w-2xl">
+      <DialogContent ref={contentRef} className="!bottom-0 !left-0 !top-auto !max-h-[calc(100dvh-0.75rem)] !w-full !max-w-none !translate-x-0 !translate-y-0 touch-pan-y overscroll-contain gap-0 overflow-y-auto rounded-b-none rounded-t-[1.5rem] border-0 p-0 pb-[env(safe-area-inset-bottom)] shadow-[0_-20px_70px_rgba(3,19,53,.24)] sm:!bottom-auto sm:!left-1/2 sm:!top-1/2 sm:!max-h-[92vh] sm:!max-w-2xl sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:rounded-[1.75rem] sm:pb-0 sm:shadow-[0_30px_100px_rgba(3,19,53,.28)]">
+        <div
+          className="sticky top-0 z-20 flex h-7 touch-none items-center justify-center bg-background sm:hidden"
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+          onTouchCancel={() => {
+            dragStartY.current = null;
+            resetSheetPosition();
+          }}
+          aria-label="Swipe down to close"
+        >
+          <span className="h-1 w-10 rounded-full bg-muted-foreground/25" aria-hidden="true" />
+        </div>
         {isComplete ? (
-          <div className="grid min-h-[28rem] place-items-center p-8 text-center sm:p-12">
+          <div className="grid min-h-[24rem] place-items-center p-6 text-center sm:min-h-[28rem] sm:p-12">
             <div>
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600">
                 <CheckCircle2 size={38} />
               </div>
-              <DialogTitle className="text-3xl">Your place is saved.</DialogTitle>
-              <DialogDescription className="mx-auto mt-3 max-w-md text-base leading-7">
+              <DialogTitle className="text-2xl sm:text-3xl">Your place is saved.</DialogTitle>
+              <DialogDescription className="mx-auto mt-3 max-w-md text-sm leading-6 sm:text-base sm:leading-7">
                 We’ll keep you updated and let you know when your Naitrust early access is ready.
               </DialogDescription>
               <Button
@@ -188,18 +235,18 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             </div>
           </div>
         ) : (
-        <div className="p-6 sm:p-8">
-        <DialogHeader>
+        <div className="px-4 pb-5 pt-2 sm:p-8">
+        <DialogHeader className="pr-9 text-left">
           <div className="mb-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             Naitrust early access
           </div>
-          <DialogTitle className="text-2xl tracking-tight sm:text-3xl">Payments built around trust, not guesswork.</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl leading-tight tracking-tight sm:text-3xl">Payments built around trust, not guesswork.</DialogTitle>
+          <DialogDescription className="text-xs leading-5 sm:text-sm">
             Join Naitrust to receive customer payments, pay businesses and protect important transactions with verified participants, clear terms and one shared record.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="my-6 grid gap-2 rounded-2xl border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
+        <div className="my-4 grid gap-1.5 rounded-xl border border-primary/15 bg-primary/5 p-3 text-xs text-muted-foreground sm:my-6 sm:grid-cols-2 sm:gap-2 sm:rounded-2xl sm:text-sm">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
             Modern business payments
@@ -210,8 +257,8 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
         </div>
 
-        <form className="grid gap-4" onSubmit={handleSubmit}>
-          <div className="grid gap-4 sm:grid-cols-2">
+        <form className="grid gap-3.5 sm:gap-4" onSubmit={handleSubmit}>
+          <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-4">
             <label className="grid gap-2 text-sm font-medium">
               First name
               <Input
@@ -233,7 +280,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               />
             </label>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-4">
             <label className="grid gap-2 text-sm font-medium">
               <span className="flex items-baseline gap-1">
                 Business or company <span className="text-xs font-normal text-muted-foreground">(optional)</span>
@@ -426,7 +473,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             Naitrust can contact me about business-payments early access and product updates.
           </label>
 
-          <Button type="submit" size="lg" disabled={isSubmitting} className="rounded-full">
+          <Button type="submit" size="lg" disabled={isSubmitting} className="mt-1 h-12 rounded-full">
             {isSubmitting ? 'Saving your place...' : 'Join the Naitrust waitlist'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">
@@ -438,19 +485,4 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
       </DialogContent>
     </Dialog>
   );
-}
-
-export function WaitlistModalHost() {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const handleOpen = () => setOpen(true);
-
-    window.addEventListener('naitrust:open-waitlist', handleOpen);
-    return () => window.removeEventListener('naitrust:open-waitlist', handleOpen);
-  }, []);
-
-  // Fully unmount the large form after dismissal. This releases its Radix
-  // popovers, focus guards and mobile scroll-lock resources immediately.
-  return open ? <WaitlistModal open onOpenChange={setOpen} /> : null;
 }

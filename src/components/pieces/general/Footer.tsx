@@ -2,7 +2,7 @@ import { type FormEvent, useState } from 'react';
 import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { subscribe } from '../../../services/publicService';
-import { openWaitlistModal } from '../../modals/WaitlistModal';
+import { openWaitlistModal } from '../../modals/waitlist-events';
 import { toast } from 'sonner';
 
 interface FooterProps {

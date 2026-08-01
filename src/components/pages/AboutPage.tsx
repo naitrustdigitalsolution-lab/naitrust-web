@@ -14,7 +14,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { SEOHead } from '../utility/SEOHead';
-import { openWaitlistModal } from '../modals/WaitlistModal';
+import { openWaitlistModal } from '../modals/waitlist-events';
 
 interface AboutPageProps {
   onNavigate: (page: string, params?: unknown) => void;
@@ -32,7 +32,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="About Naitrust — Nigerian Fintech Platform"
-        description="Naitrust is a Nigerian fintech platform for business payments, participant verification, and Protected Transactions with shared terms and evidence."
+        description="Naitrust helps customers and businesses know who they are paying, create Protected Payments, share trusted payment links, and build clearer transaction records."
         canonicalPath="/about"
       />
 

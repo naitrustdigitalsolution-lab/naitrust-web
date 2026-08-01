@@ -12,10 +12,10 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust is a Nigerian fintech platform for business payments and Protected Transactions. Pay, get paid, verify participants, and keep important transaction terms and evidence together.';
+const DEFAULT_DESCRIPTION = 'Know who you are paying with Naitrust. Create Protected Payments, trusted payment links, and clear transaction records for customers and businesses in Nigeria.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS =
-  'Naitrust, payments Nigeria, send money Nigeria, receive money Nigeria, payment links Nigeria, QR payments Nigeria, protected transactions, protected payments, business payments Nigeria, customer payment protection, verified businesses Nigeria, trust infrastructure Nigeria';
+  'Naitrust, Protected Payments Nigeria, trusted transactions Nigeria, know who you are paying, trusted payment links, verified payment participants, payment links Nigeria, QR payments Nigeria, business payments Nigeria, customer payments Nigeria';
 
 export function SEOHead({
   title,
@@ -26,7 +26,7 @@ export function SEOHead({
   ogImage = DEFAULT_IMAGE,
   noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Nigerian Fintech for Payments and Protected Transactions`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Protected Payments and Trusted Transactions`;
   const canonicalUrl = canonicalPath
     ? `${SITE_URL}${canonicalPath}`
     : typeof window !== 'undefined'

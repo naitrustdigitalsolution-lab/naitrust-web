@@ -178,7 +178,7 @@ export function DashboardPage() {
           </header>
 
           <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#087ff5] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
+            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br  from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
               <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-2xl" />
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
@@ -380,7 +380,7 @@ export function DashboardPage() {
         </section>
 
         <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-          <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#087ff5] to-[#064d9d] p-5 text-white shadow-[0_24px_65px_rgba(8,127,245,.24)] sm:p-7">
+          <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
             <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>

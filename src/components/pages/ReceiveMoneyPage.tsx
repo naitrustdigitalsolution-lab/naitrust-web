@@ -194,7 +194,7 @@ export function ReceiveMoneyPage() {
           <div className="mb-5 grid items-stretch gap-5 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
           <Card className={`h-full overflow-hidden rounded-3xl border-primary/15 p-0 shadow-sm ${shareMode === 'account' ? 'ring-2 ring-primary/25' : ''}`}>
             <div className="flex h-full flex-col">
-              <div className="bg-gradient-to-br from-[#071b31] to-[#0b4d91] p-6 text-white sm:p-7">
+              <div className="bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white sm:p-7">
                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-white/65">
                   <Landmark size={15} /> Business account
                 </p>
@@ -326,8 +326,8 @@ export function ReceiveMoneyPage() {
 
         {!accountContentLoading && !isBusiness && (
           <div className="grid gap-5 md:grid-cols-[1.2fr_.8fr]">
-            <Card className="overflow-hidden border-primary/15 shadow-sm">
-              <div className="bg-[#102f50] p-6 text-white">
+            <Card className="overflow-hidden border-primary/15 shadow-sm ">
+              <div className="bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white">
                 <p className="flex items-center gap-2 text-sm font-medium text-white/70"><Landmark size={16} /> Personal Naitrust account</p>
                 <p className="mt-5 font-mono text-2xl font-bold tracking-[0.12em]">7034567890</p>
                 <p className="mt-2 text-sm text-white/80">Anchor Bank · Naitrust / {user?.name}</p>

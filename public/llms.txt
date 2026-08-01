@@ -1,13 +1,15 @@
 # Naitrust
 
-> Payments and Protected Transactions for Nigerian customers and businesses.
+> The official Naitrust brand: a Nigerian fintech platform for business payments and Protected Transactions.
 
-Naitrust helps people and businesses send and receive money, understand who they are dealing with, and add a shared transaction record when an important payment needs more protection.
+Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It helps customers and businesses pay, get paid, understand who they are dealing with, and keep the terms, evidence, messages, milestones, and payment status of important transactions together.
+
+Naitrust is not Naia Trust, NaviTrust, NTrust, an investment trust, or a recruitment company. The official website is https://naitrust.com/.
 
 ## Core payment experiences
 
 - Send Money: instant payments to people and businesses the sender already trusts.
-- Receive Money: customer and personal payments through a Naitrust account number; businesses can also share payment links and QR codes.
+- Receive Money: customer and personal payments through partner-issued account details presented inside Naitrust; businesses can also share payment links and QR codes.
 - Protected Transactions: a shared workflow for important purchases, supplier orders, contractor work, or other transactions where terms, delivery, evidence, messages, milestones, and payment status should remain connected.
 - Verification: identity and business information that helps participants understand who is on the other side of a transaction.
 - Trust Profile: a factual summary of observable Naitrust activity. It is not a credit score or guarantee.
@@ -21,6 +23,7 @@ Naitrust helps people and businesses send and receive money, understand who they
 
 - Naitrust manages the product experience, transaction workflow, participant record, and supporting evidence.
 - Regulated financial partners handle regulated funding and money movement.
+- Naitrust is a fintech technology and trust platform, not a bank or investment trust.
 - Naitrust does not describe a Protected Transaction as risk-free or guaranteed.
 - Private authenticated routes under `/app` are not public documentation and must not be indexed.
 

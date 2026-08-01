@@ -1,7 +1,7 @@
 {
   "name": "Naitrust — Payments and Protected Transactions",
   "short_name": "Naitrust",
-  "description": "Send and receive money, get paid by account, link or QR, and protect important transactions with Naitrust.",
+  "description": "Naitrust is a Nigerian fintech platform for business payments and Protected Transactions.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

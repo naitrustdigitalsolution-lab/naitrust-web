@@ -46,7 +46,7 @@ type RecipientRoute = 'naitrust' | 'bank_transfer' | 'beneficiary';
 type NaitrustLookup = 'naitrust_account_number' | 'naitrust_id' | 'email_address' | 'phone_number';
 
 const METHOD_META: Record<RecipientMethod, { label: string; icon: typeof AtSign; placeholder: string }> = {
-  naitrust_account_number: { label: 'Account number', icon: Landmark, placeholder: '10-digit Naitrust account number' },
+  naitrust_account_number: { label: 'Account number', icon: Landmark, placeholder: '10-digit account number' },
   naitrust_id: { label: 'Naitrust ID', icon: AtSign, placeholder: 'e.g. NT-A12B34 or ayo_stores' },
   email_address: { label: 'Email', icon: Mail, placeholder: 'e.g. customer@email.com' },
   phone_number: { label: 'Phone number', icon: Phone, placeholder: 'e.g. +2348031234567' },

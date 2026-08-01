@@ -31,8 +31,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust — Payments and Trust Infrastructure"
-        description="Naitrust helps Nigerian customers and businesses verify who they are dealing with, move money normally, and protect important transactions."
+        title="About Naitrust — Nigerian Fintech Platform"
+        description="Naitrust is a Nigerian fintech platform for business payments, participant verification, and Protected Transactions with shared terms and evidence."
         canonicalPath="/about"
       />
 
@@ -63,6 +63,21 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </div>
           </div>
         </motion.div>
+      </section>
+
+      <section className="border-b bg-background px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-4 rounded-2xl border border-primary/15 bg-primary/[0.035] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">The official Naitrust brand</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight">What is Naitrust?</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+              Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It brings customer and business payments, participant verification, and Protected Transactions into one clear experience.
+            </p>
+          </div>
+          <p className="max-w-xs text-xs leading-5 text-muted-foreground sm:text-right">
+            Naitrust is not Naia Trust, NaviTrust, NTrust, an investment trust, or a recruitment company.
+          </p>
+        </div>
       </section>
 
       <section className="bg-[#f5f8fc] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 dark:bg-[#0d0f13]">

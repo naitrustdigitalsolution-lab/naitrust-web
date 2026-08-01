@@ -1,6 +1,9 @@
 import * as React from "react";
 
-const MOBILE_BREAKPOINT = 768;
+// The dashboard sidebar behaves as an overlay through tablet/iPad widths.
+// A docked navigation rail is only appropriate when the content has genuine
+// desktop space beside it.
+const MOBILE_BREAKPOINT = 1280;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(

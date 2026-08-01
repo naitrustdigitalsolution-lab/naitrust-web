@@ -89,6 +89,11 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const [rangeOpen, setRangeOpen] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) setRangeOpen(false);
+    onOpenChange(nextOpen);
+  };
+
   const updateField = <Key extends keyof WaitlistFormState>(key: Key, value: WaitlistFormState[Key]) => {
     setFormState((current) => ({ ...current, [key]: value }));
   };
@@ -158,8 +163,8 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] gap-0 overflow-y-auto rounded-[1.75rem] border-0 p-0 shadow-[0_30px_100px_rgba(3,19,53,.28)] sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-h-[92vh] touch-pan-y overscroll-contain gap-0 overflow-y-auto rounded-[1.75rem] border-0 p-0 shadow-[0_30px_100px_rgba(3,19,53,.28)] sm:max-w-2xl">
         {isComplete ? (
           <div className="grid min-h-[28rem] place-items-center p-8 text-center sm:p-12">
             <div>
@@ -445,5 +450,7 @@ export function WaitlistModalHost() {
     return () => window.removeEventListener('naitrust:open-waitlist', handleOpen);
   }, []);
 
-  return <WaitlistModal open={open} onOpenChange={setOpen} />;
+  // Fully unmount the large form after dismissal. This releases its Radix
+  // popovers, focus guards and mobile scroll-lock resources immediately.
+  return open ? <WaitlistModal open onOpenChange={setOpen} /> : null;
 }

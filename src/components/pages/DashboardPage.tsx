@@ -322,8 +322,8 @@ export function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="mx-auto flex w-full max-w-9xl flex-col gap-7">
-        <header className="flex flex-wrap items-start justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-9xl flex-col gap-7 max-xl:[&>*]:order-3 xl:[&>*]:order-none">
+        <header className="flex flex-wrap items-start justify-between gap-4 max-xl:!order-0">
           <div>
             <p className="text-sm text-muted-foreground">Good day, {firstName}</p>
             <div className="mt-1 flex flex-wrap items-center gap-2">
@@ -348,7 +348,7 @@ export function DashboardPage() {
           </Button>
         </header>
 
-        <section>
+        <section className="max-xl:!order-2">
           <div className="mb-4">
             <h2 className="text-xl font-semibold tracking-tight">How would you like to get paid?</h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -379,7 +379,7 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+        <div className="grid gap-4 max-xl:!order-1 lg:grid-cols-[1.15fr_.85fr]">
           <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
             <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
             <div className="flex flex-wrap items-start justify-between gap-4">

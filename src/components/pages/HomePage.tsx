@@ -12,7 +12,6 @@ import { SEOHead } from '../utility/SEOHead';
 import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
 import spiralBackground from '../../assets/spiral.svg';
 import { openWaitlistModal } from '../modals/WaitlistModal';
-import { useIsMobile } from '../ui/use-mobile';
 import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
 import shopPaymentImage from "../images/hero/nigerian-shop-payment.webp";
 import  qrPaymentImage from "../images/hero/nigerian-qr-payment.webp"
@@ -26,8 +25,6 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
-  const isMobile = useIsMobile();
-
   const howItWorks = [
     {
       step: '1',
@@ -87,7 +84,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <FloatingFeedbackButton onNavigate={onNavigate} />
       
       {/* Hero — a deliberately loose collage of real business moments and product UI */}
-      <section className="relative min-h-[94vh] overflow-hidden bg-[#04162f] text-white">
+      <section className="relative overflow-hidden bg-[#04162f] text-white xl:min-h-[94vh]">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[110px]" />
           <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[130px]" />
@@ -95,34 +92,34 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
         </div>
 
-        <div className="relative z-10 mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)] items-center gap-8 px-4 pb-10 pt-24 sm:gap-10 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:min-h-[100vh] xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 xl:pb-20 xl:pt-28">
+        <div className="relative z-10 mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)] items-center gap-14 px-4 pb-16 pt-22 sm:gap-9 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:min-h-[100vh] xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 xl:pb-20 xl:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
-            <Badge className="mb-3 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-2 text-center text-[7.5px] font-semibold uppercase leading-4 tracking-[0.045em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8.5px] sm:px-4 sm:text-xs sm:tracking-[0.12em]">
+            <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
               Verified payments for Nigerian people and businesses
             </Badge>
             <AnimatedHeroText />
 
-            <div className="mt-6 flex w-full items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
-              <Button size={isMobile ? 'sm' : 'lg'} onClick={openWaitlistModal} className="group h-11 min-w-0 flex-1 rounded-full bg-[#1e90ff] px-3 text-xs font-bold text-white shadow-[0_14px_40px_rgba(30,144,255,.35)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:flex-none sm:px-7 sm:text-base">
+            <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
+              <Button size="sm" onClick={openWaitlistModal} className="group h-9 w-auto rounded-full bg-[#1e90ff] px-4 text-[10px] font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:px-7 sm:text-base">
                 Join the waitlist
                 <ArrowRight size={18} className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6" />
               </Button>
               <button
                 type="button"
                 onClick={() => document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-3 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-14 sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
+                className="inline-flex h-9 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-4 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-14 sm:gap-2 sm:px-6 sm:text-sm"
               >
                 See how it works
                 <ChevronRight size={18} />
               </button>
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-medium text-white/65 sm:text-xs xl:justify-start">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-[9px] font-medium text-white/65 sm:mt-7 sm:gap-x-4 sm:text-xs xl:justify-start">
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay people and businesses</span>
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Get paid by any customer</span>
               <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect important transactions</span>
@@ -133,12 +130,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="relative mx-auto h-[25rem] min-w-0 w-full max-w-[44rem] sm:h-[34rem] md:h-[38rem] xl:h-[42rem]"
+            className="relative mx-auto h-[22rem] min-w-0 w-full max-w-[25rem] sm:h-[34rem] sm:max-w-[44rem] md:h-[38rem] xl:h-[42rem]"
           >
             <motion.div
               animate={{ y: [0, -8, 0], rotate: [-5, -4, -5] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-[1%] top-[4%] z-10 h-[36%] w-[38%] overflow-hidden rounded-[1.25rem] border-4 border-white shadow-2xl sm:rounded-[1.7rem] sm:border-[6px]"
+              className="absolute left-[1%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={businessVerificationImage}
@@ -146,13 +143,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/65 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Verified to trade</span>
+              <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Verified to trade</span>
             </motion.div>
 
             <motion.div
               animate={{ y: [0, 10, 0], rotate: [4, 3, 4] }}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-              className="absolute right-[1%] top-[1%] z-0 h-[31%] w-[36%] overflow-hidden rounded-[1.25rem] border-4 border-white/90 shadow-2xl sm:rounded-[1.6rem] sm:border-[6px]"
+              className="absolute right-[1%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={deliveryEvidenceImage}
@@ -165,29 +162,29 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <motion.div
               whileHover={{ y: -6, rotate: 0 }}
-              className="absolute left-[12%] top-[24%] z-30 w-[76%] rotate-[-1deg] overflow-hidden rounded-[1.5rem] border border-white/80 bg-white p-4 text-[#0b203b] shadow-[0_35px_90px_rgba(0,0,0,.42)] sm:left-[18%] sm:w-[66%] sm:rounded-[2rem] sm:p-7"
+              className="absolute left-[14%] top-[25%] z-30 w-[72%] rotate-[-1deg] overflow-hidden rounded-xl border border-white/80 bg-white p-3 text-[#0b203b] shadow-[0_20px_48px_rgba(0,0,0,.36)] sm:left-[18%] sm:top-[24%] sm:w-[66%] sm:rounded-[2rem] sm:p-7 sm:shadow-[0_35px_90px_rgba(0,0,0,.42)]"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Available balance</p>
-                  <p className="mt-1 text-2xl font-black tracking-[-0.04em] sm:text-4xl">₦842,500</p>
+                  <p className="text-[8px] font-bold uppercase tracking-[0.13em] text-slate-400 sm:text-[10px] sm:tracking-[0.16em]">Available balance</p>
+                  <p className="mt-0.5 text-lg font-black tracking-[-0.04em] sm:mt-1 sm:text-4xl">₦842,500</p>
                 </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eaf5ff] text-[#1e90ff]"><WalletIcon size={21} /></div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eaf5ff] text-[#1e90ff] sm:h-11 sm:w-11 sm:rounded-2xl"><WalletIcon size={15} className="sm:h-[21px] sm:w-[21px]" /></div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-6">
-                <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1e90ff] px-3 py-3 text-[10px] font-bold text-white sm:text-xs"><Send size={14} /> Send instantly</span>
-                <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#eaf5ff] px-3 py-3 text-[10px] font-bold text-[#0877db] sm:text-xs"><Shield size={14} /> Protect payment</span>
+              <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:mt-6 sm:gap-2">
+                <span className="inline-flex items-center justify-center gap-1 rounded-md bg-[#1e90ff] px-1.5 py-1.5 text-[7.5px] font-bold text-white sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Send size={10} className="sm:h-3.5 sm:w-3.5" /> Send instantly</span>
+                <span className="inline-flex items-center justify-center gap-1 rounded-md bg-[#eaf5ff] px-1.5 py-1.5 text-[7.5px] font-bold text-[#0877db] sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Shield size={10} className="sm:h-3.5 sm:w-3.5" /> Protect payment</span>
               </div>
 
-              <div className="mt-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 sm:mt-5 sm:p-3.5">
+              <div className="mt-2 rounded-lg border border-slate-100 bg-slate-50 p-2 sm:mt-5 sm:rounded-2xl sm:p-3.5">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 sm:h-10 sm:w-10 sm:text-xs">
                   CE
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-bold sm:text-sm">Chioma Electronics</p>
-                    <p className="mt-0.5 text-[10px] text-slate-500 sm:text-xs">Protected deal · fully funded</p>
+                    <p className="truncate text-[9px] font-bold sm:text-sm">Chioma Electronics</p>
+                    <p className="mt-0.5 text-[7.5px] text-slate-500 sm:text-xs">Protected deal · fully funded</p>
                   </div>
                   <VerifiedBadge tier="premium" variant="small" />
                 </div>
@@ -197,7 +194,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={{ y: [0, -9, 0], rotate: [5, 6, 5] }}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute bottom-[1%] right-[1%] z-20 h-[33%] w-[39%] overflow-hidden rounded-[1.25rem] border-4 border-white shadow-2xl sm:rounded-[1.7rem] sm:border-[6px]"
+              className="absolute bottom-[1%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={saferDealsImage}
@@ -205,13 +202,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/70 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Trade with confidence</span>
+              <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Trade with confidence</span>
             </motion.div>
 
             <motion.div
               animate={{ y: [0, 7, 0], rotate: [-4, -5, -4] }}
               transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-[7%] left-[1%] z-40 rounded-xl border border-white/20 bg-[#0d2b4f]/90 p-3 shadow-2xl backdrop-blur-xl sm:rounded-2xl sm:p-4"
+              className="absolute bottom-[7%] left-[1%] z-40 hidden rounded-2xl border border-white/20 bg-[#0d2b4f]/90 p-4 shadow-2xl backdrop-blur-xl sm:block"
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/15 text-emerald-300"><CheckCircle2 size={19} /></span>

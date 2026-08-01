@@ -581,7 +581,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="ownerFirstName">Owner First Name *</Label>
                   <Input
@@ -1003,7 +1003,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
           />
         </div>
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl xl:gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
-        <aside className="flex flex-col justify-between rounded-2xl bg-none lg:bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:p-10">
+        <aside className="flex flex-col justify-between rounded-2xl bg-none lg:bg-[#eef3f8] p-0 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:p-10">
           <div>
             <button
               type="button"
@@ -1053,7 +1053,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
         </aside>
 
         <main className="flex min-h-full flex-col items-center justify-center py-4 lg:py-10">
-          <div className="w-full max-w-xl sm:rounded-2xl sm:border sm:border-border/70 bg-card p-5 sm:shadow-2xl sm:p-8">
+          <div className="w-full max-w-xl bg-card p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
             <button
               type="button"
               onClick={handleBack}
@@ -1085,13 +1085,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             </AnimatePresence>
 
             {/* Navigation Buttons */}
-            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row">
+            <div className="mt-8 flex items-center gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 onClick={handleBack}
-                className="h-12 flex-1 rounded-full"
+                className="h-11 min-w-0 flex-1 rounded-full px-3 text-sm sm:h-12 sm:px-4"
               >
-                <ArrowLeft size={16} className="mr-2" />
+                <ArrowLeft size={16} className="mr-1.5 shrink-0 sm:mr-2" />
                 {currentStep === 1 ? (isAuthenticated ? 'Back to Dashboard' : 'Back') : 'Back'}
               </Button>
               <Button
@@ -1102,7 +1102,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                   }
                   handleNext();
                 }}
-                className="h-12 flex-1 rounded-full"
+                className="h-11 min-w-0 flex-[1.35] rounded-full px-3 text-sm sm:h-12 sm:flex-1 sm:px-4"
                 disabled={isSubmitting || (currentStep === totalSteps && !formData.acceptTerms)}
               >
                 {isSubmitting ? (
@@ -1115,7 +1115,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 ) : (
                   <>
                     Continue
-                    <ArrowRight size={16} className="ml-2" />
+                    <ArrowRight size={16} className="ml-1.5 shrink-0 sm:ml-2" />
                   </>
                 )}
               </Button>

@@ -4,7 +4,11 @@ import { DashboardLayout } from '../dashboard/DashboardLayout';
 export function AuthPageLoader({ contained = false }: { contained?: boolean }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-6 bg-background ${contained ? 'min-h-[calc(100vh-7.5rem)] rounded-xl' : 'min-h-screen'}`}
+      className={`flex flex-col items-center justify-center gap-6 bg-background px-4 text-center ${
+        contained
+          ? 'min-h-[calc(100dvh-7.5rem)] w-full rounded-xl'
+          : 'fixed inset-0 z-[100] h-[100dvh] min-h-[100svh] w-full'
+      }`}
       role="status"
       aria-live="polite"
     >

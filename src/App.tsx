@@ -13,7 +13,6 @@ import { Header } from "./components/pieces/general/Header";
 import { Footer } from "./components/pieces/general/Footer";
 import { CookieConsent } from "./components/utility/CookieConsent";
 import { Toaster } from "./components/ui/sonner";
-import { LazyWaitlistModalHost } from "./components/modals/LazyWaitlistModalHost";
 import { AuthPageLoader, DashboardPageLoader } from "./components/pieces/auth/AuthPageLoader";
 import { RequireAuth } from './components/utility/RequireAuth';
 import { RequireBusinessAccount } from './components/utility/RequireBusinessAccount';
@@ -84,6 +83,7 @@ const BlogArticlePage = lazy(() => import("./components/pages/BlogArticlePage").
 const ReportConcernPage = lazy(() => import("./components/pages/ReportConcernPage").then((module) => ({ default: module.ReportConcernPage })));
 const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBusinessPaymentPage").then((module) => ({ default: module.PublicBusinessPaymentPage })));
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
+const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 
 const queryClient = new QueryClient();
 
@@ -174,6 +174,7 @@ const standalonePaths = [
   "/forgot-password",
   "/verify-code",
   "/verify-email",
+  "/waitlist",
   "/app",
 ];
 
@@ -275,6 +276,7 @@ function PublicAppContent() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/verify-code" element={<VerifyCodePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
           <Route element={<RequireAuth />}>
@@ -311,7 +313,6 @@ function PublicAppContent() {
 
       {!usesStandaloneHome && <Footer onNavigate={handleNavigate} />}
       <CookieConsent />
-      <LazyWaitlistModalHost />
       <Toaster />
     </div>
   );

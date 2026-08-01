@@ -74,9 +74,6 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It brings customer and business payments, participant verification, and Protected Transactions into one clear experience.
             </p>
           </div>
-          <p className="max-w-xs text-xs leading-5 text-muted-foreground sm:text-right">
-            Naitrust is not Naia Trust, NaviTrust, NTrust, an investment trust, or a recruitment company.
-          </p>
         </div>
       </section>
 

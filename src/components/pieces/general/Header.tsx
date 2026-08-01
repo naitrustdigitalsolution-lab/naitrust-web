@@ -112,7 +112,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               : 'border-b border-border/70'
           }`}
         >
-          <div className="relative flex h-20 min-w-0 items-center gap-4 max-w-440 mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="relative mx-auto flex h-16 min-w-0 max-w-440 items-center gap-3 px-3 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
             {/* Back Button - Show for pages 2 screens deep when sidebar is active (desktop) */}
             {shouldShowBackButton && (
               <Button
@@ -141,9 +141,14 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               ) : (
                 <button
                   onClick={handleLogoClick}
-                  className="shrink-0 items-center gap-2 transition-opacity hover:opacity-80 md:flex"
+                  className="flex shrink-0 items-center gap-1.5 transition-opacity hover:opacity-80"
                 >
-                  <NaitrustLogo size="md" showText={true} />
+                  <NaitrustLogo
+                    size="sm"
+                    showText
+                    textColor={isHomeHero ? 'text-white' : 'text-primary'}
+                    className="gap-1.5 [&>div]:h-7 [&>div]:w-7 [&>span]:text-base sm:gap-2 sm:[&>div]:h-8 sm:[&>div]:w-8 sm:[&>span]:text-lg"
+                  />
                 </button>
               )}
             </div>
@@ -240,9 +245,11 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {!isAuthenticated && (
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className={`lg:hidden p-2 rounded-lg ${isHomeHero ? 'text-white hover:bg-white/10' : 'hover:bg-muted'}`}
+                  aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                  aria-expanded={mobileMenuOpen}
+                  className={`rounded-lg p-1.5 lg:hidden ${isHomeHero ? 'text-white hover:bg-white/10' : 'hover:bg-muted'} ${mobileMenuOpen ? 'bg-primary/15' : ''}`}
                 >
-                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                  {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
               )}
 
@@ -273,9 +280,9 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-                className="absolute right-0 top-full z-50 w-full overflow-hidden border-t border-border bg-background shadow-lg backdrop-blur-md supports-backdrop-filter:bg-background/80 sm:w-96 sm:rounded-bl-xl lg:hidden"
+              className="absolute right-0 top-full z-50 w-full overflow-hidden border-t border-white/10 bg-[#071b31] text-white shadow-[0_22px_55px_rgba(3,19,53,.35)] sm:w-96 sm:rounded-bl-2xl lg:hidden"
             >
-              <div className="px-4 py-4 space-y-2">
+              <div className="space-y-1.5 px-4 py-4">
                 {publicNavItems.map((item) => (
                   <button
                     key={item.page}
@@ -286,17 +293,18 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                     className={`block w-full text-left px-4 py-2.5 rounded-lg transition-colors ${
                       currentPage === item.page
                         ? 'bg-primary text-white'
-                        : 'hover:bg-muted'
+                        : 'text-white/78 hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     {item.label}
                   </button>
                 ))}
 
-                <div className="pt-3 border-t border-border flex w-full gap-3">
+                <div className="mt-3 flex w-full gap-2 border-t border-white/10 pt-4">
                   <Button
                     variant="outline"
-                    className="flex-1 min-w-0"
+                    size="sm"
+                    className="h-10 min-w-0 flex-1 border-white/25 bg-white/[0.06] text-xs text-white hover:bg-white/12 hover:text-white"
                     onClick={() => {
                       window.open('/login', '_blank', 'noopener,noreferrer');
                       setMobileMenuOpen(false);
@@ -305,7 +313,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                     Login
                   </Button>
                   <Button
-                    className="flex-1 min-w-0"
+                    size="sm"
+                    className="h-10 min-w-0 flex-1 text-xs"
                     onClick={() => {
                       window.open('/register', '_blank', 'noopener,noreferrer');
                       setMobileMenuOpen(false);

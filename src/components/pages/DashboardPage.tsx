@@ -471,13 +471,13 @@ export function DashboardPage() {
         </Card>
 
         <section>
-          <div className="mb-3 flex items-end justify-between gap-3">
-            <div>
+          <div className="mb-3 flex items-start justify-between gap-3 sm:items-end">
+            <div className="min-w-0">
               <h2 className="text-lg font-semibold">Recent protected transactions</h2>
               <p className="mt-1 text-sm text-muted-foreground">Only transactions that need extra trust and evidence.</p>
             </div>
             {(deals?.length ?? 0) > 0 && (
-              <Button variant="ghost" size="sm" onClick={() => navigate('/app/deals')}>
+              <Button variant="ghost" size="sm" className="shrink-0" onClick={() => navigate('/app/deals')}>
                 View all <ArrowRight size={14} />
               </Button>
             )}

@@ -25,13 +25,18 @@ function LoadingRows() {
   return (
     <Card className="gap-0 p-0 shadow-sm" aria-label="Loading invitations">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="flex items-center gap-3 border-b px-5 py-4 last:border-b-0">
-          <Skeleton className="h-9 w-9 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-56" />
-            <Skeleton className="h-3 w-32" />
+        <div key={i} className="flex flex-col gap-3 border-b px-4 py-4 last:border-b-0 sm:flex-row sm:items-center sm:px-5">
+          <div className="flex w-full items-center gap-3">
+            <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-4 w-3/4 max-w-56" />
+              <Skeleton className="h-3 w-32" />
+            </div>
           </div>
-          <Skeleton className="h-5 w-20 rounded-md" />
+          <div className="flex items-center justify-between pl-12 sm:ml-auto sm:pl-0">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-5 w-20 rounded-md" />
+          </div>
         </div>
       ))}
     </Card>
@@ -65,21 +70,23 @@ function InvitationRow({ invitation, onOpen }: { invitation: DealInvitation; onO
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => e.key === 'Enter' && onOpen()}
-      className="flex cursor-pointer items-center gap-3 border-b px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:px-5"
+      className="flex cursor-pointer flex-col items-stretch gap-3 border-b px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:flex-row sm:items-center sm:px-5"
     >
-      <CounterpartyAvatar name={invitation.fromName} />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="truncate font-semibold text-foreground">{invitation.fromName}</p>
-          <Badge variant="outline" className="shrink-0">{partyModeShort(invitation.partyMode)}</Badge>
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        <CounterpartyAvatar name={invitation.fromName} />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="truncate font-semibold text-foreground">{invitation.fromName}</p>
+            <Badge variant="outline" className="shrink-0">{partyModeShort(invitation.partyMode)}</Badge>
+          </div>
+          <p className="mt-0.5 truncate text-sm text-muted-foreground">{invitation.title}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            You’d join as {roleLabel(invitation.yourRole)} · {expiryLabel}
+          </p>
         </div>
-        <p className="mt-0.5 truncate text-sm text-muted-foreground">{invitation.title}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          You’d join as {roleLabel(invitation.yourRole)} · {expiryLabel}
-        </p>
       </div>
-      <div className="grid shrink-0 grid-cols-[minmax(110px,auto)_130px_18px] items-center gap-3">
-        <span className="hidden text-right text-sm font-semibold text-foreground tabular-nums sm:block">
+      <div className="grid w-full grid-cols-[1fr_auto_18px] items-center gap-2 pl-12 sm:w-auto sm:shrink-0 sm:grid-cols-[minmax(110px,auto)_130px_18px] sm:gap-3 sm:pl-0">
+        <span className="text-sm font-semibold text-foreground tabular-nums sm:text-right">
           {formatMinorAmount(invitation.amountMinor, invitation.currency)}
         </span>
         <div className="justify-self-end"><InvitationStatusBadge status={invitation.status} /></div>

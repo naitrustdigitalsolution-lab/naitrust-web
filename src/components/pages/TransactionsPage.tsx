@@ -153,7 +153,7 @@ export function TransactionsPage() {
                 key={r.id}
                 type="button"
                 onClick={() => setSelected(r)}
-                className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-accent/40"
+                className="flex w-full items-center gap-3 border-b px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-accent/40 sm:py-5"
               >
                 <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isCredit(r) ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
                   {isCredit(r) ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}

@@ -89,13 +89,15 @@ export function BusinessNetworkPage() {
             <Input placeholder="Search customers or suppliers" value={search} onChange={(event) => setSearch(event.target.value)} className="pl-10" />
           </div>
           <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
-            <TabsList className="flex h-auto flex-wrap justify-start gap-1 bg-transparent p-0">
-              {FILTERS.map((item) => (
-                <TabsTrigger key={item.key} value={item.key} className="rounded-full border data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
-                  {item.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <div className="-mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <TabsList className="flex h-auto w-max min-w-full flex-nowrap justify-start gap-1 bg-transparent p-0 sm:flex-wrap">
+                {FILTERS.map((item) => (
+                  <TabsTrigger key={item.key} value={item.key} className="shrink-0 rounded-full border px-3 data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
+                    {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
           </Tabs>
         </Card>
 
@@ -118,9 +120,9 @@ export function BusinessNetworkPage() {
               <span className="text-right">Actions</span>
             </div>
             {filtered.map((contact) => (
-              <div key={contact.id} className="grid items-center gap-3 border-b px-4 py-3.5 last:border-b-0 hover:bg-muted/30 md:grid-cols-[minmax(0,1.4fr)_140px_120px_120px] md:gap-4 md:px-5">
+              <div key={contact.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b px-3 py-3 last:border-b-0 hover:bg-muted/30 md:grid-cols-[minmax(0,1.4fr)_140px_120px_120px] md:gap-4 md:px-5 md:py-3.5">
                 <div className="flex min-w-0 items-center gap-3">
-                  <CounterpartyAvatar name={contact.name} className="h-10 w-10 shrink-0 text-xs" />
+                  <CounterpartyAvatar name={contact.name} className="h-9 w-9 shrink-0 text-xs md:h-10 md:w-10" />
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
                       <p className="truncate text-sm font-semibold">{contact.name}</p>
@@ -130,19 +132,18 @@ export function BusinessNetworkPage() {
                     <p className="mt-1 truncate text-xs text-muted-foreground">{contact.businessName ?? 'Individual account'}</p>
                   </div>
                 </div>
-                <div>
-                  <Badge variant="outline" className="rounded-full font-normal">{RELATION_LABEL[contact.relation]}</Badge>
+                <div className="justify-self-end md:justify-self-auto">
+                  <Badge variant="outline" className="rounded-full px-2 py-0.5 text-[11px] font-normal md:px-2.5 md:text-xs">{RELATION_LABEL[contact.relation]}</Badge>
                 </div>
-                <div className="flex items-center justify-between md:block">
-                  <span className="text-xs text-muted-foreground md:hidden">History</span>
-                  <p className="text-sm font-medium">{contact.completedDealsCount} completed</p>
-                  {contact.ratingAverage != null && <p className="mt-0.5 text-xs text-muted-foreground">★ {contact.ratingAverage.toFixed(1)}</p>}
+                <div className="flex min-w-0 items-center gap-2 md:block">
+                  <p className="text-xs font-medium text-muted-foreground md:text-sm md:text-foreground">{contact.completedDealsCount} completed</p>
+                  {contact.ratingAverage != null && <p className="text-xs text-muted-foreground md:mt-0.5">★ {contact.ratingAverage.toFixed(1)}</p>}
                 </div>
-                <div className="flex items-center justify-end gap-1">
-                  <Button variant="ghost" size="icon" aria-label={contact.isFavourite ? 'Remove favourite' : 'Mark favourite'} onClick={() => toggleFavourite.mutate(contact.id)}>
+                <div className="flex items-center justify-end gap-0.5 md:gap-1">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9" aria-label={contact.isFavourite ? 'Remove favourite' : 'Mark favourite'} onClick={() => toggleFavourite.mutate(contact.id)}>
                     <Star size={16} className={contact.isFavourite ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground'} />
                   </Button>
-                  <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/payments/send')}>
+                  <Button variant="outline" size="sm" className="h-8 rounded-full px-2.5 text-xs md:h-9 md:px-3" onClick={() => navigate('/app/payments/send')}>
                     <Send size={13} /> Pay
                   </Button>
                 </div>

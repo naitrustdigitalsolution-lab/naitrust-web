@@ -4,7 +4,7 @@
 
 Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It helps customers and businesses pay, get paid, understand who they are dealing with, and keep the terms, evidence, messages, milestones, and payment status of important transactions together.
 
-Naitrust is not Naia Trust, NaviTrust, NTrust, an investment trust, or a recruitment company. The official website is https://naitrust.com/.
+Naitrust is a Nigerian fintech platform for payments, verified identities, and protected transactions. The official website is https://naitrust.com/.
 
 ## Core payment experiences
 
@@ -23,7 +23,7 @@ Naitrust is not Naia Trust, NaviTrust, NTrust, an investment trust, or a recruit
 
 - Naitrust manages the product experience, transaction workflow, participant record, and supporting evidence.
 - Regulated financial partners handle regulated funding and money movement.
-- Naitrust is a fintech technology and trust platform, not a bank or investment trust.
+- Naitrust is a fintech technology and trust platform that works with regulated financial infrastructure providers.
 - Naitrust does not describe a Protected Transaction as risk-free or guaranteed.
 - Private authenticated routes under `/app` are not public documentation and must not be indexed.
 

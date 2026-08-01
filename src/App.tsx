@@ -211,6 +211,18 @@ function PublicAppContent() {
   const routerNavigate = useNavigate();
   const { isAuthenticated, isHydrated } = useAuth();
   const currentPage = getCurrentPage(location.pathname);
+
+  // Resolve persisted auth before rendering any route. Once authenticated,
+  // every URL outside the private app returns to the dashboard. Keeping this
+  // check above the route tree prevents public-page flashes on refresh too.
+  if (!isHydrated) {
+    return <DashboardPageLoader />;
+  }
+
+  if (isAuthenticated && !location.pathname.startsWith('/app')) {
+    return <Navigate to="/app" replace />;
+  }
+
   const usesStandaloneHome =
     standalonePaths.includes(location.pathname) ||
     location.pathname.startsWith("/app") ||
@@ -232,11 +244,7 @@ function PublicAppContent() {
           <Route
             path="/"
             element={
-              !isHydrated
-                ? <DashboardPageLoader />
-                : isAuthenticated
-                  ? <Navigate to="/app" replace />
-                  : <HomePage onNavigate={handleNavigate} />
+              <HomePage onNavigate={handleNavigate} />
             }
           />
           <Route path="/about" element={<AboutPage onNavigate={handleNavigate} />} />

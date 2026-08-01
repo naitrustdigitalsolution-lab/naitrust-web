@@ -17,8 +17,9 @@ Read order:
 11. `verification-flow.md`
 12. `ai-intelligence-plan.md`
 13. `api-contract.md`
-14. `tool.md`
-15. `database-design.md`
+14. `anchor-kora-payments.md`
+15. `tool.md`
+16. `database-design.md`
 
 The root `../../futureidea.md` is the company/product source of truth. The local `futureidea.md` is a snapshot copy kept for convenience.
 

@@ -694,7 +694,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Infrastructure partners</p>
             <h2 className="mb-4 text-3xl tracking-tight text-gray-900 sm:text-4xl dark:text-white">Trust in front. Regulated rails underneath.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Naitrust works with regulated payment infrastructure partners, including Anchor and Kora, to support account, collection, transfer, and protected-payment services — Naitrust handles the trust workflow while regulated partners handle verification, payment, and fund movement.
+              Naitrust is being built on regulated banking infrastructure from Anchor for account, collection, transfer, and verification services. Naitrust provides the customer experience and trust workflow while regulated infrastructure handles fund movement.
             </p>
           </motion.div>
 

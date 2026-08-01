@@ -351,15 +351,19 @@ function KycModal({
     ? [
         { key: 'businessName', label: 'Registered business name' },
         { key: 'rcNumber', label: 'CAC / RC number' },
+        { key: 'registrationType', label: 'Registration type' },
+        { key: 'industry', label: 'Business industry' },
+        { key: 'businessAddress', label: 'Current business address' },
         { key: 'directorFirstName', label: 'Director first name' },
         { key: 'directorLastName', label: 'Director last name' },
-        { key: 'directorNin', label: "Director's NIN" },
+        { key: 'directorBvn', label: "Director or owner's BVN" },
       ]
     : [
         { key: 'firstName', label: 'Legal first name' },
         { key: 'lastName', label: 'Legal last name' },
-        { key: 'nin', label: 'NIN (National Identity Number)' },
+        { key: 'bvn', label: 'BVN' },
         { key: 'dob', label: 'Date of birth', type: 'date' },
+        { key: 'gender', label: 'Gender' },
       ];
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerEmail);
@@ -402,6 +406,26 @@ function KycModal({
         </SheetHeader>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
+          {isBusiness ? (
+            <div className="rounded-2xl border border-primary/15 bg-primary/[0.04] p-4">
+              <p className="text-sm font-semibold">Business KYB</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">Provide the registered business, operating address, industry and an owner or director. Anchor requests the exact CAC and address documents needed after KYB starts; approval is required before a business deposit account is created.</p>
+            </div>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                ['Tier 0', 'Name, address, email and phone'],
+                ['Tier 1', 'BVN, date of birth and gender'],
+                ['Tier 2', 'Government ID and manual review'],
+              ].map(([tier, description], index) => (
+                <div key={tier} className={`rounded-xl border p-3 ${index === 1 ? 'border-primary/30 bg-primary/[0.05]' : 'bg-muted/30'}`}>
+                  <p className="text-xs font-bold text-foreground">{tier}</p>
+                  <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{description}</p>
+                </div>
+              ))}
+              <p className="text-xs leading-5 text-muted-foreground sm:col-span-3">Your registered name and phone number must match the details attached to your BVN.</p>
+            </div>
+          )}
           <div className="grid gap-3 sm:grid-cols-2">
             {spec.map((f) => (
               <div key={f.key} className={f.key === 'businessName' ? 'sm:col-span-2' : ''}>

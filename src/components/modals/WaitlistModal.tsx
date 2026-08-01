@@ -186,22 +186,22 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
         <div className="p-6 sm:p-8">
         <DialogHeader>
           <div className="mb-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            Get early access
+            Naitrust early access
           </div>
-          <DialogTitle className="text-2xl tracking-tight sm:text-3xl">Be first to move money with more confidence.</DialogTitle>
+          <DialogTitle className="text-2xl tracking-tight sm:text-3xl">Payments built around trust, not guesswork.</DialogTitle>
           <DialogDescription>
-            Join for early access to instant payments and protected payments — participant records, agreements, evidence, and milestones in one place.
+            Join Naitrust to receive customer payments, pay businesses and protect important transactions with verified participants, clear terms and one shared record.
           </DialogDescription>
         </DialogHeader>
 
         <div className="my-6 grid gap-2 rounded-2xl border border-primary/15 bg-primary/5 p-3 text-sm text-muted-foreground sm:grid-cols-2">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
-            Early-access priority
+            Modern business payments
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
-            Built around your needs
+            Protected transaction tools
           </div>
         </div>
 
@@ -422,7 +422,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </label>
 
           <Button type="submit" size="lg" disabled={isSubmitting} className="rounded-full">
-            {isSubmitting ? 'Saving your place...' : 'Join early access'}
+            {isSubmitting ? 'Saving your place...' : 'Join the Naitrust waitlist'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">
             No spam. We will only send useful launch and early-access updates.

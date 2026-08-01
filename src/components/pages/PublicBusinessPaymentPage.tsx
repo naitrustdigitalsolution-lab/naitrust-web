@@ -5,7 +5,6 @@ import {
   Check,
   Clock3,
   Copy,
-  CreditCard,
   Landmark,
   Loader2,
   LockKeyhole,
@@ -35,12 +34,12 @@ export function PublicBusinessPaymentPage() {
   const [searchParams] = useSearchParams();
   const fixedAmount = Number(searchParams.get('amount') || 0);
   const reason = searchParams.get('for');
+  const requestedExpiry = Number(searchParams.get('expires') || 15);
+  const expiryMinutes = requestedExpiry > 0 ? Math.min(requestedExpiry, 1440) : 15;
   const [amount, setAmount] = useState(fixedAmount > 0 ? String(fixedAmount) : '');
-  const [payerName, setPayerName] = useState('');
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'transfer' | 'card'>('transfer');
   const { data: business, isLoading } = usePublicBusiness(businessSlug);
   const businessName = useMemo(
     () => business?.name || titleFromSlug(businessSlug) || 'Naitrust Business',
@@ -56,6 +55,19 @@ export function PublicBusinessPaymentPage() {
     accountName: businessName,
   };
   const isSpecificRequest = fixedAmount > 0 || Boolean(reason);
+
+  // Mock provider webhook. Production changes this state only after Anchor (or
+  // the configured regulated provider) reports a matching inbound transfer.
+  // Keep hooks above conditional returns so their order remains stable while
+  // the business query moves from loading to resolved.
+  useEffect(() => {
+    if (!checking || confirmed) return;
+    const timer = window.setTimeout(() => {
+      setConfirmed(true);
+      setChecking(false);
+    }, 1800);
+    return () => window.clearTimeout(timer);
+  }, [checking, confirmed]);
 
   if (isLoading) {
     return <div className="flex min-h-screen items-center justify-center bg-[#f4f7f9] dark:bg-background"><Spinner size="lg" /></div>;
@@ -84,21 +96,10 @@ export function PublicBusinessPaymentPage() {
     setChecking(true);
   };
 
-  // Mock provider webhook. Production changes this state only after Anchor (or
-  // the configured regulated provider) reports a matching inbound transfer.
-  useEffect(() => {
-    if (!checking || confirmed) return;
-    const timer = window.setTimeout(() => {
-      setConfirmed(true);
-      setChecking(false);
-    }, 1800);
-    return () => window.clearTimeout(timer);
-  }, [checking, confirmed]);
-
   return (
     <div className="min-h-screen bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10">
       <SEOHead title={`Pay ${businessName}`} description={`Make a verified bank transfer to ${businessName} with Naitrust.`} noindex />
-      <div className="mx-auto max-w-lg">
+      <div className="mx-auto max-w-xl">
         <div className="mb-7 flex justify-center"><NaitrustLogo /></div>
 
         <Card className="overflow-hidden rounded-3xl border-0 shadow-xl shadow-slate-950/10">
@@ -114,13 +115,13 @@ export function PublicBusinessPaymentPage() {
             <p className="mt-2 text-xs text-white/50">{business.category} · {business.ntId}</p>
           </div>
 
-          <div className="space-y-5 p-5 sm:p-6">
+          <div className="space-y-5 p-5 sm:p-7">
             <div className="flex items-center justify-between gap-3">
               <Badge variant="outline" className="gap-1 rounded-full">
                 {isSpecificRequest ? <MessageCircle size={12} /> : <Store size={12} />}
                 {isSpecificRequest ? 'Business payment request' : 'Open business payment'}
               </Badge>
-              {isSpecificRequest && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock3 size={12} /> Request expires in 59 minutes</span>}
+              {isSpecificRequest && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock3 size={12} /> Request expires in {expiryMinutes === 60 ? '1 hour' : expiryMinutes === 1440 ? '24 hours' : `${expiryMinutes} minutes`}</span>}
             </div>
 
             {reason && (
@@ -130,42 +131,23 @@ export function PublicBusinessPaymentPage() {
               </div>
             )}
 
-            <div>
-              <Label htmlFor="pay-amount">Amount to transfer (NGN)</Label>
-              <div className="relative mt-2">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-semibold text-muted-foreground">₦</span>
-                <Input
-                  id="pay-amount"
-                  type="number"
-                  min={1}
-                  value={amount}
-                  readOnly={fixedAmount > 0}
-                  onChange={(event) => setAmount(event.target.value)}
-                  className="h-12 pl-8 text-lg font-semibold"
-                  placeholder="0.00"
-                />
+            {fixedAmount > 0 ? (
+              <div className="rounded-2xl border bg-muted/40 px-5 py-4">
+                <p className="text-xs font-medium text-muted-foreground">Amount to pay</p>
+                <p className="mt-1 text-3xl font-bold tracking-tight">₦{fixedAmount.toLocaleString()}</p>
+                <p className="mt-1 text-xs text-muted-foreground">This amount was set by {businessName}.</p>
               </div>
-              {fixedAmount > 0 && <p className="mt-1.5 text-xs text-muted-foreground">The business set this amount for the request.</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="payer-name">Your name</Label>
-              <Input id="payer-name" value={payerName} onChange={(event) => setPayerName(event.target.value)} className="mt-2" placeholder="Who is making this payment?" />
-            </div>
-
-            <div>
-              <Label>Choose how to pay</Label>
-              <div className="mt-2 grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
-                <button type="button" onClick={() => setPaymentMethod('transfer')} className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${paymentMethod === 'transfer' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground'}`}>
-                  <Landmark size={15} /> Bank transfer
-                </button>
-                <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${paymentMethod === 'card' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground'}`}>
-                  <CreditCard size={15} /> Debit card
-                </button>
+            ) : (
+              <div>
+                <Label htmlFor="pay-amount">Amount to pay (NGN)</Label>
+                <div className="relative mt-2">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-semibold text-muted-foreground">₦</span>
+                  <Input id="pay-amount" type="number" min={1} value={amount} onChange={(event) => setAmount(event.target.value)} className="h-12 pl-8 text-lg font-semibold" placeholder="0.00" />
+                </div>
               </div>
-            </div>
+            )}
 
-            {paymentMethod === 'transfer' ? <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
+            <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Landmark size={16} className="text-primary" /> Transfer to this account
               </div>
@@ -180,13 +162,7 @@ export function PublicBusinessPaymentPage() {
                   {copied ? 'Copied' : 'Copy number'}
                 </Button>
               </div>
-            </div> : (
-              <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
-                <div className="flex items-center gap-2 text-sm font-semibold"><CreditCard size={16} className="text-primary" /> Pay securely by card</div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">You’ll continue through the payment provider’s secure checkout. Naitrust never stores your card number or CVV.</p>
-                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground"><LockKeyhole size={13} /> Visa, Mastercard and Verve eligibility is confirmed by the provider.</div>
-              </div>
-            )}
+            </div>
 
             {confirmed ? (
               <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-100">
@@ -206,10 +182,10 @@ export function PublicBusinessPaymentPage() {
             ) : (
               <Button
                 className="h-12 w-full rounded-xl text-base"
-                disabled={Number(amount) <= 0 || !payerName.trim()}
+                disabled={Number(amount) <= 0}
                 onClick={checkTransfer}
               >
-                {paymentMethod === 'card' ? `Pay ₦${Number(amount).toLocaleString()} by card` : 'I have made the transfer'}
+                I have made the transfer
               </Button>
             )}
 

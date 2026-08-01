@@ -46,6 +46,7 @@ export function ReceiveMoneyPage() {
   const [copied, setCopied] = useState('');
   const [linkAmount, setLinkAmount] = useState('');
   const [linkReason, setLinkReason] = useState('');
+  const [linkExpiryMinutes, setLinkExpiryMinutes] = useState('15');
   const [selectedCustomerId, setSelectedCustomerId] = useState('new');
   const [newCustomerName, setNewCustomerName] = useState('');
   const isBusiness = accountTypeOf(user) !== 'customer';
@@ -63,13 +64,14 @@ export function ReceiveMoneyPage() {
 
   const paymentLink = useMemo(() => {
     const origin = typeof window === 'undefined' ? '' : window.location.origin;
-    const slug = slugify(business?.name || user?.name || 'business');
+    const slug = business?.slug || slugify(business?.name || user?.name || 'business');
     const params = new URLSearchParams();
     if (Number(linkAmount) > 0) params.set('amount', linkAmount);
     if (linkReason.trim()) params.set('for', linkReason.trim());
+    params.set('expires', linkExpiryMinutes);
     const query = params.toString();
     return `${origin}/pay/${slug}${query ? `?${query}` : ''}`;
-  }, [business?.name, linkAmount, linkReason, user?.name]);
+  }, [business?.name, business?.slug, linkAmount, linkExpiryMinutes, linkReason, user?.name]);
 
   const copy = async (value: string, key: string) => {
     try {
@@ -249,8 +251,22 @@ export function ReceiveMoneyPage() {
                   <Label htmlFor="whatsapp-amount">Amount (NGN)</Label>
                   <Input id="whatsapp-amount" type="number" min={0} value={linkAmount} onChange={(event) => setLinkAmount(event.target.value)} placeholder="0.00" className="mt-1.5" />
                 </div>
+                <div>
+                  <Label htmlFor="payment-expiry">Request expires after</Label>
+                  <Select value={linkExpiryMinutes} onValueChange={setLinkExpiryMinutes}>
+                    <SelectTrigger id="payment-expiry" className="mt-1.5 w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minutes</SelectItem>
+                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="1440">24 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 {selectedCustomerId === 'new' && (
-                  <div className="sm:col-span-2">
+                  <div>
                     <Label htmlFor="whatsapp-customer-name">Customer name</Label>
                     <Input id="whatsapp-customer-name" value={newCustomerName} onChange={(event) => setNewCustomerName(event.target.value)} placeholder="Enter the customer's name" className="mt-1.5" />
                   </div>

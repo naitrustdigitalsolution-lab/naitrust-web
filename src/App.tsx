@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { appConfig } from "./configs/env";
 import { AuthProvider } from './libs/auth-context';
+import { useAuth } from './libs/auth-context';
 import BeBackPage from "./pages/BeBackPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -208,12 +209,14 @@ function SimpleRoutePage() {
 function PublicAppContent() {
   const location = useLocation();
   const routerNavigate = useNavigate();
+  const { isAuthenticated, isHydrated } = useAuth();
   const currentPage = getCurrentPage(location.pathname);
   const usesStandaloneHome =
     standalonePaths.includes(location.pathname) ||
     location.pathname.startsWith("/app") ||
     location.pathname.startsWith("/pay/") ||
-    location.pathname.startsWith("/invite/");
+    location.pathname.startsWith("/invite/") ||
+    (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
   const handleNavigate = (page: string) => {
     routerNavigate(pagePaths[page] ?? page);
@@ -226,7 +229,16 @@ function PublicAppContent() {
 
       <main>
         <Routes>
-          <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+          <Route
+            path="/"
+            element={
+              !isHydrated
+                ? <DashboardPageLoader />
+                : isAuthenticated
+                  ? <Navigate to="/app" replace />
+                  : <HomePage onNavigate={handleNavigate} />
+            }
+          />
           <Route path="/about" element={<AboutPage onNavigate={handleNavigate} />} />
           <Route path="/feedback" element={<FeedbackPage onNavigate={handleNavigate} />} />
           <Route path="/how-it-works" element={<Navigate to="/" replace />} />
@@ -303,7 +315,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
             <PublicAppContent />
           </AuthProvider>

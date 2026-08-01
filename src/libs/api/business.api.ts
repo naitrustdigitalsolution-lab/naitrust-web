@@ -23,6 +23,22 @@ export interface CreateBusinessData {
 }
 
 const mockList = (mockBusinesses as ApiSuccess<BusinessProfile[]>).data;
+
+function slugifyBusinessName(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function canonicalBusinessSlug(value: string) {
+  return slugifyBusinessName(value)
+    .split('-')
+    .filter((part) => part && !['and', 'ltd', 'limited', 'plc', 'inc', 'incorporated'].includes(part))
+    .join('-');
+}
 /** Session-scoped edits to a business, keyed by owner user ID (mock only). */
 const overrides: Record<string, Partial<BusinessProfile>> = {};
 
@@ -77,11 +93,15 @@ export const businessApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const normalized = slugOrId.toLowerCase();
+      const canonical = canonicalBusinessSlug(slugOrId);
       const found = mockList.find(
         (business) =>
           business.verified &&
           (business.id.toLowerCase() === normalized ||
             business.slug?.toLowerCase() === normalized ||
+            slugifyBusinessName(business.name) === normalized ||
+            canonicalBusinessSlug(business.slug ?? '') === canonical ||
+            canonicalBusinessSlug(business.name) === canonical ||
             business.ntId?.toLowerCase() === normalized),
       );
       return { success: true, data: found ?? null };

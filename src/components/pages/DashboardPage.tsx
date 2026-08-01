@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowDownToLine,
@@ -13,9 +13,11 @@ import {
   Search,
   Inbox,
   Clock3,
+  Download,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import QRCode from 'react-qr-code';
+import { toPng } from 'html-to-image';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { BusinessVerificationModal } from '../pieces/business/BusinessVerificationModal';
@@ -96,6 +98,7 @@ export function DashboardPage() {
   const { data: wallet, isLoading: isWalletLoading } = useWallet();
   const { data: invitations } = useInvitations();
   const [qrDialogOpen, setQrDialogOpen] = useState(false);
+  const qrDownloadRef = useRef<HTMLDivElement>(null);
 
   const isBusiness = accountTypeOf(user) !== 'customer';
   const businessName = business?.name ?? (isBusinessLoading ? '' : 'Your business');
@@ -127,6 +130,20 @@ export function DashboardPage() {
     }
     await navigator.clipboard.writeText(accountNumber);
     toast.success('Account number copied');
+  };
+
+  const downloadPaymentQr = async () => {
+    if (!qrDownloadRef.current) return;
+    try {
+      const dataUrl = await toPng(qrDownloadRef.current, { pixelRatio: 3, backgroundColor: '#ffffff' });
+      const link = document.createElement('a');
+      link.download = `${slugify(businessName)}-payment-qr.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success('Payment QR downloaded');
+    } catch {
+      toast.error('Could not download the QR code. Please try again.');
+    }
   };
 
   if (!isBusiness) {
@@ -291,11 +308,14 @@ export function DashboardPage() {
             <DialogTitle>Customer payment QR</DialogTitle>
             <DialogDescription>Let a customer scan this with their phone to pay {businessName}.</DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center rounded-2xl border bg-white p-6 text-[#071b31]">
+          <div ref={qrDownloadRef} className="flex flex-col items-center rounded-2xl border bg-white p-6 text-[#071b31]">
             <QRCode value={paymentLink} size={192} fgColor="#071b31" />
             <p className="mt-4 text-center text-sm font-semibold">{businessName}</p>
             <p className="mt-1 text-center text-xs text-slate-500">Verify before you transfer</p>
           </div>
+          <Button className="w-full rounded-full" onClick={() => void downloadPaymentQr()}>
+            <Download size={16} /> Download QR code
+          </Button>
           <Button variant="outline" className="w-full rounded-full" onClick={() => navigate('/app/payments/receive?share=qr')}>
             More ways to get paid
           </Button>

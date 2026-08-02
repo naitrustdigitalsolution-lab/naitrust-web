@@ -93,7 +93,7 @@ export default function WaitlistPage() {
   }
 
   return (
-    <div className="min-h-svh bg-[#f4f8fc] dark:bg-background">
+    <div className="min-h-svh bg-background">
       <SEOHead title="Join the Naitrust Waitlist" description="Join Naitrust early access for trusted payment links, business payments, and Protected Transactions." canonicalPath="/waitlist" />
       <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
@@ -119,7 +119,7 @@ export default function WaitlistPage() {
           </div>
         </aside>
 
-        <section className="bg-background p-0 sm:rounded-3xl sm:border sm:p-8 sm:shadow-sm">
+        <section className="-mx-4 bg-background px-4 py-6 sm:mx-0 sm:rounded-3xl sm:border sm:p-8 sm:shadow-sm">
           {complete ? (
             <div className="grid min-h-[28rem] place-items-center text-center">
               <div>

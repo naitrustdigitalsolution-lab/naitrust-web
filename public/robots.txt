@@ -22,3 +22,4 @@ Disallow: /forgot-password
 # because a more-specific group would stop inheriting the wildcard exclusions.
 
 Sitemap: https://naitrust.com/sitemap.xml
+Host: https://naitrust.com

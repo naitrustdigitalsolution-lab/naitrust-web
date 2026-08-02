@@ -149,7 +149,7 @@ export const HERO_IMAGES = [
 // App Configuration
 export const APP_CONFIG = {
   APP_NAME: 'Naitrust',
-  APP_DESCRIPTION: 'Protected Payments and Trusted Transactions',
+  APP_DESCRIPTION: 'Payments, Verification and Protected Transactions',
   SUPPORT_EMAIL: 'contact@naitrust.com',
   SUPPORT_PHONE: '+234-800-NAITRUST',
   PRIMARY_COLOR: '#1E90FF', // Dodger Blue

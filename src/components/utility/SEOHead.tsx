@@ -12,10 +12,10 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Know who you are paying with Naitrust. Create Protected Payments, trusted payment links, and clear transaction records for customers and businesses in Nigeria.';
+const DEFAULT_DESCRIPTION = 'Naitrust is a Nigerian fintech platform for payments and Protected Transactions. Verify who you are dealing with, pay, get paid, or protect P2P, customer and business trades.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS =
-  'Naitrust, Protected Payments Nigeria, trusted transactions Nigeria, know who you are paying, trusted payment links, verified payment participants, payment links Nigeria, QR payments Nigeria, business payments Nigeria, customer payments Nigeria';
+  'Naitrust, Nigerian fintech app, payments Nigeria, Protected Transactions Nigeria, verify a business before paying, know who you are dealing with, P2P payments, customer payments, business payments, B2B payments, trusted payment links';
 
 export function SEOHead({
   title,
@@ -26,7 +26,7 @@ export function SEOHead({
   ogImage = DEFAULT_IMAGE,
   noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Protected Payments and Trusted Transactions`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Payments, Verification and Protected Transactions`;
   const canonicalUrl = canonicalPath
     ? `${SITE_URL}${canonicalPath}`
     : typeof window !== 'undefined'
@@ -43,8 +43,11 @@ export function SEOHead({
         content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
       />
       <meta name="googlebot" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+      <meta name="bingbot" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+      {canonicalUrl && <link rel="alternate" hrefLang="en-NG" href={canonicalUrl} />}
+      {canonicalUrl && <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />}
 
       {/* Open Graph */}
       <meta property="og:type" content={ogType} />

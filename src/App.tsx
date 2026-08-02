@@ -123,17 +123,17 @@ const simplePages: Record<
 > = {
   "/business": {
     eyebrow: "For businesses",
-    title: "Help customers and partners trust you before money moves.",
+    title: "Business payments built to earn customer confidence.",
     description:
-      "Naitrust gives honest suppliers, contractors, vendors, and service providers a structured way to prove reliability.",
-    points: ["Verified profile", "Safe deal rooms", "Evidence trail", "Reputation history"],
+      "Receive payments, show customers who they are dealing with, pay suppliers, and protect important customer or B2B transactions with Naitrust.",
+    points: ["Business verification", "Customer payment links", "Protected Transactions", "Supplier payments"],
   },
   "/resources": {
     eyebrow: "Resources",
-    title: "Guides for safer Nigerian transactions.",
+    title: "Practical guides for confident Nigerian payments.",
     description:
-      "Learn how to use Naitrust for safe deal rooms, verification, protected funding through regulated partners, delivery evidence, and issue reporting.",
-    points: ["How safe deals work", "Buyer and seller checklists", "Dispute evidence", "Verification guide"],
+      "Learn how to check who you are dealing with, make everyday payments, use trusted payment links, and protect important transactions on Naitrust.",
+    points: ["How Protected Transactions work", "Buyer and seller checklists", "Payment and delivery evidence", "Verification guide"],
   },
 };
 

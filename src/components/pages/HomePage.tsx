@@ -85,9 +85,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="home-page relative min-h-screen">
       <SEOHead
-        title="Protected Payments and Trusted Transactions"
-        description="Know who you are paying with Naitrust. Create Protected Payments, trusted payment links, and clear transaction records for customers and businesses in Nigeria."
-        keywords="Naitrust, Protected Payments Nigeria, trusted transactions, know who you are paying, trusted payment links, verified payment participants, business payments Nigeria"
+        title="Payments, Verification and Protected Transactions"
+        description="Naitrust is a Nigerian fintech platform for payments and Protected Transactions. Check who you are dealing with, pay, get paid, or protect P2P, customer and business trades."
+        keywords="Naitrust, Nigerian fintech app, payments Nigeria, Protected Transactions Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
         canonicalPath="/"
       />
       

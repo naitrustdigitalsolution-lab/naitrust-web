@@ -31,8 +31,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust — Nigerian Fintech Platform"
-        description="Naitrust helps customers and businesses know who they are paying, create Protected Payments, share trusted payment links, and build clearer transaction records."
+        title="About Naitrust — Nigerian Payments and Trust Fintech"
+        description="Naitrust is a Nigerian fintech platform where people and businesses can pay, get paid, verify who they are dealing with, and protect important P2P, customer and B2B transactions."
         canonicalPath="/about"
       />
 

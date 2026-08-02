@@ -1,7 +1,7 @@
 {
-  "name": "Naitrust — Protected Payments and Trusted Transactions",
+  "name": "Naitrust — Payments and Protected Transactions",
   "short_name": "Naitrust",
-  "description": "Know who you are paying. Create Protected Payments and trusted payment links with Naitrust.",
+  "description": "A Nigerian fintech app for payments, participant verification, trusted payment links, and Protected Transactions.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

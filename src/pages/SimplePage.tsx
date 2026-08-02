@@ -6,8 +6,11 @@ interface SimplePageProps {
 }
 
 function SimplePage({ eyebrow, title, description, points }: SimplePageProps) {
+  const location = useLocation();
+
   return (
     <main className="page-shell">
+      <SEOHead title={title} description={description} canonicalPath={location.pathname} />
       <section className="simple-page">
         <div className="simple-page-content">
           <p className="eyebrow">{eyebrow}</p>
@@ -17,7 +20,7 @@ function SimplePage({ eyebrow, title, description, points }: SimplePageProps) {
             {points.map((point) => (
               <article key={point}>
                 <h3>{point}</h3>
-                <p>Naitrust will expand this section as the product build progresses.</p>
+                <p>Built into the Naitrust experience for clearer, more confident payments and transactions.</p>
               </article>
             ))}
           </div>
@@ -31,3 +34,5 @@ function SimplePage({ eyebrow, title, description, points }: SimplePageProps) {
 }
 
 export default SimplePage;
+import { useLocation } from 'react-router-dom';
+import { SEOHead } from '../components/utility/SEOHead';

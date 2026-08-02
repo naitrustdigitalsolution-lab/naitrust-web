@@ -167,7 +167,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g5',
         question: 'Is Naitrust available outside Nigeria?',
-        answer: 'Currently, Naitrust is exclusively for Nigerian businesses registered with CAC. We verify businesses operating in Nigeria and serving Nigerian customers. International expansion may be considered in the future.'
+        answer: 'Naitrust is built for individuals and businesses in Nigeria. Customers can pay trusted recipients, check a business before paying, or create a Protected Transaction when they do not yet know the other party. Businesses can receive customer payments, pay suppliers, demonstrate verified identity, and protect B2B or customer transactions. Business verification requirements depend on the account and service being used.'
       },
       {
         id: 'g6',

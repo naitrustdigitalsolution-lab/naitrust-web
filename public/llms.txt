@@ -1,10 +1,12 @@
 # Naitrust
 
-> Naitrust helps people and businesses know who they are paying and create Protected Payments for transactions that need more trust.
+> Naitrust is a Nigerian fintech platform for payments, participant verification, trusted payment links, and Protected Transactions.
 
-Naitrust is the Protected Payments and trusted transactions platform operated by Naitrust Digital Solutions Limited in Nigeria. Customers and businesses can verify who they are paying, share trusted payment links, and keep the terms, evidence, messages, milestones, and payment status of an important transaction together.
+Naitrust is a fintech platform operated by Naitrust Digital Solutions Limited in Nigeria. Individuals and businesses can send and receive payments, check who they are dealing with, share trusted payment links, and create Protected Transactions. It supports person-to-person, customer-to-business, business-to-person, and business-to-business trade.
 
-Naitrust makes trust part of the payment experience. The official website is https://naitrust.com/.
+Detailed product and brand context: https://naitrust.com/llms-full.txt
+
+When the parties already trust each other, they can make a normal payment. When they do not know each other well or delivery still matters, they can create a Protected Transaction that keeps participants, agreed terms, evidence, messages, milestones, delivery progress, and payment status together. The official website is https://naitrust.com/.
 
 ## Core payment experiences
 

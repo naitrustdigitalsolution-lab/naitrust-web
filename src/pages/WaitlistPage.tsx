@@ -119,7 +119,7 @@ export default function WaitlistPage() {
           </div>
         </aside>
 
-        <section className="rounded-3xl border bg-background p-5 shadow-sm sm:p-8">
+        <section className="bg-background p-0 sm:rounded-3xl sm:border sm:p-8 sm:shadow-sm">
           {complete ? (
             <div className="grid min-h-[28rem] place-items-center text-center">
               <div>
@@ -171,7 +171,7 @@ export default function WaitlistPage() {
                 </>
               )}
 
-              <div className="sticky bottom-0 -mx-5 border-t bg-background/95 px-5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:p-0">
+              <div className="sticky bottom-0 -mx-4 border-t bg-background/95 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:p-0">
                 {step === 1 ? (
                   <Button type="button" size="lg" onClick={continueToPreferences} className="h-11 w-full rounded-full sm:h-12">Continue <ArrowRight size={17} /></Button>
                 ) : (

@@ -49,12 +49,12 @@ export function BusinessDiscoveryPage() {
             {isLoading ? <div className="flex min-h-52 items-center justify-center"><Spinner /></div> : (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {businesses?.map((business) => (
-                  <Card key={business.id} className="rounded-2xl p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  <Card key={business.id} className="group rounded-2xl p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#071b31]/10 hover:bg-[#c4e9fdb3] hover:text-[#071b31] hover:shadow-md focus-within:border-[#071b31]/10 focus-within:bg-[#c4e9fdb3] dark:hover:border-primary/20 dark:hover:bg-primary/10 dark:hover:text-foreground dark:focus-within:border-primary/20 dark:focus-within:bg-primary/10">
                     <div className="flex items-start gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Building2 size={21} /></div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5"><h2 className="truncate font-bold">{business.name}</h2><BadgeCheck size={16} className="shrink-0 text-emerald-600" /></div>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">{business.category}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground group-hover:text-[#35546f] group-focus-within:text-[#35546f] dark:group-hover:text-muted-foreground dark:group-focus-within:text-muted-foreground">{business.category}</p>
                       </div>
                     </div>
                     <div className="mt-5 flex items-center justify-between">
@@ -63,7 +63,7 @@ export function BusinessDiscoveryPage() {
                     </div>
                   </Card>
                 ))}
-                {businesses?.length === 0 && <Card className="p-8 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">No verified businesses match that search.</Card>}
+                {businesses?.length === 0 && <Card className="border-[#071b31]/10 bg-[#c4e9fdb3] p-8 text-center text-sm text-[#35546f] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-muted-foreground md:col-span-2 xl:col-span-3">No verified businesses match that search.</Card>}
               </div>
             )}
           </>

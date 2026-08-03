@@ -45,12 +45,12 @@ function LoadingRows() {
 
 function EmptyState() {
   return (
-    <Card className="flex flex-col items-center gap-3 p-10 text-center shadow-sm">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+    <Card className="flex flex-col items-center gap-3 border-[#071b31]/10 bg-[#c4e9fdb3] p-10 text-center text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/65 text-primary dark:bg-primary/10">
         <Inbox size={24} />
       </div>
-      <p className="font-semibold text-foreground">No invitations right now</p>
-      <p className="max-w-sm text-sm leading-6 text-muted-foreground">
+      <p className="font-semibold text-[#071b31] dark:text-foreground">No invitations right now</p>
+      <p className="max-w-sm text-sm leading-6 text-[#35546f] dark:text-muted-foreground">
         When a Protected Deal participant invites you, it shows up here for you to review and
         accept.
       </p>

@@ -290,19 +290,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Customer journey */}
-      <section className="bg-[#071a32] px-4 py-12 text-white sm:px-6 sm:py-24 lg:px-8">
+      <section className="bg-[#c4e9fdb3] px-4 py-12 text-[#071b31] sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-[90rem]">
           <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Customer journey</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Customer journey</p>
               <h2 className="mt-3 text-2xl font-bold tracking-[-0.04em] sm:mt-4 sm:text-5xl">From “Can I trust them?” to a transaction you can follow.</h2>
             </div>
-            <p className="max-w-2xl text-sm leading-6 text-white/60 sm:text-lg sm:leading-7 lg:justify-self-end">
+            <p className="max-w-2xl text-sm leading-6 text-[#35546f] sm:text-lg sm:leading-7 lg:justify-self-end">
               Naitrust helps a customer move from discovery to payment with clearer identity, shared terms, and a visible record when the purchase needs protection.
             </p>
           </div>
 
-          <div className="mt-10 grid overflow-hidden rounded-3xl border border-white/10 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid overflow-hidden rounded-3xl border border-[#071b31]/10 bg-white/30 shadow-[0_18px_45px_rgba(7,49,88,.07)] backdrop-blur-sm md:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: Fingerprint, step: '01', title: 'Create and verify', text: 'Set up your customer account and confirm the details that identify you.' },
               { icon: Building2, step: '02', title: 'Check the business', text: 'Review the business identity and profile before deciding how to pay.' },
@@ -315,14 +315,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.08 }}
-                className="border-b border-white/10 p-5 last:border-b-0 sm:p-7 md:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
+                className="border-b border-[#071b31]/10 p-5 last:border-b-0 sm:p-7 md:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-[#67b7ff]"><item.icon size={21} /></span>
-                  <span className="text-2xl font-black text-white/10">{item.step}</span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/65 text-primary shadow-sm"><item.icon size={21} /></span>
+                  <span className="text-2xl font-black text-[#071b31]/15">{item.step}</span>
                 </div>
                 <h3 className="mt-8 text-lg font-bold">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/55">{item.text}</p>
+                <p className="mt-3 text-sm leading-6 text-[#35546f]">{item.text}</p>
               </motion.div>
             ))}
           </div>
@@ -855,15 +855,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 size="lg"
                 variant="secondary"
                 onClick={openWaitlistModal}
-                className="h-12 min-w-0 flex-1 rounded-full bg-primary px-5 text-sm font-bold text-white  ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
+                className="h-9 w-auto flex-none rounded-full bg-primary px-4 text-[10px] font-bold text-white ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:px-10 sm:text-lg"
               >
                 Join Early Access
-                <ArrowRight size={16} className="ml-1.5 sm:h-5 sm:w-5" />
+                <ArrowRight size={14} className="ml-1 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 size="lg"
                 onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
-                className="h-12 min-w-0 flex-1 rounded-full border border-white/30 bg-white/[0.1] px-5 text-sm font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
+                className="h-9 w-auto flex-none rounded-full border border-white/30 bg-white/[0.1] px-4 text-[10px] font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-14 sm:px-10 sm:text-lg"
               >
                 Join as a Business
               </Button>

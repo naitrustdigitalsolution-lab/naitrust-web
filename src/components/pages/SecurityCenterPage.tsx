@@ -708,7 +708,7 @@ export function SecurityCenterPage() {
           Back to dashboard
         </button>
 
-        <Card className="mb-8 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-0 shadow-sm">
+        <Card className="mb-8 overflow-hidden border-[#071b31]/10 bg-[#c4e9fdb3] p-0 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground">
           <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_320px] lg:items-center">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
@@ -716,14 +716,14 @@ export function SecurityCenterPage() {
               </div>
               <div>
                 <Badge className="mb-3 bg-primary/10 text-primary hover:bg-primary/10">Account protection</Badge>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Security Center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+                <h1 className="text-2xl font-bold tracking-tight text-[#071b31] dark:text-foreground sm:text-3xl">Security Center</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground sm:text-base">
                   Verify who you are and protect sensitive Protected Deal actions. Identity,
                   email, and a transaction PIN are required before creating a transaction.
                 </p>
               </div>
             </div>
-            <div className="rounded-2xl border bg-background/80 p-5 backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#071b31]/10 bg-white/65 p-5 backdrop-blur-sm dark:border-border dark:bg-background/80">
               <div className="flex items-end justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Required setup</p>

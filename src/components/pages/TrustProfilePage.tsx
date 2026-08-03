@@ -19,6 +19,7 @@ export function TrustProfilePage() {
           title="Trust Profile"
           description="Review the verified business information, transaction activity, and customer feedback people see when they check your business on Naitrust."
           icon={BadgeCheck}
+          tone="soft-blue"
           actions={publicSlug ? <Button className="rounded-md" onClick={() => window.open(`/trust/${publicSlug}`, '_blank', 'noopener,noreferrer')}><ExternalLink size={15} /> View public profile</Button> : undefined}
         />
 

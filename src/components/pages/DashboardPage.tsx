@@ -157,22 +157,22 @@ export function DashboardPage() {
       <DashboardLayout title="Dashboard">
         <SecureAccountModal />
         <div className="mx-auto flex w-full max-w-9xl flex-col gap-6">
-          <header className="relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/[0.08] via-background to-background px-5 py-6 sm:px-7 sm:py-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+          <header className="relative overflow-hidden rounded-3xl border border-[#071b31]/10 bg-[#c4e9fdb3] px-5 py-6 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground sm:px-7 sm:py-7">
+            <div className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-white/50 blur-3xl dark:bg-primary/10" />
             <div className="relative flex flex-wrap items-end justify-between gap-5">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-medium text-muted-foreground">Good day, {firstName}</p>
+                  <p className="text-sm font-medium text-[#35546f] dark:text-muted-foreground">Good day, {firstName}</p>
                   {security.kycStatus === 'verified' && (
                     <Badge variant="success" className="gap-1 rounded-md px-2 py-0.5 text-[11px]">
                       <BadgeCheck size={11} /> Identity verified
                     </Badge>
                   )}
                 </div>
-                <h1 className="mt-2 max-w-xl text-2xl font-bold tracking-[-0.035em] text-foreground sm:text-3xl">
+                <h1 className="mt-2 max-w-xl text-2xl font-bold tracking-[-0.035em] text-[#071b31] dark:text-foreground sm:text-3xl">
                   Pay with confidence.
                 </h1>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+                <p className="mt-2 max-w-xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground">
                   Send money when you trust them, or protect the transaction when you need clearer terms and delivery proof.
                 </p>
               </div>
@@ -326,14 +326,14 @@ export function DashboardPage() {
       </Dialog>
 
       <div className="mx-auto flex w-full max-w-9xl flex-col gap-7 max-xl:[&>*]:order-3 xl:[&>*]:order-none">
-        <header className="flex flex-wrap items-start justify-between gap-4 max-xl:!order-0">
+        <header className="flex flex-wrap items-start justify-between gap-4 rounded-3xl border border-[#071b31]/10 bg-[#c4e9fdb3] px-5 py-5 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground max-xl:!order-0 sm:px-7 sm:py-6">
           <div>
-            <p className="text-sm text-muted-foreground">Good day, {firstName}</p>
+            <p className="text-sm text-[#35546f] dark:text-muted-foreground">Good day, {firstName}</p>
             <div className="mt-1 flex flex-wrap items-center gap-2">
               {isBusinessLoading ? (
                 <Skeleton className="h-8 w-56" />
               ) : (
-                <h1 className="text-2xl font-bold tracking-[-0.025em] text-foreground">{businessName}</h1>
+                <h1 className="text-2xl font-bold tracking-[-0.025em] text-[#071b31] dark:text-foreground">{businessName}</h1>
               )}
               {security.kycStatus === 'verified' && (
                 <Badge variant="success" className="gap-1 rounded-full">
@@ -344,7 +344,7 @@ export function DashboardPage() {
           </div>
           <Button
             variant="outline"
-            className="rounded-full"
+            className="rounded-full border-[#071b31]/15 bg-white/60 text-[#071b31] hover:bg-white/80 dark:border-border dark:bg-background dark:text-foreground"
             onClick={() => navigate('/app/payments')}
           >
             <Send size={15} /> Send money

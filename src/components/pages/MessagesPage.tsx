@@ -48,7 +48,7 @@ export function MessagesPage() {
               key={conversation.id}
               type="button"
               onClick={() => conversation.support ? navigate('/app/messages/support') : conversation.protected && navigate(`/app/deals/${conversation.id}?tab=chat`)}
-              className={`flex w-full items-center gap-3 border-b px-4 py-4 text-left transition hover:bg-accent/40 last:border-b-0 sm:px-5 ${conversation.support ? 'sticky top-0 z-[1] bg-primary/[0.055]' : ''}`}
+              className={`flex w-full items-center gap-3 border-b px-4 py-4 text-left transition last:border-b-0 sm:px-5 ${conversation.support ? 'sticky top-0 z-[1] border-[#071b31]/10 bg-[#c4e9fdb3] text-[#071b31] hover:bg-[#b7e3fbbf] dark:border-primary/20 dark:bg-primary/10 dark:text-foreground dark:hover:bg-primary/15' : 'hover:bg-accent/40'}`}
             >
               <CounterpartyAvatar name={conversation.name} />
               <div className="min-w-0 flex-1">
@@ -57,7 +57,7 @@ export function MessagesPage() {
                   {conversation.support && <Badge className="rounded-md text-[10px]">Pinned</Badge>}
                   {conversation.protected && <Badge variant="outline" className="hidden text-[10px] sm:inline-flex">Protected Deal</Badge>}
                 </div>
-                <p className="mt-1 truncate text-sm text-muted-foreground">{conversation.preview}</p>
+                <p className={`mt-1 truncate text-sm ${conversation.support ? 'text-[#35546f] dark:text-muted-foreground' : 'text-muted-foreground'}`}>{conversation.preview}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">{conversation.time}</p>
@@ -66,8 +66,8 @@ export function MessagesPage() {
             </button>
           ))}
           {filtered.length === 0 && (
-            <div className="flex flex-col items-center p-10 text-center">
-              <MessageCircle size={24} className="text-muted-foreground" />
+            <div className="flex flex-col items-center bg-[#c4e9fdb3] p-10 text-center text-[#071b31] dark:bg-primary/10 dark:text-foreground">
+              <MessageCircle size={24} className="text-primary" />
               <p className="mt-3 font-semibold">No conversations found</p>
             </div>
           )}

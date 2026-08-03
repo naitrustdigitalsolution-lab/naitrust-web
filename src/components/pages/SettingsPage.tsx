@@ -8,7 +8,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { BadgeCheck, Bell, Landmark, Lock, Moon, Palette, Plus, Settings, Sun, UserRound } from 'lucide-react';
+import { Bell, Landmark, Lock, Moon, Palette, Plus, Settings, Sun, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { ProfileInfoSettings } from '../pieces/settings/ProfileInfoSettings';
@@ -22,7 +22,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '../ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { PageHero } from '../pieces/dashboard/PageHero';
-import { TrustProfileSummary } from './TrustProfilePage';
 import { AccountProfileOverview } from './ProfilePage';
 import { useAuth } from '../../libs/auth-context';
 import { useTheme } from '../../hooks/useTheme';
@@ -63,7 +62,7 @@ export function SettingsPage() {
   const [bankForm, setBankForm] = useState({ bankName: '', accountNumber: '', accountName: '' });
   const visibleBankAccounts = [...(linkedBankAccounts ?? []), ...addedBankAccounts];
   const requestedTab = searchParams.get('tab');
-  const activeTab = ['profile', 'security', 'notifications', 'payments', 'trust', 'appearance'].includes(requestedTab ?? '')
+  const activeTab = ['profile', 'security', 'notifications', 'payments', 'appearance'].includes(requestedTab ?? '')
     ? requestedTab!
     : 'profile';
 
@@ -114,7 +113,7 @@ export function SettingsPage() {
         <PageHero
           eyebrow="Your account"
           title="Settings"
-          description="Manage your profile, security, payment preferences, notifications, and Trust Profile."
+          description="Manage your profile, security, payment preferences, notifications, and appearance."
           icon={Settings}
         />
 
@@ -125,7 +124,6 @@ export function SettingsPage() {
               <TabsTrigger value="security" className="gap-2 rounded-xl px-4 py-2.5"><Lock size={15} /> Security</TabsTrigger>
               <TabsTrigger value="notifications" className="gap-2 rounded-xl px-4 py-2.5"><Bell size={15} /> Notifications</TabsTrigger>
               <TabsTrigger value="payments" className="gap-2 rounded-xl px-4 py-2.5"><Landmark size={15} /> Bank accounts</TabsTrigger>
-              <TabsTrigger value="trust" className="gap-2 rounded-xl px-4 py-2.5"><BadgeCheck size={15} /> Trust Profile</TabsTrigger>
               <TabsTrigger value="appearance" className="gap-2 rounded-xl px-4 py-2.5"><Palette size={15} /> Appearance</TabsTrigger>
             </TabsList>
           </div>
@@ -208,10 +206,6 @@ export function SettingsPage() {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="trust" className="max-w-3xl">
-            <TrustProfileSummary />
           </TabsContent>
 
           <TabsContent value="appearance" className="max-w-3xl">

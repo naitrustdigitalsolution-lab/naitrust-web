@@ -47,7 +47,7 @@ export function MessagesPage() {
             <button
               key={conversation.id}
               type="button"
-              onClick={() => conversation.support ? navigate('/app/support/new') : conversation.protected && navigate(`/app/deals/${conversation.id}?tab=chat`)}
+              onClick={() => conversation.support ? navigate('/app/messages/support') : conversation.protected && navigate(`/app/deals/${conversation.id}?tab=chat`)}
               className={`flex w-full items-center gap-3 border-b px-4 py-4 text-left transition hover:bg-accent/40 last:border-b-0 sm:px-5 ${conversation.support ? 'sticky top-0 z-[1] bg-primary/[0.055]' : ''}`}
             >
               <CounterpartyAvatar name={conversation.name} />

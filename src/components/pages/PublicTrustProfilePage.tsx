@@ -16,9 +16,10 @@ const REVIEWS_PER_PAGE = 5;
 interface PublicTrustProfilePageProps {
   businessIdentifier?: string;
   embedded?: boolean;
+  showBackToBusinesses?: boolean;
 }
 
-export function PublicTrustProfilePage({ businessIdentifier, embedded = false }: PublicTrustProfilePageProps = {}) {
+export function PublicTrustProfilePage({ businessIdentifier, embedded = false, showBackToBusinesses = true }: PublicTrustProfilePageProps = {}) {
   const navigate = useNavigate();
   const [reviewPage, setReviewPage] = useState(1);
   const { businessSlug } = useParams();
@@ -56,7 +57,7 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false }:
   return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10'}>
     <SEOHead title={`${business.name} Trust Profile`} description={`Review verified business and transaction activity for ${business.name} on Naitrust.`} noindex />
     <div className="mx-auto max-w-5xl">
-      <div className="mb-5 flex items-center justify-between gap-3">{embedded ? <Button size="sm" variant="ghost" className="rounded-full" onClick={() => navigate('/app/businesses')}><ArrowLeft size={14} /> Back to businesses</Button> : <NaitrustLogo />} <div className="flex gap-2">{openedFromPayment && <Button size="sm" variant="ghost" className="rounded-full" onClick={returnToPayment}><ArrowLeft size={14} /> Back to payment</Button>}<Button size="sm" variant="outline" className="rounded-full bg-white" onClick={() => void copyProfile()}><Copy size={14} /> Share</Button></div></div>
+      <div className={`mb-5 flex items-center gap-3 ${embedded && !showBackToBusinesses ? 'justify-end' : 'justify-between'}`}>{embedded ? (showBackToBusinesses ? <Button size="sm" variant="ghost" className="rounded-full" onClick={() => navigate('/app/businesses')}><ArrowLeft size={14} /> Back to businesses</Button> : null) : <NaitrustLogo />} <div className="flex gap-2">{openedFromPayment && <Button size="sm" variant="ghost" className="rounded-full" onClick={returnToPayment}><ArrowLeft size={14} /> Back to payment</Button>}<Button size="sm" variant="outline" className="rounded-full bg-white" onClick={() => void copyProfile()}><Copy size={14} /> Share</Button></div></div>
       <Card className="overflow-hidden rounded-3xl border-0 shadow-[0_24px_70px_rgba(7,27,49,.12)]">
         <div className="bg-[#071b31] p-6 text-white sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">

@@ -27,6 +27,7 @@ import {
   Building2,
   Search,
   MessageCircle,
+  BadgeCheck,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -82,6 +83,14 @@ const SHARED_ACCOUNT_GROUP: NavGroup = {
   ],
 };
 
+const BUSINESS_ACCOUNT_GROUP: NavGroup = {
+  label: 'Account',
+  items: [
+    { label: 'Trust Profile', path: '/app/trust-profile', icon: BadgeCheck, matchPrefix: true },
+    ...SHARED_ACCOUNT_GROUP.items,
+  ],
+};
+
 const BUSINESS_NAV_GROUPS: NavGroup[] = [
   {
     items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }],
@@ -112,11 +121,11 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Support',
     items: [
-      { label: 'Messages', path: '/app/messages', icon: MessageCircle },
+      { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
       { label: 'Notifications', path: '/app/notifications', icon: Bell },
     ],
   },
-  SHARED_ACCOUNT_GROUP,
+  BUSINESS_ACCOUNT_GROUP,
 ];
 
 const CUSTOMER_NAV_GROUPS: NavGroup[] = [
@@ -146,7 +155,7 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Support',
     items: [
-      { label: 'Messages', path: '/app/messages', icon: MessageCircle },
+      { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
       { label: 'Notifications', path: '/app/notifications', icon: Bell },
     ],
   },

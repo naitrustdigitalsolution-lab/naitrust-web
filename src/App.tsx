@@ -52,6 +52,7 @@ const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage")
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
 const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
+const SupportChatPage = lazyWithMinDelay(() => import("./pages/SupportChatPage"));
 const SupportRequestPage = lazyWithMinDelay(() => import("./pages/SupportRequestPage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
 const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
@@ -63,6 +64,7 @@ const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentReques
 const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
 const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
+const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
 
 // Public pages outside the landing-page critical path load only when visited.
 // This keeps their forms, article data and policy content out of the mobile
@@ -307,6 +309,7 @@ function PublicAppContent() {
             <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
             <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/messages" element={<DashboardRouteSuspense><MessagesPage /></DashboardRouteSuspense>} />
+            <Route path="/app/messages/support" element={<DashboardRouteSuspense><SupportChatPage /></DashboardRouteSuspense>} />
             <Route path="/app/support/new" element={<DashboardRouteSuspense><SupportRequestPage /></DashboardRouteSuspense>} />
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
@@ -319,7 +322,7 @@ function PublicAppContent() {
             <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
             <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/trust-profile" element={<Navigate to="/app/settings?tab=trust" replace />} />
+            <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
           </Route>

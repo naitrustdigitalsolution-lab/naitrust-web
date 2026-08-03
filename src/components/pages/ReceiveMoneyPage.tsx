@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import { toPng } from 'html-to-image';
 import {
-  ArrowLeft,
   ArrowDownToLine,
   Check,
   Copy,
@@ -238,10 +237,6 @@ export function ReceiveMoneyPage() {
   return (
     <DashboardLayout title="Receive Money">
       <div className="mx-auto w-full max-w-7xl">
-        <button type="button" onClick={() => navigate(-1)} className="mb-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground">
-          <ArrowLeft size={16} /> Back
-        </button>
-
         <div className="mb-5 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-r from-primary/[0.09] via-background to-background px-5 py-5 shadow-sm sm:px-7">
           <div className="flex items-start gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">

@@ -1,70 +1,20 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft,
   ArrowRight,
   BadgeCheck,
   Building2,
-  MapPin,
   QrCode,
   Search,
-  ShieldCheck,
 } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
-import { useBusinessSearch, usePublicBusiness } from '../../hooks/useBusinessDirectory';
+import { useBusinessSearch } from '../../hooks/useBusinessDirectory';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import Spinner from '../ui/spinner';
-
-function BusinessProfileView({ businessId }: { businessId: string }) {
-  const navigate = useNavigate();
-  const { data: business, isLoading } = usePublicBusiness(businessId);
-
-  if (isLoading) return <div className="flex min-h-64 items-center justify-center"><Spinner size="lg" /></div>;
-  if (!business) return <Card className="p-8 text-center">This verified business profile is not available.</Card>;
-
-  return (
-    <div className="mx-auto max-w-4xl">
-      <button type="button" onClick={() => navigate('/app/businesses')} className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-        <ArrowLeft size={16} /> Find businesses
-      </button>
-      <Card className="overflow-hidden rounded-3xl p-0 shadow-sm">
-        <div className="bg-[#071b31] p-7 text-white sm:p-9">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10 text-2xl font-bold">
-              {business.name.split(' ').slice(0, 2).map((word) => word[0]).join('')}
-            </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-bold">{business.name}</h1>
-                <BadgeCheck className="text-emerald-400" size={20} />
-              </div>
-              <p className="mt-1 text-sm text-white/65">{business.category} · {business.ntId}</p>
-              {(business.city || business.state) && <p className="mt-2 flex items-center gap-1.5 text-sm text-white/75"><MapPin size={14} /> {[business.city, business.state].filter(Boolean).join(', ')}</p>}
-            </div>
-          </div>
-        </div>
-        <div className="space-y-6 p-6 sm:p-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">About this business</p>
-            <p className="mt-2 max-w-2xl leading-7">{business.description}</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Button className="h-12 rounded-xl" onClick={() => navigate(`/pay/${business.slug ?? business.id}`)}>
-              Pay business <ArrowRight size={17} className="ml-2" />
-            </Button>
-            <Button variant="outline" className="h-12 rounded-xl" onClick={() => navigate(`/app/deals/new?business=${business.id}&name=${encodeURIComponent(business.name)}&email=${encodeURIComponent(business.email ?? '')}`)}>
-              <ShieldCheck size={17} className="mr-2" /> Start Protected Deal
-            </Button>
-          </div>
-          <p className="text-xs leading-5 text-muted-foreground">An ordinary payment is not protected. Choose “Start Protected Deal” when you need agreed terms, evidence, milestones, and controlled release.</p>
-        </div>
-      </Card>
-    </div>
-  );
-}
+import { PublicTrustProfilePage } from './PublicTrustProfilePage';
 
 export function BusinessDiscoveryPage() {
   const { businessId } = useParams<{ businessId: string }>();
@@ -72,11 +22,18 @@ export function BusinessDiscoveryPage() {
   const [query, setQuery] = useState('');
   const { data: businesses, isLoading } = useBusinessSearch(query);
 
+  if (businessId) {
+    return (
+      <DashboardLayout title="Trust profile">
+        <PublicTrustProfilePage businessIdentifier={businessId} embedded />
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout title={businessId ? 'Business profile' : 'Find a business'}>
+    <DashboardLayout title="Find a business">
       <div className="mx-auto w-full max-w-9xl">
-        {businessId ? <BusinessProfileView businessId={businessId} /> : (
-          <>
+        <>
             <div className="mb-7">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Verified business directory</p>
               <h1 className="mt-2 text-2xl font-bold tracking-tight">Find a business</h1>
@@ -110,7 +67,6 @@ export function BusinessDiscoveryPage() {
               </div>
             )}
           </>
-        )}
       </div>
     </DashboardLayout>
   );

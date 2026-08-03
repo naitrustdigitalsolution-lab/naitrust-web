@@ -104,6 +104,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Trading',
     items: [
+      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
       { label: 'Transactions', path: '/app/transactions', icon: Receipt },
       { label: 'Customers & Suppliers', path: '/app/network', icon: Building2 },
     ],

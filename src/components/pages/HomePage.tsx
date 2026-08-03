@@ -380,6 +380,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   iconComponent: Handshake,
                   description: 'Use a shared protected transaction for B2B, person-to-person, or business-to-person deals.',
                   gradient: 'from-amber-400 to-orange-500',
+                  showAccentGlow: false,
                   className: 'lg:col-span-5 bg-white dark:bg-card'
                 },
                 {
@@ -388,6 +389,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   iconComponent: Fingerprint,
                   description: 'Turn verified details and completed transactions into a stronger, reusable reputation.',
                   gradient: 'from-violet-400 to-indigo-600',
+                  showAccentGlow: false,
                   className: 'lg:col-span-7 bg-white dark:bg-card'
                 },
               ].map((platform, index) => (
@@ -400,7 +402,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   whileHover={{ y: -5 }}
                   className={`group relative min-h-[190px] overflow-hidden rounded-[1.5rem] border border-black/5 p-5 shadow-[0_18px_50px_rgba(11,43,69,.07)] sm:min-h-[240px] sm:rounded-[2rem] sm:p-8 lg:p-9 ${platform.className}`}
                 >
-                  <div className={`absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br opacity-20 blur-2xl ${platform.gradient}`} />
+                  {platform.showAccentGlow !== false && (
+                    <div className={`absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br opacity-20 blur-2xl ${platform.gradient}`} />
+                  )}
                   <div className="relative flex h-full flex-col">
                     <div className={`mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-lg sm:mb-12 sm:h-12 sm:w-12 sm:rounded-2xl ${platform.gradient}`}>
                       <platform.iconComponent size={23} />
@@ -851,7 +855,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 size="lg"
                 variant="secondary"
                 onClick={openWaitlistModal}
-                className="h-12 min-w-0 flex-1 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-[0_16px_38px_rgba(30,144,255,0.34)] ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
+                className="h-12 min-w-0 flex-1 rounded-full bg-primary px-5 text-sm font-bold text-white  ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
               >
                 Join Early Access
                 <ArrowRight size={16} className="ml-1.5 sm:h-5 sm:w-5" />

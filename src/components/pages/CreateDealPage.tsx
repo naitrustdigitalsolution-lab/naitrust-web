@@ -211,7 +211,7 @@ export function CreateDealPage() {
     const businessId = searchParams.get('business') ?? undefined;
     return {
       ...INITIAL,
-      partyMode: accountTypeOf(user) === 'customer' ? 'b2c' : null,
+      partyMode: accountTypeOf(user) === 'customer' && businessId ? 'b2c' : null,
       role: accountTypeOf(user) === 'customer' ? 'buyer' : null,
       participants: [{ name: businessName, email: businessEmail, allocation: '', profileId: businessId }],
     };
@@ -738,7 +738,7 @@ export function CreateDealPage() {
                   <div className="border-t pt-5">
                     <div className="mb-2 flex items-center justify-between">
                       <Label>{partiesHeading}</Label>
-                      <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full" onClick={addParticipant}>
+                      <Button type="button" variant="ghost" size="sm" className="h-8 rounded-md" onClick={addParticipant}>
                         <Plus size={14} className="mr-1" />
                         Add {isReleaser ? 'recipient' : 'payer'}
                       </Button>
@@ -848,7 +848,7 @@ export function CreateDealPage() {
                             type="button"
                             variant={editingAgreement ? 'default' : 'outline'}
                             size="sm"
-                            className="rounded-full"
+                            className="rounded-md"
                             onClick={() => setEditingAgreement((v) => !v)}
                           >
                             {editingAgreement ? (
@@ -867,7 +867,7 @@ export function CreateDealPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="rounded-full"
+                            className="rounded-md"
                             onClick={() => {
                               setEditingAgreement(false);
                               void generateAgreement(agreement.version + 1);
@@ -965,18 +965,18 @@ export function CreateDealPage() {
                 </Button>
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   {step > 1 && (
-                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-full">
+                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-md">
                       <Save size={16} className="mr-1.5" />
                       Save to drafts
                     </Button>
                   )}
                   {step < STEPS.length ? (
-                    <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-full">
+                    <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-md">
                       Continue
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending || !livenessOk} className="rounded-full">
+                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending || !livenessOk} className="rounded-md">
                       {createDeal.isPending ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />

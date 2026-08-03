@@ -26,6 +26,8 @@ export interface User {
   kycVerified?: boolean;
   isEmailVerified?: boolean;
   isPhoneVerified?: boolean;
+  /** Mock/profile flag indicating that a transaction PIN has already been configured. */
+  hasTransactionPin?: boolean;
 }
 
 /* ------------------------------------------------------------------ *
@@ -71,8 +73,9 @@ export interface SafeDealSummary {
  * Party mode of a protected transaction (guardrails/database-design.md):
  * - b2b: business ↔ business
  * - b2c: individual customer ↔ business/vendor/service provider
+ * - p2p: individual ↔ individual
  */
-export type PartyMode = 'b2b' | 'b2c';
+export type PartyMode = 'b2b' | 'b2c' | 'p2p';
 
 /**
  * The creator's own role in the deal:
@@ -472,6 +475,15 @@ export interface BusinessProfile {
   country?: string;
   socialHandles?: { platform: string; value: string }[];
   verified: boolean;
+  identityVerifiedAt?: string;
+  businessVerifiedAt?: string;
+  ownershipVerifiedAt?: string;
+  verificationExpiresAt?: string;
+  completedProtectedTransactions?: number;
+  completionRatePercent?: number;
+  responseRatePercent?: number;
+  verifiedReviewCount?: number;
+  ratingAverage?: number;
   paymentAccount?: {
     bankName: string;
     accountNumber: string;
@@ -642,6 +654,90 @@ export interface PaymentRequest {
   status: PaymentRequestStatus;
   createdAt: string; // ISO 8601
   expiresAt: string; // ISO 8601
+}
+
+/* ------------------------------------------------------------------ *
+ * Trust Checkout — server-backed, shareable payment + trust context
+ * ------------------------------------------------------------------ */
+
+export type TrustCheckoutCategory =
+  | 'product'
+  | 'service'
+  | 'supplier_order'
+  | 'contract'
+  | 'project'
+  | 'rental'
+  | 'custom';
+
+export type TrustCheckoutPaymentMode = 'direct' | 'protected' | 'customer_choice';
+export type TrustCheckoutStatus = 'active' | 'processing' | 'paid' | 'expired' | 'revoked';
+
+export interface TrustCheckoutVerification {
+  identityVerified: boolean;
+  businessVerified: boolean;
+  ownershipVerified: boolean;
+  verifiedAt?: string;
+  expiresAt?: string;
+}
+
+export interface TrustCheckout {
+  id: string;
+  publicId: string;
+  businessId?: string;
+  businessSlug: string;
+  recipientName: string;
+  recipientType: 'individual' | 'business';
+  recipientNtId?: string;
+  businessCategory?: string;
+  registrationNumberMasked?: string;
+  phone?: string;
+  supportEmail?: string;
+  account: { bankName: string; accountNumber: string; accountName: string };
+  requestedFromName?: string;
+  category: TrustCheckoutCategory;
+  title: string;
+  purpose: string;
+  description?: string;
+  amountMinor?: number;
+  customerEntersAmount: boolean;
+  currency: string;
+  paymentMode: TrustCheckoutPaymentMode;
+  deliveryExpectation?: string;
+  evidenceRequirements: string[];
+  milestones: string[];
+  verification: TrustCheckoutVerification;
+  status: TrustCheckoutStatus;
+  createdAt: string;
+  expiresAt: string;
+  paidAt?: string;
+  paymentReference?: string;
+}
+
+export interface CreateTrustCheckoutInput {
+  businessId?: string;
+  businessSlug: string;
+  recipientName: string;
+  recipientType: 'individual' | 'business';
+  recipientNtId?: string;
+  businessCategory?: string;
+  registrationNumberMasked?: string;
+  phone?: string;
+  supportEmail?: string;
+  account: { bankName: string; accountNumber: string; accountName: string };
+  verification: TrustCheckoutVerification;
+  requestedFromName?: string;
+  category: TrustCheckoutCategory;
+  title: string;
+  purpose: string;
+  description?: string;
+  amountMinor?: number;
+  customerEntersAmount: boolean;
+  currency: string;
+  paymentMode: TrustCheckoutPaymentMode;
+  expiresInMinutes: number;
+  deliveryExpectation?: string;
+  evidenceRequirements?: string[];
+  milestones?: string[];
 }
 
 /* ------------------------------------------------------------------ *

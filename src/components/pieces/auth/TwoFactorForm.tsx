@@ -51,7 +51,7 @@ export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBa
             </InputOTPGroup>
           </InputOTP>
         </div>
-        <Button type="submit" className="h-12 w-full rounded-full" size="lg" disabled={isLoading || code.length !== 6}>
+        <Button type="submit" className="h-12 w-full rounded-lg" size="lg" disabled={isLoading || code.length !== 6}>
           {isLoading ? (
             <>
               <Spinner size="sm" colorClass="text-white" />

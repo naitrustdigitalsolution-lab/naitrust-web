@@ -18,13 +18,17 @@ export interface PartyModeOption {
 
 /**
  * The "who's involved" choices a given account type may create. A customer
- * only deals with a business/vendor (B2C); a business can deal with another
- * business (B2B) or with an individual customer (B2C). Keeps each account type
- * from seeing options that don't apply to it.
+ * can transact with another person (P2P) or a business/vendor (B2C). A
+ * business can transact with another business (B2B) or an individual (B2C).
  */
 export function partyModeOptionsFor(type: AccountType): PartyModeOption[] {
   if (type === 'customer') {
     return [
+      {
+        mode: 'p2p',
+        title: 'You and another person',
+        description: 'Protect a payment, purchase, service, or agreement between two people.',
+      },
       {
         mode: 'b2c',
         title: 'You and a business',

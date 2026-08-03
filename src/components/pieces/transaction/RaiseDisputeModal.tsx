@@ -110,11 +110,11 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
           {error && <p className="text-xs text-destructive">{error}</p>}
 
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" className="rounded-md" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button
-              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={submit}
               disabled={submitting}
             >

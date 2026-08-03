@@ -271,10 +271,10 @@ export function BusinessProfileCard() {
               </div>
             )}
             <div className="flex justify-end gap-2">
-              <Button variant="ghost" className="rounded-full" onClick={() => setEditing(false)}>
+              <Button variant="ghost" className="rounded-md" onClick={() => setEditing(false)}>
                 Cancel
               </Button>
-              <Button className="rounded-full" onClick={requestSave} disabled={!dirty || update.isPending}>
+              <Button className="rounded-md" onClick={requestSave} disabled={!dirty || update.isPending}>
                 {update.isPending ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
                 Save changes
               </Button>

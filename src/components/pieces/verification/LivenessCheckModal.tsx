@@ -275,7 +275,7 @@ export function LivenessCheckModal({
                 hats or sunglasses. We'll tell you if the lighting or framing needs adjusting.
               </p>
             </div>
-            <Button className="w-full rounded-full" onClick={() => setPhase('starting')}>
+            <Button className="w-full rounded-md" onClick={() => setPhase('starting')}>
               <Camera size={16} className="mr-1.5" />
               Open camera
             </Button>
@@ -332,7 +332,7 @@ export function LivenessCheckModal({
               <p className={`text-sm font-medium ${statusClass}`}>{statusText}</p>
             </div>
 
-            <Button className="w-full rounded-full" onClick={capture} disabled={!canCapture}>
+            <Button className="w-full rounded-md" onClick={capture} disabled={!canCapture}>
               <Camera size={16} className="mr-1.5" />
               {ready ? 'Capture photo' : 'Adjust lighting & position'}
             </Button>
@@ -358,11 +358,11 @@ export function LivenessCheckModal({
               simulated check to continue here.
             </p>
             <div className="flex w-full gap-2">
-              <Button variant="outline" className="flex-1 rounded-full" onClick={() => setPhase('starting')}>
+              <Button variant="outline" className="flex-1 rounded-md" onClick={() => setPhase('starting')}>
                 Try again
               </Button>
               {appConfig.isMock && (
-                <Button className="flex-1 rounded-full" onClick={() => complete()}>
+                <Button className="flex-1 rounded-md" onClick={() => complete()}>
                   Simulated check
                 </Button>
               )}

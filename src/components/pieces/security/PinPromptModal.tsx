@@ -86,7 +86,7 @@ export function PinPromptModal({
               A 4-digit PIN protects every money-moving action on your account.
             </p>
             <Button
-              className="mt-1 rounded-full"
+              className="mt-1 rounded-md"
               onClick={() => {
                 onOpenChange(false);
                 navigate('/app/security');

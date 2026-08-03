@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { Instagram, Twitter, Linkedin, Mail, MapPin, Phone, Send, ShieldCheck, Landmark, FileCheck, Heart } from 'lucide-react';
+import { Instagram, Twitter, Linkedin, Mail, Send } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { subscribe } from '../../../services/publicService';
 import { openWaitlistModal } from '../../modals/waitlist-events';
@@ -63,79 +63,38 @@ export function Footer({ onNavigate }: FooterProps) {
     },
   ];
 
-  const trustNotes = [
-    {
-      icon: ShieldCheck,
-      title: 'Know who you trade with',
-      text: 'Review customer, supplier, and participant details before an important payment moves.',
-    },
-    {
-      icon: Landmark,
-      title: 'Regulated money movement',
-      text: 'Licensed financial partners handle payment movement while Naitrust manages the business workflow.',
-    },
-    {
-      icon: FileCheck,
-      title: 'Order and payment evidence',
-      text: 'Terms, invoices, receipts, delivery evidence, and issue notes stay connected to the transaction.',
-    },
-  ];
-
   return (
-    <footer className="relative overflow-hidden bg-[#04162f] pb-10 pt-8 text-white">
+    <footer className="relative border-t border-white/10 bg-[#04162f] py-8 text-white">
       <div className="relative z-10 mx-auto max-w-440 px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_2.65fr] mb-10">
-          {/* Brand */}
-          <div className="lg:max-w-lg">
-            <div className="mb-4">
-              <NaitrustLogo size="postMd" showText={true} textColor="text-white" />
+        <div className="grid gap-7 lg:grid-cols-[1.15fr_2fr]">
+          <div className="max-w-sm">
+            <div className="mb-3">
+              <NaitrustLogo size="sm" showText={true} textColor="text-white" />
             </div>
-            <div className="mb-4 text-sm leading-7 text-white/80 lg:text-md">
-              <p>
-                Naitrust is the everyday business account for Nigerian traders and growing businesses—receive sales, pay trusted suppliers instantly, protect important orders, and build a stronger payment history in one place.
-              </p>
-            </div>
-            <div className="space-y-3 text-sm text-white/70 mb-5">
-              <div className="flex items-start gap-3">
-                <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
-                <span>Lagos, Nigeria</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone size={18} className="shrink-0 text-primary" />
-                <a href="tel:+2347075873258" className="hover:text-white transition-colors">
-                  +234 707 587 3258
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail size={18} className="shrink-0 text-primary" />
-                <a href="mailto:contact@naitrust.com" className="hover:text-white transition-colors">
-                  contact@naitrust.com
-                </a>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <a href="https://instagram.com/naitrust_digitalsolutions" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
+            <p className="max-w-xs text-sm leading-6 text-white/60">Know who you are paying, receive money, and add protection when a transaction needs it.</p>
+            <div className="mt-4 flex gap-2">
+              <a aria-label="Naitrust on Instagram" href="https://instagram.com/naitrust_digitalsolutions" target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white">
                 <Instagram size={16} />
               </a>
-              <a href="https://x.com/naitrust14419" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
+              <a aria-label="Naitrust on X" href="https://x.com/naitrust14419" target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white">
                 <Twitter size={16} />
               </a>
-              <a href="https://www.linkedin.com/in/naitrust-digital-solutions" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
+              <a aria-label="Naitrust on LinkedIn" href="https://www.linkedin.com/in/naitrust-digital-solutions" target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white">
                 <Linkedin size={16} />
               </a>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h4 className="font-semibold text-md lg:text-lg mb-4">{group.title}</h4>
-                <ul className="space-y-2 text-sm lg:text-md text-white/80">
+                <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-white">{group.title}</h4>
+                <ul className="space-y-2 text-sm text-white/60">
                   {group.links.map((link) => (
                     <li key={`${group.title}-${link.label}`}>
                       <button
                         onClick={() => ('modal' in link && link.modal ? openWaitlistModal() : onNavigate(link.page))}
-                        className="text-left hover:text-white transition-colors"
+                        className="text-left transition-colors hover:text-white"
                       >
                         {link.label}
                       </button>
@@ -149,7 +108,7 @@ export function Footer({ onNavigate }: FooterProps) {
                             (window as any).openCookiePreferences();
                           }
                         }} 
-                        className="text-left hover:text-white transition-colors"
+                        className="text-left transition-colors hover:text-white"
                       >
                         Cookie Preferences
                       </button>
@@ -161,40 +120,9 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        <div className="mb-8 grid gap-6 py-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-          <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              Trust infrastructure
-            </p>
-            <div className="grid gap-4 md:grid-cols-3">
-              {trustNotes.map((note) => {
-                const Icon = note.icon;
-
-                return (
-                  <div key={note.title} className="flex gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/25 text-primary">
-                      <Icon size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-white">{note.title}</h4>
-                      <p className="mt-1 text-xs leading-5 text-white/60">{note.text}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="lg:border-l lg:border-white/10 lg:pl-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between lg:block">
-              <div>
-                <h4 className="text-base font-semibold">Subscribe to Naitrust updates</h4>
-                <p className="mt-1 max-w-sm text-xs leading-5 text-white/60">
-                  Practical payment guidance, product updates, and early-access news for Nigerian businesses.
-                </p>
-              </div>
-            </div>
-            <form onSubmit={handleSubscribe} className="mt-4 flex flex-col gap-2 sm:flex-row lg:flex-col xl:flex-row">
+        <div className="mt-7 flex flex-col gap-4 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
+          <div><h4 className="text-sm font-semibold text-white">Product updates, occasionally.</h4><p className="mt-1 text-xs text-white/50">Useful Naitrust news without the noise.</p></div>
+            <form onSubmit={handleSubscribe} className="flex w-full max-w-md gap-2">
               <label className="sr-only" htmlFor="footer-subscriber-email">Email address</label>
               <input
                 id="footer-subscriber-email"
@@ -202,36 +130,29 @@ export function Footer({ onNavigate }: FooterProps) {
                 type="email"
                 required
                 placeholder="you@example.com"
-                className="min-h-10 flex-1 rounded-full border border-white/15 bg-white px-3 text-sm text-[#0b2b45] outline-none placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/20"
+                className="min-h-10 min-w-0 flex-1 rounded-lg border border-white/15 bg-white px-4 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/20"
               />
               <button
                 type="submit"
                 disabled={isSubscribing}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
                 {isSubscribing ? 'Subscribing…' : 'Subscribe'}
                 <Send size={16} />
               </button>
             </form>
-          </div>
         </div>
 
-        <div className="pt-6 pb-2 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-center md:text-left">
-            <p className="text-md text-white/60">
+        <div className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p>
               © {new Date().getFullYear()} Naitrust Digital Solutions Ltd. All rights reserved.
             </p>
-            <p className="mt-1 flex flex-wrap items-center justify-center gap-1 text-sm text-white/40 md:justify-start">
-              RC Number: 9001392 &middot; Registered in Nigeria under CAMA 2020
-              <span className="hidden sm:inline">&middot;</span>
-              <span className="inline-flex items-center gap-1">
-                Made with <Heart size={13} className="fill-primary text-primary" /> from Nigeria
-              </span>
-            </p>
+            <p className="mt-1">RC 9001392 · Registered in Nigeria</p>
           </div>
-          <div className="flex items-center gap-2 text-md text-white/60">
-            <Mail size={16} />
-            <a href="mailto:contact@naitrust.com" className="hover:text-white transition-colors">
+          <div className="flex items-center gap-2">
+            <Mail size={14} />
+            <a href="mailto:contact@naitrust.com" className="transition-colors hover:text-primary">
               contact@naitrust.com
             </a>
           </div>

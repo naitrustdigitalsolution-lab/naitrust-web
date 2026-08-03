@@ -46,11 +46,15 @@ export function getStatusPresentation(status: SafeDealStatus): StatusPresentatio
 }
 
 export function partyModeLabel(mode: PartyMode): string {
-  return mode === 'b2b' ? 'Business to business' : 'Customer to business';
+  if (mode === 'b2b') return 'Business to business';
+  if (mode === 'p2p') return 'Person to person';
+  return 'Customer to business';
 }
 
 export function partyModeShort(mode: PartyMode): string {
-  return mode === 'b2b' ? 'B2B' : 'B2C';
+  if (mode === 'b2b') return 'B2B';
+  if (mode === 'p2p') return 'P2P';
+  return 'B2C';
 }
 
 export function roleLabel(role: DealRole): string {

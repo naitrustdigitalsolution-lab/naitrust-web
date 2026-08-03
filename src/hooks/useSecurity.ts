@@ -46,6 +46,7 @@ export function useSecurity(): SecurityView {
         emailVerified: !!user.isEmailVerified,
         phoneVerified: !!user.isPhoneVerified,
         kycStatus: user.kycVerified ? 'verified' : 'none',
+        pinSet: !!user.hasTransactionPin,
       });
     }
   }, [user, record, seed, userKey]);

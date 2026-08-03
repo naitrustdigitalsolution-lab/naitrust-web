@@ -59,6 +59,26 @@ function findByEmail(email: string): MockUserRecord | undefined {
   return records.find((record) => record.user.email.toLowerCase() === normalized);
 }
 
+function normalizePhone(value: string): string {
+  const digits = value.replace(/\D/g, '');
+  return digits.startsWith('234') ? digits.slice(3) : digits.startsWith('0') ? digits.slice(1) : digits;
+}
+
+function findByLoginIdentifier(identifier: string): MockUserRecord | undefined {
+  const normalized = identifier.trim().toLowerCase();
+  const emailMatch = findByEmail(normalized);
+  if (emailMatch) return emailMatch;
+  const usernameMatch = records.find((record) => {
+    const emailUsername = record.user.email.split('@')[0].toLowerCase();
+    const nameUsername = record.user.name.toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
+    return normalized === emailUsername || normalized === nameUsername || normalized === record.user.id.toLowerCase();
+  });
+  if (usernameMatch) return usernameMatch;
+  const phone = normalizePhone(identifier);
+  if (!phone) return undefined;
+  return records.find((record) => normalizePhone(record.user.phone ?? '') === phone);
+}
+
 function findByIdOrEmail(userIdOrEmail: string): MockUserRecord | undefined {
   return (
     records.find((record) => record.user.id === userIdOrEmail) ?? findByEmail(userIdOrEmail)
@@ -82,9 +102,9 @@ export async function mockLogin(
 ): Promise<MockAuthResponse> {
   await delay(latencyMs);
 
-  const record = findByEmail(email);
+  const record = findByLoginIdentifier(email);
   if (!record || record.password !== password) {
-    return { success: false, error: 'Invalid email or password' };
+    return { success: false, error: 'Invalid email, phone number, or password' };
   }
 
   if (record.twoFactorEnabled) {

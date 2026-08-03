@@ -70,10 +70,10 @@ export function VerificationGate({
         </ul>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-          <Button variant="ghost" className="rounded-full" onClick={() => navigate('/app')}>
+          <Button variant="ghost" className="rounded-md" onClick={() => navigate('/app')}>
             Back to dashboard
           </Button>
-          <Button className="rounded-full" onClick={() => navigate('/app/security')}>
+          <Button className="rounded-md" onClick={() => navigate('/app/security')}>
             Go to Security Center
           </Button>
         </div>

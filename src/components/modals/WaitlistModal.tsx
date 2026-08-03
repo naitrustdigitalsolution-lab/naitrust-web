@@ -223,7 +223,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
                 We’ll keep you updated and let you know when your Naitrust early access is ready.
               </DialogDescription>
               <Button
-                className="mt-8 h-12 rounded-full px-7"
+                className="mt-8 h-12 rounded-md px-7"
                 onClick={() => {
                   setIsComplete(false);
                   onOpenChange(false);
@@ -311,7 +311,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                   <span className="min-w-0 flex-1 truncate">
                     {formState.userType.length > 0
@@ -360,7 +360,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                   <span className="min-w-0 flex-1 truncate">
                     {formState.useCase.length > 0
@@ -419,7 +419,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-full border-2 border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-input-border bg-input-background px-4 text-left text-sm font-medium text-foreground outline-none transition-[border-color,box-shadow] hover:border-primary/50 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                   <span className="min-w-0 flex-1 truncate">
                     {formState.transactionRange
@@ -473,7 +473,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             Naitrust can contact me about business-payments early access and product updates.
           </label>
 
-          <Button type="submit" size="lg" disabled={isSubmitting} className="mt-1 h-12 rounded-full">
+          <Button type="submit" size="lg" disabled={isSubmitting} className="mt-1 h-12 rounded-lg">
             {isSubmitting ? 'Saving your place...' : 'Join the Naitrust waitlist'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">

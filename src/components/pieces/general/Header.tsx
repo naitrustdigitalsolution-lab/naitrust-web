@@ -160,7 +160,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                 id="logo-export"
                 className="hidden lg:flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0"
               >
-                <NaitrustLogo size="postMd" showText={true} textColor={isHomeHero || isDarkMode ? "text-white" : "text-primary"} />
+                <NaitrustLogo size="postMd" showText={true} textColor={isHomeHero ? 'text-white' : 'text-primary'} />
               </button>
             )}
 
@@ -222,14 +222,16 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               )}
               
               {/* Theme Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className={`rounded-full w-9 h-9 p-0 ${isHomeHero ? 'text-white hover:bg-white/10 hover:text-white' : ''}`}
-              >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-              </Button>
+              {isAuthenticated && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={toggleTheme}
+                    className={`rounded-full w-9 h-9 p-0 ${isHomeHero ? 'text-white hover:bg-white/10 hover:text-white' : ''}`}
+                  >
+                    {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                  </Button>
+              )}
 
               {/* Notifications - Always show when authenticated */}
 

@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "review_mock_001",
+      "businessId": "biz_mock_001",
+      "transactionId": "txn_mock_004",
+      "reviewerName": "Verified customer",
+      "rating": 5,
+      "tags": ["Clear communication", "Delivered as agreed"],
+      "comment": "The payment purpose and delivery steps were clear from the start.",
+      "status": "published",
+      "transactionCompleted": true,
+      "createdAt": "2026-07-18T12:00:00Z"
+    },
+    {
+      "id": "review_mock_002",
+      "businessId": "biz_mock_001",
+      "transactionId": "txn_mock_008",
+      "reviewerName": "Verified buyer",
+      "rating": 4,
+      "tags": ["Responsive", "Evidence provided"],
+      "comment": "Updates and supporting evidence stayed with the transaction.",
+      "status": "published",
+      "transactionCompleted": true,
+      "createdAt": "2026-06-29T09:30:00Z"
+    }
+  ]
+}

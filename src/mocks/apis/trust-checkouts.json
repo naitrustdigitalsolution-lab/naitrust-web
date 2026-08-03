@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "checkout_mock_001",
+      "publicId": "demo-trust-checkout",
+      "businessId": "biz_mock_001",
+      "businessSlug": "adaeze-homes-properties",
+      "recipientName": "Adaeze Homes & Properties Ltd",
+      "recipientType": "business",
+      "recipientNtId": "NT-BIZ-10482",
+      "businessCategory": "Real estate development",
+      "registrationNumberMasked": "••••8221",
+      "phone": "+2348031234567",
+      "supportEmail": "transactions@adaezehomes.example",
+      "account": {
+        "bankName": "Anchor MFB",
+        "accountNumber": "7012345678",
+        "accountName": "Adaeze Homes & Properties Ltd"
+      },
+      "requestedFromName": "A cautious first-time customer",
+      "category": "product",
+      "title": "Customer order payment",
+      "purpose": "Payment for the items listed in the customer order",
+      "description": "A demonstration Trust Checkout request using frontend mock data.",
+      "amountMinor": 10000000,
+      "customerEntersAmount": false,
+      "currency": "NGN",
+      "paymentMode": "customer_choice",
+      "deliveryExpectation": "Delivery within two business days after payment confirmation",
+      "evidenceRequirements": ["Dispatch confirmation", "Delivery acknowledgement"],
+      "milestones": [],
+      "verification": {
+        "identityVerified": true,
+        "businessVerified": true,
+        "ownershipVerified": true,
+        "verifiedAt": "2026-05-04T09:00:00Z",
+        "expiresAt": "2027-05-04T09:00:00Z"
+      },
+      "status": "active",
+      "createdAt": "2026-08-03T08:00:00Z",
+      "expiresAt": "2027-08-03T08:15:00Z"
+    }
+  ]
+}

@@ -71,11 +71,11 @@ export function TerminationPanel({ termination, responding, onAccept, onReject }
 
       {canRespond && (
         <div className="flex flex-col gap-2 sm:flex-row">
-          <Button className="flex-1 rounded-full" onClick={onAccept} disabled={responding}>
+          <Button className="flex-1 rounded-md" onClick={onAccept} disabled={responding}>
             {responding ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : <Check size={16} className="mr-1.5" />}
             Agree to terminate
           </Button>
-          <Button variant="outline" className="flex-1 rounded-full" onClick={onReject} disabled={responding}>
+          <Button variant="outline" className="flex-1 rounded-md" onClick={onReject} disabled={responding}>
             <X size={16} className="mr-1.5" />
             Reject with reason
           </Button>

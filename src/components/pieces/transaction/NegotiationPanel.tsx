@@ -158,7 +158,7 @@ export function NegotiationPanel({
             <ProposalCard key={p.id} deal={deal} proposal={p} isLatest={isLatest}>
               {canRespond && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" className="rounded-full" onClick={handleAccept} disabled={respond.isPending}>
+                  <Button size="sm" className="rounded-md" onClick={handleAccept} disabled={respond.isPending}>
                     {respond.isPending && respond.variables?.action === 'accepted' ? (
                       <Loader2 size={14} className="mr-1.5 animate-spin" />
                     ) : (
@@ -166,7 +166,7 @@ export function NegotiationPanel({
                     )}
                     Accept changes
                   </Button>
-                  <Button size="sm" variant="outline" className="rounded-full" onClick={() => setShowPropose(true)}>
+                  <Button size="sm" variant="outline" className="rounded-md" onClick={() => setShowPropose(true)}>
                     Counter-propose
                   </Button>
                   <Button

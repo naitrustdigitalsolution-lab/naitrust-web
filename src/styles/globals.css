@@ -516,3 +516,16 @@ html:not(.dark) .naitrust-keep-white * {
   background-repeat: no-repeat;
   background-size: 900px 900px;
 }
+
+/* One consistent rounded-lg form language across public and authenticated screens. */
+form input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+form textarea,
+form select,
+form [data-slot='input'],
+form [data-slot='textarea'],
+form [data-slot='select-trigger'],
+form [data-slot='input-otp-slot'],
+form button[type='submit'],
+form [data-slot='button'] {
+  border-radius: var(--radius) !important;
+}

@@ -51,7 +51,7 @@ export function ForgotPasswordForm({ email, error, isSending, onChange, onSubmit
           </div>
         </div>
         {error && <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm">{error}</div>}
-        <Button type="submit" className="h-12 w-full rounded-full" size="lg" disabled={isSending}>
+        <Button type="submit" className="h-12 w-full rounded-lg" size="lg" disabled={isSending}>
           {isSending ? (
             <>
               <Loader2 size={18} className="mr-2 animate-spin" />

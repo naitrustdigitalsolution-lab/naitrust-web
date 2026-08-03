@@ -134,10 +134,10 @@ export function AddTrackingStepModal({
           )}
           {error && <p className="text-xs text-destructive">{error}</p>}
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" className="rounded-md" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button className="rounded-full" onClick={submit} disabled={submitting}>
+            <Button className="rounded-md" onClick={submit} disabled={submitting}>
               {submitting ? (
                 <Loader2 size={16} className="mr-1.5 animate-spin" />
               ) : isEdit ? (

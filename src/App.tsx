@@ -52,6 +52,7 @@ const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage")
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
 const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
+const SupportRequestPage = lazyWithMinDelay(() => import("./pages/SupportRequestPage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
 const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
 const PaymentsHubPage = lazyWithMinDelay(() => import("./pages/PaymentsHubPage"));
@@ -82,6 +83,7 @@ const BlogPage = lazy(() => import("./components/pages/BlogPage").then((module) 
 const BlogArticlePage = lazy(() => import("./components/pages/BlogArticlePage").then((module) => ({ default: module.BlogArticlePage })));
 const ReportConcernPage = lazy(() => import("./components/pages/ReportConcernPage").then((module) => ({ default: module.ReportConcernPage })));
 const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBusinessPaymentPage").then((module) => ({ default: module.PublicBusinessPaymentPage })));
+const PublicTrustProfilePage = lazy(() => import("./components/pages/PublicTrustProfilePage").then((module) => ({ default: module.PublicTrustProfilePage })));
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 
@@ -217,6 +219,15 @@ function PublicAppContent() {
   const { isAuthenticated, isHydrated } = useAuth();
   const currentPage = getCurrentPage(location.pathname);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!location.pathname.startsWith('/app')) {
+      root.classList.remove('dark');
+      return;
+    }
+    root.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
+  }, [location.pathname]);
+
   // Resolve persisted auth before rendering any route. Once authenticated,
   // every URL outside the private app returns to the dashboard. Keeping this
   // check above the route tree prevents public-page flashes on refresh too.
@@ -224,7 +235,12 @@ function PublicAppContent() {
     return <DashboardPageLoader />;
   }
 
-  if (isAuthenticated && !location.pathname.startsWith('/app')) {
+  const isShareableTransactionRoute =
+    location.pathname.startsWith('/pay/') ||
+    location.pathname.startsWith('/invite/') ||
+    location.pathname.startsWith('/trust/');
+
+  if (isAuthenticated && !location.pathname.startsWith('/app') && !isShareableTransactionRoute) {
     return <Navigate to="/app" replace />;
   }
 
@@ -232,6 +248,7 @@ function PublicAppContent() {
     standalonePaths.includes(location.pathname) ||
     location.pathname.startsWith("/app") ||
     location.pathname.startsWith("/pay/") ||
+    location.pathname.startsWith("/trust/") ||
     location.pathname.startsWith("/invite/") ||
     (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
@@ -278,6 +295,7 @@ function PublicAppContent() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
+          <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
           <Route element={<RequireAuth />}>
             <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
@@ -289,6 +307,7 @@ function PublicAppContent() {
             <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
             <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/messages" element={<DashboardRouteSuspense><MessagesPage /></DashboardRouteSuspense>} />
+            <Route path="/app/support/new" element={<DashboardRouteSuspense><SupportRequestPage /></DashboardRouteSuspense>} />
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />

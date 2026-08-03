@@ -32,27 +32,27 @@ export function BeforeYouStartCard({ registrationType }: { registrationType: 'bu
       : signupRequirements;
 
   return (
-    <div className="rounded-2xl border border-primary/15 bg-white/70 p-5 shadow-sm dark:bg-background/70">
-      <div className="mb-4 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <ShieldCheck size={20} />
+    <div className="mx-auto w-full max-w-xl rounded-xl border border-primary/15 bg-white/70 p-4 shadow-sm">
+      <div className="mb-3 flex items-start gap-2.5">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <ShieldCheck size={16} />
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-primary">
             Before you get started
           </p>
-          <h3 className="mt-1 text-base font-semibold text-foreground">
+          <h3 className="mt-0.5 text-sm font-semibold text-foreground">
             Confirm you meet these requirements
           </h3>
         </div>
       </div>
-      <div className="grid gap-3">
+      <div className="grid gap-2.5">
         {requirements.map((requirement) => (
-          <div key={requirement.title} className="flex gap-3">
-            <Check className="mt-0.5 shrink-0 text-primary" size={18} />
+          <div key={requirement.title} className="flex gap-2.5">
+            <Check className="mt-0.5 shrink-0 text-primary" size={14} />
             <div>
-              <h4 className="text-sm font-semibold text-foreground">{requirement.title}</h4>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">{requirement.text}</p>
+              <h4 className="text-xs font-semibold text-foreground">{requirement.title}</h4>
+              <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{requirement.text}</p>
             </div>
           </div>
         ))}

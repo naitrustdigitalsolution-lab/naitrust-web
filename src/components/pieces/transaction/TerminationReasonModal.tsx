@@ -71,12 +71,12 @@ export function TerminationReasonModal({
           </div>
           {error && <p className="text-xs text-destructive">{error}</p>}
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" className="rounded-full" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" className="rounded-md" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button
               variant={destructive ? 'destructive' : 'default'}
-              className="rounded-full"
+              className="rounded-md"
               onClick={submit}
               disabled={submitting}
             >

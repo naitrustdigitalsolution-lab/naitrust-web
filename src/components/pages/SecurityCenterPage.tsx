@@ -172,7 +172,7 @@ function OtpModal({
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {!sent ? (
-            <Button className="w-full rounded-full" onClick={send} disabled={sending}>
+            <Button className="w-full rounded-md" onClick={send} disabled={sending}>
               {sending ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
               Send code
             </Button>
@@ -271,7 +271,7 @@ function TwoFactorModal({
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {!enrol ? (
-            <Button className="w-full rounded-full" onClick={begin} disabled={loading}>
+            <Button className="w-full rounded-md" onClick={begin} disabled={loading}>
               {loading ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : null}
               Generate setup key
             </Button>
@@ -518,7 +518,7 @@ function KycModal({
             </>
           )}
 
-          <Button className="w-full rounded-full" onClick={submit} disabled={!complete || submitting}>
+          <Button className="w-full rounded-md" onClick={submit} disabled={!complete || submitting}>
             {submitting ? (
               <>
                 <Loader2 size={16} className="mr-1.5 animate-spin" />

@@ -99,7 +99,7 @@ export function PhoneField({
         // Mirror the app's Input styling exactly: pill shape, 2px border,
         // input tokens, and the same focus ring, so it sits flush with the
         // other fields in a form.
-        'flex h-12 w-full items-stretch overflow-hidden rounded-full border-2 border-input-border bg-input-background transition-[border-color,box-shadow] hover:border-primary/50 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20',
+        'flex h-12 w-full items-stretch overflow-hidden rounded-lg border border-input-border bg-input-background transition-[border-color,box-shadow] hover:border-primary/50 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}

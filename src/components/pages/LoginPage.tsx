@@ -330,8 +330,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
             className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
           />
         </div>
-      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl xl:gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
-        <aside className="flex-col hidden lg:flex justify-between rounded-2xl bg-[#eef3f8] py-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:py-10">
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-0 px-4 py-8 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:gap-2 lg:px-8 xl:gap-3">
+        <aside className="flex-col hidden lg:flex justify-between rounded-2xl py-5 sm:p-8 lg:rounded-none lg:py-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -343,7 +343,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               className="mb-6 inline-flex items-center lg:mb-12"
               aria-label="Go to Naitrust home"
             >
-              <NaitrustLogo size="postMd" textColor={isDarkMode ? "text-white" : "text-primary"} />
+              <NaitrustLogo size="postMd" textColor="text-primary" />
             </button>
 
             <div className="max-w-md space-y-6 lg:space-y-8">
@@ -377,7 +377,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
         </aside>
 
           {/* Right side - Auth Forms */}
-        <main className="flex min-h-full items-center justify-center py-4 lg:py-10">
+        <main className="flex min-h-full items-center justify-center py-4 lg:justify-start lg:py-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -396,10 +396,6 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                     onPasswordChange={setPassword}
                     onSubmit={handleLogin}
                     onForgot={() => setView('forgot-password')}
-                    onGoogle={() => {
-                      setError('');
-                      toast.info('Google Sign-In will be available soon! Please use email and password to login.');
-                    }}
                     onRegister={() => onNavigate('register')}
                   />
                 </motion.div>

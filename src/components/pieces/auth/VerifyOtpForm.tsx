@@ -50,7 +50,7 @@ export function VerifyOtpForm({ otp, email, error, isVerifying, onChange, onSubm
             </InputOTPGroup>
           </InputOTP>
         </div>
-        <Button type="submit" className="h-12 w-full rounded-full" size="lg" disabled={isVerifying || otp.length !== 6}>
+        <Button type="submit" className="h-12 w-full rounded-lg" size="lg" disabled={isVerifying || otp.length !== 6}>
           {isVerifying ? (
             <>
               <Loader2 size={18} className="mr-2 animate-spin" />

@@ -95,6 +95,23 @@
         "isEmailVerified": true,
         "isPhoneVerified": false
       }
+    },
+    {
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_007",
+        "email": "aisha.customer@naitrust.test",
+        "firstName": "Aisha",
+        "lastName": "Lawal",
+        "name": "Aisha Lawal",
+        "role": "customer",
+        "phone": "+2348011110007",
+        "kycLevel": 2,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true,
+        "hasTransactionPin": true
+      }
     }
   ]
 }

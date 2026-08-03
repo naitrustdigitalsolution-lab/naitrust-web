@@ -105,7 +105,7 @@ export default function WaitlistPage() {
       </header>
 
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[.78fr_1.22fr] lg:items-start">
-        <aside className="overflow-hidden rounded-3xl bg-gradient-to-br from-[#061a31] via-[#0a3158] to-[#087ff5] p-5 text-white shadow-xl sm:p-8 lg:sticky lg:top-24">
+        <aside className="overflow-hidden rounded-3xl bg-gradient-to-br from-[#061a31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-xl sm:p-8 lg:sticky lg:top-24">
           <div className="flex items-center gap-3 lg:block">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/12 lg:h-11 lg:w-11"><ShieldCheck size={21} /></div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-300 lg:mt-7">Naitrust early access</p>
@@ -126,7 +126,7 @@ export default function WaitlistPage() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><CheckCircle2 size={32} /></div>
                 <h2 className="mt-6 text-2xl font-bold">Your place is saved.</h2>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">We’ll keep you updated and let you know when your Naitrust early access is ready.</p>
-                <Button className="mt-7 rounded-full" onClick={() => navigate('/')}>Back to Naitrust <ArrowRight size={16} /></Button>
+                <Button className="mt-7 rounded-md" onClick={() => navigate('/')}>Back to Naitrust <ArrowRight size={16} /></Button>
               </div>
             </div>
           ) : (
@@ -163,7 +163,7 @@ export default function WaitlistPage() {
                       </span>
                     </summary>
                     <div className="mt-4 grid gap-4">
-                      <label className="grid gap-2 text-sm font-medium">Typical transaction size<select value={form.range} onChange={(e) => setForm({ ...form, range: e.target.value as TransactionRange })} className="h-11 rounded-full border-2 border-input-border bg-input-background px-4 text-sm outline-none focus:border-primary"><option value="">Select one</option>{RANGES.map((range) => <option key={range.value} value={range.value}>{range.label}</option>)}</select></label>
+                      <label className="grid gap-2 text-sm font-medium">Typical transaction size<select value={form.range} onChange={(e) => setForm({ ...form, range: e.target.value as TransactionRange })} className="h-11 rounded-lg border border-input-border bg-input-background px-4 text-sm outline-none focus:border-primary"><option value="">Select one</option>{RANGES.map((range) => <option key={range.value} value={range.value}>{range.label}</option>)}</select></label>
                       <label className="grid gap-2 text-sm font-medium">What would make payments clearer?<Textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="min-h-20" placeholder="Tell us in one sentence" /></label>
                     </div>
                   </details>
@@ -173,11 +173,11 @@ export default function WaitlistPage() {
 
               <div className="sticky bottom-0 -mx-4 border-t bg-background/95 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:p-0">
                 {step === 1 ? (
-                  <Button type="button" size="lg" onClick={continueToPreferences} className="h-11 w-full rounded-full sm:h-12">Continue <ArrowRight size={17} /></Button>
+                  <Button type="button" size="lg" onClick={continueToPreferences} className="h-11 w-full rounded-md sm:h-12">Continue <ArrowRight size={17} /></Button>
                 ) : (
                   <div className="flex gap-2">
-                    <Button type="button" variant="outline" onClick={() => setStep(1)} className="h-11 flex-1 rounded-full">Back</Button>
-                    <Button type="submit" disabled={isSubmitting} className="h-11 flex-[1.7] rounded-full">{isSubmitting ? 'Saving…' : 'Join waitlist'} <ArrowRight size={17} /></Button>
+                    <Button type="button" variant="outline" onClick={() => setStep(1)} className="h-11 flex-1 rounded-md">Back</Button>
+                    <Button type="submit" disabled={isSubmitting} className="h-11 flex-[1.7] rounded-md">{isSubmitting ? 'Saving…' : 'Join waitlist'} <ArrowRight size={17} /></Button>
                   </div>
                 )}
                 <p className="mt-2 text-center text-xs text-muted-foreground">No spam. Only early-access updates.</p>

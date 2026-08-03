@@ -231,7 +231,7 @@ export function WalletPage() {
             <Input id="fund-amount" type="number" inputMode="decimal" min={0} value={amount} onChange={(e) => setAmount(e.target.value)} />
           </div>
           <DialogFooter>
-            <Button className="w-full rounded-full" disabled={!amountMinor || fundWallet.isPending} onClick={() => void handleFund()}>
+            <Button className="w-full rounded-md" disabled={!amountMinor || fundWallet.isPending} onClick={() => void handleFund()}>
               {fundWallet.isPending && <Loader2 size={15} className="mr-1.5 animate-spin" />}
               Fund account
             </Button>
@@ -253,7 +253,7 @@ export function WalletPage() {
             <Input id="withdraw-amount" type="number" inputMode="decimal" min={0} value={amount} onChange={(e) => setAmount(e.target.value)} />
           </div>
           <DialogFooter>
-            <Button className="w-full rounded-full" disabled={!amountMinor || withdraw.isPending} onClick={() => void handleWithdraw()}>
+            <Button className="w-full rounded-md" disabled={!amountMinor || withdraw.isPending} onClick={() => void handleWithdraw()}>
               {withdraw.isPending && <Loader2 size={15} className="mr-1.5 animate-spin" />}
               Withdraw
             </Button>

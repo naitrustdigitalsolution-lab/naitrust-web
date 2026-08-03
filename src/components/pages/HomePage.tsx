@@ -14,6 +14,7 @@ import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
 import spiralBackground from '../../assets/spiral.svg';
 import { openWaitlistModal } from '../modals/waitlist-events';
 import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
+import handheldAppImage from '../../assets/hero/naitrust-handheld-exact-home-v4.webp';
 import shopPaymentImage from "../images/hero/nigerian-shop-payment.webp";
 import  qrPaymentImage from "../images/hero/nigerian-qr-payment.webp"
 
@@ -27,6 +28,7 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [allowAmbientMotion, setAllowAmbientMotion] = useState(false);
+  const [useHeroViewportHeight, setUseHeroViewportHeight] = useState(true);
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px) and (prefers-reduced-motion: no-preference)');
@@ -34,6 +36,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
     updateMotionPreference();
     media.addEventListener('change', updateMotionPreference);
     return () => media.removeEventListener('change', updateMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    const updateHeroHeight = () => {
+      if (!window.outerWidth) return;
+      const zoomRatio = window.outerWidth / window.innerWidth;
+      setUseHeroViewportHeight(zoomRatio > 0.77);
+    };
+
+    updateHeroHeight();
+    window.addEventListener('resize', updateHeroHeight);
+    return () => window.removeEventListener('resize', updateHeroHeight);
   }, []);
 
   const howItWorks = [
@@ -95,7 +109,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <FloatingFeedbackButton onNavigate={onNavigate} />
       
       {/* Hero — a deliberately loose collage of real business moments and product UI */}
-      <section className="relative overflow-hidden bg-[#04162f] text-white xl:min-h-[94vh]">
+      <section className={`relative overflow-hidden bg-[#04162f] text-white ${useHeroViewportHeight ? 'xl:min-h-[94vh]' : ''}`}>
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[55px] sm:blur-[110px]" />
           <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[60px] sm:blur-[130px]" />
@@ -103,7 +117,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
         </div>
 
-        <div className="relative z-10 mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)] items-center gap-14 px-4 pb-16 pt-22 sm:gap-9 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:min-h-[100vh] xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 xl:pb-20 xl:pt-28">
+        <div className={`relative z-10 mx-auto grid w-full max-w-440 grid-cols-[minmax(0,1fr)] items-center gap-14 px-4 pb-16 pt-22 sm:gap-9 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 ${useHeroViewportHeight ? 'xl:min-h-[100vh] xl:pb-20 xl:pt-28' : 'xl:pb-32 xl:pt-36'}`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,7 +127,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
               Verified payments for Nigerian people and businesses
             </Badge>
-            <AnimatedHeroText />
+            <AnimatedHeroText compact={!useHeroViewportHeight} />
 
             <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
               <Button size="sm" onClick={openWaitlistModal} className="group h-9 w-auto rounded-full bg-[#1e90ff] px-4 text-[10px] font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:px-7 sm:text-base">
@@ -313,7 +327,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Button className="rounded-full" onClick={() => onNavigate('register-customer')}>Start as a customer <ArrowRight size={16} /></Button>
+            <Button className="h-9 rounded-full px-4 text-xs sm:h-10 sm:px-5 sm:text-sm" onClick={() => onNavigate('register-customer')}>Start as a customer <ArrowRight size={14} /></Button>
           </div>
         </div>
       </section>
@@ -463,9 +477,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
             className="mt-12 text-center"
           >
-            <Button className="h-13 rounded-full px-7 shadow-[0_12px_34px_rgba(30,144,255,.25)]" size="lg" onClick={openWaitlistModal}>
+            <Button className="h-9 rounded-full px-4 text-xs shadow-[0_10px_26px_rgba(30,144,255,.2)] sm:h-10 sm:px-5 sm:text-sm" onClick={openWaitlistModal}>
               Get Early Access
-              <ArrowRight size={20} className="ml-2" />
+              <ArrowRight size={14} className="ml-1" />
             </Button>
           </motion.div>
         </div>
@@ -481,47 +495,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
               viewport={{ once: true }}
               className="order-2 lg:order-1 relative"
             >
-              <Card className="gap-3 overflow-hidden rounded-[1.5rem] border-0 bg-linear-to-br from-[#087ff5] to-[#075cb5] p-5 text-primary-foreground shadow-[0_30px_70px_rgba(8,127,245,.28)] sm:gap-4 sm:rounded-[2rem] sm:p-8">
-                <p className="text-sm font-medium text-primary-foreground/80">Available balance</p>
-                <p className="text-3xl font-bold tracking-tight sm:text-5xl">₦842,500.00</p>
-                <div className="flex flex-wrap gap-4 text-sm text-primary-foreground/80">
-                  <span>
-                    Pending: <strong className="font-semibold text-primary-foreground">₦63,000.00</strong>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Shield size={14} />
-                    Protected: <strong className="font-semibold text-primary-foreground">₦3,120,000.00</strong>
-                  </span>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
-                    <Send size={14} /> Send Money
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
-                    <ArrowDownToLine size={14} /> Receive
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold">
-                    <Landmark size={14} /> Account details
-                  </span>
-                </div>
-              </Card>
-
-              <Card className="relative -mt-2 ml-4 gap-0 overflow-hidden rounded-[1.5rem] border-0 p-0 shadow-xl sm:ml-10">
-                {[
-                  { name: 'Chioma Electronics', amount: '- ₦15,000.00', positive: false },
-                  { name: 'Received from Tunde Bakare', amount: '+ ₦32,000.00', positive: true },
-                ].map((row) => (
-                  <div key={row.name} className="flex items-center gap-3 border-b p-4 last:border-b-0">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                      {row.name.slice(0, 2).toUpperCase()}
-                    </div>
-                    <p className="flex-1 truncate text-sm font-medium">{row.name}</p>
-                    <p className={`text-sm font-semibold ${row.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
-                      {row.amount}
-                    </p>
-                  </div>
-                ))}
-              </Card>
+              <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[2rem] shadow-[0_30px_80px_rgba(4,22,47,.18)]">
+                <ImageWithFallback
+                  src={handheldAppImage}
+                  alt="Naitrust mobile app displayed on a phone held in hand"
+                  className="h-auto w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </motion.div>
 
             <motion.div
@@ -565,9 +547,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" onClick={openWaitlistModal}>
+                <Button className="h-9 w-auto self-start rounded-full px-4 text-xs sm:h-10 sm:px-5 sm:text-sm" onClick={openWaitlistModal}>
                   Get Early Access
-                  <ArrowRight size={18} className="ml-2" />
+                  <ArrowRight size={14} className="ml-1" />
                 </Button>
               </div>
             </motion.div>
@@ -602,12 +584,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 When you are ordering from a new supplier or committing more money than usual, a <strong className="text-white">Naitrust Protected Deal</strong> keeps the order, supplier, amount, delivery terms, evidence, and payment status in one shared record.
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-8">
+              <div className="mb-6 grid gap-3 sm:grid-cols-2 sm:gap-4">
                 {[
-                  { icon: Fingerprint, text: 'Every order action kept on record' },
-                  { icon: QrCode, text: 'Shareable Protected Deal access' },
-                  { icon: ScanLine, text: 'Delivery and evidence tracking' },
-                  { icon: Lock, text: 'Dispute-ready from day one' },
+                  { icon: Fingerprint, text: 'Order actions and delivery evidence kept together' },
+                  { icon: Lock, text: 'Shareable access with a dispute-ready record' },
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (
@@ -628,10 +608,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 })}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" onClick={() => onNavigate('register-business')}>
+              <div className="flex">
+                <Button size="sm" className="w-auto rounded-full px-5" onClick={() => onNavigate('register-business')}>
                   Create a Protected Deal
-                  <ArrowRight size={18} className="ml-2" />
+                  <ArrowRight size={15} className="ml-1.5" />
                 </Button>
               </div>
             </motion.div>
@@ -680,14 +660,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute bottom-0 left-0 z-10 w-[82%] sm:w-[68%]"
               >
-              <Card className="gap-0 rounded-[1.25rem] border-0 bg-white p-4 shadow-2xl sm:rounded-[1.5rem] sm:p-6">
+              <Card className="gap-0 rounded-[1.25rem] border-0 bg-white p-4 text-[#071b31] shadow-2xl sm:rounded-[1.5rem] sm:p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                     <CheckCircle2 size={21} />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Protected Deal</p>
-                    <p className="font-bold">Delivery evidence added</p>
+                    <p className="text-xs text-slate-500">Protected Deal</p>
+                    <p className="font-bold text-[#071b31]">Delivery evidence added</p>
                   </div>
                 </div>
                 <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100">
@@ -741,7 +721,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </p>
           </motion.div>
 
-          <div className="mx-auto grid max-w-3xl gap-4 py-4 sm:grid-cols-2">
+          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 py-4 sm:gap-4">
             {/* <motion.a
               href="https://www.cac.gov.ng/"
               target="_blank"
@@ -773,8 +753,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               transition={{ delay: 0.1 * 1 }}
               className="block"
             >
-              <Card className="flex h-full min-h-40 items-center justify-center rounded-[1.5rem] p-6 transition-all hover:-translate-y-1 hover:shadow-xl dark:from-card dark:to-gray-900/50">
-                <QoreIDLogo className="w-16 h-16 bg-[#141414] rounded-full p-2" />
+              <Card className="flex h-full min-h-32 items-center justify-center rounded-[1.25rem] p-4 transition-all hover:-translate-y-1 hover:shadow-xl sm:min-h-40 sm:rounded-[1.5rem] sm:p-6 dark:from-card dark:to-gray-900/50">
+                <QoreIDLogo className="h-12 w-12 rounded-full bg-[#141414] p-2 sm:h-16 sm:w-16" />
                 <p className="font-semibold text-sm group-hover:text-primary transition-colors">QoreID</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Identity and business checks</p>
               </Card>
@@ -792,8 +772,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               transition={{ delay: 0.1 * 1 }}
               className="block"
             >
-              <Card className="flex h-full min-h-40 items-center justify-center rounded-[1.5rem] p-6 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl dark:from-card dark:to-gray-900/50">
-                <AnchorLogo className="w-16 h-16 object-contain rounded-full" />
+              <Card className="flex h-full min-h-32 items-center justify-center rounded-[1.25rem] p-4 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl sm:min-h-40 sm:rounded-[1.5rem] sm:p-6 dark:from-card dark:to-gray-900/50">
+                <AnchorLogo className="h-12 w-12 rounded-full object-contain sm:h-16 sm:w-16" />
                 <p className="font-semibold text-sm group-hover:text-primary transition-colors">Anchor</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">Payment infrastructure</p>
               </Card>
@@ -843,7 +823,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Final CTA - Enhanced with Slogan */}
-      <section className="relative overflow-hidden bg-[#04162f] py-12 text-white sm:pb-20 sm:pt-24">
+      <section className="relative overflow-hidden bg-[#04162f] py-10 text-white sm:pb-20 sm:pt-24">
         <div className="pointer-events-none absolute left-1/2 top-[38%] h-44 w-[38rem] max-w-[85vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[95px]" />
 
         <div className="max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -853,33 +833,33 @@ export function HomePage({ onNavigate }: HomePageProps) {
             viewport={{ once: true }}
           >
             {/* Slogan - Prominent */}
-            <div className="mb-8 inline-flex rounded-full border border-white/15 bg-white/[0.06] px-5 py-2.5 backdrop-blur">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7dc1ff]">
+            <div className="mb-5 inline-flex max-w-full rounded-full border border-white/15 bg-white/[0.06] px-3 py-2 backdrop-blur sm:mb-8 sm:px-5 sm:py-2.5">
+              <p className="text-[9px] font-bold uppercase leading-4 tracking-[0.08em] text-[#7dc1ff] sm:text-xs sm:tracking-[0.14em]">
                 Send instantly when you trust them. Protect it when you don't.
               </p>
             </div>
 
-            <h2 className="mb-5 text-3xl font-bold leading-[1.06] tracking-[-0.045em] text-white sm:text-5xl sm:leading-[1.02] lg:text-6xl">
+            <h2 className="mb-4 text-2xl font-bold leading-[1.1] tracking-[-0.04em] text-white sm:mb-5 sm:text-5xl sm:leading-[1.02] lg:text-6xl">
               Run today’s business.<br />Build tomorrow’s trust.
             </h2>
-            <p className="mx-auto mb-9 max-w-2xl text-base leading-7 text-white/60 lg:text-lg">
+            <p className="mx-auto mb-6 max-w-2xl text-sm leading-6 text-white/60 sm:mb-9 sm:text-base sm:leading-7 lg:text-lg">
               Receive sales, pay trusted suppliers instantly, and protect important orders—all from one business account.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <div className="flex flex-row justify-center gap-2 sm:gap-4">
               <Button
                 size="lg"
                 variant="secondary"
                 onClick={openWaitlistModal}
-                className="w-full rounded-full bg-primary px-8 py-5 text-base font-semibold text-white shadow-[0_14px_32px_rgba(30,144,255,0.24)] hover:bg-primary/90 sm:w-auto sm:py-6 sm:text-lg"
+                className="h-12 min-w-0 flex-1 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-[0_16px_38px_rgba(30,144,255,0.34)] ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
               >
                 Join Early Access
-                <ArrowRight size={22} className="ml-2" />
+                <ArrowRight size={16} className="ml-1.5 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 size="lg"
                 onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
-                className="w-full rounded-full border border-white/20 bg-white/[0.06] px-8 py-5 text-base font-semibold text-white hover:bg-white/10 hover:text-white sm:w-auto sm:py-6 sm:text-lg"
+                className="h-12 min-w-0 flex-1 rounded-full border border-white/30 bg-white/[0.1] px-5 text-sm font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-14 sm:flex-none sm:px-10 sm:text-lg"
               >
                 Join as a Business
               </Button>

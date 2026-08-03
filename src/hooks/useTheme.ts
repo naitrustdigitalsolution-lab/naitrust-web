@@ -30,13 +30,15 @@ const useThemeStore = create<ThemeState>((set) => ({
 /** Side-effect: sync DOM class + localStorage */
 function applyTheme(dark: boolean) {
   const root = document.documentElement;
-  if (dark) {
+  const darkModeAllowed = window.location.pathname.startsWith('/app');
+  if (dark && darkModeAllowed) {
     root.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
   } else {
     root.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
   }
+  // Preserve the user's dashboard preference even while public pages are
+  // deliberately rendered in light mode.
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
 }
 
 /**

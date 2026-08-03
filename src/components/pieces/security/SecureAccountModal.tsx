@@ -57,7 +57,7 @@ export function SecureAccountModal() {
 
         <div className="flex flex-col gap-2 pt-1">
           <Button
-            className="w-full rounded-full"
+            className="w-full rounded-md"
             onClick={() => {
               dismiss();
               navigate('/app/security');
@@ -65,7 +65,7 @@ export function SecureAccountModal() {
           >
             Enable 2FA
           </Button>
-          <Button variant="ghost" className="w-full rounded-full" onClick={dismiss}>
+          <Button variant="ghost" className="w-full rounded-md" onClick={dismiss}>
             Maybe later
           </Button>
         </div>

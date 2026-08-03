@@ -15,6 +15,12 @@ import {
   Download,
   Share2,
   ShieldCheck,
+  Mail,
+  Smartphone,
+  Code2,
+  Loader2,
+  ArrowRight,
+  BadgeCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -31,6 +37,8 @@ import { accountTypeOf } from '../../libs/utils/account';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Skeleton } from '../ui/skeleton';
+import { useCreateTrustCheckout } from '../../hooks/useTrustCheckouts';
+import type { TrustCheckout, TrustCheckoutCategory } from '../../libs/store/types';
 
 function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -49,10 +57,18 @@ export function ReceiveMoneyPage() {
   const [linkExpiryMinutes, setLinkExpiryMinutes] = useState('15');
   const [selectedCustomerId, setSelectedCustomerId] = useState('new');
   const [newCustomerName, setNewCustomerName] = useState('');
+  const [checkoutTitle, setCheckoutTitle] = useState('');
+  const [checkoutCategory, setCheckoutCategory] = useState<TrustCheckoutCategory>('product');
+  const [amountMode, setAmountMode] = useState<'fixed' | 'customer'>('fixed');
+  const [createdCheckout, setCreatedCheckout] = useState<TrustCheckout | null>(null);
+  const createTrustCheckout = useCreateTrustCheckout();
   const isBusiness = accountTypeOf(user) !== 'customer';
   const accountContentLoading = isWalletLoading || (isBusiness && isBusinessLoading);
   const account = wallet?.virtualAccount;
   const shareMode = searchParams.get('share');
+  const [activeMethod, setActiveMethod] = useState<'account' | 'request' | 'qr'>(
+    shareMode === 'account' ? 'account' : shareMode === 'qr' ? 'qr' : 'request',
+  );
   const qrPosterRef = useRef<HTMLDivElement>(null);
   const savedCustomers = useMemo(
     () => (counterparties ?? []).filter((item) =>
@@ -65,13 +81,59 @@ export function ReceiveMoneyPage() {
   const paymentLink = useMemo(() => {
     const origin = typeof window === 'undefined' ? '' : window.location.origin;
     const slug = business?.slug || slugify(business?.name || user?.name || 'business');
-    const params = new URLSearchParams();
-    if (Number(linkAmount) > 0) params.set('amount', linkAmount);
-    if (linkReason.trim()) params.set('for', linkReason.trim());
-    params.set('expires', linkExpiryMinutes);
-    const query = params.toString();
-    return `${origin}/pay/${slug}${query ? `?${query}` : ''}`;
-  }, [business?.name, business?.slug, linkAmount, linkExpiryMinutes, linkReason, user?.name]);
+    return createdCheckout
+      ? `${origin}/pay/${slug}?request=${encodeURIComponent(createdCheckout.publicId)}`
+      : `${origin}/pay/${slug}`;
+  }, [business?.name, business?.slug, createdCheckout, user?.name]);
+
+  const createCheckout = async () => {
+    if (!business) return toast.error('Your business profile is still loading.');
+    if (!paymentCustomerName) return toast.error('Choose a customer or enter their name.');
+    if (!checkoutTitle.trim()) return toast.error('Enter a payment title.');
+    if (amountMode === 'fixed' && Number(linkAmount) <= 0) return toast.error('Enter the fixed amount.');
+
+    try {
+      const response = await createTrustCheckout.mutateAsync({
+        businessId: business.id,
+        businessSlug: business.slug || slugify(business.name),
+        recipientName: business.name,
+        recipientType: 'business',
+        recipientNtId: business.ntId,
+        businessCategory: business.category,
+        registrationNumberMasked: business.rcNumber ? `••••${business.rcNumber.slice(-4)}` : undefined,
+        phone: business.phone,
+        supportEmail: business.email,
+        account: business.paymentAccount ?? {
+          bankName: 'Anchor MFB',
+          accountNumber: '7012345678',
+          accountName: business.name,
+        },
+        verification: {
+          identityVerified: Boolean(business.identityVerifiedAt || business.verified),
+          businessVerified: Boolean(business.businessVerifiedAt || business.verified),
+          ownershipVerified: Boolean(business.ownershipVerifiedAt || business.verified),
+          verifiedAt: business.businessVerifiedAt || business.identityVerifiedAt,
+          expiresAt: business.verificationExpiresAt,
+        },
+        requestedFromName: paymentCustomerName,
+        category: checkoutCategory,
+        title: checkoutTitle.trim(),
+        purpose: linkReason.trim() || checkoutTitle.trim(),
+        description: linkReason.trim() || undefined,
+        amountMinor: amountMode === 'fixed' ? Math.round(Number(linkAmount) * 100) : undefined,
+        customerEntersAmount: amountMode === 'customer',
+        currency: 'NGN',
+        paymentMode: 'direct',
+        expiresInMinutes: Number(linkExpiryMinutes),
+        evidenceRequirements: [],
+        milestones: [],
+      });
+      setCreatedCheckout(response.data);
+      toast.success('Trust Checkout ready to share');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not create the Trust Checkout.');
+    }
+  };
 
   const copy = async (value: string, key: string) => {
     try {
@@ -101,7 +163,24 @@ export function ReceiveMoneyPage() {
   }, [business?.name, linkAmount, linkReason, paymentCustomerName, paymentLink]);
 
   const shareToWhatsApp = () => {
+    if (!createdCheckout) return toast.error('Create the Trust Checkout first.');
     window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const shareByEmail = () => {
+    if (!createdCheckout) return toast.error('Create the Trust Checkout first.');
+    window.location.href = `mailto:?subject=${encodeURIComponent(`Payment request from ${business?.name ?? 'Naitrust'}`)}&body=${encodeURIComponent(whatsappMessage)}`;
+  };
+
+  const shareBySms = () => {
+    if (!createdCheckout) return toast.error('Create the Trust Checkout first.');
+    window.location.href = `sms:?&body=${encodeURIComponent(whatsappMessage)}`;
+  };
+
+  const copyCheckoutButton = () => {
+    if (!createdCheckout) return toast.error('Create the Trust Checkout first.');
+    const snippet = `<a href="${paymentLink}" target="_blank" rel="noopener noreferrer">Pay with Naitrust</a>`;
+    void copy(snippet, 'embed');
   };
 
   const downloadQrPoster = async () => {
@@ -159,11 +238,11 @@ export function ReceiveMoneyPage() {
   return (
     <DashboardLayout title="Receive Money">
       <div className="mx-auto w-full max-w-7xl">
-        <button type="button" onClick={() => navigate(-1)} className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground">
+        <button type="button" onClick={() => navigate(-1)} className="mb-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground">
           <ArrowLeft size={16} /> Back
         </button>
 
-        <div className="mb-7 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-6 shadow-sm sm:px-7 lg:px-9 lg:py-8">
+        <div className="mb-5 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-r from-primary/[0.09] via-background to-background px-5 py-5 shadow-sm sm:px-7">
           <div className="flex items-start gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">
               <ArrowDownToLine size={21} />
@@ -191,10 +270,22 @@ export function ReceiveMoneyPage() {
           </div>
         ) : isBusiness && (
           <>
-          <div className="mb-5 grid items-stretch gap-5 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
-          <Card className={`h-full overflow-hidden rounded-3xl border-primary/15 p-0 shadow-sm ${shareMode === 'account' ? 'ring-2 ring-primary/25' : ''}`}>
-            <div className="flex h-full flex-col">
-              <div className="bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white sm:p-7">
+          <div className="mb-4 flex">
+            <div className="inline-flex w-full items-center rounded-xl border bg-muted/40 p-1 sm:w-auto">
+            {[
+              { id: 'account' as const, icon: Landmark, title: 'Account' },
+              { id: 'request' as const, icon: Link2, title: 'Request' },
+              { id: 'qr' as const, icon: QrCode, title: 'QR code' },
+            ].map((method) => <button key={method.id} type="button" aria-pressed={activeMethod === method.id} onClick={() => setActiveMethod(method.id)} className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all sm:min-w-32 sm:text-sm ${activeMethod === method.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+              <method.icon size={15} /><span className="truncate">{method.title}</span>
+            </button>)}
+            </div>
+          </div>
+
+          <div className="mb-5 w-full">
+          <Card className={`${activeMethod !== 'account' ? 'hidden' : ''} overflow-hidden rounded-3xl border-primary/15 p-0 shadow-sm`}>
+            <div className="grid min-h-64 lg:grid-cols-[1.15fr_.85fr]">
+              <div className="flex flex-col justify-center bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white sm:p-8">
                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-white/65">
                   <Landmark size={15} /> Business account
                 </p>
@@ -205,7 +296,7 @@ export function ReceiveMoneyPage() {
                   {account ? `${account.bankName} · ${account.accountName}` : 'Your regulated partner account will appear here'}
                 </p>
               </div>
-              <div className="flex flex-1 flex-col justify-center gap-3 border-t bg-card p-5">
+              <div className="flex flex-col justify-center gap-3 border-t bg-card p-6 lg:border-l lg:border-t-0 lg:p-8">
                 <p className="text-sm font-semibold">Receive a bank transfer</p>
                 <p className="text-xs leading-5 text-muted-foreground">Share these details with customers paying from any Nigerian bank.</p>
                 <Button className="mt-1 rounded-full" disabled={!account?.accountNumber} onClick={() => account?.accountNumber && void copy(account.accountNumber, 'account')}>
@@ -216,21 +307,21 @@ export function ReceiveMoneyPage() {
             </div>
           </Card>
 
-          <Card className={`h-full overflow-hidden rounded-3xl border-emerald-500/20 shadow-sm ${shareMode === 'whatsapp' ? 'ring-2 ring-emerald-500/30' : ''}`}>
-            <div className="p-5 sm:p-6">
-              <div className="flex items-center gap-2">
+          <Card className={`${activeMethod !== 'request' ? 'hidden' : ''} overflow-hidden rounded-3xl border-primary/15 shadow-sm`}>
+            <div className="p-5 sm:p-7 lg:p-8">
+              <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e9f8f0] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400">
-                  <MessageCircle size={20} />
+                  <Link2 size={19} />
                 </span>
                 <div>
-                  <p className="font-semibold">Create one payment request</p>
-                  <p className="text-xs text-muted-foreground">Share the same request by WhatsApp, link, or QR.</p>
+                  <p className="font-semibold">Request a payment</p>
+                  <p className="text-xs text-muted-foreground">Set the payment details, then share the link.</p>
                 </div>
+                </div>
+                <div className="flex flex-wrap gap-2"><Button variant="ghost" size="sm" className="rounded-full" onClick={() => window.open(`/trust/${business?.slug || slugify(business?.name || '')}`, '_blank', 'noopener,noreferrer')}><BadgeCheck size={15} /> Trust Profile</Button><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={15} /> Protected Deal</Button></div>
               </div>
-              <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
-                Add the payer, amount, and payment details once. Naitrust creates one verified request you can share anywhere.
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <Label htmlFor="whatsapp-customer">Customer or payer</Label>
                   <Select value={selectedCustomerId} onValueChange={setSelectedCustomerId}>
@@ -248,8 +339,16 @@ export function ReceiveMoneyPage() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="whatsapp-amount">Amount (NGN)</Label>
-                  <Input id="whatsapp-amount" type="number" min={0} value={linkAmount} onChange={(event) => setLinkAmount(event.target.value)} placeholder="0.00" className="mt-1.5" />
+                  <Label htmlFor="checkout-category">Transaction type</Label>
+                  <Select value={checkoutCategory} onValueChange={(value) => setCheckoutCategory(value as TrustCheckoutCategory)}>
+                    <SelectTrigger id="checkout-category" className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="product">Product</SelectItem><SelectItem value="service">Service</SelectItem>
+                      <SelectItem value="supplier_order">Supplier order</SelectItem><SelectItem value="contract">Contract</SelectItem>
+                      <SelectItem value="project">Project</SelectItem><SelectItem value="rental">Rental</SelectItem>
+                      <SelectItem value="custom">Custom transaction</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="payment-expiry">Request expires after</Label>
@@ -271,27 +370,40 @@ export function ReceiveMoneyPage() {
                     <Input id="whatsapp-customer-name" value={newCustomerName} onChange={(event) => setNewCustomerName(event.target.value)} placeholder="Enter the customer's name" className="mt-1.5" />
                   </div>
                 )}
-                <div className="sm:col-span-2">
-                  <Label htmlFor="whatsapp-reason">Payment details</Label>
+                <div className="sm:col-span-2 lg:col-span-2">
+                  <Label htmlFor="checkout-title">Payment title</Label>
+                  <Input id="checkout-title" value={checkoutTitle} onChange={(event) => setCheckoutTitle(event.target.value)} placeholder="e.g. Website design deposit" className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="amount-mode">Amount</Label>
+                  <Select value={amountMode} onValueChange={(value) => setAmountMode(value as 'fixed' | 'customer')}>
+                    <SelectTrigger id="amount-mode" className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent><SelectItem value="fixed">Set a fixed amount</SelectItem><SelectItem value="customer">Customer enters amount</SelectItem></SelectContent>
+                  </Select>
+                </div>
+                {amountMode === 'fixed' && <div><Label htmlFor="whatsapp-amount">Amount (NGN)</Label><Input id="whatsapp-amount" type="number" min={1} value={linkAmount} onChange={(event) => setLinkAmount(event.target.value)} placeholder="0.00" className="mt-1.5" /></div>}
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <Label htmlFor="whatsapp-reason">Payment details <span className="font-normal text-muted-foreground">(optional)</span></Label>
                   <Textarea id="whatsapp-reason" value={linkReason} onChange={(event) => setLinkReason(event.target.value)} placeholder="Describe what this payment is for, invoice details, quantity, or any note the payer should see." className="mt-1.5 min-h-24 resize-y" />
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Button className="rounded-full bg-[#0b8f57] text-white hover:bg-[#087a4b]" disabled={!paymentCustomerName} onClick={shareToWhatsApp}>
-                  <MessageCircle size={16} /> Share on WhatsApp
-                </Button>
-                <Button variant="outline" className="rounded-full" onClick={() => void copy(paymentLink, 'link')}>
-                  {copied === 'link' ? <Check size={15} /> : <Link2 size={15} />} {copied === 'link' ? 'Link copied' : 'Copy payment link'}
-                </Button>
-                <Button variant="ghost" className="rounded-full" onClick={() => window.open(paymentLink, '_blank', 'noopener,noreferrer')}>
-                  Preview
-                </Button>
-              </div>
+              <div className="mt-6 flex justify-end border-t pt-5"><Button className="h-11 w-full rounded-md px-7 sm:w-auto" disabled={createTrustCheckout.isPending} onClick={() => void createCheckout()}>{createTrustCheckout.isPending ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}{createdCheckout ? 'Create another payment link' : 'Create payment link'} <ArrowRight size={15} /></Button></div>
+              {createdCheckout && <div className="mt-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.045] p-4 sm:p-5">
+                <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700"><Check size={15} /></span><div><p className="text-sm font-semibold">Payment link ready</p><p className="text-xs text-muted-foreground">Share it with your customer to collect this payment.</p></div></div>
+                <div className="mt-4 flex items-center gap-2 rounded-xl border bg-background p-2"><p className="min-w-0 flex-1 truncate px-2 text-xs text-muted-foreground">{paymentLink}</p><Button size="sm" variant="ghost" className="shrink-0 rounded-lg" onClick={() => void copy(paymentLink, 'link')}>{copied === 'link' ? <Check size={14} /> : <Copy size={14} />} {copied === 'link' ? 'Copied' : 'Copy'}</Button></div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" className="rounded-full bg-[#0b8f57] text-white hover:bg-[#087a4b]" onClick={shareToWhatsApp}><MessageCircle size={15} /> WhatsApp</Button>
+                  <Button size="sm" variant="outline" className="rounded-full" onClick={shareByEmail}><Mail size={15} /> Email</Button>
+                  <Button size="sm" variant="outline" className="rounded-full" onClick={shareBySms}><Smartphone size={15} /> SMS</Button>
+                  <Button size="sm" variant="ghost" className="rounded-full" onClick={() => window.open(paymentLink, '_blank', 'noopener,noreferrer')}>Open link <ArrowRight size={14} /></Button>
+                  <Button size="sm" variant="ghost" className="rounded-full text-muted-foreground" onClick={copyCheckoutButton}><Code2 size={14} /> Website button</Button>
+                </div>
+              </div>}
             </div>
           </Card>
           </div>
 
-          <Card className={`overflow-hidden rounded-3xl p-0 shadow-sm ${shareMode === 'qr' ? 'ring-2 ring-primary/25' : ''}`}>
+          <Card className={`${activeMethod !== 'qr' ? 'hidden' : ''} w-full overflow-hidden rounded-3xl p-0 shadow-sm`}>
             <div className="grid items-center lg:grid-cols-[minmax(0,1fr)_auto]">
               <div className="p-5 sm:p-7">
                 <div className="flex items-center gap-3">

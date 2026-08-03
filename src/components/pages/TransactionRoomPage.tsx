@@ -36,6 +36,8 @@ import {
   Undo2,
   Upload,
   Users,
+  Gift,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -598,6 +600,26 @@ export function TransactionRoomPage() {
   const requestedTab = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
   const [chatFullscreen, setChatFullscreen] = useState(false);
+  const [rewardClaimed, setRewardClaimed] = useState(() => {
+    if (!id || typeof window === 'undefined') return false;
+    try {
+      const claimed = JSON.parse(localStorage.getItem('naitrust_mock_claimed_deal_rewards') || '[]') as string[];
+      return claimed.includes(id);
+    } catch {
+      return false;
+    }
+  });
+
+  const claimCompletionReward = () => {
+    if (!id || rewardClaimed) return;
+    let claimed: string[] = [];
+    try { claimed = JSON.parse(localStorage.getItem('naitrust_mock_claimed_deal_rewards') || '[]') as string[]; } catch { /* start a fresh mock list */ }
+    localStorage.setItem('naitrust_mock_claimed_deal_rewards', JSON.stringify([...new Set([...claimed, id])]));
+    const currentPoints = Number(localStorage.getItem('naitrust_mock_reward_points') || 0);
+    localStorage.setItem('naitrust_mock_reward_points', String(currentPoints + 100));
+    setRewardClaimed(true);
+    toast.success('100 Naitrust reward points claimed');
+  };
 
   useEffect(() => {
     if (requestedTab === 'chat') setActiveTab('chat');
@@ -813,6 +835,18 @@ export function TransactionRoomPage() {
                 </div>
               </div>
             </Card>
+
+            {(deal.status === 'completed' || deal.status === 'paid_out') && (
+              <Card className="mt-4 overflow-hidden border-emerald-500/20 bg-gradient-to-r from-emerald-500/[0.08] via-card to-primary/[0.06] p-4 shadow-sm sm:p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:text-emerald-400">{rewardClaimed ? <Sparkles size={18} /> : <Gift size={18} />}</span>
+                    <div><p className="text-sm font-semibold">{rewardClaimed ? 'Completion reward claimed' : 'Your completion reward is ready'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{rewardClaimed ? '100 reward points were added for this completed Protected Deal.' : 'Claim 100 mock reward points for successfully completing this Protected Deal.'}</p></div>
+                  </div>
+                  <Button size="sm" className="rounded-full sm:shrink-0" disabled={rewardClaimed} onClick={claimCompletionReward}>{rewardClaimed ? <Check size={15} /> : <Gift size={15} />}{rewardClaimed ? 'Claimed' : 'Claim reward'}</Button>
+                </div>
+              </Card>
+            )}
 
             {/* Body */}
             <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Search, Send, ShieldCheck } from 'lucide-react';
+import { Headphones, MessageCircle, Search, Send } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
@@ -10,9 +10,9 @@ import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 
 const CONVERSATIONS = [
+  { id: 'general_001', name: 'Naitrust Support', preview: 'Get help with your account, payment, or Protected Deal.', time: 'Support', unread: 0, protected: false, support: true },
   { id: 'txn_mock_001', name: 'Adaeze Homes & Properties', preview: 'The delivery evidence is ready for your review.', time: '10:42', unread: 2, protected: true },
   { id: 'txn_mock_002', name: 'Emeka Trade & Logistics', preview: 'We have confirmed the updated quantity.', time: 'Yesterday', unread: 0, protected: true },
-  { id: 'general_001', name: 'Naitrust Support', preview: 'How can we help with your account?', time: 'Mon', unread: 0, protected: false },
 ];
 
 export function MessagesPage() {
@@ -31,8 +31,8 @@ export function MessagesPage() {
           title="Messages"
           description="Conversations with people, businesses, and Naitrust support."
           icon={MessageCircle}
-          actions={<Button className="rounded-full" onClick={() => navigate('/app/deals')}>
-            <ShieldCheck size={15} /> Open Protected Deals
+          actions={<Button className="rounded-md" onClick={() => navigate('/app/support/new')}>
+            <Headphones size={15} /> Create support request
           </Button>}
         />
 
@@ -47,13 +47,14 @@ export function MessagesPage() {
             <button
               key={conversation.id}
               type="button"
-              onClick={() => conversation.protected && navigate(`/app/deals/${conversation.id}?tab=chat`)}
-              className="flex w-full items-center gap-3 border-b px-4 py-4 text-left transition hover:bg-accent/40 last:border-b-0 sm:px-5"
+              onClick={() => conversation.support ? navigate('/app/support/new') : conversation.protected && navigate(`/app/deals/${conversation.id}?tab=chat`)}
+              className={`flex w-full items-center gap-3 border-b px-4 py-4 text-left transition hover:bg-accent/40 last:border-b-0 sm:px-5 ${conversation.support ? 'sticky top-0 z-[1] bg-primary/[0.055]' : ''}`}
             >
               <CounterpartyAvatar name={conversation.name} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="truncate text-sm font-semibold">{conversation.name}</p>
+                  {conversation.support && <Badge className="rounded-md text-[10px]">Pinned</Badge>}
                   {conversation.protected && <Badge variant="outline" className="hidden text-[10px] sm:inline-flex">Protected Deal</Badge>}
                 </div>
                 <p className="mt-1 truncate text-sm text-muted-foreground">{conversation.preview}</p>

@@ -247,7 +247,7 @@ export function SettingsPage() {
             <div><Label htmlFor="linked-account-number">Account number</Label><Input id="linked-account-number" inputMode="numeric" maxLength={10} value={bankForm.accountNumber} onChange={(e) => setBankForm({ ...bankForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 10) })} placeholder="10-digit account number" className="mt-1.5" /></div>
             <div><Label htmlFor="linked-account-name">Account name</Label><Input id="linked-account-name" value={bankForm.accountName} onChange={(e) => setBankForm({ ...bankForm, accountName: e.target.value })} placeholder="Name on the account" className="mt-1.5" /></div>
           </div>
-          <DialogFooter><Button className="w-full rounded-full" onClick={handleAddBankAccount}>Add bank account</Button></DialogFooter>
+          <DialogFooter><Button className="w-full rounded-md" onClick={handleAddBankAccount}>Add bank account</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </DashboardLayout>

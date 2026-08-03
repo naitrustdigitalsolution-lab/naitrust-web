@@ -164,7 +164,7 @@ export function BeneficiariesPage() {
           </div>
           <DialogFooter>
             <Button
-              className="w-full rounded-full"
+              className="w-full rounded-md"
               disabled={!name || !handle || createBeneficiary.isPending}
               onClick={() => void handleAdd()}
             >

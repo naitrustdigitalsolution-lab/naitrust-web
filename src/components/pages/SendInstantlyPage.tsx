@@ -30,6 +30,7 @@ import {
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { PinPromptModal } from '../pieces/security/PinPromptModal';
+import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
@@ -37,6 +38,7 @@ import { Label } from '../ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useBeneficiaries } from '../../hooks/useBeneficiaries';
+import { useSecurity } from '../../hooks/useSecurity';
 import { useCreateInstantTransfer, useInstantTransfers, useValidateRecipient } from '../../hooks/useInstantTransfer';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import type { InstantTransfer, RecipientMethod, TransferRecipient } from '../../libs/store/types';
@@ -83,6 +85,7 @@ const STEP_SEQUENCE: { key: FlowStep; label: string }[] = [
 
 export function SendInstantlyPage() {
   const navigate = useNavigate();
+  const security = useSecurity();
   const [step, setStep] = useState<FlowStep>('recipient');
   const [method, setMethod] = useState<RecipientRoute>('naitrust');
   const [naitrustLookup, setNaitrustLookup] = useState<NaitrustLookup>('naitrust_account_number');
@@ -199,6 +202,18 @@ export function SendInstantlyPage() {
 
   const currentStepIndex = STEP_SEQUENCE.findIndex((s) => s.key === step);
   const recipientName = recipient?.resolvedName ?? recipient?.identifier;
+
+  if (!security.canCreateDeal) {
+    return (
+      <DashboardLayout title="Send Money">
+        <VerificationGate
+          missing={security.missingForDeal}
+          title="Finish verification to send money"
+          description="Complete identity verification and set your transaction PIN before making an instant transfer."
+        />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout title="Send Money">
@@ -476,10 +491,10 @@ export function SendInstantlyPage() {
             </div>
             <p className="text-sm text-muted-foreground">Is this who you want to pay?</p>
             <div className="flex w-full gap-3">
-              <Button variant="outline" className="flex-1 rounded-full" onClick={() => setStep('recipient')}>
+              <Button variant="outline" className="flex-1 rounded-md" onClick={() => setStep('recipient')}>
                 Not them
               </Button>
-              <Button className="flex-1 rounded-full" onClick={() => setStep('amount')}>
+              <Button className="flex-1 rounded-md" onClick={() => setStep('amount')}>
                 Confirm
               </Button>
             </div>
@@ -551,7 +566,7 @@ export function SendInstantlyPage() {
               </div>
             </dl>
             {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-            <Button className="mt-5 w-full rounded-full" onClick={() => setPinOpen(true)}>
+            <Button className="mt-5 w-full rounded-md" onClick={() => setPinOpen(true)}>
               Confirm & Pay
             </Button>
           </Card>
@@ -607,10 +622,10 @@ export function SendInstantlyPage() {
               </div>
             </Card>
             <div className="flex w-full gap-3">
-              <Button variant="outline" className="flex-1 rounded-full" onClick={reset}>
+              <Button variant="outline" className="flex-1 rounded-md" onClick={reset}>
                 Send another
               </Button>
-              <Button className="flex-1 rounded-full" onClick={() => navigate('/app/transactions')}>
+              <Button className="flex-1 rounded-md" onClick={() => navigate('/app/transactions')}>
                 <Send size={15} className="mr-1.5" />
                 Done
               </Button>

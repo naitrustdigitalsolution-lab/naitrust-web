@@ -71,7 +71,7 @@ export function ResetPasswordForm({
             />
           </div>
         </div>
-        <Button type="submit" className="h-12 w-full rounded-full" size="lg" disabled={isResetting}>
+        <Button type="submit" className="h-12 w-full rounded-lg" size="lg" disabled={isResetting}>
           {isResetting ? (
             <>
               <Loader2 size={18} className="mr-2 animate-spin" />

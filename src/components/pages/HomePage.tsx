@@ -123,7 +123,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
             <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
-              Trust every transaction
+              Pay with confidence, every time.
             </Badge>
             <AnimatedHeroText compact={!useHeroViewportHeight} />
 

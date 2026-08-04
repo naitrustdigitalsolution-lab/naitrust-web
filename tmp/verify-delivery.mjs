@@ -57,6 +57,7 @@ try {
 
   await sellerPage.goto(`${baseUrl}/delivery/${regenerated.token}`);
   await sellerPage.waitForLoadState('networkidle');
+  await sellerPage.waitForTimeout(2_000);
   const sellerHandoverText = await sellerPage.locator('body').innerText();
   if (!sellerHandoverText.includes('Buyer confirmation required')) {
     throw new Error(`Seller authorization guard missing at ${sellerPage.url()}. Page showed: ${sellerHandoverText.slice(0, 500)}`);

@@ -162,9 +162,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative mx-auto h-[22rem] min-w-0 w-full max-w-[25rem] sm:h-[34rem] sm:max-w-[44rem] md:h-[38rem] xl:h-[42rem]"
           >
             <motion.div
-              animate={allowAmbientMotion ? { y: [0, -8, 0], rotate: [-5, -4, -5] } : undefined}
+              animate={allowAmbientMotion ? { y: [0, -8, 0] } : undefined}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -left-[3%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:-left-[1%] sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -left-[3%] top-[4%] z-10 h-[34%] w-[37%] rotate-[-5deg] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:-left-[1%] sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={marketTradersImage}
@@ -177,9 +177,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </motion.div>
 
             <motion.div
-              animate={allowAmbientMotion ? { y: [0, 10, 0], rotate: [4, 3, 4] } : undefined}
+              animate={allowAmbientMotion ? { y: [0, 10, 0] } : undefined}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-              className="absolute -right-[2%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:-right-[1%] sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -right-[2%] top-[1%] z-0 block h-[30%] w-[35%] rotate-[4deg] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:-right-[1%] sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={qrPaymentImage}
@@ -224,9 +224,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </motion.div>
 
             <motion.div
-              animate={allowAmbientMotion ? { y: [0, -9, 0], rotate: [5, 6, 5] } : undefined}
+              animate={allowAmbientMotion ? { y: [0, -9, 0] } : undefined}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute bottom-[7%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:bottom-[1%] sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute bottom-[7%] right-[1%] top-auto z-20 h-[32%] w-[38%] rotate-[5deg] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:bottom-[1%] sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={deliveryEvidenceImage}

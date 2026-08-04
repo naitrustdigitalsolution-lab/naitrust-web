@@ -59,7 +59,7 @@ try {
   await sellerPage.waitForLoadState('networkidle');
   const sellerHandoverText = await sellerPage.locator('body').innerText();
   if (!sellerHandoverText.includes('Buyer confirmation required')) {
-    throw new Error(`Seller authorization guard missing. Page showed: ${sellerHandoverText.slice(0, 300)}`);
+    throw new Error(`Seller authorization guard missing at ${sellerPage.url()}. Page showed: ${sellerHandoverText.slice(0, 500)}`);
   }
   await sellerContext.close();
 

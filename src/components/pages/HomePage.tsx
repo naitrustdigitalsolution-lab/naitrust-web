@@ -164,7 +164,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={allowAmbientMotion ? { y: [0, -8, 0], rotate: [-5, -4, -5] } : undefined}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -left-[9%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:-left-[1%] sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -left-[3%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:-left-[1%] sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={marketTradersImage}
@@ -179,7 +179,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={allowAmbientMotion ? { y: [0, 10, 0], rotate: [4, 3, 4] } : undefined}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-              className="absolute -right-[5%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:-right-[1%] sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -right-[2%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:-right-[1%] sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={qrPaymentImage}
@@ -193,31 +193,32 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <motion.div
               whileHover={{ y: -6, rotate: 0 }}
-              className="absolute left-[14%] top-[25%] z-30 w-[72%] rotate-[-1deg] overflow-hidden rounded-xl border border-white/80 bg-white p-3 text-[#0b203b] shadow-[0_20px_48px_rgba(0,0,0,.36)] sm:left-[18%] sm:top-[24%] sm:w-[66%] sm:rounded-[2rem] sm:p-7 sm:shadow-[0_35px_90px_rgba(0,0,0,.42)]"
+              className="absolute left-[19%] top-[25%] z-30 w-[62%] rotate-[-1deg] overflow-hidden rounded-xl border border-white/80 bg-white p-2 text-[#0b203b] shadow-[0_20px_48px_rgba(0,0,0,.36)] sm:left-[18%] sm:top-[24%] sm:w-[66%] sm:rounded-[2rem] sm:p-7 sm:shadow-[0_35px_90px_rgba(0,0,0,.42)]"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[8px] font-bold uppercase tracking-[0.13em] text-slate-400 sm:text-[10px] sm:tracking-[0.16em]">Available balance</p>
-                  <p className="mt-0.5 text-lg font-black tracking-[-0.04em] sm:mt-1 sm:text-4xl">₦842,500</p>
+                  <p className="text-[6.5px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.16em]">Available balance</p>
+                  <p className="mt-0.5 text-base font-black tracking-[-0.04em] sm:mt-1 sm:text-4xl">₦842,500</p>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eaf5ff] text-[#1e90ff] sm:h-11 sm:w-11 sm:rounded-2xl"><WalletIcon size={15} className="sm:h-[21px] sm:w-[21px]" /></div>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#eaf5ff] text-[#1e90ff] sm:h-11 sm:w-11 sm:rounded-2xl"><WalletIcon size={13} className="sm:h-[21px] sm:w-[21px]" /></div>
               </div>
 
-              <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:mt-6 sm:gap-2">
-                <span className="inline-flex items-center justify-center gap-1 rounded-md bg-[#1e90ff] px-1.5 py-1.5 text-[7.5px] font-bold text-white sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Send size={10} className="sm:h-3.5 sm:w-3.5" /> Send instantly</span>
-                <span className="inline-flex items-center justify-center gap-1 rounded-md bg-[#eaf5ff] px-1.5 py-1.5 text-[7.5px] font-bold text-[#0877db] sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Shield size={10} className="sm:h-3.5 sm:w-3.5" /> Protect payment</span>
+              <div className="mt-1.5 grid grid-cols-2 gap-1 sm:mt-6 sm:gap-2">
+                <span className="inline-flex items-center justify-center gap-0.5 rounded-md bg-[#1e90ff] px-1 py-1 text-[6.5px] font-bold text-white sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Send size={8} className="sm:h-3.5 sm:w-3.5" /> Send instantly</span>
+                <span className="inline-flex items-center justify-center gap-0.5 rounded-md bg-[#eaf5ff] px-1 py-1 text-[6.5px] font-bold text-[#0877db] sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-3 sm:text-xs"><Shield size={8} className="sm:h-3.5 sm:w-3.5" /> Protect payment</span>
               </div>
 
-              <div className="mt-2 rounded-lg border border-slate-100 bg-slate-50 p-2 sm:mt-5 sm:rounded-2xl sm:p-3.5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 sm:h-10 sm:w-10 sm:text-xs">
+              <div className="mt-1.5 rounded-lg border border-slate-100 bg-slate-50 p-1.5 sm:mt-5 sm:rounded-2xl sm:p-3.5">
+                <div className="flex items-center gap-1.5 sm:gap-3">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[8px] font-bold text-emerald-700 sm:h-10 sm:w-10 sm:text-xs">
                   CE
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[9px] font-bold sm:text-sm">Chioma Electronics</p>
-                    <p className="mt-0.5 text-[7.5px] text-slate-500 sm:text-xs">Protected deal · fully funded</p>
+                    <p className="truncate text-[7.5px] font-bold sm:text-sm">Chioma Electronics</p>
+                    <p className="mt-0.5 truncate text-[6px] text-slate-500 sm:text-xs">Protected deal · fully funded</p>
                   </div>
-                  <VerifiedBadge tier="premium" variant="small" />
+                  <span className="sm:hidden"><VerifiedBadge tier="premium" variant="small" className="!gap-0.5 !px-1 !py-0.5 !text-[7px]" /></span>
+                  <span className="hidden sm:inline"><VerifiedBadge tier="premium" variant="small" /></span>
                 </div>
               </div>
             </motion.div>
@@ -225,7 +226,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={allowAmbientMotion ? { y: [0, -9, 0], rotate: [5, 6, 5] } : undefined}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute bottom-[1%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute bottom-[7%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:bottom-[1%] sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
                 src={deliveryEvidenceImage}

@@ -241,7 +241,8 @@ function PublicAppContent() {
   const isShareableTransactionRoute =
     location.pathname.startsWith('/pay/') ||
     location.pathname.startsWith('/invite/') ||
-    location.pathname.startsWith('/trust/');
+    location.pathname.startsWith('/trust/') ||
+    location.pathname.startsWith('/delivery/');
 
   if (isAuthenticated && !location.pathname.startsWith('/app') && !isShareableTransactionRoute) {
     return <Navigate to="/app" replace />;

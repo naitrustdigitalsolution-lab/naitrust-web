@@ -34,6 +34,20 @@ function formatDate(iso: string): string {
   }
 }
 
+function formatDateTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString('en-NG', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  } catch {
+    return iso;
+  }
+}
+
 /** Filesystem-friendly slug from a deal reference. */
 function slug(reference: string): string {
   return reference.replace(/[^a-zA-Z0-9._-]+/g, '-');
@@ -216,7 +230,7 @@ export async function downloadDeliveryCardPdf(input: DeliveryCardDocumentInput):
         <span class="nt-label">Handover OTP</span>
         <div style="font-size:36px;font-weight:800;letter-spacing:7px;color:#071b31;margin:8px 0 18px">${esc(input.card.otpCode)}</div>
         <span class="nt-label">Card expires</span>
-        <div class="nt-value">${esc(formatDate(input.card.expiresAt))}</div>
+        <div class="nt-value">${esc(formatDateTime(input.card.expiresAt))}</div>
       </div>
     </div>
     <div class="nt-section">Buyer instructions</div>

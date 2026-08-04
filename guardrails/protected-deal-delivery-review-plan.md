@@ -63,3 +63,7 @@ Before generating a delivery card, the seller evidence record should include the
 ## Consumer-rights note
 
 The 24-hour or extended period controls only Naitrust's partner-funding release deadline. It does not remove consumer rights or statutory, manufacturer, or seller warranty rights. Reference: [FCCPC consumer rights and responsibilities](https://fccpc.gov.ng/consumers/consumer-rights-responsibilities/rights-responsibilities/).
+
+## Public-site communication
+
+Explain the idea briefly inside the Home page's existing customer and Protected Deal journeys: the buyer confirms handover, inspects what arrived, can report a problem, and then follows payment to release. Keep OTP values, exact timer mechanics, seller evidence requirements, and operational exceptions inside the product/help experience rather than adding them to the About page.

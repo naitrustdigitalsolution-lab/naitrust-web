@@ -132,7 +132,8 @@ export function reconcileDeliveryLifecycle(
         new Date(delivery.handover.endsAt),
       ),
     );
-    notify('Handover review completed', 'The product funding-review period has started.', dealId);
+    notify('Handover review completed', 'No immediate product problem was reported during handover.', dealId);
+    notify('Funding review started', `${fundingReviewLabel(testingDays)} is now active.`, dealId);
   }
 
   if (
@@ -290,7 +291,8 @@ export function completeHandoverReview(context: DeliveryDealContext): DealDelive
     },
     now,
   );
-  notify('Handover review completed', `${fundingReviewLabel(context.extendedProductTestingDays)} started.`, context.id);
+  notify('Handover review completed', 'The buyer confirmed the correct product during handover.', context.id);
+  notify('Funding review started', `${fundingReviewLabel(context.extendedProductTestingDays)} is now active.`, context.id);
   return saveLifecycle(
     context.id,
     delivery,

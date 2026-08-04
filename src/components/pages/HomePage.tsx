@@ -108,12 +108,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
       
       {/* Hero — a deliberately loose collage of real business moments and product UI */}
       <section className={`relative overflow-hidden bg-[#04162f] text-white ${useHeroViewportHeight ? 'xl:min-h-[94vh]' : ''}`}>
-        <div className="pointer-events-none absolute inset-0">
+        {/* <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[55px] sm:blur-[110px]" />
           <div className="absolute -right-32 -top-16 h-[35rem] w-[35rem] rounded-full bg-[#18b6a4]/15 blur-[60px] sm:blur-[130px]" />
           <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.35)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.35)_1px,transparent_1px)] [background-size:72px_72px]" />
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04162f] to-transparent" />
-        </div>
+        </div> */}
 
         <div className={`relative z-10 mx-auto grid w-full max-w-440 grid-cols-[minmax(0,1fr)] items-center gap-14 px-4 pb-16 pt-22 sm:gap-9 sm:px-6 sm:pb-14 sm:pt-28 md:pt-30 xl:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)] xl:gap-8 xl:px-8 ${useHeroViewportHeight ? 'xl:min-h-[100vh] xl:pb-20 xl:pt-28' : 'xl:pb-32 xl:pt-36'}`}>
           <motion.div

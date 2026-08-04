@@ -323,6 +323,18 @@
       "status": "completed",
       "createdAt": "2026-07-13T14:47:00Z",
       "createdByUserId": "usr_mock_004"
+    },
+    {
+      "id": "txn_mock_029",
+      "reference": "NT-2026-100029",
+      "title": "Business phone order — Galaxy S25 Ultra",
+      "counterpartyName": "Kemi Adewale — Buyer",
+      "amountMinor": 185000000,
+      "currency": "NGN",
+      "status": "evidence_submitted",
+      "createdAt": "2026-07-13T08:30:00Z",
+      "createdByUserId": "usr_mock_004",
+      "businessId": "biz_mock_002"
     }
   ]
 }

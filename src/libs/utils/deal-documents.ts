@@ -9,7 +9,7 @@
  * actually downloads, keeping it out of the main bundle.
  */
 
-import type { SafeDealDetail } from '../store/types';
+import type { DealDeliveryCard, SafeDealDetail } from '../store/types';
 import {
   formatMinorAmount,
   getStatusPresentation,
@@ -187,4 +187,44 @@ export async function downloadDealSummaryCard(deal: SafeDealDetail): Promise<voi
     )}. This card summarises deal ${esc(deal.reference)} for your records.</div>
   `;
   await renderPdf(`naitrust-deal-${slug(deal.reference)}.pdf`, inner);
+}
+
+export interface DeliveryCardDocumentInput {
+  title: string;
+  reference: string;
+  card: DealDeliveryCard;
+  handoverUrl: string;
+}
+
+/** Download the limited delivery card. No financial or party data is included. */
+export async function downloadDeliveryCardPdf(input: DeliveryCardDocumentInput): Promise<void> {
+  const { toDataURL } = await import('qrcode');
+  const qrDataUrl = await toDataURL(input.handoverUrl, {
+    errorCorrectionLevel: 'H',
+    margin: 1,
+    width: 280,
+    color: { dark: '#071b31', light: '#ffffff' },
+  });
+  const inner = `
+    <div class="nt-brand"><span class="nt-logo">N</span><span class="nt-brandname">Naitrust</span></div>
+    <div class="nt-kicker">Secure product handover</div>
+    <div class="nt-title">${esc(input.title)}</div>
+    <div class="nt-sub">Deal reference ${esc(input.reference)}</div>
+    <div style="display:flex;align-items:center;gap:28px;margin:30px 0;padding:24px;border:1px solid #dbeafe;border-radius:18px;background:#f8fbff">
+      <img src="${esc(qrDataUrl)}" width="220" height="220" alt="Delivery handover QR" style="display:block;border-radius:12px" />
+      <div style="flex:1">
+        <span class="nt-label">Handover OTP</span>
+        <div style="font-size:36px;font-weight:800;letter-spacing:7px;color:#071b31;margin:8px 0 18px">${esc(input.card.otpCode)}</div>
+        <span class="nt-label">Card expires</span>
+        <div class="nt-value">${esc(formatDate(input.card.expiresAt))}</div>
+      </div>
+    </div>
+    <div class="nt-section">Buyer instructions</div>
+    <div class="nt-clause"><span class="nt-num">1</span><div><h3>Check the package with the rider present</h3><p>Compare the model, seal, serial or IMEI, and package condition with the deal record.</p></div></div>
+    <div class="nt-clause"><span class="nt-num">2</span><div><h3>Scan or enter the OTP</h3><p>Scan this QR with your phone, or enter the six-digit OTP in your Naitrust Transaction Room.</p></div></div>
+    <div class="nt-clause"><span class="nt-num">3</span><div><h3>Complete the handover review</h3><p>Confirm the correct product or report a problem during the ten-minute review.</p></div></div>
+    <div style="margin-top:22px;padding:14px 16px;border-radius:12px;background:#eaf7f3;color:#14532d;font-size:12px;line-height:1.6">Confirming receipt starts product checks. It does not release payment or waive defect or consumer rights.</div>
+    <div class="nt-foot">This one-time card becomes invalid after confirmation, cancellation, expiry, or regeneration. Do not share it outside this delivery.</div>
+  `;
+  await renderPdf(`naitrust-delivery-${slug(input.reference)}.pdf`, inner);
 }

@@ -48,6 +48,7 @@ const CreateDealPage = lazyWithMinDelay(() => import("./pages/CreateDealPage"));
 const DealsPage = lazyWithMinDelay(() => import("./pages/DealsPage"));
 const DealDraftsPage = lazyWithMinDelay(() => import("./pages/DealDraftsPage"));
 const TransactionRoomPage = lazyWithMinDelay(() => import("./pages/TransactionRoomPage"));
+const DeliveryHandoverPage = lazyWithMinDelay(() => import("./pages/DeliveryHandoverPage"));
 const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage"));
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
@@ -252,6 +253,7 @@ function PublicAppContent() {
     location.pathname.startsWith("/pay/") ||
     location.pathname.startsWith("/trust/") ||
     location.pathname.startsWith("/invite/") ||
+    location.pathname.startsWith("/delivery/") ||
     (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
   const handleNavigate = (page: string) => {
@@ -299,6 +301,7 @@ function PublicAppContent() {
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
+          <Route path="/delivery/:token" element={<DeliveryHandoverPage />} />
           <Route element={<RequireAuth />}>
             <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
             <Route path="/app/deals" element={<DashboardRouteSuspense><DealsPage /></DashboardRouteSuspense>} />

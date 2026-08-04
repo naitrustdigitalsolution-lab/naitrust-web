@@ -11,8 +11,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '../../ui/button';
 import { Label } from '../../ui/label';
 import { Textarea } from '../../ui/textarea';
-
-const KINDS = ['Invoice', 'Waybill', 'Photo', 'Inspection report', 'Receipt', 'Other'];
+import {
+  DEAL_EVIDENCE_ACCEPT,
+  DEAL_EVIDENCE_FORMATS,
+  DEAL_EVIDENCE_KINDS,
+} from '../../../libs/protected-deals/evidence';
 
 interface UploadEvidenceModalProps {
   open: boolean;
@@ -56,7 +59,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
           <div>
             <Label>Type</Label>
             <div className="mt-1.5 flex flex-wrap gap-2">
-              {KINDS.map((k) => (
+              {DEAL_EVIDENCE_KINDS.map((k) => (
                 <button
                   key={k}
                   type="button"
@@ -79,7 +82,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
             <input
               ref={fileRef}
               type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
+              accept={DEAL_EVIDENCE_ACCEPT}
               multiple
               className="hidden"
               onChange={(e) => {
@@ -125,7 +128,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
                 <p className="text-sm font-medium text-foreground">
                   {files.length === 0 ? 'Choose files' : 'Add more files'}
                 </p>
-                <p className="text-xs text-muted-foreground">PDF, JPG or PNG</p>
+                <p className="text-xs text-muted-foreground">{DEAL_EVIDENCE_FORMATS}</p>
               </div>
             </button>
           </div>

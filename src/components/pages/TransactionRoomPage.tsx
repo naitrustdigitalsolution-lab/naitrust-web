@@ -50,6 +50,7 @@ import { ProposeChangesModal } from '../pieces/transaction/ProposeChangesModal';
 import { AddTrackingStepModal } from '../pieces/transaction/AddTrackingStepModal';
 import { UploadEvidenceModal } from '../pieces/transaction/UploadEvidenceModal';
 import { RaiseDisputeModal } from '../pieces/transaction/RaiseDisputeModal';
+import { DealDeliveryReviewPanel } from '../pieces/transaction/DealDeliveryReviewPanel';
 import { DisputePanel } from '../pieces/transaction/DisputePanel';
 import { TerminationPanel } from '../pieces/transaction/TerminationPanel';
 import { TerminationReasonModal } from '../pieces/transaction/TerminationReasonModal';
@@ -80,6 +81,7 @@ import {
 import { downloadAgreementDocument, downloadDealSummaryCard } from '../../libs/utils/deal-documents';
 import type { DealActivityEvent, SafeDealDetail } from '../../libs/store/types';
 import type { DealNegotiation } from '../../libs/store/types';
+import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 
 function SectionHeading({ icon: Icon, children }: { icon: typeof Users; children: React.ReactNode }) {
   return (
@@ -520,6 +522,7 @@ function ActionsPanel({
   const canConfirm =
     youIsReleaser &&
     !hasDispute &&
+    !supportsDeliveryReview(deal.useCase) &&
     ['funded', 'in_progress', 'evidence_submitted', 'buyer_review'].includes(deal.status);
   const canDispute =
     !hasDispute && !['paid_out', 'completed', 'refunded', 'cancelled', 'draft'].includes(deal.status);
@@ -591,12 +594,14 @@ export function TransactionRoomPage() {
   const { data: termination } = useTermination(id);
   const propose = useProposeNegotiation(id);
   const openDispute = useOpenDispute(id);
+  const addDeliveryEvidence = useAddEvidence(id);
   const requestTermination = useRequestTermination(id);
   const respondTermination = useRespondTermination(id);
   const [showPropose, setShowPropose] = useState(false);
   const [showDispute, setShowDispute] = useState(false);
   const [showTerminate, setShowTerminate] = useState(false);
   const [showReject, setShowReject] = useState(false);
+  const [showDeliveryEvidence, setShowDeliveryEvidence] = useState(false);
   const requestedTab = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
   const [chatFullscreen, setChatFullscreen] = useState(false);
@@ -841,11 +846,20 @@ export function TransactionRoomPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-start gap-3">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:text-emerald-400">{rewardClaimed ? <Sparkles size={18} /> : <Gift size={18} />}</span>
-                    <div><p className="text-sm font-semibold">{rewardClaimed ? 'Completion reward claimed' : 'Your completion reward is ready'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{rewardClaimed ? '100 reward points were added for this completed Protected Deal.' : 'Claim 100 mock reward points for successfully completing this Protected Deal.'}</p></div>
+                        <div><p className="text-sm font-semibold">{rewardClaimed ? 'Completion reward claimed' : 'Your completion reward is ready'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{rewardClaimed ? '100 reward points were added for this completed Protected Deal.' : 'Claim 100 reward points for successfully completing this Protected Deal.'}</p></div>
                   </div>
                   <Button size="sm" className="rounded-full sm:shrink-0" disabled={rewardClaimed} onClick={claimCompletionReward}>{rewardClaimed ? <Check size={15} /> : <Gift size={15} />}{rewardClaimed ? 'Claimed' : 'Claim reward'}</Button>
                 </div>
               </Card>
+            )}
+
+            {deal && (
+              <DealDeliveryReviewPanel
+                deal={deal}
+                hasDispute={hasDispute}
+                onReportIssue={() => setShowDispute(true)}
+                onUploadEvidence={() => setShowDeliveryEvidence(true)}
+              />
             )}
 
             {/* Body */}
@@ -1051,6 +1065,22 @@ export function TransactionRoomPage() {
                     toast.success('Dispute opened — release is paused while it is reviewed.');
                   },
                 })
+              }
+            />
+            <UploadEvidenceModal
+              open={showDeliveryEvidence}
+              onOpenChange={setShowDeliveryEvidence}
+              submitting={addDeliveryEvidence.isPending}
+              onSubmit={({ items }) =>
+                addDeliveryEvidence.mutate(
+                  { items, uploadedByName: youParty?.name ?? 'You' },
+                  {
+                    onSuccess: () => {
+                      setShowDeliveryEvidence(false);
+                      toast.success('Product evidence added to this Protected Deal.');
+                    },
+                  },
+                )
               }
             />
           </>

@@ -17,13 +17,31 @@ import type {
   DealFunding,
   DealMilestone,
   DealParty,
+  DeliveryHandoverPreview,
   FundingStatus,
   MilestoneStatus,
   SafeDealDetail,
 } from '../store/types';
 import type { AgreementDraft, DealType, SafeDealStatus, SafeDealSummary } from '../store/types';
+import type { CreateSafeDealInput, DealRole } from '../store/types';
 import { formatMinorAmount } from '../utils/safe-deal-presentation';
 import mockTransactions from '../../mocks/apis/transactions.json';
+import {
+  approveEarlyRelease,
+  completeHandoverReview,
+  confirmDeliveryReceipt,
+  generateDeliveryCard,
+  invalidateDeliveryCard,
+  reconcileDeliveryLifecycle,
+  resolveDeliveryToken,
+  type DeliveryDealContext,
+} from './delivery-review.mock';
+import {
+  findMockCreatedDeal,
+  getMockDealRuntime,
+  listMockCreatedDeals,
+} from './mock-protected-deal-store';
+import { useAuthStore } from '../store/auth.store';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -32,6 +50,14 @@ function delay(ms: number): Promise<void> {
 }
 
 const summaries = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
+
+function allSummaries(): SafeDealSummary[] {
+  return [...listMockCreatedDeals().map((deal) => deal.summary), ...summaries];
+}
+
+function findSummary(id: string): SafeDealSummary | undefined {
+  return allSummaries().find((summary) => summary.id === id || summary.reference === id);
+}
 
 interface DetailOverlay {
   description: string;
@@ -65,6 +91,12 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
     description: 'Sale of a 4-bedroom detached duplex in Magodo with Bright Homes Realty Ltd, held safely pending resolution of an open dispute.',
     useCase: 'property-agent-payments',
     releaseConditions: 'Title documents and handover confirmation provided and accepted by the buyer.',
+  },
+  txn_mock_029: {
+    description: 'A sealed Galaxy S25 Ultra supplied for business use, with model, IMEI, package condition, and tamper seal recorded before dispatch.',
+    useCase: 'supplier-orders',
+    releaseConditions: 'Buyer completes handover review and the funding-review deadline passes without a dispute, or the buyer approves early release.',
+    dealType: 'milestone',
   },
 };
 
@@ -126,13 +158,36 @@ function partiesFor(summary: SafeDealSummary, youAreSeller: boolean): DealParty[
   return [you, counterparty];
 }
 
+function partiesForCreatedDeal(summary: SafeDealSummary, input: CreateSafeDealInput): DealParty[] {
+  const you: DealParty = {
+    id: 'party_you',
+    name: 'You',
+    role: input.role,
+    status: 'creator',
+    isYou: true,
+    allocationMinor: input.role === 'seller' ? summary.amountMinor : undefined,
+  };
+  return [
+    you,
+    ...input.participants.map((participant, index) => ({
+      id: `party_created_${index}`,
+      name: participant.name,
+      email: participant.email,
+      role: input.role === 'seller' ? ('buyer' as const) : ('seller' as const),
+      status: summary.status === 'pending_counterparty' ? ('invited' as const) : ('accepted' as const),
+      isYou: false,
+      allocationMinor: input.role === 'buyer' ? participant.allocationMinor : undefined,
+    })),
+  ];
+}
+
 function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
   const hasEvidence = ['evidence_submitted', 'buyer_review', 'release_approved', 'paid_out', 'completed', 'disputed'].includes(
     summary.status,
   );
   if (!hasEvidence) return [];
   const base = new Date(summary.createdAt).getTime();
-  return [
+  const evidence: DealEvidenceItem[] = [
     {
       id: 'ev_1',
       fileName: 'invoice.pdf',
@@ -150,6 +205,43 @@ function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
       createdAt: new Date(base + 3 * 86400000).toISOString(),
     },
   ];
+  if (summary.id === 'txn_mock_029') {
+    evidence.push(
+      {
+        id: 'ev_product_model',
+        fileName: 'galaxy-s25-ultra-model.jpg',
+        kind: 'Product model',
+        uploadedByName: 'You',
+        note: 'Galaxy S25 Ultra, Titanium Black, 512GB.',
+        createdAt: new Date(base + 3.1 * 86400000).toISOString(),
+      },
+      {
+        id: 'ev_product_imei',
+        fileName: 'imei-label.jpg',
+        kind: 'Serial / IMEI',
+        uploadedByName: 'You',
+        note: 'IMEI label recorded before sealing the package.',
+        createdAt: new Date(base + 3.2 * 86400000).toISOString(),
+      },
+      {
+        id: 'ev_product_packaging',
+        fileName: 'sealed-package.jpg',
+        kind: 'Packaging condition',
+        uploadedByName: 'You',
+        note: 'Outer package photographed without visible damage.',
+        createdAt: new Date(base + 3.3 * 86400000).toISOString(),
+      },
+      {
+        id: 'ev_product_seal',
+        fileName: 'tamper-seal.jpg',
+        kind: 'Tamper seal',
+        uploadedByName: 'You',
+        note: 'Numbered tamper seal applied before rider collection.',
+        createdAt: new Date(base + 3.4 * 86400000).toISOString(),
+      },
+    );
+  }
+  return evidence;
 }
 
 const STATUS_ORDER: SafeDealStatus[] = [
@@ -245,7 +337,7 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
   const amount = formatMinorAmount(summary.amountMinor, summary.currency);
   return {
     version: 1,
-    generatedByAi: true,
+    generatedByAi: false,
     sections: [
       {
         heading: 'Parties and purpose',
@@ -257,7 +349,11 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
       },
       {
         heading: 'Release conditions',
-        body: overlay?.releaseConditions ?? 'Funds release when the Buyer confirms delivery, or the auto-confirm window elapses without a dispute.',
+        body: overlay?.releaseConditions ?? 'After receipt, the Buyer completes the handover review. Funds release only after the following funding-review period ends without a dispute, or the Buyer approves early release.',
+      },
+      {
+        heading: 'Product review and consumer rights',
+        body: 'The standard funding-review period is 24 hours after handover. This controls only the Naitrust partner-funding release deadline and does not remove statutory, manufacturer, or seller warranty rights.',
       },
     ],
   };
@@ -272,43 +368,84 @@ const trackingOverrides: Record<string, DealMilestone[]> = {};
 const evidenceExtra: Record<string, DealEvidenceItem[]> = {};
 
 function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
+  const createdDeal = findMockCreatedDeal(summary.id);
+  const input = createdDeal?.input;
   const overlay = DETAIL_OVERLAY[summary.id];
   const created = new Date(summary.createdAt).getTime();
-  const dealType: DealType = overlay?.dealType ?? 'single';
+  const dealType: DealType = input?.dealType ?? overlay?.dealType ?? 'single';
+  const extendedProductTestingDays = input?.extendedProductTestingDays;
+  reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays);
+  if (['cancelled', 'refunded'].includes(summary.status)) invalidateDeliveryCard(summary.id);
+  const runtime = getMockDealRuntime(summary.id);
+  const signedInAccountRole = useAuthStore.getState().user?.role;
+  const productBuyerView = summary.id === 'txn_mock_029' && signedInAccountRole === 'customer';
+  const effectiveSummary: SafeDealSummary = {
+    ...summary,
+    counterpartyName: productBuyerView ? 'Ayo Mobile Supplies Ltd' : summary.counterpartyName,
+    status: runtime?.status ?? summary.status,
+  };
   // On tracked (milestone) deals you play the seller who delivers and updates
   // tracking; on other deals you're the buyer who funds and confirms.
-  const youAreSeller = dealType === 'milestone';
+  const youAreSeller = input
+    ? input.role === 'seller'
+    : summary.id === 'txn_mock_029'
+      ? !productBuyerView
+      : dealType === 'milestone';
   const milestones =
-    trackingOverrides[summary.id] ?? (dealType === 'milestone' ? milestonesFor(summary) : []);
+    trackingOverrides[summary.id] ?? (dealType === 'milestone' ? milestonesFor(effectiveSummary) : []);
+  const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
   return {
-    ...summary,
+    ...effectiveSummary,
     title: summary.title ?? `Safe deal with ${summary.counterpartyName}`,
-    description: overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
-    useCase: overlay?.useCase ?? 'supplier-orders',
+    description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
+    useCase: input?.useCase ?? overlay?.useCase ?? 'supplier-orders',
     dealType,
-    partyMode: 'b2b',
-    deliveryDueDate: new Date(created + 10 * 86400000).toISOString().slice(0, 10),
+    partyMode: input?.partyMode ?? 'b2b',
+    deliveryDueDate: input?.deliveryDueDate ?? new Date(created + 10 * 86400000).toISOString().slice(0, 10),
     releaseConditions:
-      overlay?.releaseConditions ?? 'Delivery confirmed by the buyer, or the auto-confirm window elapses without a dispute.',
-    expiresAt: new Date(created + 14 * 86400000).toISOString(),
+      input?.releaseConditions ?? overlay?.releaseConditions ?? 'Handover and funding review complete without a dispute, or the buyer approves early release.',
+    extendedProductTestingDays,
+    expiresAt: new Date(created + (input?.expiresInDays ?? 14) * 86400000).toISOString(),
     recurring: overlay?.recurring ?? dealType === 'recurring',
     previousReference: overlay?.previousReference,
-    parties: partiesFor(summary, youAreSeller),
-    agreement: agreementFor(summary, overlay),
-    funding: fundingFor(summary.status, summary.amountMinor, summary.currency),
-    evidence: [...evidenceFor(summary), ...(evidenceExtra[summary.id] ?? [])],
-    activity: activityFor(summary),
+    parties: input ? partiesForCreatedDeal(effectiveSummary, input) : partiesFor(effectiveSummary, youAreSeller),
+    agreement: input?.agreement ?? agreementFor(effectiveSummary, overlay),
+    funding: fundingFor(effectiveSummary.status, summary.amountMinor, summary.currency),
+    evidence,
+    activity: [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
     milestones,
+    delivery: runtime?.delivery ?? reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays),
   };
 }
 
 /** Ensure a mutable milestone list exists for a deal (seeded from the base). */
 function ensureTracking(id: string): DealMilestone[] {
   if (!trackingOverrides[id]) {
-    const summary = summaries.find((s) => s.id === id || s.reference === id);
+    const summary = findSummary(id);
     trackingOverrides[id] = summary ? milestonesFor(summary) : [];
   }
   return trackingOverrides[id];
+}
+
+function deliveryContext(deal: SafeDealDetail): DeliveryDealContext {
+  const actorRole = deal.parties.find((party) => party.isYou)?.role;
+  if (!actorRole) throw new Error('Your role on this deal could not be verified.');
+  return {
+    id: deal.id,
+    reference: deal.reference,
+    title: deal.title,
+    status: deal.status,
+    fundingStatus: deal.funding.status,
+    actorRole,
+    evidence: deal.evidence,
+    extendedProductTestingDays: deal.extendedProductTestingDays,
+  };
+}
+
+function getMockDetailOrThrow(id: string): SafeDealDetail {
+  const summary = findSummary(id);
+  if (!summary) throw new Error('Protected Deal not found.');
+  return buildDealDetail(summary);
 }
 
 export const dealDetailApi = {
@@ -316,11 +453,75 @@ export const dealDetailApi = {
   getOne: async (id: string): Promise<ApiSuccess<SafeDealDetail | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      const summary = summaries.find((s) => s.id === id || s.reference === id);
+      const summary = findSummary(id);
       return { success: true, data: summary ? buildDealDetail(summary) : null };
     }
     const response = await httpClient.get<SafeDealDetail>(endpoints.transactions.getOne(id));
     return response as ApiSuccess<SafeDealDetail | null>;
+  },
+
+  generateDeliveryCard: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) throw new Error('Delivery-card backend integration is not enabled.');
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    generateDeliveryCard(deliveryContext(deal));
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
+
+  getDeliveryPreview: async (token: string): Promise<ApiSuccess<DeliveryHandoverPreview | null>> => {
+    if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
+    await delay(250);
+    const dealId = resolveDeliveryToken(token);
+    if (!dealId) return { success: true, data: null };
+    const deal = getMockDetailOrThrow(dealId);
+    const card = deal.delivery.card;
+    if (!card || card.token !== token) return { success: true, data: null };
+    return {
+      success: true,
+      data: {
+        dealId: deal.id,
+        title: deal.title,
+        reference: deal.reference,
+        cardExpiresAt: card.expiresAt,
+        cardStatus: card.status,
+        actorRole: deal.parties.find((party) => party.isYou)?.role ?? 'seller',
+        delivery: deal.delivery,
+      },
+    };
+  },
+
+  confirmReceiptByToken: async (token: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
+    await delay(250);
+    const dealId = resolveDeliveryToken(token);
+    if (!dealId) throw new Error('This delivery link is not valid.');
+    const deal = getMockDetailOrThrow(dealId);
+    confirmDeliveryReceipt(deliveryContext(deal), { token });
+    return { success: true, data: getMockDetailOrThrow(dealId) };
+  },
+
+  confirmReceiptByOtp: async (id: string, otpCode: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    confirmDeliveryReceipt(deliveryContext(deal), { otpCode });
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
+
+  completeHandoverReview: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) throw new Error('Handover backend integration is not enabled.');
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    completeHandoverReview(deliveryContext(deal));
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
+
+  approveEarlyRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) throw new Error('Funding-release backend integration is not enabled.');
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    approveEarlyRelease(deliveryContext(deal));
+    return { success: true, data: getMockDetailOrThrow(id) };
   },
 
   /** Seller advances the shipment to the next tracking stage. */

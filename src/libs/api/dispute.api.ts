@@ -11,6 +11,7 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { DealDispute, DisputeMessage } from '../store/types';
+import { blockDeliveryRelease } from './delivery-review.mock';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -82,6 +83,7 @@ export const disputeApi = {
         ],
       };
       disputes[dealId] = dispute;
+      blockDeliveryRelease(dealId);
       return { success: true, data: structuredClone(dispute) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.open(dealId), input);

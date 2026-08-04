@@ -11,7 +11,7 @@
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
-import type { AgreementDraft } from '../store/types';
+import type { AgreementDraft, ExtendedProductTestingDays } from '../store/types';
 import type { ApiSuccess } from './types';
 import { formatMinorAmount } from '../utils/safe-deal-presentation';
 
@@ -26,6 +26,7 @@ export interface DraftAgreementInput {
   currency: string;
   deliveryDueDate: string;
   releaseConditions: string;
+  extendedProductTestingDays?: ExtendedProductTestingDays;
 }
 
 const MOCK_GENERATION_MS = 1400;
@@ -36,9 +37,12 @@ function delay(ms: number): Promise<void> {
 
 function buildMockDraft(input: DraftAgreementInput, version: number): AgreementDraft {
   const amount = formatMinorAmount(input.amountMinor, input.currency);
+  const reviewWindow = input.extendedProductTestingDays
+    ? `${input.extendedProductTestingDays}-day extended product testing period`
+    : 'standard 24-hour funding-review period';
   return {
     version,
-    generatedByAi: true,
+    generatedByAi: false,
     sections: [
       {
         heading: 'Parties and purpose',
@@ -50,11 +54,15 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
       },
       {
         heading: 'Delivery obligations',
-        body: `The Seller must deliver as agreed on or before ${input.deliveryDueDate}. The Seller should upload delivery evidence (photos, waybills, receipts, or inspection reports) to the transaction room as delivery progresses.`,
+        body: `The Seller must deliver as agreed on or before ${input.deliveryDueDate}. Before handover, the Seller should record the product model, serial or IMEI where applicable, packaging condition, and tamper seal in the transaction room.`,
       },
       {
         heading: 'Release conditions',
-        body: `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} The Buyer confirms delivery in the transaction room, or the auto-confirm window elapses without a dispute.`,
+        body: `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten-minute handover review, followed by the ${reviewWindow}. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
+      },
+      {
+        heading: 'Product checks and consumer rights',
+        body: `The ${reviewWindow} controls only Naitrust's partner-funding release deadline. Receipt confirmation and timer expiry do not waive defect, statutory, manufacturer, or seller warranty rights.`,
       },
       {
         heading: 'Disputes',

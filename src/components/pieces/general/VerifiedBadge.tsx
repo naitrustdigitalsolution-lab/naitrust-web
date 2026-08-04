@@ -46,10 +46,10 @@ export function VerifiedBadge({
       case 'premium':
         return {
           bg: '',
-          icon: <Award size={iconSizes[variant]} className="text-amber-600 dark:text-amber-400" />,
-          textColor: "text-amber-600 dark:text-amber-400",
+          icon: <Award size={iconSizes[variant]} className="text-amber-500 dark:text-amber-400" />,
+          textColor: "text-amber-500 dark:text-amber-400",
           label: 'Premium',
-          ring: "ring-2 ring-amber-600 dark:ring-amber-400 shadow-lg"
+          ring: "ring-2 ring-amber-500 dark:ring-amber-400 shadow-lg"
         };
       case 'basic':
         return {

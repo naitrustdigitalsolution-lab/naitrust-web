@@ -21,7 +21,12 @@ export function useOpenDispute(dealId: string | undefined) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { reason: string; description: string }) => disputeApi.open(dealId!, input),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [...DISPUTE_QUERY_KEY, dealId] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [...DISPUTE_QUERY_KEY, dealId] });
+      qc.invalidateQueries({ queryKey: ['deal', dealId] });
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 }
 

@@ -14,13 +14,11 @@ import { VerifiedBadge } from '../pieces/general/VerifiedBadge';
 import spiralBackground from '../../assets/spiral.svg';
 import { openWaitlistModal } from '../modals/waitlist-events';
 import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
+import qrPaymentImage from '../../assets/hero/nigerian-qr-payment.webp';
 import handheldAppImage from '../../assets/hero/naitrust-handheld-exact-home-v4.webp';
-import shopPaymentImage from "../images/hero/nigerian-shop-payment.webp";
-import  qrPaymentImage from "../images/hero/nigerian-qr-payment.webp"
 
 const saferDealsImage = '/images/blog/safer-deals.webp';
 const deliveryEvidenceImage = '/images/blog/delivery-evidence.webp';
-const businessVerificationImage = '/images/blog/business-verification.webp';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -125,7 +123,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
             <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
-              Verified payments for Nigerian people and businesses
+              Trust every transaction
             </Badge>
             <AnimatedHeroText compact={!useHeroViewportHeight} />
 
@@ -144,7 +142,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </button>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-[9px] font-medium text-white/65 sm:mt-7 sm:gap-x-4 sm:text-xs xl:justify-start">
+            <div className="mx-auto mt-7 grid w-full max-w-[22rem] grid-cols-2 items-center gap-2 text-[9px] font-medium leading-tight text-white/75 sm:hidden">
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Pay people and businesses</span>
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Get paid by any customer</span>
+              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Protect important transactions</span>
+            </div>
+
+            <div className="mt-7 hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-white/65 sm:flex xl:justify-start">
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay people and businesses</span>
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Get paid by any customer</span>
               <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect important transactions</span>
@@ -160,31 +164,31 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <motion.div
               animate={allowAmbientMotion ? { y: [0, -8, 0], rotate: [-5, -4, -5] } : undefined}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-[1%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -left-[9%] top-[4%] z-10 h-[34%] w-[37%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:-left-[1%] sm:h-[36%] sm:w-[38%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
-                src={businessVerificationImage}
-                alt="A verified Nigerian business owner serving a customer"
+                src={marketTradersImage}
+                alt="A Nigerian market trader using her phone with a customer"
                 className="h-full w-full object-cover"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/65 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Verified to trade</span>
+              <span className="absolute bottom-2 left-2 z-20 inline-flex whitespace-nowrap rounded-full bg-[#04162f]/80 px-1.5 py-1 text-[8px] font-bold leading-none text-white shadow-sm backdrop-blur-sm sm:bottom-4 sm:left-4 sm:px-2 sm:text-xs">Verified to trade</span>
             </motion.div>
 
             <motion.div
               animate={allowAmbientMotion ? { y: [0, 10, 0], rotate: [4, 3, 4] } : undefined}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-              className="absolute right-[1%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
+              className="absolute -right-[5%] top-[1%] z-0 block h-[30%] w-[35%] overflow-hidden rounded-xl border-[3px] border-white/90 shadow-xl sm:-right-[1%] sm:h-[31%] sm:w-[36%] sm:rounded-[1.6rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
-                src={deliveryEvidenceImage}
-                alt="A Nigerian business recording delivery evidence"
+                src={qrPaymentImage}
+                alt="A customer paying a Nigerian market trader with a QR code"
                 className="h-full w-full object-cover"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/55 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 text-xs font-bold text-white">Delivery recorded</span>
+              <span className="absolute bottom-2 right-2 z-20 inline-flex whitespace-nowrap rounded-full bg-[#04162f]/80 px-1.5 py-1 text-[8px] font-bold leading-none text-white shadow-sm backdrop-blur-sm sm:bottom-4 sm:right-4 sm:px-2 sm:text-xs">Pay with QR.</span>
             </motion.div>
 
             <motion.div
@@ -224,13 +228,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="absolute bottom-[1%] right-[1%] top-auto z-20 h-[32%] w-[38%] overflow-hidden rounded-xl border-[3px] border-white shadow-xl sm:h-[33%] sm:w-[39%] sm:rounded-[1.7rem] sm:border-[6px] sm:shadow-2xl"
             >
               <ImageWithFallback
-                src={saferDealsImage}
-                alt="A customer and Nigerian business completing a safer deal"
+                src={deliveryEvidenceImage}
+                alt="A Nigerian business recording delivery evidence"
                 className="h-full w-full object-cover"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/70 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 hidden text-xs font-bold text-white sm:block">Trade with confidence</span>
+              <span className="absolute bottom-2 left-2 whitespace-nowrap rounded-full bg-[#04162f]/80 px-1.5 py-1 text-[8px] font-bold leading-none text-white shadow-sm backdrop-blur-sm sm:bottom-4 sm:left-4 sm:px-2 sm:text-xs">Delivery recorded</span>
             </motion.div>
 
             <motion.div
@@ -307,7 +311,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               { icon: Fingerprint, step: '01', title: 'Create and verify', text: 'Set up your customer account and confirm the details that identify you.' },
               { icon: Building2, step: '02', title: 'Check the business', text: 'Review the business identity and profile before deciding how to pay.' },
               { icon: Shield, step: '03', title: 'Choose the right protection', text: 'Send normally when you trust them, or create a Protected Transaction for an important purchase.' },
-              { icon: CheckCircle2, step: '04', title: 'Follow it to completion', text: 'Keep the agreement, messages, evidence, payment status, and outcome in one place.' },
+              { icon: CheckCircle2, step: '04', title: 'Check delivery before release', text: 'Confirm handover, inspect what arrived, report a problem if needed, and follow the protected payment to completion.' },
             ].map((item, index) => (
               <motion.div
                 key={item.step}
@@ -590,8 +594,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
               <div className="mb-6 grid gap-3 sm:grid-cols-2 sm:gap-4">
                 {[
-                  { icon: Fingerprint, text: 'Order actions and delivery evidence kept together' },
-                  { icon: Lock, text: 'Shareable access with a dispute-ready record' },
+                  { icon: Fingerprint, text: 'Seller evidence and secure buyer handover kept together' },
+                  { icon: Lock, text: 'Time to inspect, report a problem, or approve payment release' },
                 ].map((item, index) => {
                   const Icon = item.icon;
                   return (

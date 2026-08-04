@@ -8,7 +8,7 @@
  *  2) Terms & parties — the amount and terms first, then the counterparties at
  *     the bottom, each with the amount they pay/receive when there's more than
  *     one. The deal-open window is capped at 30 days.
- *  3) Agreement — AI-drafted, confirmed by you.
+ *  3) Agreement — prepared from the terms and confirmed by you.
  *  4) Review & send.
  */
 
@@ -43,6 +43,7 @@ import { VerticalStepper, type StepMeta } from '../pieces/general/VerticalSteppe
 import { AgreementDocument } from '../pieces/agreement/AgreementDocument';
 import { LivenessCheckModal } from '../pieces/verification/LivenessCheckModal';
 import { PinPromptModal } from '../pieces/security/PinPromptModal';
+import { ProductTestingPeriodField } from '../pieces/transaction/ProductTestingPeriodField';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -56,6 +57,7 @@ import { useAuth } from '../../libs/auth-context';
 import { agreementsApi } from '../../libs/api/agreements.api';
 import { useCases } from '../../libs/use-cases';
 import { dealTypeMeta, featuresForUseCase } from '../../libs/features/use-case-features';
+import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
 import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
 import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/deal-draft';
@@ -64,13 +66,14 @@ import {
   type AgreementDraft,
   type DealRole,
   type DealType,
+  type ExtendedProductTestingDays,
   type PartyMode,
 } from '../../libs/store/types';
 
 const STEPS: StepMeta[] = [
   { title: 'Deal basics', description: 'Use case, deal type, and your role.' },
   { title: 'Terms & parties', description: 'Set the terms, then invite counterparties.' },
-  { title: 'Agreement', description: 'Review the AI-drafted agreement for both parties.' },
+  { title: 'Agreement', description: 'Review the agreement prepared from your terms.' },
   { title: 'Review & send', description: 'Confirm everything and invite the counterparty.' },
 ];
 
@@ -112,6 +115,7 @@ interface FormState {
   deliveryDueDate: string;
   openUntil: string;
   releaseConditions: string;
+  extendedProductTestingDays?: ExtendedProductTestingDays;
 }
 
 const emptyParticipant = (): ParticipantForm => ({ name: '', email: '', allocation: '' });
@@ -128,6 +132,7 @@ const INITIAL: FormState = {
   deliveryDueDate: '',
   openUntil: '',
   releaseConditions: '',
+  extendedProductTestingDays: undefined,
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -250,7 +255,14 @@ export function CreateDealPage() {
 
   const selectUseCase = (slug: string) => {
     const features = featuresForUseCase(slug);
-    setForm((prev) => ({ ...prev, useCase: slug, dealType: features.defaultDealType }));
+    setForm((prev) => ({
+      ...prev,
+      useCase: slug,
+      dealType: features.defaultDealType,
+      extendedProductTestingDays: supportsDeliveryReview(slug)
+        ? prev.extendedProductTestingDays
+        : undefined,
+    }));
     setErrors((prev) => ({ ...prev, useCase: '', dealType: '' }));
     invalidateAgreement();
   };
@@ -320,6 +332,7 @@ export function CreateDealPage() {
           currency: 'NGN',
           deliveryDueDate: form.deliveryDueDate,
           releaseConditions: form.releaseConditions,
+          extendedProductTestingDays: form.extendedProductTestingDays,
         },
         version,
       );
@@ -420,6 +433,7 @@ export function CreateDealPage() {
         currency: 'NGN',
         deliveryDueDate: form.deliveryDueDate,
         releaseConditions: form.releaseConditions.trim(),
+        extendedProductTestingDays: form.extendedProductTestingDays,
         expiresInDays,
         agreement,
       });
@@ -732,6 +746,13 @@ export function CreateDealPage() {
                       />
                       <FieldError message={errors.releaseConditions} />
                     </div>
+
+                    {supportsDeliveryReview(form.useCase) && (
+                      <ProductTestingPeriodField
+                        value={form.extendedProductTestingDays}
+                        onChange={(value) => set('extendedProductTestingDays', value)}
+                      />
+                    )}
                   </div>
 
                   {/* Parties at the bottom */}
@@ -824,8 +845,8 @@ export function CreateDealPage() {
                       </div>
                       <p className="text-sm font-semibold text-foreground">Drafting your agreement…</p>
                       <p className="max-w-sm text-xs leading-5 text-muted-foreground">
-                        We use AI to turn your terms into a clear agreement for both parties. You
-                        review and confirm it — nothing is sent until you do.
+                        We are preparing a clear agreement from the terms you entered. You review
+                        and confirm it — nothing is sent until you do.
                       </p>
                     </div>
                   ) : (
@@ -840,7 +861,7 @@ export function CreateDealPage() {
                       />
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-xs leading-5 text-muted-foreground">
-                          AI-drafted from your terms — edit any clause, then both parties accept it
+                          Prepared from your terms — edit any clause, then both parties accept it
                           before the deal freezes.
                         </p>
                         <div className="flex shrink-0 items-center gap-2">
@@ -922,6 +943,16 @@ export function CreateDealPage() {
                       label="Deal open until"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : '—'}
                     />
+                    {supportsDeliveryReview(form.useCase) && (
+                      <ReviewRow
+                        label="Product testing"
+                        value={
+                          form.extendedProductTestingDays
+                            ? `${form.extendedProductTestingDays} days · replaces the standard 24-hour funding review`
+                            : 'Standard 24-hour funding review'
+                        }
+                      />
+                    )}
                     <ReviewRow
                       label="Agreement"
                       value={`v${agreement.version} · ${agreement.sections.length} clauses · confirmed by you`}

@@ -14,6 +14,7 @@ import { appConfig } from '../../configs/env';
 import type { CreateSafeDealInput, CreateSafeDealResult, SafeDealSummary } from '../store/types';
 import mockTransactions from '../../mocks/apis/transactions.json';
 import type { ApiSuccess } from './types';
+import { listMockCreatedDeals, saveMockCreatedDeal } from './mock-protected-deal-store';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -29,7 +30,9 @@ export const transactionsApi = {
   getMyTransactions: async (): Promise<ApiSuccess<SafeDealSummary[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return mockTransactions as ApiSuccess<SafeDealSummary[]>;
+      const fixture = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
+      const created = listMockCreatedDeals().map((deal) => deal.summary);
+      return { success: true, data: [...created, ...fixture] };
     }
     const response = await httpClient.get<SafeDealSummary[]>(
       endpoints.transactions.getMyTransactions,
@@ -63,6 +66,7 @@ export const transactionsApi = {
         createdAt: now.toISOString(),
         publicInvitePath: `/invite/${token}`,
       };
+      saveMockCreatedDeal({ summary, input });
       return { success: true, data: summary, message: 'Safe deal created' };
     }
     const response = await httpClient.post<CreateSafeDealResult>(endpoints.transactions.create, input);

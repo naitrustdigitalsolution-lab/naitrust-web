@@ -95,6 +95,9 @@ export type DealRole = 'buyer' | 'seller';
  */
 export type DealType = 'single' | 'milestone' | 'recurring';
 
+/** Optional negotiated funding-review window for delivered physical products. */
+export type ExtendedProductTestingDays = 3 | 7 | 14;
+
 /**
  * A counterparty invited to the deal. Each participant carries an
  * `allocationMinor` — the amount tied to that party: what they receive when
@@ -150,6 +153,8 @@ export interface CreateSafeDealInput {
   currency: string;
   deliveryDueDate: string; // ISO date (yyyy-mm-dd)
   releaseConditions: string;
+  /** Replaces the default 24-hour funding-review window when both parties accept. */
+  extendedProductTestingDays?: ExtendedProductTestingDays;
   /** Days the invitation stays open (1..MAX_DEAL_OPEN_DAYS). */
   expiresInDays: number;
   agreement: AgreementDraft;
@@ -214,6 +219,8 @@ export type ActivityKind =
   | 'agreed'
   | 'funded'
   | 'evidence'
+  | 'delivery'
+  | 'review'
   | 'message'
   | 'dispute'
   | 'released'
@@ -241,6 +248,63 @@ export interface DealMilestone {
   at?: string; // ISO when this stage was reached
 }
 
+export type DeliveryCardStatus = 'active' | 'used' | 'invalidated' | 'expired';
+
+export interface DealDeliveryCard {
+  token: string;
+  otpCode: string;
+  generatedAt: string;
+  expiresAt: string;
+  status: DeliveryCardStatus;
+  generation: number;
+  usedAt?: string;
+  invalidatedAt?: string;
+}
+
+export type HandoverReviewStatus = 'not_started' | 'in_progress' | 'completed' | 'issue_reported';
+export type HandoverCompletionReason = 'buyer_confirmed' | 'timer_elapsed' | 'issue_reported';
+
+export interface DealHandoverReview {
+  status: HandoverReviewStatus;
+  receivedAt?: string;
+  endsAt?: string;
+  completedAt?: string;
+  completionReason?: HandoverCompletionReason;
+}
+
+export type FundingReviewStatus =
+  | 'not_started'
+  | 'in_progress'
+  | 'blocked'
+  | 'release_approved'
+  | 'paid_out';
+
+export interface DealFundingReview {
+  status: FundingReviewStatus;
+  startsAt?: string;
+  endsAt?: string;
+  extendedProductTestingDays?: ExtendedProductTestingDays;
+  releaseApprovedAt?: string;
+  paidOutAt?: string;
+}
+
+export interface DealDeliveryLifecycle {
+  card?: DealDeliveryCard;
+  handover: DealHandoverReview;
+  fundingReview: DealFundingReview;
+}
+
+/** Minimum non-financial data shown by the opaque delivery-card route. */
+export interface DeliveryHandoverPreview {
+  dealId: string;
+  title: string;
+  reference: string;
+  cardExpiresAt: string;
+  cardStatus: DeliveryCardStatus;
+  actorRole: DealRole;
+  delivery: DealDeliveryLifecycle;
+}
+
 export interface SafeDealDetail extends SafeDealSummary {
   description: string;
   useCase: string;
@@ -248,6 +312,7 @@ export interface SafeDealDetail extends SafeDealSummary {
   partyMode: PartyMode;
   deliveryDueDate: string;
   releaseConditions: string;
+  extendedProductTestingDays?: ExtendedProductTestingDays;
   expiresAt: string;
   /** True for recurring deals — a linked follow-on is created on completion. */
   recurring: boolean;
@@ -260,6 +325,8 @@ export interface SafeDealDetail extends SafeDealSummary {
   activity: DealActivityEvent[];
   /** Populated for milestone deals; empty otherwise. */
   milestones: DealMilestone[];
+  /** Delivery-card, handover, and partner-funding review state. */
+  delivery: DealDeliveryLifecycle;
 }
 
 /* ------------------------------------------------------------------ *

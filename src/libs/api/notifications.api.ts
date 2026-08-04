@@ -26,6 +26,18 @@ let mockList: AppNotification[] = (mockNotifications as ApiSuccess<AppNotificati
 );
 
 export const notificationsApi = {
+  /** Add a frontend-only lifecycle notification while the backend is not connected. */
+  pushLocal: (notification: Omit<AppNotification, 'id' | 'read' | 'createdAt'>): AppNotification => {
+    const created: AppNotification = {
+      ...notification,
+      id: `ntf_${crypto.randomUUID()}`,
+      read: false,
+      createdAt: new Date().toISOString(),
+    };
+    mockList = [created, ...mockList];
+    return created;
+  },
+
   /** GET /notifications */
   list: async (): Promise<ApiSuccess<AppNotification[]>> => {
     if (appConfig.isMock) {

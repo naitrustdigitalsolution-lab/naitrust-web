@@ -95,13 +95,13 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <p className="text-muted-foreground mb-2">For verification fee and subscription billing, we collect or process:</p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
                   <li>Verification fee payment records and subscription billing history</li>
-                  <li>Payment method metadata (card type, issuing bank — note: full card numbers are never stored by Naitrust)</li>
+                  <li>Payment method metadata (card type, issuing bank: note: full card numbers are never stored by Naitrust)</li>
                   <li>Billing dates, amounts, and subscription status</li>
                 </ul>
                 <p className="text-muted-foreground mt-2 text-sm">
                   Payment card details are processed exclusively by Paystack, our PCI-DSS Level 1 certified payment partner. 
                   Naitrust does not store, transmit, or have access to full payment card numbers. Payments connected to property transactions are processed by the regulated financial partner identified for that transaction. If you enable auto-renewal, your card details are 
-                  securely stored and managed by Paystack for recurring charges — Naitrust only stores a tokenized reference 
+                  securely stored and managed by Paystack for recurring charges: Naitrust only stores a tokenized reference 
                   and never has access to your full card number, CVV, or PIN.
                 </p>
               </div>
@@ -254,8 +254,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">4.1 Publicly Visible Information</h3>
                 <p className="text-muted-foreground">
-                  Business profiles — including business name, category, description, location, verification status, 
-                  reviews, and ratings — are publicly visible on the Platform and through shareable profile links. 
+                  Business profiles: including business name, category, description, location, verification status, 
+                  reviews, and ratings: are publicly visible on the Platform and through shareable profile links. 
                   Customer names may be visible on reviews they post. No sensitive personal data (financial 
                   records, identification documents, or TIN) is ever publicly displayed.
                 </p>
@@ -273,7 +273,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                   <li><strong>Cloud Infrastructure:</strong> Hosting and data storage providers with ISO 27001 or equivalent certification</li>
                   <li><strong>Communication Services:</strong> Email and SMS service providers for transactional notifications</li>
                   <li><strong>Analytics Providers:</strong> For anonymised usage analytics and performance monitoring</li>
-                  <li><strong>Image Storage:</strong> ImageKit — a cloud-based image storage and delivery service used to store verification document images (selfies, ID photos, CAC certificates). Data stored via ImageKit may reside on servers outside Nigeria and is subject to a Data Processing Agreement (DPA) with Naitrust ensuring compliance with applicable data protection standards</li>
+                  <li><strong>Image Storage:</strong> ImageKit: a cloud-based image storage and delivery service used to store verification document images (selfies, ID photos, CAC certificates). Data stored via ImageKit may reside on servers outside Nigeria and is subject to a Data Processing Agreement (DPA) with Naitrust ensuring compliance with applicable data protection standards</li>
                 </ul>
               </div>
 

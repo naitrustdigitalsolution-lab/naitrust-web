@@ -147,7 +147,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g1',
         question: 'What is Naitrust?',
-        answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal — recording participants, agreements, payments, milestones, evidence, and issues — when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
+        answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal: recording participants, agreements, payments, milestones, evidence, and issues: when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
       },
       {
         id: 'g2',

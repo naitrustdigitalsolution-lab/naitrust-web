@@ -74,7 +74,7 @@ function publicPreview(token: string): PublicInvitationPreview | null {
 }
 
 export const invitationsApi = {
-  /** GET /invitations/public/:token — intentionally excludes agreement/documents. */
+  /** GET /invitations/public/:token: intentionally excludes agreement/documents. */
   getPublicPreview: async (token: string): Promise<ApiSuccess<PublicInvitationPreview | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
@@ -86,7 +86,7 @@ export const invitationsApi = {
     return response as ApiSuccess<PublicInvitationPreview | null>;
   },
 
-  /** POST /invitations/public/:token/claim — binds token to authenticated account. */
+  /** POST /invitations/public/:token/claim: binds token to authenticated account. */
   claim: async (
     token: string,
     user: Pick<User, 'id' | 'email' | 'role' | 'kycVerified'>,

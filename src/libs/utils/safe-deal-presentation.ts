@@ -106,7 +106,7 @@ export function formatMinorAmount(amountMinor: number, currency: string): string
       minimumFractionDigits: 2,
     }).format(major);
   } catch {
-    // Unknown currency code — fall back to a plain formatted number.
+    // Unknown currency code: fall back to a plain formatted number.
     return `${currency} ${major.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
   }
 }
@@ -132,7 +132,7 @@ export function formatMinorAmountCompact(amountMinor: number, currency: string):
 const CLOSED_STATUSES: readonly SafeDealStatus[] = ['draft', 'completed', 'paid_out', 'refunded', 'cancelled'];
 
 /**
- * Statuses where the current user is the one who needs to act next —
+ * Statuses where the current user is the one who needs to act next , 
  * fund the deal, review submitted evidence, or respond to a dispute.
  * Dashboard "needs your action" panel (guardrails/ui.md: "pending actions").
  */
@@ -160,7 +160,7 @@ export interface DealSummaryCounts {
 
 /**
  * Dashboard stat-tile counts and value totals, derived client-side from the
- * deal list — no dedicated summary endpoint for Phase 1.
+ * deal list: no dedicated summary endpoint for Phase 1.
  */
 export function summarizeDeals(deals: SafeDealSummary[]): DealSummaryCounts {
   return deals.reduce<DealSummaryCounts>(
@@ -197,7 +197,7 @@ export interface MonthlyValuePoint {
 }
 
 /**
- * Protected value grouped by the month each deal was created — the dashboard
+ * Protected value grouped by the month each deal was created: the dashboard
  * hero chart's series. Reads as "how much you moved through safe deals each
  * month", which is far clearer than a running cumulative line.
  */

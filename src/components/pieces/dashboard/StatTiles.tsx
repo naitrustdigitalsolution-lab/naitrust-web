@@ -3,7 +3,7 @@
  * Dashboard KPI row (guardrails/ui.md dashboard priorities: active
  * transactions, pending actions, reputation score). Each tile: an
  * uppercase tracked label + tinted icon chip, a large tabular figure, and an
- * honest secondary line (a real value total or status — never a fabricated
+ * honest secondary line (a real value total or status: never a fabricated
  * trend %). Purely presentational; loading renders skeleton tiles in-grid.
  */
 
@@ -54,7 +54,7 @@ export function StatTiles({ counts, reputation, isLoading, currency = 'NGN' }: S
   if (isLoading || !counts) return <LoadingTiles />;
 
   const hasRating = !!reputation && reputation.ratingCount > 0;
-  const ratingValue = hasRating ? reputation!.ratingAverage!.toFixed(1) : '—';
+  const ratingValue = hasRating ? reputation!.ratingAverage!.toFixed(1) : 'Not available';
 
   const tiles: Tile[] = [
     {

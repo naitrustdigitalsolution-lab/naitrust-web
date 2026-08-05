@@ -31,7 +31,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-1',
       category: 'getting-started',
       question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal — a shared deal room for participants, terms, payments, evidence, milestones, and issues — when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
+      answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal: a shared deal room for participants, terms, payments, evidence, milestones, and issues: when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
     },
     {
       id: 'gs-2',
@@ -55,7 +55,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-5',
       category: 'getting-started',
       question: 'Who is eligible to use Naitrust?',
-      answer: 'Naitrust is being built for Nigerian businesses and individuals — informal traders, independent contractors, suppliers, agents, developers, and registered companies. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
+      answer: 'Naitrust is being built for Nigerian businesses and individuals: informal traders, independent contractors, suppliers, agents, developers, and registered companies. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
     },
 
     {
@@ -129,7 +129,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-5',
       category: 'payments',
       question: 'What is the difference between Send Money and Protect a Payment?',
-      answer: 'Send Money is for people and businesses you already trust — it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order — funds are held by the regulated partner and only released once the agreed conditions are met.'
+      answer: 'Send Money is for people and businesses you already trust: it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order: funds are held by the regulated partner and only released once the agreed conditions are met.'
     },
 
     {
@@ -203,7 +203,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 't-2',
       category: 'troubleshooting',
-      question: 'I can\'t find a business — what should I do?',
+      question: 'I can\'t find a business: what should I do?',
       answer: 'Check the account number, email, or phone number and try again. You can also search by business name or category. If the business should be listed, contact it directly to confirm the details registered on Naitrust.'
     },
     {

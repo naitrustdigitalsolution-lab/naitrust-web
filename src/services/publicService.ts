@@ -1,6 +1,6 @@
 /**
  * Public Service
- * Thin, typed functions for every public-facing form — waitlist, contact,
+ * Thin, typed functions for every public-facing form: waitlist, contact,
  * newsletter subscription, feedback, and report a concern. Each wraps the
  * matching route in src/libs/api/home.api.ts.
  */

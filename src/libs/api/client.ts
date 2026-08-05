@@ -23,7 +23,7 @@ export interface ApiError {
 }
 
 export interface RequestExtras {
-  /** Skip attaching the Authorization header — for genuinely public/anonymous endpoints. */
+  /** Skip attaching the Authorization header: for genuinely public/anonymous endpoints. */
   skipAuth?: boolean;
 }
 
@@ -70,14 +70,14 @@ function withAuthHeader(headers: Record<string, string>): Record<string, string>
 }
 
 /**
- * Runs on any 401 response: clears the session (Secure auth cookies — never
+ * Runs on any 401 response: clears the session (Secure auth cookies: never
  * localStorage) and sends the browser to /login. Returns `true` when the
  * browser is being navigated away, so the caller should resolve quietly
  * instead of throwing (the page is about to unload); `false` otherwise,
  * meaning the caller should throw the usual "Unauthorized" ApiError.
  *
  * There are currently no public-but-optionally-authenticated endpoints in
- * the API surface (see libs/api/endpoints.ts) — every endpoint that can
+ * the API surface (see libs/api/endpoints.ts): every endpoint that can
  * 401 today requires a logged-in user, so every 401 redirects. If a public
  * endpoint that tolerates a missing/expired token is added later, exempt it
  * here rather than redirecting.
@@ -91,7 +91,7 @@ function handleUnauthorized(): boolean {
   removeAuthToken();
   removeUserData();
   try {
-    // Non-sensitive UI state (which business is selected) — fine in localStorage.
+    // Non-sensitive UI state (which business is selected): fine in localStorage.
     localStorage.removeItem('naitrust_selected_business_id');
   } catch {
     // Ignore storage errors (private browsing, etc.)
@@ -139,7 +139,7 @@ async function request<T = any>(
       : { message: await response.text() };
 
     if (response.status === 401) {
-      // Browser is navigating away to /login — resolving quietly is harmless;
+      // Browser is navigating away to /login: resolving quietly is harmless;
       // throwing would only surface a flash of "Unauthorized" before unload.
       if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;
       throw apiError({ message: 'Unauthorized - Please login again', statusCode: 401 });

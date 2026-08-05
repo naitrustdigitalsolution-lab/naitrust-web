@@ -1,7 +1,7 @@
 // Actual payment provider logos using real images
 import { ImageWithFallback } from '../../utility/ImageWithFallback';
 import flutterwaveLogo from 'figma:asset/7f5d6df5d7c8cc6439ec1a9a924166c1d5a08cb5.png';
-// Anchor brand mark (getanchor.co) — colored icon with its own background, so it
+// Anchor brand mark (getanchor.co): colored icon with its own background, so it
 // reads on both the light and dark partner cards.
 import anchorMark from '../../../assets/partners/anchor-mark.svg';
 

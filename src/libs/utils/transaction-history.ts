@@ -2,7 +2,7 @@
  * Transaction History mapping
  * Pure functions that project the existing protected-deal, instant-transfer
  * and wallet-activity sources into one unified `TransactionRecord[]` for the
- * Transactions screen — the aggregation layer stays purely presentational,
+ * Transactions screen: the aggregation layer stays purely presentational,
  * it does not fork or duplicate the underlying data sources.
  */
 
@@ -74,7 +74,7 @@ const WALLET_KIND_TO_TYPE: Partial<Record<WalletActivityEvent['kind'], Transacti
 
 /**
  * Only funding/withdrawal/fee wallet events become their own transaction
- * record — instant-transfer and protected-deal wallet events are already
+ * record: instant-transfer and protected-deal wallet events are already
  * represented via `transfersToTransactionRecords`/`dealsToTransactionRecords`
  * and would otherwise appear twice.
  */

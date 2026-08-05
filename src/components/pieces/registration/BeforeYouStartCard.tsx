@@ -1,7 +1,7 @@
 /**
  * BeforeYouStartCard
  * The "Before you get started" requirements panel shown on the registration
- * screen — the list adapts to whether a business or a customer is signing up.
+ * screen: the list adapts to whether a business or a customer is signing up.
  */
 
 import { Check, ShieldCheck } from 'lucide-react';

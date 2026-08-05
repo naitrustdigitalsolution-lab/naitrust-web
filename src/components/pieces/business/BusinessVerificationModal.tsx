@@ -2,7 +2,7 @@
  * BusinessVerificationModal
  * Shown every time a business account lands on the dashboard without completed
  * business verification. Prompts them to verify their business (CAC, a
- * director, ownership) before transacting — the same flow as the Security
+ * director, ownership) before transacting: the same flow as the Security
  * Center, in our UI. They can close it to use the page, but it reappears on the
  * next dashboard visit until verification is done.
  */

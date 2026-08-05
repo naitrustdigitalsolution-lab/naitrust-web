@@ -2,7 +2,7 @@
  * Beneficiaries API
  * Typed access to saved instant-payment recipients.
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — every method
+ * No backend endpoint exists for this yet (see endpoints.ts): every method
  * is mock-only for this phase.
  */
 

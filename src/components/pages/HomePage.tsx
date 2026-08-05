@@ -16,6 +16,8 @@ import { openWaitlistModal } from '../modals/waitlist-events';
 import marketTradersImage from '../../assets/hero/nigerian-market-traders.webp';
 import qrPaymentImage from '../../assets/hero/nigerian-qr-payment.webp';
 import handheldAppImage from '../../assets/hero/naitrust-handheld-exact-home-v4.webp';
+import tradersLocalBusinessesImage from '../../assets/home/traders-local-businesses.jpg';
+import localTailoringBusinessImage from '../../assets/home/local-tailoring-business.jpg';
 
 const saferDealsImage = '/images/blog/safer-deals.webp';
 const deliveryEvidenceImage = '/images/blog/delivery-evidence.webp';
@@ -82,7 +84,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     {
       question: 'What is the difference between Instant and Protected payments?',
-      answer: 'Send Money for people and businesses you already trust — it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order — funds are held until the agreed conditions are met.',
+      answer: 'Send Money for people and businesses you already trust: it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order: funds are held until the agreed conditions are met.',
     },
     {
       question: 'Does Naitrust hold customer funds?',
@@ -90,7 +92,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     {
       question: 'Who is Naitrust for?',
-      answer: 'Naitrust is for people and businesses across Nigeria—from everyday customers to traders, shops, wholesalers, service providers, and online sellers.',
+      answer: 'Naitrust is for people and businesses across Nigeria, from everyday customers to traders, shops, wholesalers, service providers, and online sellers.',
     },
   ];
 
@@ -106,7 +108,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Floating Feedback Button */}
       <FloatingFeedbackButton onNavigate={onNavigate} />
       
-      {/* Hero — a deliberately loose collage of real business moments and product UI */}
+      {/* Hero: a deliberately loose collage of real business moments and product UI */}
       <section className={`relative overflow-hidden bg-[#04162f] text-white ${useHeroViewportHeight ? 'xl:min-h-[94vh]' : ''}`}>
         {/* <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-[#087ff5]/20 blur-[55px] sm:blur-[110px]" />
@@ -170,7 +172,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <ImageWithFallback
                 src={marketTradersImage}
                 alt="A Nigerian market trader using her phone with a customer"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover brightness-[1.06] contrast-[1.03] saturate-[1.06]"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/65 via-transparent to-transparent" />
@@ -274,7 +276,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-primary">For customers</p>
               <h3 className="mt-2 text-xl font-bold sm:text-2xl">Buy, pay, and follow every important purchase.</h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">Send money to people you trust, pay verified businesses, and protect a purchase when delivery still needs to be proven.</p>
-              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('register-customer')}>Open a customer account <ArrowRight size={15} /></Button>
+              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('customer')}>See how it works for customers <ArrowRight size={15} /></Button>
             </Card>
 
             <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_60px_rgba(7,49,88,.24)] sm:p-8">
@@ -291,9 +293,115 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">For businesses</p>
               <h3 className="mt-2 text-xl font-bold sm:text-2xl">Collect sales, pay suppliers, and trade with confidence.</h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">Share an account, link, or QR code with customers. Use Protected Deals for new suppliers, contractors, and high-value orders.</p>
-              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('register-business')}>Open a business account <ArrowRight size={15} /></Button>
+              <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('business')}>See how it works for business <ArrowRight size={15} /></Button>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Traders and local businesses */}
+      <section className="relative overflow-hidden bg-[#f3f8fc] px-4 py-12 dark:bg-[#081827] sm:px-6 sm:py-20 lg:px-8 lg:py-28">
+        <div className="pointer-events-none absolute -left-24 top-1/3 h-80 w-80 rounded-full bg-[#1e90ff]/10 blur-[90px]" />
+        <div className="pointer-events-none absolute -right-24 -top-20 h-96 w-96 rounded-full bg-emerald-400/10 blur-[110px]" />
+        <div className="relative mx-auto grid max-w-[90rem] items-center gap-12 lg:grid-cols-[1.02fr_.98fr] lg:gap-16">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            className="relative min-h-[31rem] sm:min-h-[39rem]"
+          >
+            <div className="absolute inset-x-0 top-0 h-[25rem] overflow-hidden rounded-[1.75rem] shadow-[0_32px_85px_rgba(7,27,49,.2)] sm:right-[12%] sm:h-[34rem] sm:rounded-[2.5rem]">
+              <ImageWithFallback
+                src={tradersLocalBusinessesImage}
+                alt="Nigerian traders reviewing a digital transaction at their local shop"
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#071b31]/75 via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 p-5 text-white sm:p-8">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">Trade with a clearer record</p>
+                <p className="mt-2 max-w-xs text-lg font-bold leading-snug sm:text-2xl">From the first payment to the final handover.</p>
+              </div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="absolute bottom-0 right-0 w-[48%] overflow-hidden rounded-[1.4rem] border-[5px] border-[#f3f8fc] bg-white shadow-2xl dark:border-[#081827] sm:w-[42%] sm:rounded-[2rem]"
+            >
+              <ImageWithFallback
+                src={localTailoringBusinessImage}
+                alt="A Nigerian tailor confirming a customer order on her phone"
+                className="aspect-[4/5] w-full object-cover brightness-[1.07] contrast-[1.03] saturate-[1.06]"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071b31]/90 to-transparent px-4 pb-4 pt-12 text-white sm:px-5 sm:pb-5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-sky-200 sm:text-[10px]">Local service business</p>
+                <p className="mt-1 text-xs font-bold sm:text-sm">Order confirmed</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={allowAmbientMotion ? { y: [0, -7, 0] } : undefined}
+              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute left-3 top-4 rounded-2xl border border-white/80 bg-white/95 p-3 shadow-xl backdrop-blur sm:-left-5 sm:top-12 sm:p-4"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><CheckCircle2 size={18} /></span>
+                <div><p className="text-[9px] text-slate-500">Today’s payment</p><p className="text-xs font-bold text-[#071b31]">Received safely</p></div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Made for the way Nigeria trades</p>
+            <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-[1.08] tracking-[-0.045em] text-[#071b31] dark:text-white sm:text-5xl lg:text-6xl">
+              Designed for traders and local businesses.
+            </h2>
+            <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+              Whether you run a market stall, neighbourhood shop, workshop, or growing online business, Naitrust helps you collect sales, pay suppliers, and protect the deals that need more certainty.
+            </p>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {[
+                { icon: QrCode, title: 'Get paid your way', text: 'Share an account, payment link, or QR with any customer.' },
+                { icon: Send, title: 'Keep stock moving', text: 'Pay the suppliers and people your business relies on.' },
+                { icon: Shield, title: 'Protect bigger orders', text: 'Record terms, delivery proof, and payment status together.' },
+                { icon: Fingerprint, title: 'Build proof over time', text: 'Carry verified details and completed trade into the next deal.' },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.06 }}
+                  className="rounded-2xl border border-[#071b31]/[0.07] bg-white/80 p-4 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.05] sm:p-5"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><item.icon size={19} /></span>
+                  <h3 className="mt-4 text-sm font-bold sm:text-base">{item.title}</h3>
+                  <p className="mt-2 text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">{item.text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button className="rounded-full px-5" onClick={() => onNavigate('register-business')}>
+                Open a business account <ArrowRight size={15} />
+              </Button>
+              <Button variant="outline" className="rounded-full px-5" onClick={() => onNavigate('business')}>
+                See how it works for business
+              </Button>
+            </div>
+            <p className="mt-4 text-xs leading-5 text-muted-foreground">Built for sole traders, shops, market sellers, wholesalers, artisans, and service businesses.</p>
+          </motion.div>
         </div>
       </section>
 
@@ -497,7 +605,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* Instant Payments Showcase — mirrors the actual Wallet/Dashboard screens, not stock photography */}
+      {/* Instant Payments Showcase: mirrors the actual Wallet/Dashboard screens, not stock photography */}
       <section className="bg-[#f5f8fc] py-12 dark:bg-[#0d0f13] sm:py-20 lg:py-28">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-9 lg:grid-cols-2 lg:gap-12">
@@ -855,7 +963,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               Run today’s business.<br />Build tomorrow’s trust.
             </h2>
             <p className="mx-auto mb-6 max-w-2xl text-sm leading-6 text-white/60 sm:mb-9 sm:text-base sm:leading-7 lg:text-lg">
-              Receive sales, pay trusted suppliers instantly, and protect important orders—all from one business account.
+              Receive sales, pay trusted suppliers instantly, and protect important orders, all from one business account.
             </p>
 
             <div className="flex flex-row justify-center gap-2 sm:gap-4">

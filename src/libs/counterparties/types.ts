@@ -12,7 +12,7 @@ export type CounterpartyFilter =
 export interface CreateCounterpartyInput {
   name: string;
   businessName?: string;
-  relation: 'customer' | 'supplier';
+  relation: 'customer' | 'supplier' | 'contractor' | 'agent';
   email?: string;
   phone?: string;
   address?: string;
@@ -34,4 +34,3 @@ export interface CounterpartyTransaction {
   status: 'completed';
   completedAt: string;
 }
-

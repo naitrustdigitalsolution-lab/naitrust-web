@@ -117,7 +117,7 @@ export function NegotiationPanel({
   const handleAccept = () =>
     respond.mutate(
       { proposalId: latest.id, action: 'accepted' },
-      { onSuccess: () => toast.success('Proposal accepted — updated terms are now agreed.') },
+      { onSuccess: () => toast.success('Proposal accepted: updated terms are now agreed.') },
     );
   const handleDecline = () =>
     respond.mutate(

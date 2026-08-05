@@ -2,7 +2,7 @@
  * Payment Requests API
  * Typed access to requesting an instant payment from a counterparty.
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — every method
+ * No backend endpoint exists for this yet (see endpoints.ts): every method
  * is mock-only for this phase.
  */
 

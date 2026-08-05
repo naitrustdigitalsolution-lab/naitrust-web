@@ -1,6 +1,6 @@
 /**
  * useCounterparties
- * React Query hooks for the Business Network — saved counterparties and
+ * React Query hooks for the Business Network: saved counterparties and
  * favourite/block toggles.
  */
 
@@ -11,10 +11,11 @@ import type { CreateCounterpartyInput, CounterpartyTransaction } from '../libs/c
 
 export const COUNTERPARTIES_QUERY_KEY = ['counterparties'] as const;
 
-export function useCounterparties() {
+export function useCounterparties(enabled = true) {
   return useQuery<CounterpartyProfile[]>({
     queryKey: COUNTERPARTIES_QUERY_KEY,
     queryFn: async () => (await counterpartiesApi.list()).data,
+    enabled,
   });
 }
 

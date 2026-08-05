@@ -473,7 +473,7 @@ html:not(.dark) .naitrust-keep-white * {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Responsive search results grid — works with sidebar offset */
+/* Responsive search results grid: works with sidebar offset */
 .search-results-grid {
   display: grid;
   gap: 0.75rem;

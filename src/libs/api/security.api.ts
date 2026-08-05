@@ -3,7 +3,7 @@
  * Mock backend for verification & security actions. In production these hit the
  * real endpoints (OTP delivery, KYC provider/QoreID, TOTP enrolment, PIN set/
  * verify server-side). The mock mirrors the request/response shape and latency
- * so the UI is production-ready — only the transport is stubbed.
+ * so the UI is production-ready: only the transport is stubbed.
  */
 
 import { appConfig } from '../../configs/env';
@@ -65,7 +65,7 @@ export const securityApi = {
     return (await httpClient.post(endpoints.security.verifyPhone, { code })) as ApiSuccess<{ verified: boolean }>;
   },
 
-  /** Begin authenticator-app (TOTP) enrolment — returns secret + otpauth URI. */
+  /** Begin authenticator-app (TOTP) enrolment: returns secret + otpauth URI. */
   start2FA: async (email: string): Promise<ApiSuccess<TwoFactorEnrolment>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);

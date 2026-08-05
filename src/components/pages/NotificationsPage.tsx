@@ -1,7 +1,7 @@
 /**
  * NotificationsPage
  * Notification center (`/app/notifications`): type-colored icon feed with
- * unread indicators, per-item mark-read on open, and a mark-all action —
+ * unread indicators, per-item mark-read on open, and a mark-all action , 
  * the old app's NotificationsPage card-feed pattern on the new domain model.
  */
 

@@ -2,7 +2,7 @@
  * SecureAccountModal
  * A one-per-session nudge shown after login when authenticator 2FA isn't set
  * up yet. 2FA is a soft security measure (it doesn't block using the app), so
- * this is dismissible — "Enable 2FA" routes to the Security Center, "Maybe
+ * this is dismissible: "Enable 2FA" routes to the Security Center, "Maybe
  * later" defers it for the session.
  */
 

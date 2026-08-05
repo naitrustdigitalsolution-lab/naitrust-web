@@ -21,7 +21,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10"><ShieldCheck size={28} /></div>
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Trust with clear limits</p>
           <h1 className="text-4xl font-bold">Verification Policy</h1>
-          <p className="mx-auto mt-4 max-w-2xl leading-7 text-blue-100">A simple explanation of the checks Naitrust plans to use and what a verification result will—and will not—mean.</p>
+          <p className="mx-auto mt-4 max-w-2xl leading-7 text-blue-100">A simple explanation of the checks Naitrust plans to use and what a verification result will, and will not, mean.</p>
           <p className="mt-5 text-sm text-blue-200">Effective and last updated: 12 July 2026</p>
         </header>
 

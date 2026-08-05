@@ -11,7 +11,7 @@
  * - The mock keeps a PIN value here ONLY so the demo can verify it offline.
  *   Production sends the entered PIN to the backend for verification and never
  *   persists it client-side.
- * - The liveness photo is held in memory only (never persisted) — it is
+ * - The liveness photo is held in memory only (never persisted): it is
  *   personal data and would exceed cookie limits.
  */
 
@@ -28,7 +28,7 @@ export interface UserSecurity {
   twoFactorEnabled: boolean;
   kycStatus: KycStatus;
   pinSet: boolean;
-  /** MOCK ONLY — see file header. Never persist a real PIN client-side. */
+  /** MOCK ONLY: see file header. Never persist a real PIN client-side. */
   pin?: string;
   livenessAt?: string; // ISO of last passed liveness check
 }

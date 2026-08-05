@@ -39,10 +39,10 @@ function Frame({ children }: { children: React.ReactNode }) {
         <HelpHint title="Deal breakdown">
           <p>The chart groups your Protected Deals by their current status:</p>
           <ul className="list-disc space-y-1 pl-4">
-            <li><strong>Active</strong> — in progress or awaiting a step.</li>
-            <li><strong>Completed</strong> — delivered and paid out.</li>
-            <li><strong>Disputed</strong> — paused while an issue is reviewed.</li>
-            <li><strong>Closed</strong> — refunded or cancelled.</li>
+            <li><strong>Active</strong>: in progress or awaiting a step.</li>
+            <li><strong>Completed</strong>: delivered and paid out.</li>
+            <li><strong>Disputed</strong>: paused while an issue is reviewed.</li>
+            <li><strong>Closed</strong>: refunded or cancelled.</li>
           </ul>
           <p>
             Completion and issue rates are shares of all your Protected Deals. Average transaction value is the

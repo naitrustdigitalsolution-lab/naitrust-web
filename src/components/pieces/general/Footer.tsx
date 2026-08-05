@@ -34,10 +34,11 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       title: 'Platform',
       links: [
+        { label: 'Personal', page: 'customer' },
+        { label: 'Business', page: 'business' },
         { label: 'Send Money', page: 'register', modal: true },
         { label: 'Protect a Payment', page: 'register', modal: true },
         { label: 'Join Early Access', page: 'register', modal: true },
-        { label: 'For Businesses', page: 'register-business', modal: true },
       ],
     },
     {

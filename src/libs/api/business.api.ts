@@ -160,7 +160,7 @@ export const businessApi = {
 
   /**
    * Update editable business details. Changing them means the business must be
-   * re-verified (compliance requirement) — the caller handles the KYC reset.
+   * re-verified (compliance requirement): the caller handles the KYC reset.
    * Real endpoint: PATCH /businesses/:id.
    */
   update: async (userId: string, patch: BusinessUpdate): Promise<ApiSuccess<BusinessProfile | null>> => {

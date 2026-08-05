@@ -1,7 +1,7 @@
 /**
  * DealsPage
  * The dedicated safe-deals list (`/app/deals`): a robust toolbar over the deal
- * list — text search (counterparty / reference), status filter chips, a
+ * list: text search (counterparty / reference), status filter chips, a
  * created-date range, and client-side pagination. Rows open the transaction
  * room. Reuses TransactionList for consistent row presentation.
  */

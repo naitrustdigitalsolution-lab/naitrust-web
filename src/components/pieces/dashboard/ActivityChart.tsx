@@ -1,7 +1,7 @@
 /**
  * ActivityChart
  * Dashboard analytics: protected value grouped by the month each deal was
- * created — "how much you moved through safe deals each month". Rendered as a
+ * created: "how much you moved through safe deals each month". Rendered as a
  * smooth area (single brand hue), with a crosshair + branded tooltip and a
  * HelpHint explaining the metric.
  */
@@ -73,7 +73,7 @@ function Frame({ children }: { children: React.ReactNode }) {
             Protected value by month
             <HelpHint title="Protected value by month">
               <p>
-                Each point is the total value of Protected Deals you created or joined that month —
+                Each point is the total value of Protected Deals you created or joined that month , 
                 money held safely with a regulated partner until the agreed conditions are met.
               </p>
               <p>

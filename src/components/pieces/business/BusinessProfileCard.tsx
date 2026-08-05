@@ -1,6 +1,6 @@
 /**
  * BusinessProfileCard
- * Shows the full business profile tied to a business account — everything
+ * Shows the full business profile tied to a business account: everything
  * captured at registration (name, RC number, category, description, owner,
  * contact, address, and social handles) with an edit flow.
  *
@@ -226,7 +226,7 @@ export function BusinessProfileCard() {
                 </p>
               ) : (
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Enter it exactly as on your CAC certificate — this is used to verify your business.
+                  Enter it exactly as on your CAC certificate: this is used to verify your business.
                 </p>
               )}
             </div>

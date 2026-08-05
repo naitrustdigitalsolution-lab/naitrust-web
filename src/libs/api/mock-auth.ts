@@ -7,7 +7,7 @@
  * - Responses use the same `ApiResponse`-shaped envelope the real backend
  *   returns, so the auth store and screens run identical code paths.
  * - The user list is module-level and mutable: `register()` adds users for
- *   the current browser session only (resets on reload — the logged-in
+ *   the current browser session only (resets on reload: the logged-in
  *   session itself still survives reload via the persisted auth store).
  * - Profile lookup is derived from the token (like a real backend), not from
  *   localStorage, keeping this module pure and unit-testable.
@@ -89,7 +89,7 @@ function findByIdOrEmail(userIdOrEmail: string): MockUserRecord | undefined {
   );
 }
 
-/** Token format: `mock-token.<userId>.<random>` — lets getProfile resolve the user. */
+/** Token format: `mock-token.<userId>.<random>`: lets getProfile resolve the user. */
 function issueToken(userId: string): string {
   return `${TOKEN_PREFIX}.${userId}.${crypto.randomUUID()}`;
 }

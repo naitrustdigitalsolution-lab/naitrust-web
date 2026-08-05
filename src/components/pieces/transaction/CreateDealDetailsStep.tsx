@@ -1,19 +1,23 @@
 import { ChevronDown, Clock3, Plus, Trash2 } from 'lucide-react';
-import type { ExtendedProductTestingDays } from '../../../libs/store/types';
+import { counterpartyRelationLabel } from '../../../libs/counterparties/counterparty-options';
+import type { CounterpartyProfile, CounterpartyRelation, ExtendedProductTestingDays } from '../../../libs/store/types';
 import { supportsDeliveryReview } from '../../../libs/protected-deals/delivery-review';
 import { formatMinorAmount } from '../../../libs/utils/safe-deal-presentation';
+import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../ui/collapsible';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Textarea } from '../../ui/textarea';
 import { ProductTestingPeriodField } from './ProductTestingPeriodField';
+import { SavedCounterpartyPickerDialog } from './SavedCounterpartyPickerDialog';
 
 export interface DealParticipantForm {
   name: string;
   contact: string;
   allocation: string;
   profileId?: string;
+  relation?: CounterpartyRelation;
 }
 
 export interface DealDetailsValues {
@@ -43,11 +47,15 @@ interface CreateDealDetailsStepProps {
   maxOpen: string;
   maxOpenDays: number;
   showAdvancedTiming: boolean;
+  canUseSavedContacts: boolean;
+  savedCounterparties: CounterpartyProfile[];
+  savedCounterpartiesLoading: boolean;
   onAdvancedTimingChange: (open: boolean) => void;
   onFieldChange: (field: TextDetailField, value: string) => void;
   onTestingPeriodChange: (value?: ExtendedProductTestingDays) => void;
   onParticipantChange: (index: number, field: keyof DealParticipantForm, value: string) => void;
   onAddParticipant: () => void;
+  onSelectCounterparty: (counterparty: CounterpartyProfile) => void;
   onRemoveParticipant: (index: number) => void;
 }
 
@@ -64,11 +72,15 @@ export function CreateDealDetailsStep({
   maxOpen,
   maxOpenDays,
   showAdvancedTiming,
+  canUseSavedContacts,
+  savedCounterparties,
+  savedCounterpartiesLoading,
   onAdvancedTimingChange,
   onFieldChange,
   onTestingPeriodChange,
   onParticipantChange,
   onAddParticipant,
+  onSelectCounterparty,
   onRemoveParticipant,
 }: CreateDealDetailsStepProps) {
   const amountMinor = Math.round(Number(form.amount || 0) * 100);
@@ -127,10 +139,20 @@ export function CreateDealDetailsStep({
                 They can receive it by email, SMS, or WhatsApp and join this deal on Naitrust.
               </p>
             </div>
-            <Button type="button" variant="ghost" size="sm" className="h-8 rounded-md" onClick={onAddParticipant}>
-              <Plus size={14} className="mr-1" />
-              Add another
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              {canUseSavedContacts && (
+                <SavedCounterpartyPickerDialog
+                  counterparties={savedCounterparties}
+                  isLoading={savedCounterpartiesLoading}
+                  selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])}
+                  onSelect={onSelectCounterparty}
+                />
+              )}
+              <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full" onClick={onAddParticipant}>
+                <Plus size={14} />
+                Enter manually
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
@@ -140,9 +162,16 @@ export function CreateDealDetailsStep({
                 className={`rounded-xl border bg-background p-3.5 ${form.participants.length === 1 ? 'md:col-span-2' : ''}`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    {participantLabel} {index + 1}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {participantLabel} {index + 1}
+                    </span>
+                    {participant.profileId && (
+                      <Badge variant="outline" className="rounded-full px-2 py-0 text-[10px] font-normal">
+                        {participant.relation ? `Saved ${counterpartyRelationLabel(participant.relation).toLowerCase()}` : 'Saved Naitrust profile'}
+                      </Badge>
+                    )}
+                  </div>
                   {form.participants.length > 1 && (
                     <button
                       type="button"

@@ -1,6 +1,6 @@
 /**
  * PaymentsHubPage
- * The Payments area landing (`/app/payments`) — the primary place the
+ * The Payments area landing (`/app/payments`): the primary place the
  * "two ways to pay" choice is offered: Send Instantly for people/businesses
  * you already trust, or Protect a Payment (a Protected Deal) for new
  * suppliers, contractors, large orders, or anything needing delivery

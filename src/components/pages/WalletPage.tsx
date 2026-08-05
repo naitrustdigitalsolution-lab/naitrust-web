@@ -1,9 +1,9 @@
 /**
  * WalletPage
- * `/app/wallet` — the everyday account: available, pending and protected
+ * `/app/wallet`: the everyday account: available, pending and protected
  * balances kept visually distinct (protected funds are never shown as
  * withdrawable or instantly transferable), fund/withdraw actions, linked
- * bank accounts, and the wallet activity feed. Mock-only for this phase —
+ * bank accounts, and the wallet activity feed. Mock-only for this phase , 
  * no backend wallet endpoint exists yet (see wallet.api.ts).
  *
  * Balance-first layout inspired by Revolut's home screen: the available
@@ -66,7 +66,7 @@ export function WalletPage() {
     if (!defaultBankAccount || !amountMinor) return;
     try {
       await fundWallet.mutateAsync({ linkedBankAccountId: defaultBankAccount.id, amountMinor });
-      toast.success('Funding recorded — added to your pending balance');
+      toast.success('Funding recorded: added to your pending balance');
       setFundOpen(false);
       setAmount('');
     } catch {
@@ -112,7 +112,7 @@ export function WalletPage() {
             </div>
             <p className="text-xs leading-5 text-primary-foreground/70">
               Protected funds are managed through NaiTrust's regulated payment partners and released
-              according to the agreed transaction terms — they aren't available for withdrawal or
+              according to the agreed transaction terms: they aren't available for withdrawal or
               instant transfer until a deal completes.
             </p>
 
@@ -247,7 +247,7 @@ export function WalletPage() {
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground">
               To {defaultBankAccount ? `${defaultBankAccount.bankName} ${defaultBankAccount.accountNumber}` : 'your linked bank account'} · Available:{' '}
-              {wallet ? formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency) : '—'}
+              {wallet ? formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency) : 'Not available'}
             </p>
             <Label htmlFor="withdraw-amount">Amount (NGN)</Label>
             <Input id="withdraw-amount" type="number" inputMode="decimal" min={0} value={amount} onChange={(e) => setAmount(e.target.value)} />

@@ -360,7 +360,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                 </p>
               </div>
 
-              {/* Trust points — desktop side panel only; on mobile they appear below the form. */}
+              {/* Trust points: desktop side panel only; on mobile they appear below the form. */}
               <div className="hidden lg:block">{highlightsBlock}</div>
             </div>
           </motion.div>

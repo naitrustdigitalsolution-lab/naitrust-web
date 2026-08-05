@@ -2,13 +2,13 @@
  * CreateDealPage
  * Create Safe Deal wizard (`/app/deals/new`), contained but space-filling.
  * A liveness check gates entry (once every 30 days, for security). Steps:
- *  1) Basics — use case, then the deal type (structure) that use case allows
+ *  1) Basics: use case, then the deal type (structure) that use case allows
  *     (single / milestone tracking / recurring), party mode, and your role
  *     framed as sending vs receiving funds.
- *  2) Terms & parties — the amount and terms first, then the counterparties at
+ *  2) Terms & parties: the amount and terms first, then the counterparties at
  *     the bottom, each with the amount they pay/receive when there's more than
  *     one. The deal-open window is capped at 30 days.
- *  3) Agreement — prepared from the terms and confirmed by you.
+ *  3) Agreement: prepared from the terms and confirmed by you.
  *  4) Review & send.
  */
 
@@ -56,6 +56,7 @@ import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { useCreateDeal } from '../../hooks/useTransactions';
+import { useCounterparties } from '../../hooks/useCounterparties';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useAuth } from '../../libs/auth-context';
 import { agreementsApi } from '../../libs/api/agreements.api';
@@ -75,6 +76,7 @@ import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/d
 import {
   MAX_DEAL_OPEN_DAYS,
   type AgreementDraft,
+  type CounterpartyProfile,
   type DealRole,
   type DealType,
   type PartyMode,
@@ -207,6 +209,8 @@ export function CreateDealPage() {
   const { user } = useAuth();
   const createDeal = useCreateDeal();
   const security = useSecurity();
+  const accountType = accountTypeOf(user);
+  const { data: savedCounterparties = [], isLoading: savedCounterpartiesLoading } = useCounterparties(accountType === 'business');
 
   const requestedDraftId = searchParams.get('draft');
   const recoveredDraft = useMemo(
@@ -240,8 +244,8 @@ export function CreateDealPage() {
     return {
       ...INITIAL,
       openUntil: format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
-      partyMode: accountTypeOf(user) === 'customer' && businessId ? 'b2c' : null,
-      role: accountTypeOf(user) === 'customer' ? 'buyer' : null,
+      partyMode: accountType === 'customer' && businessId ? 'b2c' : null,
+      role: accountType === 'customer' ? 'buyer' : null,
       participants: [{ name: businessName, contact: businessEmail, allocation: '', profileId: businessId }],
     };
   });
@@ -303,7 +307,15 @@ export function CreateDealPage() {
   const updateParticipant = (index: number, key: keyof DealParticipantForm, value: string) => {
     setForm((prev) => ({
       ...prev,
-      participants: prev.participants.map((p, i) => (i === index ? { ...p, [key]: value } : p)),
+      participants: prev.participants.map((participant, participantIndex) => {
+        if (participantIndex !== index) return participant;
+        const updated = { ...participant, [key]: value };
+        if (key === 'name' || key === 'contact') {
+          updated.profileId = undefined;
+          updated.relation = undefined;
+        }
+        return updated;
+      }),
     }));
     setErrors((prev) => ({ ...prev, [`participant_${index}_${key}`]: '' }));
     invalidateAgreement();
@@ -311,6 +323,40 @@ export function CreateDealPage() {
 
   const addParticipant = () => {
     setForm((prev) => ({ ...prev, participants: [...prev.participants, emptyParticipant()] }));
+    invalidateAgreement();
+  };
+
+  const selectSavedCounterparty = (counterparty: CounterpartyProfile) => {
+    const contact = counterparty.email ?? counterparty.phone;
+    if (!contact) {
+      toast.error('Add an email or phone number to this saved contact before inviting them.');
+      return;
+    }
+
+    const participant: DealParticipantForm = {
+      name: counterparty.businessName ?? counterparty.name,
+      contact,
+      allocation: '',
+      profileId: counterparty.id,
+      relation: counterparty.relation,
+    };
+
+    setForm((current) => {
+      if (current.participants.some((item) => item.profileId === counterparty.id)) return current;
+      const emptyIndex = current.participants.findIndex(
+        (item) => !item.name.trim() && !item.contact.trim(),
+      );
+      if (emptyIndex < 0) {
+        return { ...current, participants: [...current.participants, participant] };
+      }
+      return {
+        ...current,
+        participants: current.participants.map((item, index) => index === emptyIndex ? participant : item),
+      };
+    });
+    setErrors((current) => Object.fromEntries(
+      Object.entries(current).filter(([key]) => !key.startsWith('participant_') && key !== 'allocation'),
+    ));
     invalidateAgreement();
   };
 
@@ -341,7 +387,7 @@ export function CreateDealPage() {
 
   // "Who's involved" options depend on the account type (a customer never sees
   // business-to-business). Auto-select when there's only one sensible option.
-  const partyModeOptions = useMemo(() => partyModeOptionsFor(accountTypeOf(user)), [user]);
+  const partyModeOptions = useMemo(() => partyModeOptionsFor(accountType), [accountType]);
   useEffect(() => {
     if (partyModeOptions.length === 1 && !form.partyMode) {
       setForm((prev) => ({ ...prev, partyMode: partyModeOptions[0].mode }));
@@ -583,7 +629,7 @@ export function CreateDealPage() {
             </div>
           </aside>
 
-          {/* Right — step card (fills the column) */}
+          {/* Right: step card (fills the column) */}
           <main className="w-full">
             <Card className="gap-0 overflow-hidden rounded-3xl border-border/80 p-0 shadow-[0_16px_45px_rgba(7,27,49,.08)]">
               <div className="relative overflow-hidden border-b bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-5 sm:px-7">
@@ -758,11 +804,15 @@ export function CreateDealPage() {
                   maxOpen={maxOpen}
                   maxOpenDays={MAX_DEAL_OPEN_DAYS}
                   showAdvancedTiming={showAdvancedTiming}
+                  canUseSavedContacts={accountType === 'business'}
+                  savedCounterparties={savedCounterparties}
+                  savedCounterpartiesLoading={savedCounterpartiesLoading}
                   onAdvancedTimingChange={setShowAdvancedTiming}
                   onFieldChange={(field, value) => set(field, value)}
                   onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)}
                   onParticipantChange={updateParticipant}
                   onAddParticipant={addParticipant}
+                  onSelectCounterparty={selectSavedCounterparty}
                   onRemoveParticipant={removeParticipant}
                 />
               )}
@@ -854,12 +904,12 @@ export function CreateDealPage() {
                   </div>
 
                   <dl className="divide-y divide-border rounded-xl border">
-                    <ReviewRow label="What you're protecting" value={selectedUseCase?.title ?? '—'} />
-                    <ReviewRow label="Deal setup" value={form.dealType ? dealTypeMeta(form.dealType).label : '—'} />
-                    <ReviewRow label="Who's involved" value={form.partyMode ? partyModeLabel(form.partyMode) : '—'} />
+                    <ReviewRow label="What you're protecting" value={selectedUseCase?.title ?? 'Not available'} />
+                    <ReviewRow label="Deal setup" value={form.dealType ? dealTypeMeta(form.dealType).label : 'Not available'} />
+                    <ReviewRow label="Who's involved" value={form.partyMode ? partyModeLabel(form.partyMode) : 'Not available'} />
                     <ReviewRow
                       label="Your role"
-                      value={form.role ? `${roleLabel(form.role)} · ${isReleaser ? 'sending funds' : 'receiving funds'}` : '—'}
+                      value={form.role ? `${roleLabel(form.role)} · ${isReleaser ? 'sending funds' : 'receiving funds'}` : 'Not available'}
                     />
                     <ReviewRow
                       label={multiParty ? (isReleaser ? 'Recipients' : 'Payers') : 'Counterparty'}
@@ -867,10 +917,10 @@ export function CreateDealPage() {
                         .map((p) => (multiParty && p.allocation ? `${p.name} (${formatMinorAmount(Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
                         .join(', ')}
                     />
-                    <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || '—'} />
+                    <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || 'Not available'} />
                     <ReviewRow
                       label="Invitation expires"
-                      value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : '—'}
+                      value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
                     />
                     {supportsDeliveryReview(form.useCase) && (
                       <ReviewRow
@@ -891,7 +941,7 @@ export function CreateDealPage() {
                   {form.dealType === 'recurring' && (
                     <div className="flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs leading-5 text-muted-foreground">
                       <Repeat size={14} className="mt-0.5 shrink-0 text-primary" />
-                      This is a recurring deal — when it completes, a new linked deal is created
+                      This is a recurring deal: when it completes, a new linked deal is created
                       automatically, carrying this deal's history forward.
                     </div>
                   )}

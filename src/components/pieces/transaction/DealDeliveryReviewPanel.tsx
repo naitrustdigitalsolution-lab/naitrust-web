@@ -239,7 +239,7 @@ export function DealDeliveryReviewPanel({
               {isBuyer && !hasDispute && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Button className="rounded-full" onClick={() => setShowPin(true)}>
-                    <ShieldCheck size={15} /> Product checked — release payment
+                    <ShieldCheck size={15} /> Product checked: release payment
                   </Button>
                   <Button variant="outline" className="rounded-full" onClick={onUploadEvidence}>
                     <Upload size={15} /> Add product evidence

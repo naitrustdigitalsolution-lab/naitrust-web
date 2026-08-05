@@ -26,9 +26,9 @@ const BASIC_BENEFITS = [
 
 const PREMIUM_BENEFITS = [
   'Premium gold verification badge',
-  'AI Fake Account Detection — scans social media for impersonator accounts',
-  'AI Business Owner Verification — confirms you are the real owner',
-  'Proactive Fraud Monitoring — alerts when new fake accounts appear',
+  'AI Fake Account Detection: scans social media for impersonator accounts',
+  'AI Business Owner Verification: confirms you are the real owner',
+  'Proactive Fraud Monitoring: alerts when new fake accounts appear',
   'AI-powered business insights and recommendations',
   'Advanced analytics and exportable reports',
   'Featured and priority search placement',

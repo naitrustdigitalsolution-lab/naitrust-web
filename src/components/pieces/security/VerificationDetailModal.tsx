@@ -1,6 +1,6 @@
 /**
  * VerificationDetailModal
- * A read-only summary of a completed verification — what was checked, when, and
+ * A read-only summary of a completed verification: what was checked, when, and
  * for which entity. Shown when a verified user taps "View" (never the form).
  */
 
@@ -29,7 +29,7 @@ interface VerificationDetailModalProps {
 }
 
 function formatDate(iso?: string): string {
-  if (!iso) return '—';
+  if (!iso) return 'Not available';
   try {
     return new Date(iso).toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
   } catch {
@@ -58,7 +58,7 @@ export function VerificationDetailModal({
             <BadgeCheck size={18} className="text-emerald-600 dark:text-emerald-400" />
             Verification details
           </SheetTitle>
-          <SheetDescription>A summary of what was verified — for your records.</SheetDescription>
+          <SheetDescription>A summary of what was verified: for your records.</SheetDescription>
         </SheetHeader>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">

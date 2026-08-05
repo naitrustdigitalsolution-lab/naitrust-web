@@ -29,7 +29,7 @@ export const terminationApi = {
     return res as ApiSuccess<DealTermination | null>;
   },
 
-  /** Request termination — anyone on the deal can start this. */
+  /** Request termination: anyone on the deal can start this. */
   request: async (dealId: string, reason: string): Promise<ApiSuccess<DealTermination>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);

@@ -33,7 +33,7 @@ interface RegistrationPageProps {
 
 const smoothViewFade = { duration: 0.18, ease: [0.16, 1, 0.3, 1] as const };
 
-// Registration is not open yet — the form still renders so people can see
+// Registration is not open yet: the form still renders so people can see
 // what's needed, but the Continue/Complete button opens the waitlist modal
 // instead of advancing or submitting. Flip to true once launch is ready.
 const REGISTRATION_OPEN = false;
@@ -982,7 +982,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
                 {registrationType === 'business'
                   ? 'Turn customer confidence into stronger business.'
-                  : 'Pay with confidence—even when the seller is new.'}
+                  : 'Pay with confidence, even when the seller is new.'}
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
                 {registrationType === 'business'

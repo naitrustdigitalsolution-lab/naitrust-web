@@ -1,6 +1,6 @@
 /**
  * PhoneField
- * A phone number input with a searchable country-code selector — flag + dial
+ * A phone number input with a searchable country-code selector: flag + dial
  * code on the left (Moniepoint style), the national number on the right, both
  * inside one cohesive control.
  *
@@ -58,7 +58,7 @@ function parse(value: string): { country: Country; national: string } {
     .sort((a, b) => b.dial.length - a.dial.length)
     .find((c) => v.startsWith(c.dial));
   if (match) return { country: match, national: v.slice(match.dial.length) };
-  // No dial code yet — keep any digits as the national part.
+  // No dial code yet: keep any digits as the national part.
   return { country: DEFAULT, national: v.replace(/^\+/, '') };
 }
 

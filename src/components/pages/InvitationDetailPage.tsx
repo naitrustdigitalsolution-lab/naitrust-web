@@ -1,7 +1,7 @@
 /**
  * InvitationDetailPage
  * Accept flow for a single invitation (`/app/invitations/:id`): a centered
- * card state machine — loading, not-found, and the invitation detail with
+ * card state machine: loading, not-found, and the invitation detail with
  * the agreement document and Accept / Decline actions (only while pending).
  * The agreement must be explicitly consented to (checkbox) before Accept
  * enables; accepting agrees the terms and drops the user into their deals.
@@ -47,7 +47,7 @@ export function InvitationDetailPage() {
   const [showPin, setShowPin] = useState(false);
 
   // Prompt a liveness check when the user opens a live invitation without a
-  // fresh check — a photo of who is accepting, for the counterparty's records.
+  // fresh check: a photo of who is accepting, for the counterparty's records.
   useEffect(() => {
     if (invitation?.status === 'pending' && !livenessOk) setShowLiveness(true);
   }, [invitation?.status, livenessOk]);
@@ -57,7 +57,7 @@ export function InvitationDetailPage() {
     try {
       await respond.mutateAsync({ id, action });
       if (action === 'accepted') {
-        toast.success('Invitation accepted — the Protected Deal is now in your dashboard.');
+        toast.success('Invitation accepted: the Protected Deal is now in your dashboard.');
         navigate('/app');
       } else {
         toast.info('Invitation declined.');
@@ -86,7 +86,7 @@ export function InvitationDetailPage() {
           setLivenessOk(true);
           setShowLiveness(false);
         }}
-        reason="You have a new invitation. We'll take a live photo to confirm it is really you — this is shared with the counterparty for their records."
+        reason="You have a new invitation. We'll take a live photo to confirm it is really you: this is shared with the counterparty for their records."
       />
       <PinPromptModal
         open={showPin}

@@ -1,6 +1,6 @@
 /**
  * TerminationReasonModal
- * Collects a required reason — reused for requesting a deal termination and for
+ * Collects a required reason: reused for requesting a deal termination and for
  * rejecting someone else's termination request.
  */
 
@@ -64,7 +64,7 @@ export function TerminationReasonModal({
               id="termination-reason"
               className="mt-1.5"
               rows={4}
-              placeholder="Explain why — the other party will see this."
+              placeholder="Explain why: the other party will see this."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />

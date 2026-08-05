@@ -226,7 +226,7 @@ export function ReceiveMoneyPage() {
         return;
       }
       await copy(paymentLink, 'share-link');
-      toast.info("Sharing isn't supported on this browser — payment link copied instead.");
+      toast.info("Sharing isn't supported on this browser: payment link copied instead.");
     } catch (err) {
       if ((err as Error)?.name !== 'AbortError') {
         toast.error('Could not share the QR code. Please try again.');

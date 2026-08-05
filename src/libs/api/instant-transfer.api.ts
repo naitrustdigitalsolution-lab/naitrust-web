@@ -1,9 +1,9 @@
 /**
  * Instant Transfer API
  * Typed access to everyday payments between parties who already trust each
- * other — recipient validation, transfer creation, status and history.
+ * other: recipient validation, transfer creation, status and history.
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — every method
+ * No backend endpoint exists for this yet (see endpoints.ts): every method
  * is mock-only for this phase. Mock transfers never resolve as a real
  * completed payment silently; callers are expected to surface the sandbox
  * indicator carried on every `InstantTransfer.isMock` record.
@@ -88,7 +88,7 @@ function resolveBankRecipient(recipient: TransferRecipient): TransferRecipient |
 
 export const instantTransferApi = {
   /**
-   * Confirm a recipient exists before money moves — step 1-2 of the
+   * Confirm a recipient exists before money moves: step 1-2 of the
    * instant-payment flow (select/add recipient → confirm recipient).
    * Real endpoint (not yet implemented): POST /instant-transfers/validate-recipient
    */
@@ -117,7 +117,7 @@ export const instantTransferApi = {
   },
 
   /**
-   * Create and send an instant transfer. Sandboxed in mock mode — always
+   * Create and send an instant transfer. Sandboxed in mock mode: always
    * returns a clearly-labeled mock record (`isMock: true`), never presented
    * as a real completed transfer.
    * Real endpoint (not yet implemented): POST /instant-transfers

@@ -1,8 +1,8 @@
 /**
  * TransactionsPage
- * `/app/transactions` — unified history across Instant Payments, Protected
+ * `/app/transactions`: unified history across Instant Payments, Protected
  * Deals and wallet funding/withdrawal/fees, with filters and a detail view.
- * Aggregates existing sources only (see useTransactionHistory) — introduces
+ * Aggregates existing sources only (see useTransactionHistory): introduces
  * no new transaction data of its own.
  */
 
@@ -230,7 +230,7 @@ export function TransactionsPage() {
                 <span className="text-muted-foreground">Date</span>
                 <span className="font-medium text-foreground">{format(new Date(selected.createdAt), 'd MMM yyyy, HH:mm')}</span>
               </div>
-              {/* Provider is internal-administration-only context — shown here as a small
+              {/* Provider is internal-administration-only context: shown here as a small
                   muted footnote rather than a prominent field, never exposed as a
                   customer-facing claim about who "holds" the money. */}
               <div className="flex justify-between border-t pt-3 text-xs text-muted-foreground">

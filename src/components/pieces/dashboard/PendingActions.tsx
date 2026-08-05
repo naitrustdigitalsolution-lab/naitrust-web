@@ -1,6 +1,6 @@
 /**
  * PendingActions
- * "Needs your action" panel — deals whose status requires the current user
+ * "Needs your action" panel: deals whose status requires the current user
  * to act next (fund, review evidence, respond to a dispute). Distinct from
  * the general deal list below it (guardrails/ui.md: "pending actions" and
  * "disputes needing response" are explicit dashboard priorities).

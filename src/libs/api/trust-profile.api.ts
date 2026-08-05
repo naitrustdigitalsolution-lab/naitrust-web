@@ -1,9 +1,9 @@
 /**
  * Trust Profile API
  * Typed access to the current user's observable platform-activity summary.
- * Never a credit score — informational only (see TrustProfilePage copy).
+ * Never a credit score: informational only (see TrustProfilePage copy).
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — mock-only for
+ * No backend endpoint exists for this yet (see endpoints.ts): mock-only for
  * this phase.
  */
 

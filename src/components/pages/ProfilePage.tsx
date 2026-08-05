@@ -1,7 +1,7 @@
 /**
  * ProfilePage
  * The user's own profile (`/app/profile`): identity card, verification
- * checklist, and reputation summary — a two-column layout so the space works
+ * checklist, and reputation summary: a two-column layout so the space works
  * on desktop. Public reputation profiles are a later slice (plan Group G).
  */
 
@@ -156,7 +156,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                     <p className="text-2xl font-bold text-foreground tabular-nums">
                       {reputation && reputation.ratingCount > 0
                         ? reputation.ratingAverage?.toFixed(1)
-                        : '—'}
+                        : 'Not available'}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">Average rating</p>
                   </div>
@@ -169,7 +169,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                 </div>
               )}
               <p className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground">
-                Reputation is built from completed Protected Deals and verified activity on the platform —
+                Reputation is built from completed Protected Deals and verified activity on the platform , 
                 it cannot be bought or edited.
               </p>
             </Card>

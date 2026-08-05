@@ -1,7 +1,7 @@
 /**
  * Verification Banner Logic
  * Pure derivation of the dashboard verification banner from the current user.
- * Uses only fields that already exist on `User` — richer verification tiers
+ * Uses only fields that already exist on `User`: richer verification tiers
  * arrive with the real `/verification/status` integration (future task).
  */
 

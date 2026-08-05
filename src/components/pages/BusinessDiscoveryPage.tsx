@@ -132,7 +132,7 @@ export function BusinessDiscoveryPage() {
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground group-hover:text-[#35546f] dark:group-hover:text-muted-foreground">
                   <span className="inline-flex items-center gap-1"><MapPin size={13} /> {business.city || business.state}</span>
-                  <span className="inline-flex items-center gap-1"><Star size={13} className="fill-amber-400 text-amber-400" /> {business.ratingAverage?.toFixed(1) ?? '—'}</span>
+                  <span className="inline-flex items-center gap-1"><Star size={13} className="fill-amber-400 text-amber-400" /> {business.ratingAverage?.toFixed(1) ?? 'Not available'}</span>
                   <span>{business.completedProtectedTransactions ?? 0} completed deals</span>
                 </div>
                 <div className="mt-5 flex items-center justify-between gap-2">

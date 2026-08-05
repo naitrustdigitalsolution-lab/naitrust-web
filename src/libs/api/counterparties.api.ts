@@ -1,9 +1,9 @@
 /**
  * Counterparties API
- * Typed access to the Business Network — saved suppliers, buyers,
+ * Typed access to the Business Network: saved suppliers, buyers,
  * contractors, customers and agents.
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — every method
+ * No backend endpoint exists for this yet (see endpoints.ts): every method
  * is mock-only for this phase.
  */
 

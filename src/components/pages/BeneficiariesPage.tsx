@@ -1,6 +1,6 @@
 /**
  * BeneficiariesPage
- * `/app/payments/beneficiaries` — saved Naitrust and bank recipients.
+ * `/app/payments/beneficiaries`: saved Naitrust and bank recipients.
  */
 
 import { useEffect, useState } from 'react';

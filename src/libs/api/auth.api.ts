@@ -57,7 +57,7 @@ export interface ChangePasswordData {
 
 export const authApi = {
   /**
-   * Register a new user (idempotent — safe to retry on network failure)
+   * Register a new user (idempotent: safe to retry on network failure)
    */
   register: async (data: RegisterData) => {
     if (appConfig.isMock) {

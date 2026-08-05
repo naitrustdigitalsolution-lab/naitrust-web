@@ -1,7 +1,7 @@
 /**
  * AddTrackingStepModal
  * The seller logs a custom tracking update (a title + optional note) beyond the
- * standard delivery stages — e.g. "Cleared customs", "Handed to courier".
+ * standard delivery stages: e.g. "Cleared customs", "Handed to courier".
  *
  * Two modes:
  * - add:  create a new update, optionally choosing which existing step it
@@ -24,7 +24,7 @@ interface AddTrackingStepModalProps {
   submitting?: boolean;
   /** 'add' (default) creates a step; 'edit' updates an existing one. */
   mode?: 'add' | 'edit';
-  /** Existing steps — used to build the "insert after" picker (add mode). */
+  /** Existing steps: used to build the "insert after" picker (add mode). */
   steps?: DealMilestone[];
   /** Prefill for edit mode. */
   initial?: { title: string; description?: string };

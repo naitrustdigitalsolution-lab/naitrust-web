@@ -1,8 +1,8 @@
 /**
  * SendInstantlyPage
- * The Instant Payment flow (`/app/payments/send`) — everyday transfers
+ * The Instant Payment flow (`/app/payments/send`): everyday transfers
  * between parties who already trust each other. Mock-only for this phase
- * (no backend endpoint exists yet — see instant-transfer.api.ts): every
+ * (no backend endpoint exists yet: see instant-transfer.api.ts): every
  * completed transfer is clearly labeled with a SandboxBadge, never shown as
  * a real completed payment.
  *
@@ -478,11 +478,11 @@ export function SendInstantlyPage() {
                     <dl className="grid gap-3 px-4 py-4 text-xs sm:grid-cols-2">
                       <div>
                         <dt className="text-muted-foreground">Account number</dt>
-                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustAccountNumber ?? '—'}</dd>
+                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustAccountNumber ?? 'Not available'}</dd>
                       </div>
                       <div>
                         <dt className="text-muted-foreground">Naitrust ID</dt>
-                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustId ?? '—'}</dd>
+                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustId ?? 'Not available'}</dd>
                       </div>
                     </dl>
                     <div className="grid gap-2 border-t border-primary/10 bg-background/55 p-3 sm:grid-cols-2">
@@ -816,15 +816,15 @@ export function SendInstantlyPage() {
                 <div className="space-y-3 p-5 text-sm">
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-muted-foreground">Amount</span>
-                    <span className="font-semibold">{amountMinor > 0 ? formatMinorAmount(amountMinor, 'NGN') : '—'}</span>
+                    <span className="font-semibold">{amountMinor > 0 ? formatMinorAmount(amountMinor, 'NGN') : 'Not available'}</span>
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-muted-foreground">Transfer fee</span>
-                    <span className="font-semibold">{feeMinor > 0 ? formatMinorAmount(feeMinor, 'NGN') : '—'}</span>
+                    <span className="font-semibold">{feeMinor > 0 ? formatMinorAmount(feeMinor, 'NGN') : 'Not available'}</span>
                   </div>
                   <div className="flex items-center justify-between gap-4 border-t pt-3">
                     <span className="font-semibold">Total</span>
-                    <span className="font-bold">{amountMinor > 0 ? formatMinorAmount(amountMinor + feeMinor, 'NGN') : '—'}</span>
+                    <span className="font-bold">{amountMinor > 0 ? formatMinorAmount(amountMinor + feeMinor, 'NGN') : 'Not available'}</span>
                   </div>
                 </div>
               </Card>

@@ -3,7 +3,7 @@
  * AI-assisted drafting of the deal agreement both parties accept.
  *
  * The real backend drafts via its OpenAI integration (backend-only, advisory
- * — the AI never triggers protected actions; parties always review and
+ *: the AI never triggers protected actions; parties always review and
  * accept). In mock mode we synthesize a deterministic draft from the deal
  * terms with generation-like latency so the UX matches production.
  */
@@ -46,7 +46,7 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
     sections: [
       {
         heading: 'Parties and purpose',
-        body: `This safe deal agreement is between ${input.buyerName} (the Buyer) and ${input.sellerName} (the Seller) for "${input.title}" — a ${input.partyModeLabel.toLowerCase()} transaction under the ${input.useCaseTitle} category.${input.description ? ` Scope: ${input.description}` : ''}`,
+        body: `This safe deal agreement is between ${input.buyerName} (the Buyer) and ${input.sellerName} (the Seller) for "${input.title}": a ${input.partyModeLabel.toLowerCase()} transaction under the ${input.useCaseTitle} category.${input.description ? ` Scope: ${input.description}` : ''}`,
       },
       {
         heading: 'Protected payment',

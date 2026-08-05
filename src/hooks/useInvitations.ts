@@ -1,7 +1,7 @@
 /**
  * useInvitations / useInvitation
  * React Query hooks for incoming safe-deal invitations. Server state stays in
- * React Query — never copied into a store.
+ * React Query: never copied into a store.
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -59,7 +59,7 @@ export function useClaimInvitation() {
   });
 }
 
-/** Count of invitations still awaiting a response — for nav badges. */
+/** Count of invitations still awaiting a response: for nav badges. */
 export function usePendingInvitationCount(): number {
   const { data } = useInvitations();
   return data?.filter((inv) => inv.status === 'pending').length ?? 0;

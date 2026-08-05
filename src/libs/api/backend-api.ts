@@ -1,14 +1,14 @@
 /**
- * NAITRUST — EXPECTED API CONTRACT
+ * NAITRUST: EXPECTED API CONTRACT
  * ================================================================
  * Documentation-only reference (not imported anywhere in the app).
  * Every endpoint the frontend expects, with a FULL example request body
- * and a FULL example response body — every field spelled out, nothing
+ * and a FULL example response body: every field spelled out, nothing
  * abbreviated. Hand this straight to the backend engineer.
  *
  * Base URL:  {API_BASE_URL}/api
  * Auth:      Bearer <token> in the Authorization header (unless marked "public")
- * Envelope:  every response is the real backend's NaitrustResponse<T> shape —
+ * Envelope:  every response is the real backend's NaitrustResponse<T> shape , 
  *            { statusCode, message, data, isSuccessful }. statusCode is the
  *            HTTP status echoed in the body, message is a human-readable
  *            string, data is the payload (or null), isSuccessful mirrors
@@ -20,9 +20,9 @@
  *
  * The examples below use one running set of sample data so the IDs are
  * consistent across sections:
- *   user:     usr_9f2c1a  — Ada Okafor (customer)
- *   business: biz_4471d2  — Lekki Gardens Development Co.
- *   deal:     txn_7ab120  — reference NT-2026-004821
+ *   user:     usr_9f2c1a : Ada Okafor (customer)
+ *   business: biz_4471d2 : Lekki Gardens Development Co.
+ *   deal:     txn_7ab120 : reference NT-2026-004821
  * ================================================================
  */
 
@@ -92,7 +92,7 @@
  *   }
  * }
  *
- * Response 200 (2FA enabled — login incomplete, no token yet):
+ * Response 200 (2FA enabled: login incomplete, no token yet):
  * {
  *   "statusCode": 200,
  *   "message": "Enter your 2FA code to continue.",
@@ -417,7 +417,7 @@
 
 
 // ================================================================
-// 4. TRANSACTIONS (SAFE DEAL / PROPERTY TRANSACTION) — core resource
+// 4. TRANSACTIONS (SAFE DEAL / PROPERTY TRANSACTION): core resource
 // ================================================================
 
 /**
@@ -560,7 +560,7 @@
  *   "message": "OK",
  *   "isSuccessful": true,
  *   "data": [
- *     { "id": "txn_7ab120_m1", "dealId": "txn_7ab120", "senderId": "party_cp", "senderName": "Lekki Gardens Development Co.", "isYou": false, "body": "Thanks for setting up the deal — funding confirmed on our end.", "createdAt": "2026-05-02T08:10:00.000Z" },
+ *     { "id": "txn_7ab120_m1", "dealId": "txn_7ab120", "senderId": "party_cp", "senderName": "Lekki Gardens Development Co.", "isYou": false, "body": "Thanks for setting up the deal: funding confirmed on our end.", "createdAt": "2026-05-02T08:10:00.000Z" },
  *     { "id": "txn_7ab120_m2", "dealId": "txn_7ab120", "senderId": "party_you", "senderName": "You", "isYou": true, "body": "Great, please share the allocation letter when ready.", "createdAt": "2026-05-02T08:15:00.000Z" }
  *   ]
  * }
@@ -653,7 +653,7 @@
 
 
 // ================================================================
-// 5. AGREEMENTS (AI-assisted drafting — advisory only)
+// 5. AGREEMENTS (AI-assisted drafting: advisory only)
 // ================================================================
 
 /**
@@ -712,7 +712,7 @@
  *     "openedByName": "You",
  *     "createdAt": "2026-05-06T09:00:00.000Z",
  *     "messages": [
- *       { "id": "txn_7ab120_dm1", "byName": "Naitrust Support", "byYou": false, "body": "Thanks for the details — please upload the allocation letter and your original offer for comparison.", "createdAt": "2026-05-06T09:30:00.000Z" }
+ *       { "id": "txn_7ab120_dm1", "byName": "Naitrust Support", "byYou": false, "body": "Thanks for the details: please upload the allocation letter and your original offer for comparison.", "createdAt": "2026-05-06T09:30:00.000Z" }
  *     ]
  *   }
  * }
@@ -927,13 +927,13 @@
 // 12. PUBLIC SUBMISSIONS (marketing site: waitlist, contact, newsletter, feedback, concern)
 // Five separate endpoints under /api/Public/*, matching the real staging
 // backend (see src/libs/api/home.api.ts). Same NaitrustResponse envelope as
-// every other section above — { statusCode, message, data, isSuccessful }.
+// every other section above: { statusCode, message, data, isSuccessful }.
 // ================================================================
 
 /**
- * POST /Public/joinWaitlist (public — no auth)
+ * POST /Public/joinWaitlist (public: no auth)
  *
- * Request body — the modal collects more than the original schema accepted;
+ * Request body: the modal collects more than the original schema accepted;
  * all of these fields are now sent (only `email` is required, everything
  * else is optional on the wire, though the modal fills them in):
  * {
@@ -950,26 +950,26 @@
  *   "submittedAt": "2026-07-21T13:53:37.837Z"
  * }
  *
- * Response 201: { "statusCode": 201, "message": "Thanks — you're on the list.", "data": null, "isSuccessful": true }
+ * Response 201: { "statusCode": 201, "message": "Thanks: you're on the list.", "data": null, "isSuccessful": true }
  * Response 409 (already on the list): { "statusCode": 409, "message": "This email is already on the waitlist.", "data": null, "isSuccessful": false }
  * Response 422 (validation failure): { "statusCode": 422, "message": "Please provide a valid email address.", "data": null, "isSuccessful": false }
  *
  * NOTE: as of this writing, only name/email/phone/source are confirmed
- * persisted by the live `JoinWaitlistRequest`/`WaitlistEntry` schema —
+ * persisted by the live `JoinWaitlistRequest`/`WaitlistEntry` schema , 
  * businessName/userType/transactionRange/transactionNeed/expectations/
  * consent/submittedAt are accepted on the wire but silently dropped until
  * the backend schema is extended to store them.
  */
 
 /**
- * POST /Public/contactUs (public — no auth)
+ * POST /Public/contactUs (public: no auth)
  * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "subject": "Question about verification", "message": "How long does business verification usually take?" }
- * Response 201: { "statusCode": 201, "message": "Thanks — we'll be in touch.", "data": null, "isSuccessful": true }
+ * Response 201: { "statusCode": 201, "message": "Thanks: we'll be in touch.", "data": null, "isSuccessful": true }
  * Response 422: { "statusCode": 422, "message": "Message is required.", "data": null, "isSuccessful": false }
  */
 
 /**
- * POST /Public/subscribe (public — no auth)
+ * POST /Public/subscribe (public: no auth)
  * Request body: { "email": "ada.okafor@example.com" }
  * Response 201: { "statusCode": 201, "message": "Subscribed.", "data": null, "isSuccessful": true }
  * Response 409 (already subscribed): { "statusCode": 409, "message": "This email is already subscribed.", "data": null, "isSuccessful": false }
@@ -977,7 +977,7 @@
  */
 
 /**
- * POST /Public/submitFeedback (public — no auth)
+ * POST /Public/submitFeedback (public: no auth)
  * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "rating": 5, "message": "Really clear transaction room, made the deposit process easy to follow." }
  * `rating` is a required integer (frontend blocks submit until a star is picked).
  * Response 201: { "statusCode": 201, "message": "Thanks for the feedback.", "data": null, "isSuccessful": true }
@@ -985,7 +985,7 @@
  */
 
 /**
- * POST /Public/reportConcern (public — no auth)
+ * POST /Public/reportConcern (public: no auth)
  * Request body: { "name": "Ada Okafor", "email": "ada.okafor@example.com", "category": "suspicious Naitrust payment request", "description": "This profile is using another company's CAC number." }
  * (`category` is populated from the form's "What is the concern about?" field; `description` from "What happened?".)
  * Response 201: { "statusCode": 201, "message": "Your concern has been recorded.", "data": null, "isSuccessful": true }

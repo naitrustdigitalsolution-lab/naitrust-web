@@ -1,7 +1,7 @@
 /**
  * VerificationBanner
  * Prompts the user toward the next verification step on the dashboard.
- * Pure presentation — state derivation lives in libs/utils/verification-status.ts.
+ * Pure presentation: state derivation lives in libs/utils/verification-status.ts.
  * Info/blue tone only; never a green banner (brand rule: green is a small
  * success accent, not a surface color).
  */

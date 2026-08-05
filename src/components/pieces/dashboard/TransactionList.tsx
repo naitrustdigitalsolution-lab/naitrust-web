@@ -1,7 +1,7 @@
 /**
  * TransactionList
  * Renders the user's safe deals as a single divided "holdings"-style card with
- * loading, error, empty, and populated states. Purely presentational — data
+ * loading, error, empty, and populated states. Purely presentational: data
  * ownership stays with the caller (DashboardPage owns the useTransactions query).
  */
 

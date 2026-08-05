@@ -3,7 +3,7 @@
  * In-room chat between the deal parties: a scrollable message thread with
  * your messages right-aligned in brand blue and the counterparty's on the
  * left. Owns its own message query and send mutation. Enter sends; Shift+Enter
- * newlines. Keeps a keep-record notice — chat is part of the deal evidence.
+ * newlines. Keeps a keep-record notice: chat is part of the deal evidence.
  */
 
 import { useEffect, useRef, useState } from 'react';

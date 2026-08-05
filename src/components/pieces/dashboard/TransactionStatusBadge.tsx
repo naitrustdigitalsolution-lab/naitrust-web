@@ -1,7 +1,7 @@
 /**
  * TransactionStatusBadge
  * Domain badge for safe-deal statuses (guardrails/architecture.md domain component).
- * Pure presentation — mapping logic lives in libs/utils/safe-deal-presentation.ts.
+ * Pure presentation: mapping logic lives in libs/utils/safe-deal-presentation.ts.
  */
 
 import { Badge } from '../../ui/badge';

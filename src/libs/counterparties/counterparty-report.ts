@@ -4,7 +4,7 @@ import { counterpartyRelationLabel } from './counterparty-options';
 import type { CounterpartyTransaction } from './types';
 
 function escapeHtml(value: string | undefined): string {
-  return String(value ?? '—')
+  return String(value ?? 'Not available')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
@@ -91,17 +91,18 @@ const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBu
 const PublicTrustProfilePage = lazy(() => import("./components/pages/PublicTrustProfilePage").then((module) => ({ default: module.PublicTrustProfilePage })));
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
+const AudiencePage = lazy(() => import("./components/pages/AudiencePage").then((module) => ({ default: module.AudiencePage })));
 
 const queryClient = new QueryClient();
 
 // A dashboard URL loaded directly by the browser (including refresh) gets the
-// full-screen loader. Client-side navigation—even the first trip into /app from
-// a public route—keeps the dashboard chrome and loads only the content panel.
+// full-screen loader. Client-side navigation, even the first trip into /app from
+// a public route, keeps the dashboard chrome and loads only the content panel.
 let browserLoadedDashboardUrl =
   typeof window !== 'undefined' && window.location.pathname.startsWith('/app');
 
 function DashboardRouteSuspense({ children }: { children: ReactNode }) {
-  // Read directly on every render rather than freezing via useState — this
+  // Read directly on every render rather than freezing via useState: this
   // wrapper is the same component type across every /app/* route, so React
   // Router updates it in place (children prop swap) instead of remounting it
   // on navigation. A useState initializer would only run once for the whole
@@ -128,13 +129,6 @@ const simplePages: Record<
     points: string[];
   }
 > = {
-  "/business": {
-    eyebrow: "For businesses",
-    title: "Business payments built to earn customer confidence.",
-    description:
-      "Receive payments, show customers who they are dealing with, pay suppliers, and protect important customer or B2B transactions with Naitrust.",
-    points: ["Business verification", "Customer payment links", "Protected Transactions", "Supplier payments"],
-  },
   "/resources": {
     eyebrow: "Resources",
     title: "Practical guides for confident Nigerian payments.",
@@ -151,6 +145,7 @@ const pagePaths: Record<string, string> = {
   "use-cases": "/",
   pricing: "/",
   business: "/business",
+  customer: "/customer",
   resources: "/resources",
   blog: "/blog",
   help: "/help",
@@ -193,7 +188,7 @@ function getCurrentPage(pathname: string) {
 function ScrollToRoutePosition() {
   const location = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (location.hash) {
       window.requestAnimationFrame(() => {
         document.querySelector(location.hash)?.scrollIntoView({ block: "start" });
@@ -278,6 +273,8 @@ function PublicAppContent() {
             }
           />
           <Route path="/about" element={<AboutPage onNavigate={handleNavigate} />} />
+          <Route path="/business" element={<AudiencePage audience="business" onNavigate={handleNavigate} />} />
+          <Route path="/customer" element={<AudiencePage audience="customer" onNavigate={handleNavigate} />} />
           <Route path="/feedback" element={<FeedbackPage onNavigate={handleNavigate} />} />
           <Route path="/how-it-works" element={<Navigate to="/" replace />} />
           <Route path="/use-cases" element={<Navigate to="/" replace />} />
@@ -334,7 +331,6 @@ function PublicAppContent() {
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
           </Route>
-          <Route path="/business" element={<SimpleRoutePage />} />
           <Route path="/resources" element={<SimpleRoutePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

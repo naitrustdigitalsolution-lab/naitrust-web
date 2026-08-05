@@ -1,7 +1,7 @@
 /**
  * Deal Detail API
  * Provides the full transaction-room view of a safe deal. In mock mode the
- * detail is synthesized from the deal summary in `transactions.json` — parties,
+ * detail is synthesized from the deal summary in `transactions.json`: parties,
  * partner funding, evidence, agreement, and an activity timeline are derived
  * from the deal's status so every deal opens a coherent room. The real backend
  * returns this shape directly from GET /transactions/:id.
@@ -69,7 +69,7 @@ interface DetailOverlay {
 }
 
 /**
- * Rich, hand-authored overlays for a few known deals — description/useCase/
+ * Rich, hand-authored overlays for a few known deals: description/useCase/
  * release conditions only. `title` always comes from the deal summary
  * (single source of truth with the list row) so the room a deal opens into
  * never shows a different name than the row that was clicked.
@@ -292,7 +292,7 @@ const MILESTONE_STAGES = [
   { title: 'Dispatched', description: 'The seller picked up and dispatched the goods.' },
   { title: 'In transit', description: 'Goods are on the way to the destination.' },
   { title: 'Arrived', description: 'Goods reached the destination for handover.' },
-  { title: 'Delivered & confirmed', description: 'Buyer confirmed delivery — release can proceed.' },
+  { title: 'Delivered & confirmed', description: 'Buyer confirmed delivery: release can proceed.' },
 ];
 
 /** How far along the tracking stages a deal is, by status. */
@@ -609,7 +609,7 @@ export const dealDetailApi = {
   },
 
   /**
-   * Seller reverts the most recent tracking advance — steps the delivery back
+   * Seller reverts the most recent tracking advance: steps the delivery back
    * one stage (the last completed stage re-opens as the current one).
    */
   revertTracking: async (id: string): Promise<ApiSuccess<DealMilestone[]>> => {
@@ -618,7 +618,7 @@ export const dealDetailApi = {
       const list = ensureTracking(id);
       const currentIdx = list.findIndex((m) => m.status === 'current');
       if (currentIdx === -1) {
-        // Every stage is done — re-open the final one as current.
+        // Every stage is done: re-open the final one as current.
         for (let i = list.length - 1; i >= 0; i--) {
           if (list[i].status === 'done') {
             list[i] = { ...list[i], status: 'current', updatedByName: undefined, at: undefined };

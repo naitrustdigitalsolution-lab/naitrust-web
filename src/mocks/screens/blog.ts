@@ -17,13 +17,13 @@ export const blogArticles: BlogArticle[] = [
     title: 'What makes a property transaction clearer?',
     summary: 'A practical guide to participants, terms, payments, property documents, and evidence before money moves.',
     image: '/images/blog/safer-deals.webp', imageAlt: 'Nigerian property participants reviewing transaction information', readTime: '8 min read', publishedAt: '18 July 2026',
-    intro: 'A property transaction needs more than a transfer receipt. Clarity begins when everyone involved can identify the property and each other, understand exactly what was agreed, and review what actually happened at every stage — not just at the end.',
+    intro: 'A property transaction needs more than a transfer receipt. Clarity begins when everyone involved can identify the property and each other, understand exactly what was agreed, and review what actually happened at every stage: not just at the end.',
     sections: [
       {
         heading: 'Identify the property and every participant',
         paragraphs: [
           'A single Nigerian property transaction can involve more people than a buyer first expects: the registered owner, a family selling land held communally, one or more agents, a developer’s sales representative, and sometimes a family head or “next of kin” asserting authority over inherited land. Before any payment moves, it is worth writing down exactly who is involved and what each person claims their role to be.',
-          'This matters because authority to show a property and authority to collect payment are not always held by the same person. An agent may be permitted to arrange viewings but not to receive a deposit; a family representative may claim to speak for co-owners who have not actually agreed to sell. Recording each participant’s name, contact details, and claimed role creates a reference point everyone — including a lawyer, if a disagreement later needs one — can return to.',
+          'This matters because authority to show a property and authority to collect payment are not always held by the same person. An agent may be permitted to arrange viewings but not to receive a deposit; a family representative may claim to speak for co-owners who have not actually agreed to sell. Recording each participant’s name, contact details, and claimed role creates a reference point everyone: including a lawyer, if a disagreement later needs one: can return to.',
         ],
         points: [
           'Confirm the full name and contact details of everyone involved',
@@ -35,14 +35,14 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Put the agreed terms in writing before money moves',
         paragraphs: [
-          'Verbal agreements are hard to enforce and easy to misremember months later. The price, deposit amount, payment schedule, and what happens if either side pulls out should exist as text that both parties can point back to — not as a shared memory of a conversation.',
-          'For land and property purchases, the agreement should describe what is being sold precisely enough to remove ambiguity: plot size, boundaries or beacon references, and any existing structures. For developer instalment plans, the schedule should state what happens to payments already made if construction is delayed — one of the most common sources of dispute in Nigerian real estate.',
+          'Verbal agreements are hard to enforce and easy to misremember months later. The price, deposit amount, payment schedule, and what happens if either side pulls out should exist as text that both parties can point back to: not as a shared memory of a conversation.',
+          'For land and property purchases, the agreement should describe what is being sold precisely enough to remove ambiguity: plot size, boundaries or beacon references, and any existing structures. For developer instalment plans, the schedule should state what happens to payments already made if construction is delayed: one of the most common sources of dispute in Nigerian real estate.',
         ],
       },
       {
         heading: 'Understand what you are actually paying for',
         paragraphs: [
-          'Property payments in Nigeria are rarely a single transfer. A typical purchase can include a reservation fee, a deposit, agency commission, legal fees, survey costs, and — for titled land — charges connected to obtaining or perfecting a Certificate of Occupancy or Governor’s Consent. Each of these is worth itemising rather than accepting as one bundled figure.',
+          'Property payments in Nigeria are rarely a single transfer. A typical purchase can include a reservation fee, a deposit, agency commission, legal fees, survey costs, and: for titled land: charges connected to obtaining or perfecting a Certificate of Occupancy or Governor’s Consent. Each of these is worth itemising rather than accepting as one bundled figure.',
           'When a payment is described as “refundable” or “non-refundable,” get the exact condition in writing at the time the payment is made, not after a disagreement has already started. If an agent or developer cannot explain clearly what a specific payment covers, treat that as a signal to slow down and ask further questions before proceeding.',
         ],
       },
@@ -50,7 +50,7 @@ export const blogArticles: BlogArticle[] = [
         heading: 'Keep documents connected to the transaction, not scattered across chats',
         paragraphs: [
           'Offer letters, allocation letters, receipts, survey plans, and correspondence about the property are far more useful when they can be reviewed together, in the order they happened, than when they are spread across WhatsApp threads, email, and paper receipts kept in different places.',
-          'A connected record also makes inconsistencies easier to notice early — for example, if the property description on a receipt does not match the one in the original offer, or if a promised document never actually arrives.',
+          'A connected record also makes inconsistencies easier to notice early: for example, if the property description on a receipt does not match the one in the original offer, or if a promised document never actually arrives.',
         ],
         points: [
           'Offer or allocation letter',
@@ -62,8 +62,8 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Track milestones instead of waiting for one “completion” moment',
         paragraphs: [
-          'Property transactions — particularly off-plan purchases and instalment plans — happen in stages: allocation, part-payment, construction or documentation milestones, and handover. Treating each stage as something to confirm as it happens, rather than waiting until the very end to check on progress, makes problems easier to catch while they are still solvable.',
-          'This is the structural gap Naitrust is being designed to close — not by acting as an estate agent, title registry, or valuer, but by giving the participants in a transaction one shared, chronological record of what was agreed, what has been paid, what documents exist, and what stage the transaction has actually reached.',
+          'Property transactions: particularly off-plan purchases and instalment plans: happen in stages: allocation, part-payment, construction or documentation milestones, and handover. Treating each stage as something to confirm as it happens, rather than waiting until the very end to check on progress, makes problems easier to catch while they are still solvable.',
+          'This is the structural gap Naitrust is being designed to close: not by acting as an estate agent, title registry, or valuer, but by giving the participants in a transaction one shared, chronological record of what was agreed, what has been paid, what documents exist, and what stage the transaction has actually reached.',
         ],
       },
     ],
@@ -73,19 +73,19 @@ export const blogArticles: BlogArticle[] = [
     title: 'Property company verification: what buyers should check',
     summary: 'Company registration is useful, but buyers should also understand representatives, authority, property details, and transaction evidence.',
     image: '/images/blog/business-verification.webp', imageAlt: 'Nigerian property professional reviewing company and identity documents', readTime: '7 min read', publishedAt: '18 July 2026',
-    intro: 'Verification confirms specific information at a specific point in time. Used well, it supports a more careful property decision — but it is one input among several, not a replacement for legal, document, or physical due diligence.',
+    intro: 'Verification confirms specific information at a specific point in time. Used well, it supports a more careful property decision: but it is one input among several, not a replacement for legal, document, or physical due diligence.',
     sections: [
       {
         heading: 'Start with the basics: does the company exist as it claims?',
         paragraphs: [
           'CAC (Corporate Affairs Commission) registration is the starting point, not the finish line. Confirm the registered company name and registration number match what appears on marketing material, the company’s website, and the offer document. Even a small mismatch is worth raising directly with the company rather than assuming it is a typo.',
-          'Some developers and agencies market under a brand name that differs from their registered company name. That is not automatically a problem, but the connection between the brand and the registered entity should be explained and confirmed — not simply assumed because the marketing looks professional.',
+          'Some developers and agencies market under a brand name that differs from their registered company name. That is not automatically a problem, but the connection between the brand and the registered entity should be explained and confirmed: not simply assumed because the marketing looks professional.',
         ],
       },
       {
         heading: 'Confirm the representative and their authority',
         paragraphs: [
-          'A company search can confirm the business exists; it cannot confirm that the specific person you are speaking to is authorised to negotiate price, make promises, or collect payment on the company’s behalf. Ask for something in writing that connects the individual to the company — a staff ID, a signed letter of authorisation, or a role that the company itself confirms.',
+          'A company search can confirm the business exists; it cannot confirm that the specific person you are speaking to is authorised to negotiate price, make promises, or collect payment on the company’s behalf. Ask for something in writing that connects the individual to the company: a staff ID, a signed letter of authorisation, or a role that the company itself confirms.',
           'This step matters most at the exact moment money is about to move. A person can be genuinely employed by a legitimate company and still not be the person authorised to receive a specific payment.',
         ],
       },
@@ -104,14 +104,14 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Understand what verification does not tell you',
         paragraphs: [
-          'Confirming a company is registered does not confirm that it owns the land it is selling, that its title documents are genuine, that it holds the planning approvals it claims, or that it will deliver on time. Those questions typically require separate legal, survey, and physical due diligence — usually through a property lawyer and a search at the relevant land registry.',
+          'Confirming a company is registered does not confirm that it owns the land it is selling, that its title documents are genuine, that it holds the planning approvals it claims, or that it will deliver on time. Those questions typically require separate legal, survey, and physical due diligence: usually through a property lawyer and a search at the relevant land registry.',
           'Naitrust’s verification checks are one input among several. They are not a substitute for independent legal advice on title, and should never be treated as a guarantee of a company’s honesty, solvency, or the outcome of a transaction.',
         ],
       },
       {
         heading: 'What to do when something does not match',
         paragraphs: [
-          'If registration details, representative authority, or property information do not line up, the safer response is almost always to pause and get clarification in writing before any payment is made — not to proceed on the assumption that it can be resolved afterward.',
+          'If registration details, representative authority, or property information do not line up, the safer response is almost always to pause and get clarification in writing before any payment is made: not to proceed on the assumption that it can be resolved afterward.',
         ],
       },
     ],
@@ -126,7 +126,7 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Know exactly what the payment is for',
         paragraphs: [
-          'Before paying anything, record the property, the recipient, the exact purpose of the payment, the amount, the deadline, and whether the payment is refundable or conditional. “Deposit,” “reservation fee,” and “equity contribution” are not interchangeable — each can carry different refund rights, and the difference should be written down at the time of payment, not assumed.',
+          'Before paying anything, record the property, the recipient, the exact purpose of the payment, the amount, the deadline, and whether the payment is refundable or conditional. “Deposit,” “reservation fee,” and “equity contribution” are not interchangeable: each can carry different refund rights, and the difference should be written down at the time of payment, not assumed.',
         ],
         points: [
           'Property description and location',
@@ -136,16 +136,16 @@ export const blogArticles: BlogArticle[] = [
         ],
       },
       {
-        heading: 'Confirm who should receive the money — then confirm it again',
+        heading: 'Confirm who should receive the money: then confirm it again',
         paragraphs: [
-          'One of the most common property-related frauds in Nigeria involves a bank account number changing between an initial conversation and the point of payment — often through an intercepted email or a compromised WhatsApp account. If account details change, or arrive for the first time close to a payment deadline, reconfirm them through a separate channel: a phone call to a previously known number, not a reply to the same message thread the new details arrived in.',
-          'This single habit — reconfirming payment details out-of-band — closes off one of the most damaging and most preventable failure points in property transactions.',
+          'One of the most common property-related frauds in Nigeria involves a bank account number changing between an initial conversation and the point of payment: often through an intercepted email or a compromised WhatsApp account. If account details change, or arrive for the first time close to a payment deadline, reconfirm them through a separate channel: a phone call to a previously known number, not a reply to the same message thread the new details arrived in.',
+          'This single habit: reconfirming payment details out-of-band: closes off one of the most damaging and most preventable failure points in property transactions.',
         ],
       },
       {
         heading: 'Recognise pressure as a signal to slow down, not speed up',
         paragraphs: [
-          '“Another buyer is interested,” “the price increases tomorrow,” or “payment must be made today to secure the unit” are common in genuine sales and are not, by themselves, proof of anything wrong. But they should never replace the verification steps that would otherwise be taken — they should prompt more caution, not less.',
+          '“Another buyer is interested,” “the price increases tomorrow,” or “payment must be made today to secure the unit” are common in genuine sales and are not, by themselves, proof of anything wrong. But they should never replace the verification steps that would otherwise be taken: they should prompt more caution, not less.',
         ],
       },
       {
@@ -172,7 +172,7 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Be consistent everywhere a buyer can find you',
         paragraphs: [
-          'Company name, registration details, contact information, representative names, and payment instructions should match across your website, marketing material, offer documents, and the messages your sales team sends. Buyers increasingly cross-check these details before paying, and inconsistencies — even small, innocent ones — are read as risk signals.',
+          'Company name, registration details, contact information, representative names, and payment instructions should match across your website, marketing material, offer documents, and the messages your sales team sends. Buyers increasingly cross-check these details before paying, and inconsistencies: even small, innocent ones: are read as risk signals.',
         ],
       },
       {
@@ -184,19 +184,19 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Put promises in writing, including timelines',
         paragraphs: [
-          'Verbal completion dates, verbal promises about documents “to follow,” and verbal assurances about site progress are the first thing a buyer loses confidence in in the event of a delay. Written timelines — even conservative ones — hold up better than optimistic verbal ones, and are easier for both sides to refer back to.',
+          'Verbal completion dates, verbal promises about documents “to follow,” and verbal assurances about site progress are the first thing a buyer loses confidence in in the event of a delay. Written timelines: even conservative ones: hold up better than optimistic verbal ones, and are easier for both sides to refer back to.',
         ],
       },
       {
         heading: 'Make your completion history checkable, not just claimed',
         paragraphs: [
-          'A structured record of previously completed transactions — participants, terms, payments, and confirmed handovers — is more persuasive than unsupported claims of experience or isolated screenshots shared as proof. Where possible, let genuinely completed transactions speak through evidence rather than marketing copy.',
+          'A structured record of previously completed transactions: participants, terms, payments, and confirmed handovers: is more persuasive than unsupported claims of experience or isolated screenshots shared as proof. Where possible, let genuinely completed transactions speak through evidence rather than marketing copy.',
         ],
       },
       {
         heading: 'Treat early questions as normal, not as distrust',
         paragraphs: [
-          'Buyers asking about registration, representative authority, or refund conditions before paying are not signalling suspicion of your company specifically — they are applying the same caution the Nigerian property market has taught them to apply everywhere. Companies that answer these questions clearly and quickly, rather than treating them as an inconvenience, tend to close transactions with fewer disputes later.',
+          'Buyers asking about registration, representative authority, or refund conditions before paying are not signalling suspicion of your company specifically: they are applying the same caution the Nigerian property market has taught them to apply everywhere. Companies that answer these questions clearly and quickly, rather than treating them as an inconvenience, tend to close transactions with fewer disputes later.',
         ],
       },
     ],
@@ -211,19 +211,19 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'A screenshot only shows a moment, not a relationship',
         paragraphs: [
-          'A single image of a bank transfer, a chat message, or a receipt proves that something existed at one point — it does not, by itself, prove what it was for, who agreed to it, or what came before or after. Without that surrounding context, a screenshot is a fragment rather than a record.',
+          'A single image of a bank transfer, a chat message, or a receipt proves that something existed at one point: it does not, by itself, prove what it was for, who agreed to it, or what came before or after. Without that surrounding context, a screenshot is a fragment rather than a record.',
         ],
       },
       {
         heading: 'Context is what turns a fragment into usable evidence',
         paragraphs: [
-          'A useful record shows who supplied information, when it happened, and how it connects to the property and the agreed terms — not just that a payment or message occurred. The same transfer receipt means something very different depending on whether it is connected to an offer document and a payment schedule, or standing alone with no explanation attached.',
+          'A useful record shows who supplied information, when it happened, and how it connects to the property and the agreed terms: not just that a payment or message occurred. The same transfer receipt means something very different depending on whether it is connected to an offer document and a payment schedule, or standing alone with no explanation attached.',
         ],
       },
       {
         heading: 'Combine different evidence types instead of relying on one',
         paragraphs: [
-          'No single file proves everything in a property transaction. A clearer record typically combines participant details, the written agreement, payment receipts, property documents, inspection evidence, and completion confirmations — each covering a gap the others leave open.',
+          'No single file proves everything in a property transaction. A clearer record typically combines participant details, the written agreement, payment receipts, property documents, inspection evidence, and completion confirmations: each covering a gap the others leave open.',
         ],
         points: [
           'Participant identity and claimed role',
@@ -235,13 +235,13 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Preserve the timeline, not just the individual files',
         paragraphs: [
-          'The order events happened in is often as important as the events themselves. Keeping activity in chronological sequence — rather than as a folder of unordered images — makes it far easier for participants, and for any lawyer or adviser involved later, to understand what actually occurred if a disagreement develops.',
+          'The order events happened in is often as important as the events themselves. Keeping activity in chronological sequence: rather than as a folder of unordered images: makes it far easier for participants, and for any lawyer or adviser involved later, to understand what actually occurred if a disagreement develops.',
         ],
       },
       {
         heading: 'What this means when a disagreement happens',
         paragraphs: [
-          'When a property transaction is disputed, the side with a connected, chronological record — participants, terms, payments, and documents that reference each other — is in a materially stronger position than the side holding a folder of disconnected screenshots, regardless of how many screenshots they have.',
+          'When a property transaction is disputed, the side with a connected, chronological record: participants, terms, payments, and documents that reference each other: is in a materially stronger position than the side holding a folder of disconnected screenshots, regardless of how many screenshots they have.',
         ],
       },
     ],
@@ -256,7 +256,7 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'Where Nigerian property transactions currently break down',
         paragraphs: [
-          'Participant identity sits in one place, the agreed terms in another, payment evidence somewhere else, and property documents in a different conversation entirely. Each piece may be perfectly legitimate on its own, but the fragmentation between them is exactly where uncertainty — and eventually disputes — tend to develop.',
+          'Participant identity sits in one place, the agreed terms in another, payment evidence somewhere else, and property documents in a different conversation entirely. Each piece may be perfectly legitimate on its own, but the fragmentation between them is exactly where uncertainty: and eventually disputes: tend to develop.',
           'This is especially visible in instalment purchases and off-plan sales, where a transaction can run for months or years, involve multiple payments, and pass through several points of contact on the seller’s side.',
         ],
       },
@@ -269,7 +269,7 @@ export const blogArticles: BlogArticle[] = [
       {
         heading: 'What Naitrust is not building',
         paragraphs: [
-          'Naitrust is not a property marketplace, estate agent, title registry, law firm, surveyor, valuer, or bank. It does not list or sell properties, confirm land ownership, or guarantee that a transaction will complete successfully. It is intended to be the shared record participants use around a transaction they have already entered into — not a substitute for legal, survey, or title due diligence.',
+          'Naitrust is not a property marketplace, estate agent, title registry, law firm, surveyor, valuer, or bank. It does not list or sell properties, confirm land ownership, or guarantee that a transaction will complete successfully. It is intended to be the shared record participants use around a transaction they have already entered into: not a substitute for legal, survey, or title due diligence.',
         ],
       },
       {

@@ -199,7 +199,7 @@ export function DashboardPage() {
           <div className="mb-4">
             <h2 className="text-xl font-semibold tracking-tight">How would you like to get paid?</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Start where the customer already is—WhatsApp, your counter, or a bank transfer.
+              Start where the customer already is, WhatsApp, your counter, or a bank transfer.
             </p>
           </div>
           <div className="grid gap-3 md:grid-cols-3">

@@ -3,7 +3,7 @@
  * Typed access to the everyday wallet: balance, funding, withdrawal,
  * linked bank accounts and activity feed.
  *
- * No backend endpoint exists for this yet (see endpoints.ts) — every method
+ * No backend endpoint exists for this yet (see endpoints.ts): every method
  * is mock-only for this phase, resolving fixture data from
  * `src/mocks/apis/` with simulated latency, using the same `ApiSuccess<T>`
  * envelope the real backend will eventually return.
@@ -30,7 +30,7 @@ function delay(ms: number): Promise<void> {
 
 export const walletApi = {
   /**
-   * Get the current user's wallet — available, pending and protected
+   * Get the current user's wallet: available, pending and protected
    * balances kept as distinct fields; the UI must never present protected
    * funds as available for withdrawal or instant transfer.
    * Real endpoint (not yet implemented): GET /wallet/me
@@ -45,7 +45,7 @@ export const walletApi = {
   },
 
   /**
-   * Fund the wallet from a linked bank account. Mock-only for this phase —
+   * Fund the wallet from a linked bank account. Mock-only for this phase , 
    * no real money movement happens in the frontend.
    * Real endpoint (not yet implemented): POST /wallet/fund
    */
@@ -76,7 +76,7 @@ export const walletApi = {
   /**
    * Withdraw available funds to a linked bank account. Mock-only for this
    * phase. Callers must ensure `amountMinor` never exceeds
-   * `balance.availableMinor` — protected and pending funds are not
+   * `balance.availableMinor`: protected and pending funds are not
    * withdrawable.
    * Real endpoint (not yet implemented): POST /wallet/withdraw
    */
@@ -120,7 +120,7 @@ export const walletApi = {
   },
 
   /**
-   * Wallet activity feed (statement) — funding, withdrawals, instant
+   * Wallet activity feed (statement): funding, withdrawals, instant
    * transfers, protected-deal allocation/release and fees.
    * Real endpoint (not yet implemented): GET /wallet/activity
    */

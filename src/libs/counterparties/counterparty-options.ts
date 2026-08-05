@@ -1,5 +1,5 @@
 import type { CounterpartyRelation } from '../store/types';
-import type { CounterpartyFilter } from './types';
+import type { CounterpartyFilter, CreateCounterpartyInput } from './types';
 
 export const COUNTERPARTY_RELATION_LABEL: Record<CounterpartyRelation, string> = {
   supplier: 'Supplier',
@@ -9,6 +9,16 @@ export const COUNTERPARTY_RELATION_LABEL: Record<CounterpartyRelation, string> =
   agent: 'Agent',
   other: 'Other',
 };
+
+export const COUNTERPARTY_RELATION_OPTIONS: ReadonlyArray<{
+  value: CreateCounterpartyInput['relation'];
+  label: string;
+}> = [
+  { value: 'customer', label: 'Customer' },
+  { value: 'supplier', label: 'Supplier' },
+  { value: 'contractor', label: 'Contractor' },
+  { value: 'agent', label: 'Agent' },
+];
 
 export const COUNTERPARTY_FILTER_OPTIONS: ReadonlyArray<{
   value: CounterpartyFilter;
@@ -26,4 +36,3 @@ export const COUNTERPARTY_FILTER_OPTIONS: ReadonlyArray<{
 export function counterpartyRelationLabel(relation: CounterpartyRelation): string {
   return COUNTERPARTY_RELATION_LABEL[relation];
 }
-

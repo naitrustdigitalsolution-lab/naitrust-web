@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Building2, Loader2, UserRoundPlus } from 'lucide-react';
 import type { CreateCounterpartyInput } from '../../../libs/counterparties/types';
+import { COUNTERPARTY_RELATION_OPTIONS } from '../../../libs/counterparties/counterparty-options';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
@@ -97,11 +98,12 @@ export function AddCounterpartySheet({
         <div className="space-y-5 px-6 py-2">
           <div>
             <Label>Relationship</Label>
-            <Select value={form.relation} onValueChange={(value) => update('relation', value as 'customer' | 'supplier')}>
+            <Select value={form.relation} onValueChange={(value) => update('relation', value as CreateCounterpartyInput['relation'])}>
               <SelectTrigger className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="customer">Customer</SelectItem>
-                <SelectItem value="supplier">Supplier</SelectItem>
+                {COUNTERPARTY_RELATION_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

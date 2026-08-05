@@ -1,7 +1,7 @@
 /**
  * Secure client storage
  * Sensitive data (auth token, user identity, security flags) must NOT live in
- * localStorage — it is readable by any script and survives indefinitely.
+ * localStorage: it is readable by any script and survives indefinitely.
  * Cookies with Secure + SameSite=Strict are the right client store for this.
  *
  * PRODUCTION NOTE: the auth token should be an httpOnly, Secure cookie SET BY

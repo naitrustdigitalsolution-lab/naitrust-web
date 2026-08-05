@@ -14,7 +14,7 @@ export function AnimatedHeroText({ compact = false }: { compact?: boolean }) {
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="mt-2 flex h-auto min-w-0 w-full flex-col items-center sm:mt-4 xl:items-start"
         >
-          <h1 className="naitrust-satoshi-bold w-full max-w-3xl py-2 text-center text-[clamp(1.35rem,6.7vw,1.75rem)] leading-[1.04] tracking-[-0.04em] text-white sm:hidden">
+          <h1 className="naitrust-satoshi-bold w-full max-w-3xl py-2 text-center text-[clamp(1.5rem,7.6vw,2rem)] leading-[1.02] tracking-[-0.045em] text-white sm:hidden">
             <span className="block whitespace-nowrap">One account for every move</span>
             <span className="block text-[#50adff]">your money makes.</span>
           </h1>

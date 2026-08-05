@@ -95,7 +95,7 @@ export const endpoints = {
     verificationDocument: '/upload/verification-document',
   },
 
-  // Not yet implemented on the backend — mock-only for this phase. Paths are
+  // Not yet implemented on the backend: mock-only for this phase. Paths are
   // placeholders for the eventual .NET controllers (see the frontend's
   // backend-requirements report for what still needs building).
   wallet: {

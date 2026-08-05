@@ -58,7 +58,7 @@ export const disputeApi = {
     return res as ApiSuccess<DealDispute | null>;
   },
 
-  /** Open a dispute — pauses release, starts admin review. */
+  /** Open a dispute: pauses release, starts admin review. */
   open: async (
     dealId: string,
     input: { reason: string; description: string },

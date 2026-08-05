@@ -443,7 +443,7 @@ function KycModal({
 
           {isBusiness && (
             <>
-              {/* Document upload — up to 3 */}
+              {/* Document upload: up to 3 */}
               <div>
                 <div className="flex items-center justify-between">
                   <Label>CAC certificate &amp; business documents</Label>
@@ -497,7 +497,7 @@ function KycModal({
                 )}
               </div>
 
-              {/* Ownership email — the OTP is sent by the backend after review */}
+              {/* Ownership email: the OTP is sent by the backend after review */}
               <div className="rounded-xl border p-3">
                 <div className="flex items-center gap-2">
                   <Mail size={15} className="text-primary" />

@@ -31,7 +31,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust — Nigerian Payments and Trust Fintech"
+        title="About Naitrust: Nigerian Payments and Trust Fintech"
         description="Naitrust is a Nigerian fintech platform where people and businesses can pay, get paid, verify who they are dealing with, and protect important P2P, customer and B2B transactions."
         canonicalPath="/about"
       />
@@ -43,14 +43,16 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65 }}
-          className="relative mx-auto max-w-6xl"
+          className="relative mx-auto max-w-[90rem]"
         >
           <Badge className="mb-6 border border-white/15 bg-white/[0.08] px-4 py-2 text-white hover:bg-white/[0.08]">
             Why Naitrust exists
           </Badge>
           <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <h1 className="max-w-4xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              Nigeria’s digital economy deserves trust built into every transaction.
+              <span className="block">Nigeria’s digital economy</span>
+              <span className="block">deserves trust built into</span>
+              <span className="block text-[#50adff]">every transaction.</span>
             </h1>
             <div>
               <p className="text-lg leading-8 text-white/68">
@@ -66,7 +68,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       </section>
 
       <section className="border-b bg-background px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-4 rounded-2xl border border-primary/15 bg-primary/[0.035] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+        <div className="mx-auto grid max-w-[90rem] gap-4 rounded-2xl border border-primary/15 bg-primary/[0.035] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">The official Naitrust brand</p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight">What is Naitrust?</h2>
@@ -78,7 +80,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       </section>
 
       <section className="bg-[#f5f8fc] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 dark:bg-[#0d0f13]">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[90rem]">
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">The problem</p>
@@ -109,7 +111,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       </section>
 
       <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[90rem]">
           <div className="mb-12 max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Trust infrastructure for both sides</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
@@ -143,14 +145,14 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       </section>
 
       <section className="bg-[#071a32] px-4 py-20 text-white sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+        <div className="mx-auto grid max-w-[90rem] gap-12 lg:grid-cols-2 lg:items-center">
           <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Built for people who buy and sell</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
               Trust should not depend on the size of the transaction or business.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/60">
-              Naitrust supports the customer making an important purchase and the business working to earn that customer’s confidence—from informal sellers to registered companies.
+              Naitrust supports the customer making an important purchase and the business working to earn that customer’s confidence, from informal sellers to registered companies.
             </p>
           </motion.div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -176,7 +178,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mx-auto max-w-5xl rounded-[2rem] bg-[#eef6ff] p-8 dark:bg-card sm:p-12"
+          className="mx-auto max-w-[90rem] rounded-[2rem] bg-[#eef6ff] p-8 dark:bg-card sm:p-12"
         >
           <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
             <div>

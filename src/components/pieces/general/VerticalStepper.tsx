@@ -3,7 +3,7 @@
  * Registration-style step rail: connecting line, check circles, "STEP N"
  * eyebrow, title, and description per step. Extracted from the
  * RegistrationPage pattern so authenticated wizards (create deal, future
- * verification) share the same visual language — including the same
+ * verification) share the same visual language: including the same
  * mobile/tablet behaviour: a compact horizontal dot-and-connector progress
  * bar below `lg`, and the full vertical rail at `lg` and up.
  */

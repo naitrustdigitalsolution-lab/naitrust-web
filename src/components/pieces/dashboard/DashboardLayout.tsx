@@ -1,7 +1,7 @@
 /**
  * DashboardLayout
  * Minimal authenticated-app shell: sidebar (brand, nav, user/logout) + topbar.
- * Built on the ui/sidebar primitive. Intentionally small — role-based nav,
+ * Built on the ui/sidebar primitive. Intentionally small: role-based nav,
  * notifications, and more nav items arrive with future slices.
  */
 
@@ -214,7 +214,7 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
-      {/* The authenticated app is private — never index any /app screen. */}
+      {/* The authenticated app is private: never index any /app screen. */}
       <SEOHead title={title} noindex />
       <Sidebar collapsible="icon">
         <SidebarHeader className="gap-3 px-3 py-4">

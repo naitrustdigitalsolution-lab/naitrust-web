@@ -1,6 +1,6 @@
 /**
  * UploadEvidenceModal
- * Attach evidence to a deal — invoices, waybills, photos, inspection reports.
+ * Attach evidence to a deal: invoices, waybills, photos, inspection reports.
  * Pick a kind, choose one or more files, add an optional note. In mock mode
  * object URLs retain selected files for preview/download during the mock session.
  */

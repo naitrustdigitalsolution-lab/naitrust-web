@@ -65,7 +65,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
               </p>
             </div>
 
-            {/* Desktop only — on mobile these bullets move BELOW the choice cards. */}
+            {/* Desktop only: on mobile these bullets move BELOW the choice cards. */}
             <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
                 'Instant transfers, plus Protected Deals before money moves',
@@ -180,7 +180,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Registered or informal—whether you run a shop, market stall, wholesale business, or WhatsApp storefront—manage customer and supplier payments professionally.
+                        Registered or informal, whether you run a shop, market stall, wholesale business, or WhatsApp storefront, manage customer and supplier payments professionally.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
@@ -203,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Individuals and businesses — registered or informal — can both send instantly and complete Protected Deals. Choose the profile that matches how you want records and reputation to appear.
+              Individuals and businesses: registered or informal: can both send instantly and complete Protected Deals. Choose the profile that matches how you want records and reputation to appear.
             </div>
           </motion.div>
         </main>

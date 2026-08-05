@@ -6,7 +6,7 @@
  *
  * With `editable` + `onChange`, each clause body becomes editable so the
  * creator can adjust the AI wording before sending (agreement editing is only
- * offered while creating a deal or when renegotiating — guardrails).
+ * offered while creating a deal or when renegotiating: guardrails).
  */
 
 import { FileText, Sparkles } from 'lucide-react';

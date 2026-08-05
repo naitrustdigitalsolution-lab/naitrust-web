@@ -6,7 +6,7 @@
  *
  * These mirror the backend models in
  * `naitrust-api/guardrails/database-design.md`. Amounts are always integer
- * minor units (kobo) — never floats.
+ * minor units (kobo): never floats.
  */
 
 /* ------------------------------------------------------------------ *
@@ -33,7 +33,7 @@ export interface User {
 }
 
 /* ------------------------------------------------------------------ *
- * Safe Deal (protected transaction) — core model
+ * Safe Deal (protected transaction): core model
  *
  * Status names mirror the backend transaction state machine. Kept as the
  * one source of truth for deal statuses, party mode, role and deal type.
@@ -58,7 +58,7 @@ export type SafeDealStatus =
 
 /**
  * The minimal shape needed to render a safe deal in a list/dashboard row.
- * Amounts are integer minor units (kobo) — never floats.
+ * Amounts are integer minor units (kobo): never floats.
  */
 export interface SafeDealSummary {
   id: string;
@@ -102,7 +102,7 @@ export type ExtendedProductTestingDays = 3 | 7 | 14;
 
 /**
  * A counterparty invited to the deal. Each participant carries an
- * `allocationMinor` — the amount tied to that party: what they receive when
+ * `allocationMinor`: the amount tied to that party: what they receive when
  * you release funds, or what they pay when you are the one being paid. A deal
  * can have more than one participant (e.g. paying two suppliers from one deal,
  * or being paid by two customers).
@@ -118,7 +118,7 @@ export interface DealParticipantInput {
 /** Longest an invitation can stay open before it expires. */
 export const MAX_DEAL_OPEN_DAYS = 30;
 
-/** Liveness freshness window — a check older than this must be redone. */
+/** Liveness freshness window: a check older than this must be redone. */
 export const LIVENESS_FRESHNESS_DAYS = 30;
 
 /** One clause of a deal agreement document. */
@@ -129,7 +129,7 @@ export interface AgreementSection {
 
 /**
  * The agreement document both parties accept before the deal freezes.
- * Drafted with AI assistance (advisory only — guardrails/plan.md: AI never
+ * Drafted with AI assistance (advisory only: guardrails/plan.md: AI never
  * triggers protected actions; both parties still review and accept).
  */
 export interface AgreementDraft {
@@ -140,7 +140,7 @@ export interface AgreementDraft {
 
 /**
  * Payload for creating a domestic single-release safe deal. Mirrors the
- * Phase 1 create-transaction contract — amount is major-unit naira on the
+ * Phase 1 create-transaction contract: amount is major-unit naira on the
  * form and converted to `amountMinor` before submit.
  */
 export interface CreateSafeDealInput {
@@ -169,7 +169,7 @@ export interface CreateSafeDealResult extends SafeDealSummary {
 }
 
 /* ------------------------------------------------------------------ *
- * Transaction Room — full deal detail
+ * Transaction Room: full deal detail
  *
  * Parties, frozen agreement, partner funding status, evidence, and the
  * activity timeline. Mirrors the backend Transaction / Transaction Party /
@@ -240,7 +240,7 @@ export interface DealActivityEvent {
 export type MilestoneStatus = 'done' | 'current' | 'pending';
 
 /**
- * A tracked delivery stage for milestone deals (goods in transit) — keeps the
+ * A tracked delivery stage for milestone deals (goods in transit): keeps the
  * buyer updated as the seller advances the shipment/work.
  */
 export interface DealMilestone {
@@ -318,7 +318,7 @@ export interface SafeDealDetail extends SafeDealSummary {
   releaseConditions: string;
   extendedProductTestingDays?: ExtendedProductTestingDays;
   expiresAt: string;
-  /** True for recurring deals — a linked follow-on is created on completion. */
+  /** True for recurring deals: a linked follow-on is created on completion. */
   recurring: boolean;
   /** Reference of the prior deal this one continues, if recurring. */
   previousReference?: string;
@@ -334,7 +334,7 @@ export interface SafeDealDetail extends SafeDealSummary {
 }
 
 /* ------------------------------------------------------------------ *
- * Deal Chat — messages inside a transaction room
+ * Deal Chat: messages inside a transaction room
  * ------------------------------------------------------------------ */
 
 export interface DealMessage {
@@ -349,7 +349,7 @@ export interface DealMessage {
 }
 
 /* ------------------------------------------------------------------ *
- * Dispute — raised on a deal before release; blocks release while open
+ * Dispute: raised on a deal before release; blocks release while open
  * ------------------------------------------------------------------ */
 
 export type DisputeStatus = 'open' | 'under_review' | 'resolved_release' | 'resolved_refund';
@@ -373,7 +373,7 @@ export interface DealDispute {
 }
 
 /* ------------------------------------------------------------------ *
- * Termination — either party can request ending a deal early. The other
+ * Termination: either party can request ending a deal early. The other
  * party (or parties) sees the reason and accepts or rejects (a rejection
  * carries its own reason). Every request and outcome is kept on the record.
  * ------------------------------------------------------------------ */
@@ -392,12 +392,12 @@ export interface DealTermination {
   /** The counterparty's response (present once they accept/reject). */
   respondedByName?: string;
   respondedAt?: string;
-  /** Required when a request is rejected — why the other party declined. */
+  /** Required when a request is rejected: why the other party declined. */
   responseReason?: string;
 }
 
 /* ------------------------------------------------------------------ *
- * Invitation — incoming request to join a counterparty's safe deal
+ * Invitation: incoming request to join a counterparty's safe deal
  * ------------------------------------------------------------------ */
 
 export type InvitationStatus =
@@ -455,7 +455,7 @@ export interface PublicInvitationPreview {
 }
 
 /* ------------------------------------------------------------------ *
- * Negotiation — proposals to change terms before both parties agree
+ * Negotiation: proposals to change terms before both parties agree
  * ------------------------------------------------------------------ */
 
 export type NegotiationStatus = 'open' | 'accepted' | 'declined' | 'withdrawn';
@@ -489,7 +489,7 @@ export interface DealNegotiation {
 }
 
 /* ------------------------------------------------------------------ *
- * Notification — safe-deal notification feed
+ * Notification: safe-deal notification feed
  * ------------------------------------------------------------------ */
 
 export type NotificationType =
@@ -512,7 +512,7 @@ export interface AppNotification {
 }
 
 /* ------------------------------------------------------------------ *
- * Reputation — dashboard reputation stat tile
+ * Reputation: dashboard reputation stat tile
  * ------------------------------------------------------------------ */
 
 export interface ReputationSummary {
@@ -522,7 +522,7 @@ export interface ReputationSummary {
 }
 
 /* ------------------------------------------------------------------ *
- * Business — the record tied to a business account
+ * Business: the record tied to a business account
  * ------------------------------------------------------------------ */
 
 export interface BusinessProfile {
@@ -564,7 +564,7 @@ export interface BusinessProfile {
 }
 
 /* ------------------------------------------------------------------ *
- * Payment Provider — internal/admin-only. The frontend never sends
+ * Payment Provider: internal/admin-only. The frontend never sends
  * provider-specific payloads; this is purely a label surfaced on
  * transaction detail for internal administration, sourced from the
  * backend response once a real field exists there.
@@ -573,7 +573,7 @@ export interface BusinessProfile {
 export type PaymentProvider = 'anchor' | 'kora' | 'mock';
 
 /* ------------------------------------------------------------------ *
- * Wallet — everyday account balance and activity.
+ * Wallet: everyday account balance and activity.
  *
  * `available`, `pending` and `protected` are always kept as separate
  * numeric fields and must never be merged in the UI: protected funds are
@@ -633,7 +633,7 @@ export interface WalletActivityEvent {
 }
 
 /* ------------------------------------------------------------------ *
- * Beneficiary — a saved instant-payment recipient
+ * Beneficiary: a saved instant-payment recipient
  * ------------------------------------------------------------------ */
 
 export type BeneficiaryType = 'naitrust_user' | 'bank_account';
@@ -655,7 +655,7 @@ export interface Beneficiary {
 }
 
 /* ------------------------------------------------------------------ *
- * Instant Transfer — everyday payment between parties who already
+ * Instant Transfer: everyday payment between parties who already
  * trust each other. Kept as its own model, separate from SafeDeal*
  * (Protected Payment): they share only low-level transaction fields,
  * not business rules.
@@ -718,7 +718,7 @@ export interface InstantTransfer {
 }
 
 /* ------------------------------------------------------------------ *
- * Payment Request — asking a counterparty to send an instant payment
+ * Payment Request: asking a counterparty to send an instant payment
  * ------------------------------------------------------------------ */
 
 export type PaymentRequestStatus = 'pending' | 'fulfilled' | 'declined' | 'expired' | 'cancelled';
@@ -736,7 +736,7 @@ export interface PaymentRequest {
 }
 
 /* ------------------------------------------------------------------ *
- * Trust Checkout — server-backed, shareable payment + trust context
+ * Trust Checkout: server-backed, shareable payment + trust context
  * ------------------------------------------------------------------ */
 
 export type TrustCheckoutCategory =
@@ -820,7 +820,7 @@ export interface CreateTrustCheckoutInput {
 }
 
 /* ------------------------------------------------------------------ *
- * Unified Transaction record — the shape the Transactions history
+ * Unified Transaction record: the shape the Transactions history
  * screen renders, aggregating instant transfers, protected deals,
  * wallet funding/withdrawals and fees behind one list/filter/detail UI.
  * ------------------------------------------------------------------ */
@@ -857,8 +857,8 @@ export interface TransactionRecord {
 }
 
 /* ------------------------------------------------------------------ *
- * Business Network — saved counterparties (suppliers, buyers,
- * contractors, customers, agents). Factual, observable fields only —
+ * Business Network: saved counterparties (suppliers, buyers,
+ * contractors, customers, agents). Factual, observable fields only , 
  * no "guaranteed safe"/"risk free" style claims belong on this model.
  * ------------------------------------------------------------------ */
 
@@ -888,7 +888,7 @@ export interface CounterpartyProfile {
 }
 
 /* ------------------------------------------------------------------ *
- * Trust Profile — observable platform-activity summary. Never framed
+ * Trust Profile: observable platform-activity summary. Never framed
  * as a credit score; informational only, not a guarantee.
  * ------------------------------------------------------------------ */
 

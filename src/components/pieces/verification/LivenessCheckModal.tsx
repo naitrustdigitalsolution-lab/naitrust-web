@@ -10,7 +10,7 @@
  * framing (the authoritative match happens server-side).
  *
  * Camera attach pattern (from the old app): mount the <video> first, then
- * attach the stream in an effect once the ref exists — otherwise the preview is
+ * attach the stream in an effect once the ref exists: otherwise the preview is
  * black. Falls back to a simulated check when no camera is available.
  */
 
@@ -125,7 +125,7 @@ export function LivenessCheckModal({
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Room lighting — average brightness across the whole frame (adapted from
+      // Room lighting: average brightness across the whole frame (adapted from
       // the old app: sample ~every 10th pixel). This is the "is it bright enough
       // for a photo" check.
       const frame = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -139,7 +139,7 @@ export function LivenessCheckModal({
       const light: Lighting = avg < 80 ? 'low' : avg > 200 ? 'too-bright' : 'good';
       setLighting(light);
 
-      // Face placement — skin-tone ratio inside the central region (~40% × 50%,
+      // Face placement: skin-tone ratio inside the central region (~40% × 50%,
       // narrower than the visible oval). A face fills it with mid-brightness
       // skin tone; when it drifts out of the oval the ratio drops and the frame
       // turns red. (Ported from the old app's proven heuristic.)
@@ -234,14 +234,14 @@ export function LivenessCheckModal({
       : phase === 'capturing'
         ? 'Hold still…'
         : lighting === 'low'
-          ? 'Too dark — move to brighter lighting'
+          ? 'Too dark: move to brighter lighting'
           : lighting === 'too-bright'
-            ? 'Too bright — reduce glare or backlight'
+            ? 'Too bright: reduce glare or backlight'
             : !faceDetected
               ? 'Center your face in the oval'
               : lighting === 'good'
-                ? 'Looking good — capture now'
-                : 'Face detected — you can capture, but better light is recommended';
+                ? 'Looking good: capture now'
+                : 'Face detected: you can capture, but better light is recommended';
 
   const statusClass = photoQualityGood
     ? 'text-emerald-600 dark:text-emerald-400'

@@ -40,7 +40,7 @@ export function partyModeOptionsFor(type: AccountType): PartyModeOption[] {
     {
       mode: 'b2b',
       title: 'Business to business',
-      description: 'You and another business — supplier, distributor, or partner.',
+      description: 'You and another business: supplier, distributor, or partner.',
     },
     {
       mode: 'b2c',

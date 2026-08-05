@@ -26,7 +26,7 @@ export function SEOHead({
   ogImage = DEFAULT_IMAGE,
   noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Payments, Verification and Protected Transactions`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: Payments, Verification and Protected Transactions`;
   const canonicalUrl = canonicalPath
     ? `${SITE_URL}${canonicalPath}`
     : typeof window !== 'undefined'

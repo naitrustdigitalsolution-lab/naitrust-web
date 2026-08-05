@@ -1,6 +1,6 @@
 /**
  * useInstantTransfer
- * React Query hooks for everyday Instant Payments — recipient validation,
+ * React Query hooks for everyday Instant Payments: recipient validation,
  * sending a transfer, and the transfer history list/detail.
  */
 

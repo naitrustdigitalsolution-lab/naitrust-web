@@ -1,6 +1,6 @@
 /**
  * CounterpartyAvatar
- * Small rounded initials badge for a deal's counterparty — gives deal rows a
+ * Small rounded initials badge for a deal's counterparty: gives deal rows a
  * scannable identity anchor (echoes the "asset icon" column of dense fintech
  * tables) without needing uploaded avatars. Pure presentation.
  */

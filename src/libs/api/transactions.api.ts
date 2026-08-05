@@ -4,7 +4,7 @@
  *
  * In mock mode (`VITE_APP_MODE=mock`) methods resolve fixture data from
  * `src/mocks/apis/` with simulated latency, using the exact same response
- * envelope the real backend returns — screens and hooks are unaware of the
+ * envelope the real backend returns: screens and hooks are unaware of the
  * difference. Flip the env var to `dev`/`prod` to hit the real API.
  */
 

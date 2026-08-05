@@ -60,6 +60,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
   // Nav items for unauthenticated users (public pages)
   const publicNavItems = [
     { label: 'Home', page: 'home' },
+    { label: 'Personal', page: 'customer' },
+    { label: 'Business', page: 'business' },
     { label: 'About', page: 'about' },
     { label: 'Contact', page: 'contact' },
   ];
@@ -87,7 +89,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
           <button
             type="button"
             onClick={openWaitlistModal}
-            className="hidden w-full min-h-14 bg-primary/10 px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
+            className="hidden w-full min-h-14 bg-[#c4e9fdb3] px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
           >
             <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               <span className='text-sm text-black dark:text-white md:text-base'>Built for everyday Nigerian business payments.</span>
@@ -170,7 +172,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: 'easeOut' }}
-                className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 lg:flex"
+                className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 xl:gap-7 lg:flex"
               >
                 {publicNavItems.map((item) => (
                   <button

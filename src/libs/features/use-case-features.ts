@@ -16,7 +16,7 @@ export interface UseCaseFeatures {
   defaultDealType: DealType;
   /** Physical delivery worth tracking in stages (goods in transit). */
   supportsMilestones: boolean;
-  /** Repeatable arrangement — a linked follow-on deal on completion. */
+  /** Repeatable arrangement: a linked follow-on deal on completion. */
   supportsRecurring: boolean;
   /** Short hint shown when this use case is picked. */
   note?: string;
@@ -146,7 +146,7 @@ const DEAL_TYPE_META: Record<DealType, { label: string; description: string }> =
   },
   milestone: {
     label: 'Milestone tracking',
-    description: 'Track delivery in stages — keep the buyer updated in transit.',
+    description: 'Track delivery in stages: keep the buyer updated in transit.',
   },
   recurring: {
     label: 'Recurring deal',

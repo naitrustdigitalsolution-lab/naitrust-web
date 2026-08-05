@@ -1,7 +1,7 @@
 /**
  * useTransactions / useCreateDeal
  * React Query hooks for the current user's safe deals.
- * Server state stays in React Query — never copied into a client store.
+ * Server state stays in React Query: never copied into a client store.
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

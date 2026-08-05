@@ -1,6 +1,6 @@
 /**
  * TransactionRoomPage
- * The transaction room (`/app/deals/:id`) — the most important screen
+ * The transaction room (`/app/deals/:id`): the most important screen
  * (guardrails/ui.md). Centered, modern layout: a deal header, a tabbed main
  * column (Overview, Chat between the parties, Evidence, Activity), and a side
  * rail with the Parties panel, partner Funding panel, and contextual actions.
@@ -362,7 +362,7 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
         {canUpdate
-          ? "You're updating this Protected Deal — keep the buyer informed as milestones are completed."
+          ? "You're updating this Protected Deal: keep the buyer informed as milestones are completed."
           : 'Progress is recorded in stages so participants can follow milestones and supporting evidence.'}
       </p>
 
@@ -562,7 +562,7 @@ function ActionsPanel({
       )}
       {hasDispute && (
         <p className="text-xs leading-5 text-muted-foreground">
-          A dispute is open — release is paused while it's reviewed. See the Dispute tab.
+          A dispute is open: release is paused while it's reviewed. See the Dispute tab.
         </p>
       )}
       {canTerminate && (
@@ -673,7 +673,7 @@ export function TransactionRoomPage() {
     requestTermination.mutate(reason, {
       onSuccess: () => {
         setShowTerminate(false);
-        toast.info('Termination requested — the other party will review your reason.');
+        toast.info('Termination requested: the other party will review your reason.');
       },
     });
   const acceptTermination = () =>
@@ -687,7 +687,7 @@ export function TransactionRoomPage() {
       {
         onSuccess: () => {
           setShowReject(false);
-          toast.info('Termination rejected — the deal stays active.');
+          toast.info('Termination rejected: the deal stays active.');
         },
       },
     );
@@ -1048,7 +1048,7 @@ export function TransactionRoomPage() {
                 propose.mutate(input, {
                   onSuccess: () => {
                     setShowPropose(false);
-                    toast.success('Change request sent — opened a negotiation.');
+                    toast.success('Change request sent: opened a negotiation.');
                   },
                 })
               }
@@ -1062,7 +1062,7 @@ export function TransactionRoomPage() {
                 openDispute.mutate(input, {
                   onSuccess: () => {
                     setShowDispute(false);
-                    toast.success('Dispute opened — release is paused while it is reviewed.');
+                    toast.success('Dispute opened: release is paused while it is reviewed.');
                   },
                 })
               }

@@ -1,6 +1,6 @@
 /**
  * PaymentRequestsPage
- * `/app/payments/requests` — payment requests you've sent, with status and
+ * `/app/payments/requests`: payment requests you've sent, with status and
  * a way to cancel a pending one. Creating a request happens on the Receive
  * Money screen.
  */

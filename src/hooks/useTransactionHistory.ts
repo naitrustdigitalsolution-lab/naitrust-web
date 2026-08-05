@@ -2,7 +2,7 @@
  * useTransactionHistory
  * Combines the existing protected-deal, instant-transfer and wallet-activity
  * queries into one unified, sorted `TransactionRecord[]` for the Transactions
- * screen. Does not introduce a new data source — purely a presentational
+ * screen. Does not introduce a new data source: purely a presentational
  * merge of the three that already exist.
  */
 

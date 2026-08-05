@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { counterpartiesApi } from '../libs/api/counterparties.api';
 import type { CounterpartyProfile } from '../libs/store/types';
+import type { CreateCounterpartyInput, CounterpartyTransaction } from '../libs/counterparties/types';
 
 export const COUNTERPARTIES_QUERY_KEY = ['counterparties'] as const;
 
@@ -14,6 +15,30 @@ export function useCounterparties() {
   return useQuery<CounterpartyProfile[]>({
     queryKey: COUNTERPARTIES_QUERY_KEY,
     queryFn: async () => (await counterpartiesApi.list()).data,
+  });
+}
+
+export function useCounterparty(id: string | undefined) {
+  return useQuery<CounterpartyProfile>({
+    queryKey: [...COUNTERPARTIES_QUERY_KEY, id],
+    queryFn: async () => (await counterpartiesApi.get(id!)).data,
+    enabled: Boolean(id),
+  });
+}
+
+export function useCounterpartyTransactions(id: string | undefined) {
+  return useQuery<CounterpartyTransaction[]>({
+    queryKey: [...COUNTERPARTIES_QUERY_KEY, id, 'transactions'],
+    queryFn: async () => (await counterpartiesApi.listTransactions(id!)).data,
+    enabled: Boolean(id),
+  });
+}
+
+export function useCreateCounterparty() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateCounterpartyInput) => counterpartiesApi.create(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: COUNTERPARTIES_QUERY_KEY }),
   });
 }
 

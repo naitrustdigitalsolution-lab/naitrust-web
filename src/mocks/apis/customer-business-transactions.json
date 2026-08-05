@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "customer_txn_mock_001",
+      "userId": "usr_mock_007",
+      "businessId": "biz_mock_001",
+      "reference": "NT-2026-000084",
+      "title": "Property inspection and reservation",
+      "kind": "protected_deal",
+      "status": "completed",
+      "completedAt": "2026-07-26T14:20:00Z"
+    },
+    {
+      "id": "customer_txn_mock_002",
+      "userId": "usr_mock_007",
+      "businessId": "biz_mock_001",
+      "reference": "IT-2026-000038",
+      "title": "Property documentation fee",
+      "kind": "instant_transfer",
+      "status": "completed",
+      "completedAt": "2026-07-31T10:45:00Z"
+    },
+    {
+      "id": "customer_txn_mock_003",
+      "userId": "usr_mock_002",
+      "businessId": "biz_mock_004",
+      "reference": "IT-2026-000033",
+      "title": "Building materials order",
+      "kind": "instant_transfer",
+      "status": "completed",
+      "completedAt": "2026-07-19T09:15:00Z"
+    }
+  ]
+}
+

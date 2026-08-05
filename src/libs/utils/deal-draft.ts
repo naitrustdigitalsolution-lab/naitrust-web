@@ -73,7 +73,7 @@ export function listDealDrafts(userId?: string): DealDraftListItem[] {
         ...draft,
         status: now - Date.parse(draft.updatedAt) >= DEAL_DRAFT_ABANDONED_MS ? 'abandoned' as const : 'draft' as const,
         title: String(draft.form.title || 'Untitled deal'),
-        counterparty: String(first?.name || first?.email || 'No counterparty yet'),
+        counterparty: String(first?.name || first?.contact || first?.email || 'No counterparty yet'),
         amount: String(draft.form.amount || ''),
       };
     })

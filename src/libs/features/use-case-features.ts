@@ -29,7 +29,49 @@ const SINGLE_ONLY: UseCaseFeatures = {
   supportsRecurring: false,
 };
 
+const PHYSICAL_ORDER: UseCaseFeatures = {
+  dealTypes: ['single', 'milestone'],
+  defaultDealType: 'single',
+  supportsMilestones: true,
+  supportsRecurring: false,
+  note: 'Use delivery tracking only when the order moves through several stages.',
+};
+
+const TRACKED_ORDER: UseCaseFeatures = {
+  dealTypes: ['single', 'milestone'],
+  defaultDealType: 'milestone',
+  supportsMilestones: true,
+  supportsRecurring: false,
+  note: 'Milestone tracking is recommended for production, shipping, or split delivery.',
+};
+
 export const USE_CASE_FEATURES: Record<string, UseCaseFeatures> = {
+  'supplier-purchase': {
+    dealTypes: ['single', 'milestone', 'recurring'],
+    defaultDealType: 'single',
+    supportsMilestones: true,
+    supportsRecurring: true,
+    note: 'A single release is fastest for one order. Use tracking or recurring only when needed.',
+  },
+  'wholesale-order': TRACKED_ORDER,
+  'contractor-engagement': {
+    dealTypes: ['single', 'milestone'],
+    defaultDealType: 'milestone',
+    supportsMilestones: true,
+    supportsRecurring: false,
+    note: 'Milestones help both sides confirm work in agreed stages.',
+  },
+  'service-delivery': {
+    dealTypes: ['single', 'recurring'],
+    defaultDealType: 'single',
+    supportsMilestones: false,
+    supportsRecurring: true,
+    note: 'Use recurring only for an ongoing service or retainer.',
+  },
+  'equipment-purchase': PHYSICAL_ORDER,
+  'logistics-agreement': TRACKED_ORDER,
+  'manufacturing-order': TRACKED_ORDER,
+  'import-export': TRACKED_ORDER,
   'supplier-orders': {
     dealTypes: ['single', 'milestone', 'recurring'],
     defaultDealType: 'milestone',

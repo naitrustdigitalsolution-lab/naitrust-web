@@ -48,7 +48,7 @@ export function PaymentRequestsPage() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Payment Requests</h1>
             <p className="mt-1 text-sm text-muted-foreground">Requests you've sent, and their status.</p>
           </div>
-          <Button className="rounded-full" onClick={() => navigate('/app/payments/receive')}>
+          <Button className="rounded-full" onClick={() => navigate('/app/payments/receive?share=request')}>
             <HandCoins size={15} className="mr-1.5" />
             New request
           </Button>

@@ -2,38 +2,114 @@
   "success": true,
   "data": [
     {
-      "id": "ben_mock_001",
+      "id": "ben_aisha_001",
+      "ownerUserId": "usr_mock_007",
       "type": "naitrust_user",
-      "name": "Chioma Electronics",
-      "email": "payments@chiomaelectronics.example",
+      "name": "Kemi Adewale",
+      "naitrustAccountNumber": "0128842193",
+      "naitrustId": "NT-PA-128842",
       "isFavourite": true,
       "createdAt": "2026-05-14T09:00:00Z"
     },
     {
-      "id": "ben_mock_002",
+      "id": "ben_aisha_002",
+      "ownerUserId": "usr_mock_007",
       "type": "naitrust_user",
-      "name": "Tunde Bakare",
-      "phone": "+2348031234567",
+      "name": "Chinedu Okafor",
+      "naitrustAccountNumber": "0193047712",
+      "naitrustId": "NT-PA-193047",
       "isFavourite": false,
       "createdAt": "2026-06-02T13:20:00Z"
     },
     {
-      "id": "ben_mock_003",
-      "type": "bank_account",
-      "name": "Okonkwo & Sons Construction",
-      "bankName": "Zenith Bank",
-      "accountNumber": "•••• 7742",
+      "id": "ben_aisha_003",
+      "ownerUserId": "usr_mock_007",
+      "type": "naitrust_user",
+      "name": "Ayo Stores",
+      "naitrustAccountNumber": "0165508427",
+      "naitrustId": "NT-BIZ-165508",
       "isFavourite": true,
       "createdAt": "2026-06-20T16:45:00Z"
     },
     {
-      "id": "ben_mock_004",
-      "type": "bank_account",
-      "name": "Greenfield Estates Ltd",
-      "bankName": "UBA",
-      "accountNumber": "•••• 3305",
+      "id": "ben_aisha_004",
+      "ownerUserId": "usr_mock_007",
+      "type": "naitrust_user",
+      "name": "Musa Logistics",
+      "naitrustAccountNumber": "0184729015",
+      "naitrustId": "NT-BIZ-184729",
       "isFavourite": false,
       "createdAt": "2026-07-01T10:10:00Z"
+    },
+    {
+      "id": "ben_aisha_005",
+      "ownerUserId": "usr_mock_007",
+      "type": "naitrust_user",
+      "name": "Nneka Umeh",
+      "naitrustAccountNumber": "0140392286",
+      "naitrustId": "NT-PA-140392",
+      "isFavourite": false,
+      "createdAt": "2026-07-18T08:35:00Z"
+    },
+    {
+      "id": "ben_aisha_006",
+      "ownerUserId": "usr_mock_007",
+      "type": "bank_account",
+      "name": "Ibrahim Sani",
+      "bankName": "GTBank",
+      "accountNumber": "0215738462",
+      "isFavourite": true,
+      "createdAt": "2026-07-22T11:15:00Z"
+    },
+    {
+      "id": "ben_aisha_007",
+      "ownerUserId": "usr_mock_007",
+      "type": "bank_account",
+      "name": "Zainab Yusuf",
+      "bankName": "Access Bank",
+      "accountNumber": "1039582746",
+      "isFavourite": false,
+      "createdAt": "2026-07-29T14:40:00Z"
+    },
+    {
+      "id": "ben_fatima_001",
+      "ownerUserId": "usr_mock_003",
+      "type": "naitrust_user",
+      "name": "Chioma Electronics Ltd",
+      "naitrustAccountNumber": "0174086251",
+      "naitrustId": "NT-BIZ-174086",
+      "isFavourite": true,
+      "createdAt": "2026-04-11T10:20:00Z"
+    },
+    {
+      "id": "ben_fatima_002",
+      "ownerUserId": "usr_mock_003",
+      "type": "naitrust_user",
+      "name": "Fresh Farm Foods",
+      "naitrustAccountNumber": "0139764208",
+      "naitrustId": "NT-BIZ-052804",
+      "isFavourite": false,
+      "createdAt": "2026-05-26T15:10:00Z"
+    },
+    {
+      "id": "ben_fatima_003",
+      "ownerUserId": "usr_mock_003",
+      "type": "naitrust_user",
+      "name": "Tunde Bakare",
+      "naitrustAccountNumber": "0118204739",
+      "naitrustId": "NT-PA-118204",
+      "isFavourite": false,
+      "createdAt": "2026-06-09T12:05:00Z"
+    },
+    {
+      "id": "ben_fatima_004",
+      "ownerUserId": "usr_mock_003",
+      "type": "bank_account",
+      "name": "Lagos Packaging Company",
+      "bankName": "Zenith Bank",
+      "accountNumber": "1013847265",
+      "isFavourite": true,
+      "createdAt": "2026-07-03T09:30:00Z"
     }
   ]
 }

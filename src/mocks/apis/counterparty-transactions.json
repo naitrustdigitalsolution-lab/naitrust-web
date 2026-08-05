@@ -1,0 +1,110 @@
+[
+  {
+    "id": "cptx_mock_001",
+    "counterpartyId": "cp_mock_001",
+    "reference": "NT-PD-849201",
+    "title": "Samsung Galaxy S24 stock",
+    "type": "protected_deal",
+    "direction": "sent",
+    "amountMinor": 285000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-07-28T14:20:00Z"
+  },
+  {
+    "id": "cptx_mock_002",
+    "counterpartyId": "cp_mock_001",
+    "reference": "NT-TR-739105",
+    "title": "Balance for accessories order",
+    "type": "instant_payment",
+    "direction": "sent",
+    "amountMinor": 48500000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-07-12T09:08:00Z"
+  },
+  {
+    "id": "cptx_mock_003",
+    "counterpartyId": "cp_mock_001",
+    "reference": "NT-PD-681244",
+    "title": "Mobile device restock",
+    "type": "protected_deal",
+    "direction": "sent",
+    "amountMinor": 164000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-06-19T16:45:00Z"
+  },
+  {
+    "id": "cptx_mock_004",
+    "counterpartyId": "cp_mock_002",
+    "reference": "NT-PD-442013",
+    "title": "Retail showroom renovation",
+    "type": "protected_deal",
+    "direction": "sent",
+    "amountMinor": 520000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-06-30T11:15:00Z"
+  },
+  {
+    "id": "cptx_mock_005",
+    "counterpartyId": "cp_mock_002",
+    "reference": "NT-TR-208418",
+    "title": "Final project retention",
+    "type": "instant_payment",
+    "direction": "sent",
+    "amountMinor": 78000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-05-22T13:35:00Z"
+  },
+  {
+    "id": "cptx_mock_006",
+    "counterpartyId": "cp_mock_005",
+    "reference": "NT-PD-914220",
+    "title": "Property listing media package",
+    "type": "protected_deal",
+    "direction": "received",
+    "amountMinor": 95000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-07-25T10:40:00Z"
+  },
+  {
+    "id": "cptx_mock_007",
+    "counterpartyId": "cp_mock_005",
+    "reference": "NT-TR-750992",
+    "title": "Monthly service payment",
+    "type": "instant_payment",
+    "direction": "received",
+    "amountMinor": 32000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-07-02T08:12:00Z"
+  },
+  {
+    "id": "cptx_mock_008",
+    "counterpartyId": "cp_mock_005",
+    "reference": "NT-PD-553812",
+    "title": "Tenant onboarding campaign",
+    "type": "protected_deal",
+    "direction": "received",
+    "amountMinor": 128000000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-05-16T15:30:00Z"
+  },
+  {
+    "id": "cptx_mock_009",
+    "counterpartyId": "cp_mock_004",
+    "reference": "NT-TR-301824",
+    "title": "Field sales commission",
+    "type": "instant_payment",
+    "direction": "sent",
+    "amountMinor": 18500000,
+    "currency": "NGN",
+    "status": "completed",
+    "completedAt": "2026-07-04T12:05:00Z"
+  }
+]

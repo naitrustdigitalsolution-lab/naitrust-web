@@ -100,6 +100,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
       { label: 'Send Money', path: '/app/payments', icon: Send },
+      // Bills stays dormant until the product owner explicitly re-enables it.
     ],
   },
   {
@@ -107,6 +108,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Active Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
       { label: 'Create Protected Deal', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },
@@ -115,7 +117,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
       { label: 'Transactions', path: '/app/transactions', icon: Receipt },
-      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2 },
+      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2, matchPrefix: true },
     ],
   },
   {
@@ -149,6 +151,7 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Protected Purchases', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
       { label: 'Protect a Purchase', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },

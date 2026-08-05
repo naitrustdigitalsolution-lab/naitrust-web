@@ -162,7 +162,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g4',
         question: 'How do reviews work?',
-        answer: 'Customers can post reviews for businesses on the Platform. Each review includes a 1–5 star rating and written feedback. Reviews cannot be deleted by businesses but can be responded to publicly. Fake or incentivised reviews violate our policies.'
+        answer: 'Only personal customers who complete a Naitrust transfer or Protected Deal with a business can review it. Each completed transaction can receive one 1–5 star rating and an optional comment, which appears on the business’s public Trust Profile. Fake or incentivised reviews violate our policies.'
       },
       {
         id: 'g5',

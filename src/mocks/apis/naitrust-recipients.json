@@ -1,0 +1,11 @@
+[
+  { "name": "Kemi Adewale", "naitrustAccountNumber": "0128842193", "naitrustId": "NT-PA-128842", "accountType": "customer", "identityVerified": true },
+  { "name": "Chinedu Okafor", "naitrustAccountNumber": "0193047712", "naitrustId": "NT-PA-193047", "accountType": "customer", "identityVerified": true },
+  { "name": "Ayo Stores", "naitrustAccountNumber": "0165508427", "naitrustId": "NT-BIZ-165508", "accountType": "business", "identityVerified": true },
+  { "name": "Musa Logistics", "naitrustAccountNumber": "0184729015", "naitrustId": "NT-BIZ-184729", "accountType": "business", "identityVerified": true },
+  { "name": "Nneka Umeh", "naitrustAccountNumber": "0140392286", "naitrustId": "NT-PA-140392", "accountType": "customer", "identityVerified": true },
+  { "name": "Chioma Electronics Ltd", "naitrustAccountNumber": "0174086251", "naitrustId": "NT-BIZ-174086", "accountType": "business", "identityVerified": true },
+  { "name": "Fresh Farm Foods", "naitrustAccountNumber": "0139764208", "naitrustId": "NT-BIZ-052804", "accountType": "business", "identityVerified": true },
+  { "name": "Tunde Bakare", "naitrustAccountNumber": "0118204739", "naitrustId": "NT-PA-118204", "accountType": "customer", "identityVerified": true },
+  { "name": "Adaeze Homes & Properties Ltd", "naitrustAccountNumber": "0170123456", "naitrustId": "NT-BIZ-010482", "accountType": "business", "identityVerified": true }
+]

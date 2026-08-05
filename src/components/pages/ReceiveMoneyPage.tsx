@@ -9,7 +9,7 @@ import {
   Landmark,
   Link2,
   MessageCircle,
-  Phone,
+  AtSign,
   QrCode,
   Download,
   Share2,
@@ -66,7 +66,7 @@ export function ReceiveMoneyPage() {
   const account = wallet?.virtualAccount;
   const shareMode = searchParams.get('share');
   const [activeMethod, setActiveMethod] = useState<'account' | 'request' | 'qr'>(
-    shareMode === 'account' ? 'account' : shareMode === 'qr' ? 'qr' : 'request',
+    shareMode === 'request' ? 'request' : shareMode === 'qr' ? 'qr' : 'account',
   );
   const qrPosterRef = useRef<HTMLDivElement>(null);
   const savedCustomers = useMemo(
@@ -290,6 +290,9 @@ export function ReceiveMoneyPage() {
                 <p className="mt-3 text-sm text-white/75">
                   {account ? `${account.bankName} · ${account.accountName}` : 'Your regulated partner account will appear here'}
                 </p>
+                <p className="mt-2 font-mono text-xs font-semibold text-white/65">
+                  {business?.ntId ?? user?.naitrustId}
+                </p>
               </div>
               <div className="flex flex-col justify-center gap-3 border-t bg-card p-6 lg:border-l lg:border-t-0 lg:p-8">
                 <p className="text-sm font-semibold">Receive a bank transfer</p>
@@ -438,6 +441,7 @@ export function ReceiveMoneyPage() {
                 <p className="flex items-center gap-2 text-sm font-medium text-white/70"><Landmark size={16} /> Personal Naitrust account</p>
                 <p className="mt-5 font-mono text-2xl font-bold tracking-[0.12em]">7034567890</p>
                 <p className="mt-2 text-sm text-white/80">Anchor Bank · Naitrust / {user?.name}</p>
+                <p className="mt-2 font-mono text-xs font-semibold text-white/60">{user?.naitrustId}</p>
               </div>
               <div className="flex items-center justify-between gap-3 p-4">
                 <p className="text-xs text-muted-foreground">Receive a bank transfer from any Nigerian bank.</p>
@@ -448,21 +452,15 @@ export function ReceiveMoneyPage() {
               </div>
             </Card>
             <Card className="flex flex-col justify-center gap-3 p-6 shadow-sm">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Phone size={18} /></div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><AtSign size={18} /></div>
               <div>
-                <p className="text-sm font-semibold">Receive another Naitrust transfer</p>
-                <p className="mt-1 text-xs text-muted-foreground">A sender can also find your account using either verified detail.</p>
+                <p className="text-sm font-semibold">Your Naitrust ID</p>
+                <p className="mt-1 text-xs text-muted-foreground">Share this ID when someone wants to pay your Naitrust account.</p>
               </div>
-              <div className="space-y-2">
-                <button type="button" onClick={() => user?.email && void copy(user.email, 'email')} className="flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left hover:bg-muted/50">
-                  <span className="min-w-0"><span className="block text-xs text-muted-foreground">Email</span><span className="block truncate text-sm font-medium">{user?.email ?? 'Not added'}</span></span>
-                  {copied === 'email' ? <Check size={14} /> : <Copy size={14} />}
-                </button>
-                <button type="button" disabled={!user?.phone} onClick={() => user?.phone && void copy(user.phone, 'phone')} className="flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left hover:bg-muted/50 disabled:opacity-60">
-                  <span><span className="block text-xs text-muted-foreground">Phone</span><span className="block text-sm font-medium">{user?.phone ?? 'Add a verified phone number'}</span></span>
-                  {user?.phone && (copied === 'phone' ? <Check size={14} /> : <Copy size={14} />)}
-                </button>
-              </div>
+              <button type="button" disabled={!user?.naitrustId} onClick={() => user?.naitrustId && void copy(user.naitrustId, 'naitrust-id')} className="flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left hover:bg-muted/50 disabled:opacity-60">
+                <span className="font-mono text-sm font-semibold">{user?.naitrustId ?? 'ID setup pending'}</span>
+                {user?.naitrustId && (copied === 'naitrust-id' ? <Check size={14} /> : <Copy size={14} />)}
+              </button>
             </Card>
           </div>
         )}

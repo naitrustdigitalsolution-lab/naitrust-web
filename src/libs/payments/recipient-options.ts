@@ -1,0 +1,15 @@
+export const NIGERIAN_BANKS = [
+  'Access Bank',
+  'First Bank of Nigeria',
+  'GTBank',
+  'Kuda MFB',
+  'Moniepoint MFB',
+  'OPay',
+  'PalmPay',
+  'Stanbic IBTC Bank',
+  'Sterling Bank',
+  'UBA',
+  'Union Bank',
+  'Wema Bank',
+  'Zenith Bank',
+] as const;

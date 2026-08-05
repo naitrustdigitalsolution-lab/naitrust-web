@@ -6,22 +6,23 @@
  * completed transfer is clearly labeled with a SandboxBadge, never shown as
  * a real completed payment.
  *
- * Flow: select/add recipient -> confirm recipient -> amount & narration ->
- * review -> security confirmation (PIN) -> processing -> result -> receipt.
+ * Flow: resolve/select recipient -> optionally save beneficiary -> amount &
+ * narration -> review -> security confirmation (PIN) -> processing -> result.
  */
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   AtSign,
+  BadgeCheck,
   Check,
   Landmark,
   Loader2,
-  Mail,
-  Phone,
   Send,
   ShieldCheck,
+  UserPlus,
   Users,
   XCircle,
   Clock,
@@ -37,40 +38,36 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useBeneficiaries } from '../../hooks/useBeneficiaries';
+import { useBeneficiaries, useCreateBeneficiary } from '../../hooks/useBeneficiaries';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useCreateInstantTransfer, useInstantTransfers, useValidateRecipient } from '../../hooks/useInstantTransfer';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
-import type { InstantTransfer, RecipientMethod, TransferRecipient } from '../../libs/store/types';
+import {
+  beneficiaryInputFromRecipient,
+  isRecipientSaved,
+} from '../../libs/beneficiaries/recipient-beneficiary';
+import { NIGERIAN_BANKS } from '../../libs/payments/recipient-options';
+import { isNaitrustId, normalizeNaitrustId } from '../../libs/identity/naitrust-id';
+import type { InstantTransfer, TransferRecipient } from '../../libs/store/types';
 
-type FlowStep = 'recipient' | 'confirm' | 'amount' | 'review' | 'processing' | 'result';
+type FlowStep = 'recipient' | 'amount' | 'review' | 'processing' | 'result';
 type RecipientRoute = 'naitrust' | 'bank_transfer' | 'beneficiary';
-type NaitrustLookup = 'naitrust_account_number' | 'naitrust_id' | 'email_address' | 'phone_number';
+type NaitrustLookup = 'naitrust_account_number' | 'naitrust_id';
 
-const METHOD_META: Record<RecipientMethod, { label: string; icon: typeof AtSign; placeholder: string }> = {
-  naitrust_account_number: { label: 'Account number', icon: Landmark, placeholder: '10-digit account number' },
-  naitrust_id: { label: 'Naitrust ID', icon: AtSign, placeholder: 'e.g. NT-A12B34 or ayo_stores' },
-  email_address: { label: 'Email', icon: Mail, placeholder: 'e.g. customer@email.com' },
-  phone_number: { label: 'Phone number', icon: Phone, placeholder: 'e.g. +2348031234567' },
-  bank_transfer: { label: 'Bank account', icon: Landmark, placeholder: 'Account number' },
-  beneficiary: { label: 'Beneficiary', icon: Users, placeholder: '' },
+const METHOD_META: Record<NaitrustLookup, { label: string; icon: typeof AtSign; placeholder: string }> = {
+  naitrust_account_number: { label: 'Account number', icon: Landmark, placeholder: 'e.g. 0128842193' },
+  naitrust_id: { label: 'Naitrust ID', icon: AtSign, placeholder: 'e.g. NT-PA-128842' },
 };
 
-const NIGERIAN_BANKS = [
-  'Access Bank',
-  'First Bank of Nigeria',
-  'GTBank',
-  'Kuda MFB',
-  'Moniepoint MFB',
-  'OPay',
-  'PalmPay',
-  'Stanbic IBTC Bank',
-  'Sterling Bank',
-  'UBA',
-  'Union Bank',
-  'Wema Bank',
-  'Zenith Bank',
-];
+function recipientDetails(recipient: TransferRecipient): string {
+  if (recipient.method === 'bank_transfer') {
+    return [recipient.bankName, recipient.identifier].filter(Boolean).join(' · ');
+  }
+  return [
+    recipient.naitrustAccountNumber,
+    recipient.naitrustId,
+  ].filter(Boolean).join(' · ') || recipient.identifier;
+}
 
 function estimateFeeMinor(amountMinor: number): number {
   return amountMinor > 5000000 ? 50000 : 15000;
@@ -78,7 +75,6 @@ function estimateFeeMinor(amountMinor: number): number {
 
 const STEP_SEQUENCE: { key: FlowStep; label: string }[] = [
   { key: 'recipient', label: 'Recipient' },
-  { key: 'confirm', label: 'Confirm' },
   { key: 'amount', label: 'Amount' },
   { key: 'review', label: 'Review' },
 ];
@@ -91,17 +87,20 @@ export function SendInstantlyPage() {
   const [naitrustLookup, setNaitrustLookup] = useState<NaitrustLookup>('naitrust_account_number');
   const [identifier, setIdentifier] = useState('');
   const [recipientBank, setRecipientBank] = useState('');
-  const [resolvedAccountName, setResolvedAccountName] = useState('');
-  const [resolvingAccount, setResolvingAccount] = useState(false);
-  const [resolveError, setResolveError] = useState('');
+  const [resolvingRecipient, setResolvingRecipient] = useState(false);
+  const [lookupError, setLookupError] = useState('');
+  const [resolvingBankRecipient, setResolvingBankRecipient] = useState(false);
+  const [bankLookupError, setBankLookupError] = useState('');
   const [recipient, setRecipient] = useState<TransferRecipient | null>(null);
   const [amountNaira, setAmountNaira] = useState('');
   const [narration, setNarration] = useState('');
   const [pinOpen, setPinOpen] = useState(false);
   const [result, setResult] = useState<InstantTransfer | null>(null);
   const [error, setError] = useState('');
+  const [beneficiarySaved, setBeneficiarySaved] = useState(false);
 
   const { data: beneficiaries, isLoading: loadingBeneficiaries } = useBeneficiaries();
+  const createBeneficiary = useCreateBeneficiary();
   const { data: recentTransfers } = useInstantTransfers();
   const validateRecipient = useValidateRecipient();
   const createTransfer = useCreateInstantTransfer();
@@ -122,33 +121,85 @@ export function SendInstantlyPage() {
 
   const amountMinor = Math.round(parseFloat(amountNaira || '0') * 100);
   const feeMinor = amountMinor > 0 ? estimateFeeMinor(amountMinor) : 0;
+  const recipientAlreadySaved = useMemo(
+    () => isRecipientSaved(beneficiaries, recipient),
+    [beneficiaries, recipient],
+  );
+  const beneficiaryInput = useMemo(
+    () => (recipient ? beneficiaryInputFromRecipient(recipient) : null),
+    [recipient],
+  );
+  const savedBeneficiaries = beneficiaries ?? [];
 
-  // Auto-resolve the account name from the bank + account number, the way a
-  // real NUBAN name-enquiry would — the customer never types the name themselves.
+  // Resolve a Naitrust account after a complete account number or ID is entered.
   useEffect(() => {
-    if (method !== 'bank_transfer' || !recipientBank || identifier.length !== 10) {
-      setResolvedAccountName('');
-      setResolveError('');
-      setResolvingAccount(false);
+    const value = identifier.trim();
+    const isComplete = naitrustLookup === 'naitrust_account_number'
+      ? value.length === 10
+      : isNaitrustId(value);
+    if (method !== 'naitrust' || !isComplete) {
+      setRecipient(null);
+      setLookupError('');
+      setResolvingRecipient(false);
       return;
     }
     let cancelled = false;
-    setResolvingAccount(true);
-    setResolveError('');
+    setRecipient(null);
+    setResolvingRecipient(true);
+    setLookupError('');
+    const timer = setTimeout(() => {
+      void validateRecipient
+        .mutateAsync({ method: naitrustLookup, identifier: value })
+        .then((response) => {
+          if (cancelled) return;
+          setRecipient(response.data);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setRecipient(null);
+          setLookupError('We could not find that Naitrust account. Check the account number or Naitrust ID.');
+        })
+        .finally(() => {
+          if (!cancelled) setResolvingRecipient(false);
+        });
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [method, naitrustLookup, identifier]);
+
+  // Mock the bank name-enquiry step after a complete bank and account number.
+  useEffect(() => {
+    if (method !== 'bank_transfer') {
+      setResolvingBankRecipient(false);
+      setBankLookupError('');
+      return;
+    }
+    if (!recipientBank || identifier.length !== 10) {
+      setRecipient(null);
+      setResolvingBankRecipient(false);
+      setBankLookupError('');
+      return;
+    }
+    let cancelled = false;
+    setRecipient(null);
+    setResolvingBankRecipient(true);
+    setBankLookupError('');
     const timer = setTimeout(() => {
       void validateRecipient
         .mutateAsync({ method: 'bank_transfer', identifier, bankName: recipientBank })
         .then((response) => {
-          if (cancelled) return;
-          setResolvedAccountName(response.data.resolvedName ?? '');
+          if (!cancelled) setRecipient(response.data);
         })
         .catch(() => {
           if (cancelled) return;
-          setResolvedAccountName('');
-          setResolveError('We could not resolve a name for that account. Double-check the number and bank.');
+          setRecipient(null);
+          setBankLookupError('We could not confirm that bank account. Check the bank and account number.');
         })
         .finally(() => {
-          if (!cancelled) setResolvingAccount(false);
+          if (!cancelled) setResolvingBankRecipient(false);
         });
     }, 450);
     return () => {
@@ -163,9 +214,21 @@ export function SendInstantlyPage() {
     try {
       const response = await validateRecipient.mutateAsync(candidate);
       setRecipient(response.data);
-      setStep('confirm');
+      setBeneficiarySaved(false);
+      setStep('amount');
     } catch {
       setError('We could not find that recipient. Double-check the details and try again.');
+    }
+  };
+
+  const handleAddBeneficiary = async () => {
+    if (!beneficiaryInput || recipientAlreadySaved) return;
+    try {
+      await createBeneficiary.mutateAsync(beneficiaryInput);
+      setBeneficiarySaved(true);
+      toast.success(`${beneficiaryInput.name} was added to your beneficiaries.`);
+    } catch {
+      toast.error('This recipient could not be added. Please try again.');
     }
   };
 
@@ -192,12 +255,15 @@ export function SendInstantlyPage() {
     setRecipient(null);
     setIdentifier('');
     setRecipientBank('');
-    setResolvedAccountName('');
-    setResolveError('');
+    setLookupError('');
+    setResolvingRecipient(false);
+    setBankLookupError('');
+    setResolvingBankRecipient(false);
     setAmountNaira('');
     setNarration('');
     setResult(null);
     setError('');
+    setBeneficiarySaved(false);
   };
 
   const currentStepIndex = STEP_SEQUENCE.findIndex((s) => s.key === step);
@@ -283,7 +349,7 @@ export function SendInstantlyPage() {
           <Card className="overflow-hidden rounded-3xl border-border/80 p-0 shadow-sm">
             <div className="border-b px-5 py-5 sm:px-7">
               <p className="text-lg font-bold text-foreground">Who are you sending money to?</p>
-              <p className="mt-1 text-sm text-muted-foreground">Choose a saved recipient or enter their payment details.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Choose a beneficiary, Naitrust account, or Nigerian bank account.</p>
             </div>
             <div className="p-5 sm:p-7">
             {recentRecipients.length > 0 && (
@@ -300,7 +366,9 @@ export function SendInstantlyPage() {
                       <CounterpartyAvatar name={r.resolvedName ?? r.identifier} className="h-9 w-9 shrink-0 text-xs" />
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-semibold text-foreground">{r.resolvedName ?? r.identifier}</span>
-                        <span className="block truncate text-xs text-muted-foreground">{r.bankName ?? 'Naitrust recipient'}</span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {recipientDetails(r)}
+                        </span>
                       </span>
                     </button>
                   ))}
@@ -308,12 +376,24 @@ export function SendInstantlyPage() {
               </div>
             )}
 
-            <Tabs value={method} onValueChange={(v) => { setMethod(v as RecipientRoute); setIdentifier(''); setError(''); }}>
+            <Tabs
+              value={method}
+              onValueChange={(value) => {
+                setMethod(value as RecipientRoute);
+                setIdentifier('');
+                setRecipientBank('');
+                setRecipient(null);
+                setLookupError('');
+                setBankLookupError('');
+                setError('');
+                setBeneficiarySaved(false);
+              }}
+            >
               <TabsList className="grid h-auto w-full grid-cols-3 rounded-xl bg-muted/70 p-1">
                 {([
                   { key: 'naitrust', label: 'Naitrust account' },
                   { key: 'bank_transfer', label: 'Bank account' },
-                  { key: 'beneficiary', label: 'Beneficiary' },
+                  { key: 'beneficiary', label: 'Beneficiaries' },
                 ] as const).map(({ key, label }) => (
                   <TabsTrigger key={key} value={key} className="min-h-10 rounded-lg px-2 text-xs data-[state=active]:shadow-sm sm:text-sm">
                     {label}
@@ -324,69 +404,123 @@ export function SendInstantlyPage() {
               <TabsContent value="naitrust" className="mt-4 space-y-4">
                 <div>
                   <Label>Find their Naitrust account with</Label>
-                  <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {([
-                      ['naitrust_account_number', 'Account number'],
-                      ['naitrust_id', 'Naitrust ID'],
-                      ['email_address', 'Email'],
-                      ['phone_number', 'Business phone'],
-                    ] as const).map(([key, label]) => (
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    {(Object.entries(METHOD_META) as [NaitrustLookup, (typeof METHOD_META)[NaitrustLookup]][]).map(([key, meta]) => {
+                      const Icon = meta.icon;
+                      return (
                       <button
                         key={key}
                         type="button"
-                        onClick={() => { setNaitrustLookup(key); setIdentifier(''); setError(''); }}
-                        className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition-colors ${
+                        onClick={() => {
+                          setNaitrustLookup(key);
+                          setIdentifier('');
+                          setRecipient(null);
+                          setLookupError('');
+                          setBeneficiarySaved(false);
+                        }}
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-semibold transition-colors sm:text-sm ${
                           naitrustLookup === key ? 'border-primary bg-primary/10 text-primary' : 'bg-background text-muted-foreground hover:bg-accent/50'
                         }`}
                       >
-                        {label}
+                        <Icon size={15} />
+                        {meta.label}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="naitrust-recipient">{METHOD_META[naitrustLookup].label}</Label>
                   <Input
                     id="naitrust-recipient"
-                    type={naitrustLookup === 'email_address' ? 'email' : naitrustLookup === 'phone_number' ? 'tel' : 'text'}
-                    inputMode={naitrustLookup === 'naitrust_account_number' ? 'numeric' : naitrustLookup === 'phone_number' ? 'tel' : undefined}
-                    maxLength={naitrustLookup === 'naitrust_account_number' ? 10 : undefined}
+                    type="text"
+                    inputMode={naitrustLookup === 'naitrust_account_number' ? 'numeric' : undefined}
+                    maxLength={naitrustLookup === 'naitrust_account_number' ? 10 : 13}
                     value={identifier}
-                    onChange={(e) => setIdentifier(
-                      naitrustLookup === 'naitrust_account_number'
-                        ? e.target.value.replace(/\D/g, '').slice(0, 10)
-                        : e.target.value,
-                    )}
+                    onChange={(event) => {
+                      setIdentifier(
+                        naitrustLookup === 'naitrust_account_number'
+                          ? event.target.value.replace(/\D/g, '').slice(0, 10)
+                          : normalizeNaitrustId(event.target.value),
+                      );
+                      setBeneficiarySaved(false);
+                    }}
                     placeholder={METHOD_META[naitrustLookup].placeholder}
-                    className="mt-1.5"
+                    className="mt-1.5 h-11"
                   />
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Use the details registered to the person or business on Naitrust.
+                    We will show the registered person or business before you continue.
                   </p>
                 </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
-                <Button
-                  className="w-full rounded-full"
-                  disabled={
-                    validateRecipient.isPending
-                    || (naitrustLookup === 'naitrust_account_number' && identifier.length !== 10)
-                    || (naitrustLookup === 'email_address' && !identifier.includes('@'))
-                    || (naitrustLookup === 'phone_number' && identifier.replace(/\D/g, '').length < 10)
-                    || (naitrustLookup === 'naitrust_id' && identifier.trim().length < 3)
-                  }
-                  onClick={() => void handlePickRecipient({ method: naitrustLookup, identifier: identifier.trim() })}
-                >
-                  {validateRecipient.isPending && <Loader2 size={16} className="mr-2 animate-spin" />}
-                  Find Naitrust account
-                </Button>
+                {resolvingRecipient && (
+                  <div className="flex items-center gap-2 rounded-xl border bg-muted/35 px-4 py-3 text-sm text-muted-foreground">
+                    <Loader2 size={15} className="animate-spin text-primary" />
+                    Finding Naitrust account…
+                  </div>
+                )}
+                {lookupError && (
+                  <p className="rounded-xl border border-destructive/20 bg-destructive/[0.04] px-4 py-3 text-sm text-destructive">
+                    {lookupError}
+                  </p>
+                )}
+                {recipient && !resolvingRecipient && (
+                  <div className="overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.035]">
+                    <div className="flex items-center gap-3 border-b border-primary/10 px-4 py-4">
+                      <CounterpartyAvatar name={recipientName ?? ''} className="h-11 w-11 text-sm" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <p className="truncate text-sm font-bold text-foreground">{recipientName}</p>
+                          {recipient.identityVerified && <BadgeCheck size={15} className="shrink-0 text-primary" aria-label="Verified Naitrust account" />}
+                        </div>
+                        <p className="mt-0.5 text-xs capitalize text-muted-foreground">{recipient.accountType ?? 'Naitrust'} account</p>
+                      </div>
+                    </div>
+                    <dl className="grid gap-3 px-4 py-4 text-xs sm:grid-cols-2">
+                      <div>
+                        <dt className="text-muted-foreground">Account number</dt>
+                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustAccountNumber ?? '—'}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Naitrust ID</dt>
+                        <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustId ?? '—'}</dd>
+                      </div>
+                    </dl>
+                    <div className="grid gap-2 border-t border-primary/10 bg-background/55 p-3 sm:grid-cols-2">
+                      {recipientAlreadySaved || beneficiarySaved ? (
+                        <div className="flex min-h-10 items-center justify-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.07] px-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                          <Check size={14} /> Saved beneficiary
+                        </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="rounded-full"
+                          disabled={createBeneficiary.isPending}
+                          onClick={() => void handleAddBeneficiary()}
+                        >
+                          {createBeneficiary.isPending ? <Loader2 size={15} className="mr-1.5 animate-spin" /> : <UserPlus size={15} className="mr-1.5" />}
+                          Add to beneficiaries
+                        </Button>
+                      )}
+                      <Button type="button" className="rounded-full" onClick={() => setStep('amount')}>
+                        Continue
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="bank_transfer" className="mt-4 space-y-4">
                 <div>
-                  <Label htmlFor="recipient-bank">Bank</Label>
-                  <Select value={recipientBank} onValueChange={setRecipientBank}>
-                    <SelectTrigger id="recipient-bank" className="mt-1.5 w-full">
-                      <SelectValue placeholder="Select the recipient's bank" />
+                  <Label htmlFor="recipient-bank">Recipient bank</Label>
+                  <Select value={recipientBank} onValueChange={(value) => {
+                    setRecipientBank(value);
+                    setRecipient(null);
+                    setBankLookupError('');
+                    setBeneficiarySaved(false);
+                  }}>
+                    <SelectTrigger id="recipient-bank" className="mt-1.5 h-11 w-full">
+                      <SelectValue placeholder="Select a Nigerian bank" />
                     </SelectTrigger>
                     <SelectContent>
                       {NIGERIAN_BANKS.map((bank) => (
@@ -396,107 +530,127 @@ export function SendInstantlyPage() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="recipient-account">Account number</Label>
+                  <Label htmlFor="bank-account-number">Account number</Label>
                   <Input
-                    id="recipient-account"
+                    id="bank-account-number"
                     value={identifier}
                     inputMode="numeric"
                     maxLength={10}
-                    onChange={(e) => setIdentifier(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    onChange={(event) => {
+                      setIdentifier(event.target.value.replace(/\D/g, '').slice(0, 10));
+                      setBeneficiarySaved(false);
+                    }}
                     placeholder="10-digit account number"
-                    className="mt-1.5"
+                    className="mt-1.5 h-11"
                   />
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    We will confirm the account name before you continue.
+                  </p>
                 </div>
-                {identifier.length === 10 && recipientBank && (
-                  <div className="rounded-xl border bg-muted/40 p-3">
-                    {resolvingAccount ? (
-                      <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Loader2 size={14} className="animate-spin" /> Looking up account name…
-                      </p>
-                    ) : resolvedAccountName ? (
-                      <div className="flex items-center gap-2.5">
-                        <CounterpartyAvatar name={resolvedAccountName} className="h-8 w-8 text-xs" />
-                        <div className="min-w-0">
-                          <p className="text-xs text-muted-foreground">Account name</p>
-                          <p className="truncate text-sm font-semibold text-foreground">{resolvedAccountName}</p>
-                        </div>
-                      </div>
-                    ) : resolveError ? (
-                      <p className="text-sm text-destructive">{resolveError}</p>
-                    ) : null}
+                {resolvingBankRecipient && (
+                  <div className="flex items-center gap-2 rounded-xl border bg-muted/35 px-4 py-3 text-sm text-muted-foreground">
+                    <Loader2 size={15} className="animate-spin text-primary" />
+                    Confirming bank account…
                   </div>
                 )}
-                {error && <p className="text-sm text-destructive">{error}</p>}
-                <Button
-                  className="w-full rounded-full"
-                  disabled={!recipientBank || identifier.length !== 10 || !resolvedAccountName || resolvingAccount || validateRecipient.isPending}
-                  onClick={() => void handlePickRecipient({
-                    method: 'bank_transfer',
-                    identifier,
-                    bankName: recipientBank,
-                    resolvedName: resolvedAccountName,
-                  })}
-                >
-                  {validateRecipient.isPending && <Loader2 size={16} className="mr-2 animate-spin" />}
-                  Continue
-                </Button>
+                {bankLookupError && (
+                  <p className="rounded-xl border border-destructive/20 bg-destructive/[0.04] px-4 py-3 text-sm text-destructive">
+                    {bankLookupError}
+                  </p>
+                )}
+                {recipient?.method === 'bank_transfer' && !resolvingBankRecipient && (
+                  <div className="overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.035]">
+                    <div className="flex items-center gap-3 px-4 py-4">
+                      <CounterpartyAvatar name={recipientName ?? ''} className="h-11 w-11 text-sm" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-foreground">{recipientName}</p>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{recipientDetails(recipient)}</p>
+                      </div>
+                    </div>
+                    <div className="grid gap-2 border-t border-primary/10 bg-background/55 p-3 sm:grid-cols-2">
+                      {recipientAlreadySaved || beneficiarySaved ? (
+                        <div className="flex min-h-10 items-center justify-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.07] px-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                          <Check size={14} /> Saved beneficiary
+                        </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="rounded-full"
+                          disabled={createBeneficiary.isPending}
+                          onClick={() => void handleAddBeneficiary()}
+                        >
+                          {createBeneficiary.isPending ? <Loader2 size={15} className="mr-1.5 animate-spin" /> : <UserPlus size={15} className="mr-1.5" />}
+                          Add to beneficiaries
+                        </Button>
+                      )}
+                      <Button type="button" className="rounded-full" onClick={() => setStep('amount')}>
+                        Continue
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="beneficiary" className="mt-4 space-y-2">
                 {loadingBeneficiaries ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">Loading beneficiaries…</p>
-                ) : !beneficiaries || beneficiaries.length === 0 ? (
-                  <p className="py-6 text-center text-sm text-muted-foreground">
-                    No saved recipients yet. Send by account number, email, or phone to save one.
-                  </p>
+                ) : savedBeneficiaries.length === 0 ? (
+                  <div className="rounded-xl border border-dashed px-5 py-8 text-center">
+                    <Users size={20} className="mx-auto text-muted-foreground" />
+                    <p className="mt-3 text-sm font-semibold text-foreground">No saved beneficiaries yet</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      Confirm a Naitrust or bank account, then add it as a beneficiary.
+                    </p>
+                  </div>
                 ) : (
-                  beneficiaries.map((b) => (
+                  savedBeneficiaries.map((beneficiary) => {
+                    const isBankAccount = beneficiary.type === 'bank_account';
+                    const savedIdentifier = isBankAccount
+                      ? beneficiary.accountNumber ?? beneficiary.id
+                      : beneficiary.naitrustAccountNumber
+                        ?? beneficiary.naitrustId
+                        ?? beneficiary.naitrustIdentifier
+                        ?? beneficiary.id;
+                    const savedMethod = isBankAccount
+                      ? 'bank_transfer' as const
+                      : beneficiary.naitrustAccountNumber
+                        ? 'naitrust_account_number' as const
+                        : 'naitrust_id' as const;
+                    return (
                     <button
-                      key={b.id}
+                      key={beneficiary.id}
                       type="button"
                       onClick={() =>
                         void handlePickRecipient({
-                          method: b.type === 'naitrust_user' ? 'beneficiary' : 'bank_transfer',
-                          identifier: b.type === 'naitrust_user' ? (b.email ?? b.phone ?? b.id) : (b.accountNumber ?? b.id),
-                          resolvedName: b.name,
-                          bankName: b.bankName,
+                          method: savedMethod,
+                          identifier: savedIdentifier,
+                          resolvedName: beneficiary.name,
+                          bankName: beneficiary.bankName,
+                          naitrustAccountNumber: beneficiary.naitrustAccountNumber,
+                          naitrustId: beneficiary.naitrustId,
                         })
                       }
                       className="flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors hover:bg-accent/50"
                     >
-                      <CounterpartyAvatar name={b.name} />
+                      <CounterpartyAvatar name={beneficiary.name} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-foreground">{b.name}</p>
+                        <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-foreground">
+                          {beneficiary.name}
+                          {!isBankAccount && <BadgeCheck size={14} className="shrink-0 text-primary" />}
+                        </p>
                         <p className="truncate text-xs text-muted-foreground">
-                          {b.type === 'naitrust_user' ? (b.email ?? b.phone) : `${b.bankName} · ${b.accountNumber}`}
+                          {isBankAccount
+                            ? [beneficiary.bankName, beneficiary.accountNumber].filter(Boolean).join(' · ')
+                            : [beneficiary.naitrustAccountNumber, beneficiary.naitrustId].filter(Boolean).join(' · ')}
                         </p>
                       </div>
                     </button>
-                  ))
+                    );
+                  })
                 )}
               </TabsContent>
             </Tabs>
-            </div>
-          </Card>
-        )}
-
-        {step === 'confirm' && recipient && (
-          <Card className="flex flex-col items-center gap-4 rounded-3xl p-8 text-center shadow-sm sm:p-10">
-            <CounterpartyAvatar name={recipient.resolvedName ?? recipient.identifier} className="h-14 w-14 text-base" />
-            <div>
-              <p className="text-lg font-semibold text-foreground">{recipient.resolvedName ?? recipient.identifier}</p>
-              <p className="text-sm text-muted-foreground">
-                {recipient.bankName ? `${recipient.bankName} · ${recipient.identifier}` : recipient.identifier}
-              </p>
-            </div>
-            <p className="text-sm text-muted-foreground">Is this who you want to pay?</p>
-            <div className="flex w-full gap-3">
-              <Button variant="outline" className="flex-1 rounded-md" onClick={() => setStep('recipient')}>
-                Not them
-              </Button>
-              <Button className="flex-1 rounded-md" onClick={() => setStep('amount')}>
-                Confirm
-              </Button>
             </div>
           </Card>
         )}
@@ -505,7 +659,12 @@ export function SendInstantlyPage() {
           <Card className="rounded-3xl p-5 shadow-sm sm:p-7">
             <div className="mb-4 flex items-center gap-3 rounded-xl border bg-muted/40 p-3">
               <CounterpartyAvatar name={recipient.resolvedName ?? recipient.identifier} />
-              <p className="text-sm font-medium text-foreground">{recipient.resolvedName ?? recipient.identifier}</p>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">{recipient.resolvedName ?? recipient.identifier}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {recipientDetails(recipient)}
+                </p>
+              </div>
             </div>
             <Label htmlFor="amount">Amount (NGN)</Label>
             <Input
@@ -566,7 +725,7 @@ export function SendInstantlyPage() {
               </div>
             </dl>
             {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-            <Button className="mt-5 w-full rounded-md" onClick={() => setPinOpen(true)}>
+            <Button className="mt-5 w-full rounded-md" onClick={() => setPinOpen(true)} disabled={createBeneficiary.isPending}>
               Confirm & Pay
             </Button>
           </Card>
@@ -621,6 +780,11 @@ export function SendInstantlyPage() {
                 <span className="font-medium capitalize text-foreground">{result.status}</span>
               </div>
             </Card>
+            {beneficiarySaved && (
+              <p className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                <Users size={14} /> Recipient saved to your beneficiaries
+              </p>
+            )}
             <div className="flex w-full gap-3">
               <Button variant="outline" className="flex-1 rounded-md" onClick={reset}>
                 Send another
@@ -644,7 +808,7 @@ export function SendInstantlyPage() {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-foreground">{recipientName}</p>
                       <p className="truncate text-xs text-muted-foreground">
-                        {recipient.bankName ? `${recipient.bankName} · ${recipient.identifier}` : recipient.identifier}
+                        {recipientDetails(recipient)}
                       </p>
                     </div>
                   </div>

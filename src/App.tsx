@@ -62,8 +62,10 @@ const SendInstantlyPage = lazyWithMinDelay(() => import("./pages/SendInstantlyPa
 const ReceiveMoneyPage = lazyWithMinDelay(() => import("./pages/ReceiveMoneyPage"));
 const BeneficiariesPage = lazyWithMinDelay(() => import("./pages/BeneficiariesPage"));
 const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentRequestsPage"));
+const BusinessBillsPage = lazyWithMinDelay(() => import("./pages/BusinessBillsPage"));
 const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
 const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
+const CounterpartyDetailPage = lazyWithMinDelay(() => import("./pages/CounterpartyDetailPage"));
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
 const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
 
@@ -322,10 +324,12 @@ function PublicAppContent() {
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/beneficiaries" element={<RequireBusinessAccount><DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/payments/beneficiaries" element={<DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/bills" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
             <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/network/:counterpartyId" element={<RequireBusinessAccount><DashboardRouteSuspense><CounterpartyDetailPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />

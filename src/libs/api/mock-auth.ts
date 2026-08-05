@@ -20,6 +20,7 @@ import fixtures from '../../mocks/apis/auth-users.json';
 import { appConfig } from '../../configs/env';
 import type { RegisterData } from './auth.api';
 import type { User } from '../store/types';
+import { generateNaitrustId, naitrustIdKindForRole, normalizeNaitrustId } from '../identity/naitrust-id';
 
 export const MOCK_2FA_CODE = appConfig.mock2faCode;
 
@@ -71,7 +72,10 @@ function findByLoginIdentifier(identifier: string): MockUserRecord | undefined {
   const usernameMatch = records.find((record) => {
     const emailUsername = record.user.email.split('@')[0].toLowerCase();
     const nameUsername = record.user.name.toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
-    return normalized === emailUsername || normalized === nameUsername || normalized === record.user.id.toLowerCase();
+    return normalized === emailUsername
+      || normalized === nameUsername
+      || normalized === record.user.id.toLowerCase()
+      || normalizeNaitrustId(identifier) === record.user.naitrustId;
   });
   if (usernameMatch) return usernameMatch;
   const phone = normalizePhone(identifier);
@@ -104,7 +108,7 @@ export async function mockLogin(
 
   const record = findByLoginIdentifier(email);
   if (!record || record.password !== password) {
-    return { success: false, error: 'Invalid email, phone number, or password' };
+    return { success: false, error: 'Invalid email, Naitrust ID, phone number, or password' };
   }
 
   if (record.twoFactorEnabled) {
@@ -151,6 +155,10 @@ export async function mockRegister(
 
   const user: User = {
     id: `usr_mock_${crypto.randomUUID()}`,
+    naitrustId: generateNaitrustId(
+      naitrustIdKindForRole(data.role),
+      records.map((record) => record.user.naitrustId),
+    ),
     email: data.email.trim().toLowerCase(),
     firstName: data.firstName,
     lastName: data.lastName,

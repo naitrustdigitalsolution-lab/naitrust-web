@@ -1,42 +1,40 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Ban, BadgeCheck, Search, Send, ShieldCheck, Star, Users } from 'lucide-react';
+import { ArrowRight, Ban, BadgeCheck, Search, Send, Star, UserRoundPlus, Users } from 'lucide-react';
+import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
+import { AddCounterpartySheet } from '../pieces/business/AddCounterpartySheet';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Skeleton } from '../ui/skeleton';
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
-import { useCounterparties, useToggleFavouriteCounterparty } from '../../hooks/useCounterparties';
-import type { CounterpartyRelation } from '../../libs/store/types';
-
-const RELATION_LABEL: Record<CounterpartyRelation, string> = {
-  supplier: 'Supplier',
-  buyer: 'Buyer',
-  contractor: 'Contractor',
-  customer: 'Customer',
-  agent: 'Agent',
-  other: 'Other',
-};
-
-const FILTERS: { key: 'all' | CounterpartyRelation | 'favourite' | 'blocked'; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'favourite', label: 'Favourites' },
-  { key: 'supplier', label: 'Suppliers' },
-  { key: 'contractor', label: 'Contractors' },
-  { key: 'customer', label: 'Customers' },
-  { key: 'agent', label: 'Agents' },
-  { key: 'blocked', label: 'Blocked' },
-];
+import {
+  useCounterparties,
+  useCreateCounterparty,
+  useToggleFavouriteCounterparty,
+} from '../../hooks/useCounterparties';
+import {
+  COUNTERPARTY_FILTER_OPTIONS,
+  counterpartyRelationLabel,
+} from '../../libs/counterparties/counterparty-options';
+import type { CounterpartyFilter, CreateCounterpartyInput } from '../../libs/counterparties/types';
 
 export function BusinessNetworkPage() {
   const navigate = useNavigate();
   const { data: counterparties, isLoading } = useCounterparties();
   const toggleFavourite = useToggleFavouriteCounterparty();
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]['key']>('all');
+  const createCounterparty = useCreateCounterparty();
+  const [filter, setFilter] = useState<CounterpartyFilter>('all');
   const [search, setSearch] = useState('');
+  const [showAddContact, setShowAddContact] = useState(false);
+
+  const addCounterparty = async (input: CreateCounterpartyInput) => {
+    const response = await createCounterparty.mutateAsync(input);
+    toast.success(`${response.data.name} was added to your ${input.relation} records.`);
+  };
 
   const filtered = useMemo(() => {
     if (!counterparties) return [];
@@ -76,29 +74,28 @@ export function BusinessNetworkPage() {
               <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/payments/send')}>
                 <Send size={15} /> Pay someone
               </Button>
-              <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-                <ShieldCheck size={15} /> Protect an order
+              <Button className="rounded-full" onClick={() => setShowAddContact(true)}>
+                <UserRoundPlus size={15} /> Add customer or supplier
               </Button>
             </div>
           </div>
         </div>
 
         <Card className="rounded-2xl p-4 shadow-sm sm:p-5">
-          <div className="relative mb-4">
-            <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search customers or suppliers" value={search} onChange={(event) => setSearch(event.target.value)} className="pl-10" />
-          </div>
-          <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
-            <div className="-mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <TabsList className="flex h-auto w-max min-w-full flex-nowrap justify-start gap-1 bg-transparent p-0 sm:flex-wrap">
-                {FILTERS.map((item) => (
-                  <TabsTrigger key={item.key} value={item.key} className="shrink-0 rounded-full border px-3 data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
-                    {item.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative flex-1">
+              <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Search customers or suppliers" value={search} onChange={(event) => setSearch(event.target.value)} className="pl-10" />
             </div>
-          </Tabs>
+            <Select value={filter} onValueChange={(value) => setFilter(value as CounterpartyFilter)}>
+              <SelectTrigger className="w-full sm:w-52"><SelectValue placeholder="Filter contacts" /></SelectTrigger>
+              <SelectContent>
+                {COUNTERPARTY_FILTER_OPTIONS.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </Card>
 
         {isLoading ? (
@@ -113,14 +110,14 @@ export function BusinessNetworkPage() {
           </Card>
         ) : (
           <Card className="mt-4 gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
-            <div className="hidden grid-cols-[minmax(0,1.4fr)_140px_120px_120px] gap-4 border-b bg-muted/40 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground md:grid">
+            <div className="hidden grid-cols-[minmax(0,1.4fr)_140px_120px_150px] gap-4 border-b bg-muted/40 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground md:grid">
               <span>Contact</span>
               <span>Relationship</span>
               <span>History</span>
               <span className="text-right">Actions</span>
             </div>
             {filtered.map((contact) => (
-              <div key={contact.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b px-3 py-3 last:border-b-0 hover:bg-muted/30 md:grid-cols-[minmax(0,1.4fr)_140px_120px_120px] md:gap-4 md:px-5 md:py-3.5">
+              <div key={contact.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b px-3 py-3 last:border-b-0 hover:bg-muted/30 md:grid-cols-[minmax(0,1.4fr)_140px_120px_150px] md:gap-4 md:px-5 md:py-3.5">
                 <div className="flex min-w-0 items-center gap-3">
                   <CounterpartyAvatar name={contact.name} className="h-9 w-9 shrink-0 text-xs md:h-10 md:w-10" />
                   <div className="min-w-0">
@@ -133,7 +130,7 @@ export function BusinessNetworkPage() {
                   </div>
                 </div>
                 <div className="justify-self-end md:justify-self-auto">
-                  <Badge variant="outline" className="rounded-full px-2 py-0.5 text-[11px] font-normal md:px-2.5 md:text-xs">{RELATION_LABEL[contact.relation]}</Badge>
+                  <Badge variant="outline" className="rounded-full px-2 py-0.5 text-[11px] font-normal md:px-2.5 md:text-xs">{counterpartyRelationLabel(contact.relation)}</Badge>
                 </div>
                 <div className="flex min-w-0 items-center gap-2 md:block">
                   <p className="text-xs font-medium text-muted-foreground md:text-sm md:text-foreground">{contact.completedDealsCount} completed</p>
@@ -145,6 +142,9 @@ export function BusinessNetworkPage() {
                   </Button>
                   <Button variant="outline" size="sm" className="h-8 rounded-full px-2.5 text-xs md:h-9 md:px-3" onClick={() => navigate('/app/payments/send')}>
                     <Send size={13} /> Pay
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9" aria-label={`View ${contact.name}`} onClick={() => navigate(`/app/network/${contact.id}`)}>
+                    <ArrowRight size={15} />
                   </Button>
                 </div>
               </div>
@@ -159,6 +159,13 @@ export function BusinessNetworkPage() {
           </p>
         )}
       </div>
+
+      <AddCounterpartySheet
+        open={showAddContact}
+        onOpenChange={setShowAddContact}
+        isSaving={createCounterparty.isPending}
+        onCreate={addCounterparty}
+      />
     </DashboardLayout>
   );
 }

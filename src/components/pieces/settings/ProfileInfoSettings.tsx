@@ -14,6 +14,7 @@ interface ProfileInfoSettingsProps {
   firstName: string;
   lastName: string;
   email: string;
+  naitrustId: string;
   phone: string;
   onFirstNameChange: (value: string) => void;
   onLastNameChange: (value: string) => void;
@@ -26,6 +27,7 @@ export function ProfileInfoSettings({
   firstName,
   lastName,
   email,
+  naitrustId,
   phone,
   onFirstNameChange,
   onLastNameChange,
@@ -78,6 +80,13 @@ export function ProfileInfoSettings({
             </p>
           </div>
           <div>
+            <Label htmlFor="naitrust-id">Naitrust ID</Label>
+            <Input id="naitrust-id" value={naitrustId} disabled className="bg-muted font-mono" />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Your permanent account identifier
+            </p>
+          </div>
+          <div>
             <Label htmlFor="phone">Phone Number</Label>
             <PhoneField
               id="phone"
@@ -104,4 +113,3 @@ export function ProfileInfoSettings({
     </Card>
   );
 }
-

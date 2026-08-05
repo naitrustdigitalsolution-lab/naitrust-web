@@ -1,0 +1,57 @@
+[
+  {
+    "id": "bill_mock_001",
+    "businessId": "biz_mock_001",
+    "title": "Office electricity",
+    "payeeName": "Eko Electricity Distribution",
+    "category": "utilities",
+    "amountMinor": 8650000,
+    "currency": "NGN",
+    "dueDate": "2026-08-07",
+    "recurrence": "monthly",
+    "reference": "EKEDC-48291",
+    "createdAt": "2026-07-28T09:00:00Z"
+  },
+  {
+    "id": "bill_mock_002",
+    "businessId": "biz_mock_001",
+    "title": "Building materials balance",
+    "payeeName": "Ayo Building Supplies",
+    "category": "supplier",
+    "amountMinor": 74000000,
+    "currency": "NGN",
+    "dueDate": "2026-08-03",
+    "recurrence": "one_off",
+    "reference": "INV-AYO-1184",
+    "note": "Balance for Lekki site materials",
+    "createdAt": "2026-07-20T09:00:00Z"
+  },
+  {
+    "id": "bill_mock_003",
+    "businessId": "biz_mock_001",
+    "title": "Site security services",
+    "payeeName": "Sentinel Guards Nigeria",
+    "category": "supplier",
+    "amountMinor": 32000000,
+    "currency": "NGN",
+    "dueDate": "2026-08-15",
+    "recurrence": "monthly",
+    "reference": "SGN-AHP-08",
+    "createdAt": "2026-08-01T09:00:00Z"
+  },
+  {
+    "id": "bill_mock_004",
+    "businessId": "biz_mock_001",
+    "title": "Internet subscription",
+    "payeeName": "FibreOne",
+    "category": "subscription",
+    "amountMinor": 5500000,
+    "currency": "NGN",
+    "dueDate": "2026-07-30",
+    "recurrence": "monthly",
+    "reference": "FO-002918",
+    "paidAt": "2026-07-29T13:30:00Z",
+    "createdAt": "2026-07-22T09:00:00Z"
+  }
+]
+

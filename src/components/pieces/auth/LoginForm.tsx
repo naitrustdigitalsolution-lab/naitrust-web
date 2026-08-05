@@ -42,7 +42,7 @@ export function LoginForm({
           <img src={icon} alt="Naitrust logo" className="h-full w-full" />
         </div>
         <h2 className="mb-2 text-2xl font-bold">Welcome back</h2>
-        <p className="text-sm leading-6 text-muted-foreground">Use the email, username, or phone number connected to your Naitrust account.</p>
+        <p className="text-sm leading-6 text-muted-foreground">Use the email, Naitrust ID, username, or phone number connected to your account.</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
@@ -53,7 +53,7 @@ export function LoginForm({
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email, username, or phone number</Label>
+          <Label htmlFor="email">Email, Naitrust ID, username, or phone</Label>
           <div className="relative">
             <UserRound className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <Input
@@ -61,7 +61,7 @@ export function LoginForm({
               type="text"
               inputMode="email"
               autoComplete="username"
-              placeholder="Email, username, or +234 phone"
+              placeholder="Email, NT-PA-XXXXXX, or +234 phone"
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               className="pl-10 h-11"

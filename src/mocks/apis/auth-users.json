@@ -4,6 +4,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_001",
+        "naitrustId": "NT-PA-100001",
         "email": "amaka.new@naitrust.test",
         "firstName": "Amaka",
         "lastName": "Eze",
@@ -20,6 +21,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_002",
+        "naitrustId": "NT-PA-100002",
         "email": "chidi.buyer@naitrust.test",
         "firstName": "Chidi",
         "lastName": "Okonkwo",
@@ -36,6 +38,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_003",
+        "naitrustId": "NT-BIZ-010482",
         "email": "fatima.verified@naitrust.test",
         "firstName": "Fatima",
         "lastName": "Bello",
@@ -52,6 +55,7 @@
       "twoFactorEnabled": true,
       "user": {
         "id": "usr_mock_004",
+        "naitrustId": "NT-BIZ-020891",
         "email": "emeka.2fa@naitrust.test",
         "firstName": "Emeka",
         "lastName": "Nwosu",
@@ -68,6 +72,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_005",
+        "naitrustId": "NT-PA-900005",
         "email": "admin@naitrust.test",
         "firstName": "Ngozi",
         "lastName": "Adeyemi",
@@ -84,6 +89,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_006",
+        "naitrustId": "NT-BIZ-031107",
         "email": "new.biz@naitrust.test",
         "firstName": "Tunde",
         "lastName": "Balogun",
@@ -100,6 +106,7 @@
       "twoFactorEnabled": false,
       "user": {
         "id": "usr_mock_007",
+        "naitrustId": "NT-PA-100007",
         "email": "aisha.customer@naitrust.test",
         "firstName": "Aisha",
         "lastName": "Lawal",

@@ -173,7 +173,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-2',
       category: 'features',
       question: 'How do reviews and ratings work?',
-      answer: 'Reputation should come from real transaction activity and honest feedback. Fake or incentivised reviews are prohibited, and Naitrust may investigate review patterns that look manipulated.'
+      answer: 'Only personal customers who complete a Naitrust transfer or Protected Deal with a business can rate or comment on that business. Each completed transaction can be reviewed once, and the feedback appears on the public Trust Profile. Fake or incentivised reviews are prohibited.'
     },
     {
       id: 'f-3',

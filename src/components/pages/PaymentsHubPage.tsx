@@ -23,10 +23,12 @@ const BUSINESS_QUICK_LINKS = [
   { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
   { label: 'Saved Recipients', path: '/app/payments/beneficiaries', icon: Users },
   { label: 'Payment Requests', path: '/app/payments/requests', icon: HandCoins },
+  // Bills stays dormant until the product owner explicitly re-enables it.
 ];
 
 const CUSTOMER_QUICK_LINKS = [
   { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
+  { label: 'Saved Recipients', path: '/app/payments/beneficiaries', icon: Users },
 ];
 
 export function PaymentsHubPage() {
@@ -105,7 +107,7 @@ export function PaymentsHubPage() {
           </Card>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {quickLinks.map((link) => (
             <Button
               key={link.path}

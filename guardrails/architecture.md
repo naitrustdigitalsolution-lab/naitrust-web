@@ -66,7 +66,8 @@ path map and the standalone-layout (no header/footer) route list.
   `/register-customer`, `/forgot-password`, `/verify-code`, `/verify-email`.
 - Authenticated app (behind `RequireAuth`, standalone layout): `/app`, `/app/deals`,
   `/app/deals/new`, `/app/drafts`, `/app/deals/:id` (transaction room), `/app/invitations(/:id)`,
-  `/app/notifications`, `/app/profile`, `/app/settings`, `/app/security`.
+  `/app/notifications`, `/app/profile`, `/app/settings`, `/app/security`, and the business-only
+  `/app/bills` bill-management surface.
 
 No `/admin` routes exist in this frontend.
 

@@ -135,6 +135,7 @@ export function SettingsPage() {
                   firstName={firstName}
                   lastName={lastName}
                   email={user?.email ?? ''}
+                  naitrustId={user?.naitrustId ?? ''}
                   phone={phone}
                   onFirstNameChange={setFirstName}
                   onLastNameChange={setLastName}

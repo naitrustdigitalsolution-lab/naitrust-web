@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronLeft, ChevronRight, FileClock, Plus, Trash2 } from 'lucide-react';
@@ -10,15 +10,15 @@ import { Card } from '../ui/card';
 import { useAuth } from '../../libs/auth-context';
 import { clearDealDraft, listDealDrafts } from '../../libs/utils/deal-draft';
 
-const DRAFT_STEP_LABELS = ['Deal basics', 'Terms & parties', 'Agreement', 'Review & send'] as const;
+const DRAFT_STEP_LABELS = ['Start the deal', 'Add the details', 'Agreement', 'Review & send'] as const;
 const PAGE_SIZE = 10;
 
 export function DealDraftsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [revision, setRevision] = useState(0);
+  const [, setRevision] = useState(0);
   const [page, setPage] = useState(1);
-  const drafts = useMemo(() => listDealDrafts(user?.id), [user?.id, revision]);
+  const drafts = listDealDrafts(user?.id);
 
   const total = drafts.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -74,9 +74,9 @@ export function DealDraftsPage() {
                   <div className="min-w-0">
                     <div className="flex min-w-0 items-center gap-2">
                       <p className="truncate font-semibold text-foreground">{draft.title}</p>
-                      <Badge className="shrink-0 sm:hidden" variant={draft.status === 'abandoned' ? 'destructive' : 'secondary'}>
-                        {draft.status === 'abandoned' ? 'Abandoned' : 'Draft'}
-                      </Badge>
+                      {draft.status === 'abandoned' && (
+                        <Badge className="shrink-0 sm:hidden" variant="destructive">Abandoned</Badge>
+                      )}
                     </div>
                     <p className="mt-0.5 truncate text-xs text-muted-foreground">{draft.counterparty}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
@@ -97,9 +97,9 @@ export function DealDraftsPage() {
                       NGN {Number(draft.amount).toLocaleString('en-NG')}
                     </span>
                   )}
-                  <Badge className="hidden sm:inline-flex" variant={draft.status === 'abandoned' ? 'destructive' : 'secondary'}>
-                    {draft.status === 'abandoned' ? 'Abandoned' : 'Draft'}
-                  </Badge>
+                  {draft.status === 'abandoned' && (
+                    <Badge className="hidden sm:inline-flex" variant="destructive">Abandoned</Badge>
+                  )}
                   <Button
                     variant="ghost"
                     size="icon"

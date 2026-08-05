@@ -9,11 +9,14 @@ import { endpoints } from '../../libs/api/endpoints';
 import authUsers from './auth-users.json';
 import beneficiaries from './beneficiaries.json';
 import businesses from './businesses.json';
+import businessBills from './business-bills.json';
 import counterparties from './counterparties.json';
+import counterpartyTransactions from './counterparty-transactions.json';
 import dealDrafts from './deal-drafts.json';
 import instantTransfers from './instant-transfers.json';
 import invitations from './invitations.json';
 import notifications from './notifications.json';
+import naitrustRecipients from './naitrust-recipients.json';
 import paymentRequests from './payment-requests.json';
 import reputation from './reputation.json';
 import transactions from './transactions.json';
@@ -33,11 +36,14 @@ export const mockApiFixtures = {
   authUsers,
   beneficiaries,
   businesses,
+  businessBills,
   counterparties,
+  counterpartyTransactions,
   dealDrafts,
   instantTransfers,
   invitations,
   notifications,
+  naitrustRecipients,
   paymentRequests,
   reputation,
   transactions,
@@ -57,11 +63,14 @@ export {
   authUsers as mockAuthUsers,
   beneficiaries as mockBeneficiaries,
   businesses as mockBusinesses,
+  businessBills as mockBusinessBills,
   counterparties as mockCounterparties,
+  counterpartyTransactions as mockCounterpartyTransactions,
   dealDrafts as mockDealDrafts,
   instantTransfers as mockInstantTransfers,
   invitations as mockInvitations,
   notifications as mockNotifications,
+  naitrustRecipients as mockNaitrustRecipients,
   paymentRequests as mockPaymentRequests,
   reputation as mockReputation,
   transactions as mockTransactions,

@@ -173,6 +173,7 @@ function partiesForCreatedDeal(summary: SafeDealSummary, input: CreateSafeDealIn
       id: `party_created_${index}`,
       name: participant.name,
       email: participant.email,
+      phone: participant.phone,
       role: input.role === 'seller' ? ('buyer' as const) : ('seller' as const),
       status: summary.status === 'pending_counterparty' ? ('invited' as const) : ('accepted' as const),
       isYou: false,

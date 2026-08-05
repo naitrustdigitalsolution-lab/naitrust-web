@@ -22,17 +22,18 @@ import {
   ArrowUpRight,
   Building2,
   Check,
+  ChevronDown,
+  Clock3,
   Coins,
+  FileCheck2,
   Loader2,
   Pencil,
-  Plus,
   RefreshCw,
   Repeat,
   ScanFace,
   ShieldCheck,
   Save,
-  Sparkles,
-  Trash2,
+  Send,
   Truck,
   User,
 } from 'lucide-react';
@@ -43,14 +44,17 @@ import { VerticalStepper, type StepMeta } from '../pieces/general/VerticalSteppe
 import { AgreementDocument } from '../pieces/agreement/AgreementDocument';
 import { LivenessCheckModal } from '../pieces/verification/LivenessCheckModal';
 import { PinPromptModal } from '../pieces/security/PinPromptModal';
-import { ProductTestingPeriodField } from '../pieces/transaction/ProductTestingPeriodField';
+import {
+  CreateDealDetailsStep,
+  type DealDetailsValues,
+  type DealParticipantForm,
+} from '../pieces/transaction/CreateDealDetailsStep';
+import { DraftSavedForPinModal } from '../pieces/transaction/DraftSavedForPinModal';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
-import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import { useCreateDeal } from '../../hooks/useTransactions';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useAuth } from '../../libs/auth-context';
@@ -58,6 +62,13 @@ import { agreementsApi } from '../../libs/api/agreements.api';
 import { useCases } from '../../libs/use-cases';
 import { dealTypeMeta, featuresForUseCase } from '../../libs/features/use-case-features';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
+import {
+  canReplaceWithSuggestedReleaseConditions,
+  DEFAULT_INVITATION_EXPIRY_DAYS,
+  shortUseCaseLabel,
+  splitCreateDealUseCases,
+  suggestedReleaseConditions,
+} from '../../libs/protected-deals/create-deal-options';
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
 import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
 import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/deal-draft';
@@ -66,29 +77,17 @@ import {
   type AgreementDraft,
   type DealRole,
   type DealType,
-  type ExtendedProductTestingDays,
   type PartyMode,
 } from '../../libs/store/types';
 
 const STEPS: StepMeta[] = [
-  { title: 'Deal basics', description: 'Use case, deal type, and your role.' },
-  { title: 'Terms & parties', description: 'Set the terms, then invite counterparties.' },
+  { title: 'Start the deal', description: 'Choose what you are protecting and how money moves.' },
+  { title: 'Add the details', description: 'Enter the amount, terms, and the other party.' },
   { title: 'Agreement', description: 'Review the agreement prepared from your terms.' },
   { title: 'Review & send', description: 'Confirm everything and invite the counterparty.' },
 ];
 
-const USE_CASE_SHORT: Record<string, string> = {
-  'supplier-orders': 'Supplier orders',
-  'contractor-projects': 'Contractor work',
-  'social-commerce': 'Social storefront',
-  'high-value-personal-purchases': 'High-value purchase',
-  'freelance-agency-work': 'Freelance project',
-  'event-vendors': 'Events & bookings',
-  'property-agent-payments': 'Property & agents',
-  'vehicle-transactions': 'Vehicles',
-  'diaspora-purchases': 'Diaspora purchase',
-  'business-service-providers': 'Business services',
-};
+const CREATE_DEAL_USE_CASES = splitCreateDealUseCases(useCases);
 
 const DEAL_TYPE_ICON: Record<DealType, typeof Coins> = {
   single: Coins,
@@ -96,29 +95,14 @@ const DEAL_TYPE_ICON: Record<DealType, typeof Coins> = {
   recurring: Repeat,
 };
 
-interface ParticipantForm {
-  name: string;
-  email: string;
-  allocation: string;
-  profileId?: string;
-}
-
-interface FormState {
+interface FormState extends DealDetailsValues {
   useCase: string;
   dealType: DealType | null;
   partyMode: PartyMode | null;
   role: DealRole | null;
-  participants: ParticipantForm[];
-  title: string;
-  description: string;
-  amount: string;
-  deliveryDueDate: string;
-  openUntil: string;
-  releaseConditions: string;
-  extendedProductTestingDays?: ExtendedProductTestingDays;
 }
 
-const emptyParticipant = (): ParticipantForm => ({ name: '', email: '', allocation: '' });
+const emptyParticipant = (): DealParticipantForm => ({ name: '', contact: '', allocation: '' });
 
 const INITIAL: FormState = {
   useCase: '',
@@ -136,6 +120,17 @@ const INITIAL: FormState = {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^\+?[0-9][0-9\s()-]{8,18}$/;
+
+function isValidContact(value: string): boolean {
+  const contact = value.trim();
+  return EMAIL_RE.test(contact) || PHONE_RE.test(contact);
+}
+
+function participantContact(value: string): { email?: string; phone?: string } {
+  const contact = value.trim();
+  return EMAIL_RE.test(contact) ? { email: contact } : { phone: contact };
+}
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -192,6 +187,20 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function AgreementPreparationState() {
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-primary/30 bg-primary/5 px-6 py-12 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <FileCheck2 size={22} className="animate-pulse" />
+      </div>
+      <p className="text-sm font-semibold text-foreground">Preparing your agreement…</p>
+      <p className="max-w-sm text-xs leading-5 text-muted-foreground">
+        We are rebuilding the agreement from the details saved with this draft.
+      </p>
+    </div>
+  );
+}
+
 export function CreateDealPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -208,17 +217,32 @@ export function CreateDealPage() {
   const [livenessOk, setLivenessOk] = useState(security.livenessFresh);
   const [showLiveness, setShowLiveness] = useState(!security.livenessFresh);
   const [showPin, setShowPin] = useState(false);
+  const [showPinDraftSaved, setShowPinDraftSaved] = useState(false);
   const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
   const [form, setForm] = useState<FormState>(() => {
-    if (recoveredDraft?.form) return recoveredDraft.form;
+    if (recoveredDraft?.form) {
+      return {
+        ...recoveredDraft.form,
+        openUntil:
+          recoveredDraft.form.openUntil ||
+          format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
+        participants: recoveredDraft.form.participants.map((participant) => ({
+          ...participant,
+          contact:
+            participant.contact ||
+            ((participant as DealParticipantForm & { email?: string }).email ?? ''),
+        })),
+      };
+    }
     const businessName = searchParams.get('name') ?? '';
     const businessEmail = searchParams.get('email') ?? '';
     const businessId = searchParams.get('business') ?? undefined;
     return {
       ...INITIAL,
+      openUntil: format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
       partyMode: accountTypeOf(user) === 'customer' && businessId ? 'b2c' : null,
       role: accountTypeOf(user) === 'customer' ? 'buyer' : null,
-      participants: [{ name: businessName, email: businessEmail, allocation: '', profileId: businessId }],
+      participants: [{ name: businessName, contact: businessEmail, allocation: '', profileId: businessId }],
     };
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -226,6 +250,11 @@ export function CreateDealPage() {
   const [agreementConfirmed, setAgreementConfirmed] = useState(false);
   const [editingAgreement, setEditingAgreement] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showAllUseCases, setShowAllUseCases] = useState(() =>
+    CREATE_DEAL_USE_CASES.more.some((useCase) => useCase.slug === recoveredDraft?.form?.useCase),
+  );
+  const [showDealTypeOptions, setShowDealTypeOptions] = useState(false);
+  const [showAdvancedTiming, setShowAdvancedTiming] = useState(false);
 
   useEffect(() => {
     if (recoveredDraft) toast.info('Deal draft opened.');
@@ -236,7 +265,7 @@ export function CreateDealPage() {
   useEffect(() => {
     const hasContent =
       !!form.useCase || !!form.title.trim() || !!form.description.trim() || !!form.amount ||
-      form.participants.some((participant) => !!participant.name.trim() || !!participant.email.trim());
+      form.participants.some((participant) => !!participant.name.trim() || !!participant.contact.trim());
     if (!hasContent) return;
     const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step), 400);
     return () => window.clearTimeout(timer);
@@ -259,15 +288,19 @@ export function CreateDealPage() {
       ...prev,
       useCase: slug,
       dealType: features.defaultDealType,
+      releaseConditions: canReplaceWithSuggestedReleaseConditions(prev.releaseConditions)
+        ? suggestedReleaseConditions(slug)
+        : prev.releaseConditions,
       extendedProductTestingDays: supportsDeliveryReview(slug)
         ? prev.extendedProductTestingDays
         : undefined,
     }));
     setErrors((prev) => ({ ...prev, useCase: '', dealType: '' }));
+    setShowDealTypeOptions(false);
     invalidateAgreement();
   };
 
-  const updateParticipant = (index: number, key: keyof ParticipantForm, value: string) => {
+  const updateParticipant = (index: number, key: keyof DealParticipantForm, value: string) => {
     setForm((prev) => ({
       ...prev,
       participants: prev.participants.map((p, i) => (i === index ? { ...p, [key]: value } : p)),
@@ -297,7 +330,6 @@ export function CreateDealPage() {
     () => form.participants.reduce((sum, p) => sum + Math.round(Number(p.allocation || 0) * 100), 0),
     [form.participants],
   );
-  const remainderMinor = amountMinor - allocatedMinor;
 
   const today = useMemo(() => new Date(), []);
   const minOpen = format(addDays(today, 1), 'yyyy-MM-dd');
@@ -345,7 +377,7 @@ export function CreateDealPage() {
   };
 
   useEffect(() => {
-    if (step === 3 && !agreement && !isGenerating) void generateAgreement(1);
+    if (step >= 3 && !agreement && !isGenerating) void generateAgreement(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, agreement]);
 
@@ -374,13 +406,14 @@ export function CreateDealPage() {
         next.releaseConditions = 'Describe what must happen before funds release.';
       form.participants.forEach((p, i) => {
         if (!p.name.trim()) next[`participant_${i}_name`] = 'Enter a name.';
-        if (!EMAIL_RE.test(p.email)) next[`participant_${i}_email`] = 'Enter a valid email.';
+        if (!isValidContact(p.contact)) next[`participant_${i}_contact`] = 'Enter a valid email or phone number.';
       });
       if (multiParty && amountMinor > 0 && allocatedMinor !== amountMinor) {
         next.allocation = `Amounts must add up to ${formatMinorAmount(amountMinor, 'NGN')}.`;
       }
     }
     setErrors(next);
+    if (next.openUntil) setShowAdvancedTiming(true);
     return Object.keys(next).length === 0;
   };
 
@@ -398,13 +431,17 @@ export function CreateDealPage() {
     setStep((s) => Math.max(s - 1, 1));
   };
 
+  const persistCurrentDraft = () => {
+    saveDealDraft(user?.id, draftId, form, step);
+  };
+
   const handleSaveDraft = () => {
     if (!form.title.trim()) {
       setErrors((current) => ({ ...current, title: 'Enter a deal title before saving this draft.' }));
       toast.error('Enter a deal title to save this deal to drafts.');
       return;
     }
-    saveDealDraft(user?.id, draftId, form, step);
+    persistCurrentDraft();
     toast.success('Deal saved to drafts.');
     navigate('/app/drafts');
   };
@@ -423,7 +460,7 @@ export function CreateDealPage() {
         role: form.role!,
         participants: form.participants.map((p) => ({
           name: p.name.trim(),
-          email: p.email.trim(),
+          ...participantContact(p.contact),
           profileId: p.profileId,
           allocationMinor: multiParty ? Math.round(Number(p.allocation || 0) * 100) : amountMinor,
         })),
@@ -454,18 +491,16 @@ export function CreateDealPage() {
   // Final submit is guarded by the transaction PIN (money-moving action).
   const requestSubmit = () => {
     if (!agreement) return;
+    if (!security.pinSet) {
+      persistCurrentDraft();
+      setShowPinDraftSaved(true);
+      return;
+    }
     setShowPin(true);
   };
 
   const continueDisabled =
     createDeal.isPending || !livenessOk || (step === 3 && (isGenerating || !agreement || !agreementConfirmed));
-
-  const partiesHeading = !form.role
-    ? 'Counterparties'
-    : isReleaser
-      ? 'Who are you paying?'
-      : 'Who is paying you?';
-  const perPartyLabel = isReleaser ? 'Amount they receive (NGN)' : 'Amount they pay (NGN)';
 
   // Hard gate: no deal starts until email + KYC are verified.
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
@@ -495,6 +530,19 @@ export function CreateDealPage() {
         title="Confirm with your PIN"
         description="Enter your 4-digit transaction PIN to create this Protected Deal."
       />
+      <DraftSavedForPinModal
+        open={showPinDraftSaved}
+        onOpenChange={setShowPinDraftSaved}
+        onViewDrafts={() => {
+          setShowPinDraftSaved(false);
+          navigate('/app/drafts');
+        }}
+        onSetPin={() => {
+          persistCurrentDraft();
+          setShowPinDraftSaved(false);
+          navigate('/app/security');
+        }}
+      />
 
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
@@ -503,14 +551,9 @@ export function CreateDealPage() {
           description="Turn an agreement into a clear, trackable payment journey for everyone involved."
           icon={ShieldCheck}
           actions={
-            <>
-              <span className="hidden items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400 sm:inline-flex">
-                <ShieldCheck size={13} /> Private setup
-              </span>
-              <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
-                <ArrowLeft size={15} /> Active Deals
-              </Button>
-            </>
+            <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
+              <ArrowLeft size={15} /> Active Deals
+            </Button>
           }
         />
 
@@ -563,9 +606,15 @@ export function CreateDealPage() {
               {step === 1 && (
                 <div className="flex flex-col gap-6">
                   <div>
-                    <Label className="mb-2 block">What is this deal for?</Label>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-                      {useCases.map((useCase) => {
+                    <Label className="block text-base">What are you protecting?</Label>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                      Choose the closest match. If none fits, select “Something else.”
+                    </p>
+                    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {(showAllUseCases
+                        ? [...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
+                        : CREATE_DEAL_USE_CASES.quick
+                      ).map((useCase) => {
                         const Icon = useCase.icon;
                         const selected = form.useCase === useCase.slug;
                         return (
@@ -574,45 +623,85 @@ export function CreateDealPage() {
                             type="button"
                             onClick={() => selectUseCase(useCase.slug)}
                             aria-pressed={selected}
-                            className={'group flex min-h-18 flex-row items-center gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200 ' +
+                            className={'group flex min-h-16 flex-row items-center gap-3 rounded-2xl border p-3 text-left transition-all duration-200 ' +
                               (selected ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30' : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')}
                           >
                             <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'}`}>
                               <Icon size={17} />
                             </span>
                             <span className="text-xs font-semibold leading-4 text-foreground">
-                              {USE_CASE_SHORT[useCase.slug] ?? useCase.title}
+                              {shortUseCaseLabel(useCase)}
                             </span>
                           </button>
                         );
                       })}
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowAllUseCases((current) => !current)}
+                      className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                    >
+                      {showAllUseCases ? 'Show common choices only' : 'See all deal types'}
+                      <ChevronDown
+                        size={15}
+                        className={`transition-transform ${showAllUseCases ? 'rotate-180' : ''}`}
+                      />
+                    </button>
                     <FieldError message={errors.useCase} />
                   </div>
 
-                  {form.useCase && (
+                  {form.useCase && features.dealTypes.length > 1 && (
                     <div>
-                      <Label className="mb-2 block">Deal type</Label>
-                      <div className="grid gap-3 sm:grid-cols-3">
-                        {features.dealTypes.map((type) => {
-                          const meta = dealTypeMeta(type);
-                          const Icon = DEAL_TYPE_ICON[type];
-                          return (
-                            <ChoiceCard
-                              key={type}
-                              selected={form.dealType === type}
-                              onClick={() => set('dealType', type)}
-                              icon={Icon}
-                              title={meta.label}
-                              description={meta.description}
-                            />
-                          );
-                        })}
-                      </div>
-                      {features.note && (
-                        <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">
-                          {features.note}
-                        </p>
+                      <Label className="mb-2 block">How should it run?</Label>
+                      {!showDealTypeOptions ? (
+                        <div className="flex flex-col gap-3 rounded-2xl border border-primary/15 bg-primary/[0.04] p-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">
+                              Recommended: {form.dealType ? dealTypeMeta(form.dealType).label : 'Standard setup'}
+                            </p>
+                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                              {form.dealType ? dealTypeMeta(form.dealType).description : 'We selected the simplest setup for this deal.'}
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-fit rounded-full"
+                            onClick={() => setShowDealTypeOptions(true)}
+                          >
+                            Change setup
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="grid gap-3 sm:grid-cols-3">
+                            {features.dealTypes.map((type) => {
+                              const meta = dealTypeMeta(type);
+                              const Icon = DEAL_TYPE_ICON[type];
+                              return (
+                                <ChoiceCard
+                                  key={type}
+                                  selected={form.dealType === type}
+                                  onClick={() => set('dealType', type)}
+                                  icon={Icon}
+                                  title={meta.label}
+                                  description={meta.description}
+                                />
+                              );
+                            })}
+                          </div>
+                          <button
+                            type="button"
+                            className="mt-3 text-sm font-semibold text-primary"
+                            onClick={() => setShowDealTypeOptions(false)}
+                          >
+                            Use selected setup
+                          </button>
+                        </>
+                      )}
+                      {features.note && showDealTypeOptions && (
+                        <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">{features.note}</p>
                       )}
                       <FieldError message={errors.dealType} />
                     </div>
@@ -620,7 +709,7 @@ export function CreateDealPage() {
 
                   <div className="grid gap-6 lg:grid-cols-2">
                     <div>
-                      <Label className="mb-2 block">Who's involved</Label>
+                      <Label className="mb-2 block">Who are you dealing with?</Label>
                       <div className="flex flex-col gap-3">
                         {partyModeOptions.map((opt) => (
                           <ChoiceCard
@@ -637,21 +726,21 @@ export function CreateDealPage() {
                     </div>
 
                     <div>
-                      <Label className="mb-2 block">Your role</Label>
+                      <Label className="mb-2 block">Will you pay or receive?</Label>
                       <div className="flex flex-col gap-3">
                         <ChoiceCard
                           selected={form.role === 'buyer'}
                           onClick={() => set('role', 'buyer')}
                           icon={ArrowUpRight}
-                          title="I'm sending funds"
-                          description="You're the buyer — you make the agreed property payment and confirm the relevant milestone."
+                          title="I will pay"
+                          description="You fund the deal and confirm the product, service, or agreed milestone."
                         />
                         <ChoiceCard
                           selected={form.role === 'seller'}
                           onClick={() => set('role', 'seller')}
                           icon={ArrowDownLeft}
-                          title="I'm receiving funds"
-                          description="You're the seller — you deliver, then get paid."
+                          title="I will receive"
+                          description="You provide the product or service, then receive payment after the agreed checks."
                         />
                       </div>
                       <FieldError message={errors.role} />
@@ -661,196 +750,35 @@ export function CreateDealPage() {
               )}
 
               {step === 2 && (
-                <div className="flex flex-col gap-6">
-                  {/* Terms first, so the amount exists before allocating to parties */}
-                  <div className="flex flex-col gap-5">
-                    <div>
-                      <Label htmlFor="title">Deal title</Label>
-                      <Input
-                        id="title"
-                        className="mt-1.5"
-                        placeholder="e.g. Custom furniture set — 3-seater and dining"
-                        value={form.title}
-                        onChange={(e) => set('title', e.target.value)}
-                      />
-                      <FieldError message={errors.title} />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="description">Description (optional)</Label>
-                      <Textarea
-                        id="description"
-                        className="mt-1.5"
-                        rows={2}
-                        placeholder="What is being delivered? Include specifics both parties agreed to."
-                        value={form.description}
-                        onChange={(e) => set('description', e.target.value)}
-                      />
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-3">
-                      <div>
-                        <Label htmlFor="amount">Total amount (NGN)</Label>
-                        <Input
-                          id="amount"
-                          type="number"
-                          min="0"
-                          inputMode="decimal"
-                          className="mt-1.5"
-                          placeholder="450000"
-                          value={form.amount}
-                          onChange={(e) => set('amount', e.target.value)}
-                        />
-                        {amountMinor > 0 && !errors.amount && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {formatMinorAmount(amountMinor, 'NGN')}
-                          </p>
-                        )}
-                        <FieldError message={errors.amount} />
-                      </div>
-                      <div>
-                        <Label htmlFor="due">Next milestone or completion date</Label>
-                        <Input
-                          id="due"
-                          type="date"
-                          className="mt-1.5"
-                          value={form.deliveryDueDate}
-                          onChange={(e) => set('deliveryDueDate', e.target.value)}
-                        />
-                        <FieldError message={errors.deliveryDueDate} />
-                      </div>
-                      <div>
-                        <Label htmlFor="open">Deal open until (up to {MAX_DEAL_OPEN_DAYS} days)</Label>
-                        <Input
-                          id="open"
-                          type="date"
-                          min={minOpen}
-                          max={maxOpen}
-                          className="mt-1.5"
-                          value={form.openUntil}
-                          onChange={(e) => set('openUntil', e.target.value)}
-                        />
-                        <FieldError message={errors.openUntil} />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="release">Release conditions</Label>
-                      <Textarea
-                        id="release"
-                        className="mt-1.5"
-                        rows={3}
-                        placeholder="What must be true before protected funds are released?"
-                        value={form.releaseConditions}
-                        onChange={(e) => set('releaseConditions', e.target.value)}
-                      />
-                      <FieldError message={errors.releaseConditions} />
-                    </div>
-
-                    {supportsDeliveryReview(form.useCase) && (
-                      <ProductTestingPeriodField
-                        value={form.extendedProductTestingDays}
-                        onChange={(value) => set('extendedProductTestingDays', value)}
-                      />
-                    )}
-                  </div>
-
-                  {/* Parties at the bottom */}
-                  <div className="border-t pt-5">
-                    <div className="mb-2 flex items-center justify-between">
-                      <Label>{partiesHeading}</Label>
-                      <Button type="button" variant="ghost" size="sm" className="h-8 rounded-md" onClick={addParticipant}>
-                        <Plus size={14} className="mr-1" />
-                        Add {isReleaser ? 'recipient' : 'payer'}
-                      </Button>
-                    </div>
-
-                    <div className="grid gap-3 md:grid-cols-2">
-                      {form.participants.map((p, i) => (
-                        <div key={i} className="rounded-2xl border bg-muted/20 p-4">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                              {isReleaser ? 'Recipient' : 'Payer'} {i + 1}
-                            </span>
-                            {form.participants.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeParticipant(i)}
-                                className="text-muted-foreground transition-colors hover:text-destructive"
-                                aria-label="Remove"
-                              >
-                                <Trash2 size={15} />
-                              </button>
-                            )}
-                          </div>
-                          <div className="mt-2 space-y-2">
-                            <div>
-                              <Input
-                                placeholder="Buyer, seller, agent, developer, or property company"
-                                value={p.name}
-                                onChange={(e) => updateParticipant(i, 'name', e.target.value)}
-                              />
-                              <FieldError message={errors[`participant_${i}_name`]} />
-                            </div>
-                            <div>
-                              <Input
-                                type="email"
-                                placeholder="name@example.com"
-                                value={p.email}
-                                onChange={(e) => updateParticipant(i, 'email', e.target.value)}
-                              />
-                              <FieldError message={errors[`participant_${i}_email`]} />
-                            </div>
-                            {multiParty && (
-                              <div>
-                                <Label className="text-xs">{perPartyLabel}</Label>
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  inputMode="decimal"
-                                  className="mt-1"
-                                  placeholder="0"
-                                  value={p.allocation}
-                                  onChange={(e) => updateParticipant(i, 'allocation', e.target.value)}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {multiParty && amountMinor > 0 && (
-                      <p
-                        className={
-                          'mt-2 text-xs ' +
-                          (remainderMinor === 0 ? 'text-muted-foreground' : 'text-amber-600 dark:text-amber-400')
-                        }
-                      >
-                        {isReleaser ? 'Allocated' : 'Assigned'} {formatMinorAmount(allocatedMinor, 'NGN')} of{' '}
-                        {remainderMinor !== 0 && ` · ${formatMinorAmount(Math.abs(remainderMinor), 'NGN')} ${remainderMinor > 0 ? 'left' : 'over'}`}
-                      </p>
-                    )}
-                    <FieldError message={errors.allocation} />
-                  </div>
-                </div>
+                <CreateDealDetailsStep
+                  form={form}
+                  errors={errors}
+                  isReleaser={isReleaser}
+                  minOpen={minOpen}
+                  maxOpen={maxOpen}
+                  maxOpenDays={MAX_DEAL_OPEN_DAYS}
+                  showAdvancedTiming={showAdvancedTiming}
+                  onAdvancedTimingChange={setShowAdvancedTiming}
+                  onFieldChange={(field, value) => set(field, value)}
+                  onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)}
+                  onParticipantChange={updateParticipant}
+                  onAddParticipant={addParticipant}
+                  onRemoveParticipant={removeParticipant}
+                />
               )}
 
               {step === 3 && (
                 <div className="flex flex-col gap-4">
                   {isGenerating || !agreement ? (
-                    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-primary/30 bg-primary/5 px-6 py-12 text-center">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <Sparkles size={22} className="animate-pulse" />
-                      </div>
-                      <p className="text-sm font-semibold text-foreground">Drafting your agreement…</p>
-                      <p className="max-w-sm text-xs leading-5 text-muted-foreground">
-                        We are preparing a clear agreement from the terms you entered. You review
-                        and confirm it — nothing is sent until you do.
-                      </p>
-                    </div>
+                    <AgreementPreparationState />
                   ) : (
                     <>
+                      <div className="rounded-xl border border-primary/15 bg-primary/[0.04] p-4">
+                        <p className="text-sm font-semibold text-foreground">Check the important details</p>
+                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                          Check the amount, delivery terms, and payment-release condition. The other party must also accept before funding begins.
+                        </p>
+                      </div>
                       <AgreementDocument
                         agreement={agreement}
                         editable={editingAgreement}
@@ -861,8 +789,7 @@ export function CreateDealPage() {
                       />
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-xs leading-5 text-muted-foreground">
-                          Prepared from your terms — edit any clause, then both parties accept it
-                          before the deal freezes.
+                          Need a correction? Edit the agreement or reset it from the details you entered.
                         </p>
                         <div className="flex shrink-0 items-center gap-2">
                           <Button
@@ -895,7 +822,7 @@ export function CreateDealPage() {
                             }}
                           >
                             <RefreshCw size={14} className="mr-1.5" />
-                            Regenerate
+                            Reset from details
                           </Button>
                         </div>
                       </div>
@@ -906,8 +833,7 @@ export function CreateDealPage() {
                           className="mt-0.5"
                         />
                         <span className="text-sm leading-6 text-foreground">
-                          This agreement reflects what both parties discussed. Send it with the
-                          invitation for the counterparty to accept.
+                          I have checked the amount, delivery terms, and release condition. Send this agreement for the other party to accept.
                         </span>
                       </label>
                     </>
@@ -915,7 +841,10 @@ export function CreateDealPage() {
                 </div>
               )}
 
-              {step === 4 && agreement && (
+              {step === 4 && (
+                !agreement || isGenerating ? (
+                  <AgreementPreparationState />
+                ) : (
                 <div className="flex flex-col gap-4">
                   <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                     <p className="text-sm font-semibold text-foreground">{form.title}</p>
@@ -925,8 +854,8 @@ export function CreateDealPage() {
                   </div>
 
                   <dl className="divide-y divide-border rounded-xl border">
-                    <ReviewRow label="Use case" value={selectedUseCase?.title ?? '—'} />
-                    <ReviewRow label="Deal type" value={form.dealType ? dealTypeMeta(form.dealType).label : '—'} />
+                    <ReviewRow label="What you're protecting" value={selectedUseCase?.title ?? '—'} />
+                    <ReviewRow label="Deal setup" value={form.dealType ? dealTypeMeta(form.dealType).label : '—'} />
                     <ReviewRow label="Who's involved" value={form.partyMode ? partyModeLabel(form.partyMode) : '—'} />
                     <ReviewRow
                       label="Your role"
@@ -938,9 +867,9 @@ export function CreateDealPage() {
                         .map((p) => (multiParty && p.allocation ? `${p.name} (${formatMinorAmount(Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
                         .join(', ')}
                     />
-                    <ReviewRow label="Next milestone" value={form.deliveryDueDate || '—'} />
+                    <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || '—'} />
                     <ReviewRow
-                      label="Deal open until"
+                      label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : '—'}
                     />
                     {supportsDeliveryReview(form.useCase) && (
@@ -967,12 +896,44 @@ export function CreateDealPage() {
                     </div>
                   )}
 
+                  <div className="rounded-2xl border bg-muted/20 p-4 sm:p-5">
+                    <p className="text-sm font-bold text-foreground">What happens next</p>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Send size={15} />
+                        </span>
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">1. Share the invitation</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">We copy a secure link for you to send.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <FileCheck2 size={15} />
+                        </span>
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">2. They review and accept</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">The agreement stays open until the invitation expires.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Clock3 size={15} />
+                        </span>
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">3. Funding begins</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the deal from the Transaction Room.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <p className="text-xs leading-5 text-muted-foreground">
-                    On create, we send the invitation and this agreement to the counterparty to
-                    review and accept. Payment is protected through a regulated partner — Naitrust
-                    never holds your funds directly.
+                    Protected funds move through a partner-issued account with a regulated provider. Naitrust does not hold them directly.
                   </p>
                 </div>
+                )
               )}
 
               {!livenessOk && (
@@ -1016,7 +977,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           <ShieldCheck size={16} className="mr-1.5" />
-                          Create Protected Deal
+                          Create and copy invitation
                         </>
                       )}
                     </Button>

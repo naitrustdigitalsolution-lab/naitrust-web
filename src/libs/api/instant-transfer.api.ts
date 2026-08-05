@@ -19,6 +19,8 @@ import type {
   TransferRecipient,
 } from '../store/types';
 import mockInstantTransfers from '../../mocks/apis/instant-transfers.json';
+import mockNaitrustRecipients from '../../mocks/apis/naitrust-recipients.json';
+import mockBeneficiaries from '../../mocks/apis/beneficiaries.json';
 import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 500;
@@ -37,10 +39,51 @@ function resolveMockRecipientName(recipient: TransferRecipient): string {
   if (recipient.resolvedName) return recipient.resolvedName;
   if (recipient.method === 'naitrust_account_number') return `Naitrust account (${recipient.identifier})`;
   if (recipient.method === 'naitrust_id') return `Naitrust user (${recipient.identifier})`;
-  if (recipient.method === 'phone_number') return `NaiTrust user (${recipient.identifier})`;
-  if (recipient.method === 'email_address') return `NaiTrust user (${recipient.identifier})`;
+  if (recipient.method === 'phone_number') return `Naitrust user (${recipient.identifier})`;
+  if (recipient.method === 'email_address') return `Naitrust user (${recipient.identifier})`;
   if (recipient.method === 'bank_transfer') return `Bank recipient (${recipient.identifier})`;
   return recipient.identifier;
+}
+
+interface MockNaitrustRecipient {
+  name: string;
+  naitrustAccountNumber: string;
+  naitrustId: string;
+  accountType: 'customer' | 'business';
+  identityVerified: boolean;
+}
+
+function resolveNaitrustRecipient(recipient: TransferRecipient): TransferRecipient | null {
+  if (!['naitrust_account_number', 'naitrust_id'].includes(recipient.method)) return null;
+  const normalized = recipient.identifier.trim().toLowerCase();
+  const match = (mockNaitrustRecipients as MockNaitrustRecipient[]).find((entry) =>
+    recipient.method === 'naitrust_account_number'
+      ? entry.naitrustAccountNumber === normalized
+      : entry.naitrustId.toLowerCase() === normalized,
+  );
+  return match ? {
+    ...recipient,
+    resolvedName: match.name,
+    naitrustAccountNumber: match.naitrustAccountNumber,
+    naitrustId: match.naitrustId,
+    accountType: match.accountType,
+    identityVerified: match.identityVerified,
+  } : null;
+}
+
+function resolveBankRecipient(recipient: TransferRecipient): TransferRecipient | null {
+  if (recipient.method !== 'bank_transfer' || !recipient.bankName) return null;
+  const match = (mockBeneficiaries.data as Array<{
+    type: string;
+    name: string;
+    bankName?: string;
+    accountNumber?: string;
+  }>).find((entry) =>
+    entry.type === 'bank_account'
+    && entry.bankName?.toLowerCase() === recipient.bankName?.toLowerCase()
+    && entry.accountNumber === recipient.identifier,
+  );
+  return match ? { ...recipient, resolvedName: match.name } : null;
 }
 
 export const instantTransferApi = {
@@ -54,9 +97,16 @@ export const instantTransferApi = {
   ): Promise<ApiSuccess<TransferRecipient>> => {
     if (appConfig.isMock) {
       await delay(300);
+      const naitrustRecipient = resolveNaitrustRecipient(recipient);
+      const bankRecipient = resolveBankRecipient(recipient);
+      if (['naitrust_account_number', 'naitrust_id'].includes(recipient.method) && !naitrustRecipient) {
+        throw new Error('Naitrust recipient not found');
+      }
       return {
         success: true,
-        data: { ...recipient, resolvedName: resolveMockRecipientName(recipient) },
+        data: naitrustRecipient
+          ?? bankRecipient
+          ?? { ...recipient, resolvedName: resolveMockRecipientName(recipient) },
       };
     }
     const response = await httpClient.post<TransferRecipient>(

@@ -15,6 +15,8 @@
 
 export interface User {
   id: string;
+  /** Unique public account identifier issued once when the account is created. */
+  naitrustId: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -107,7 +109,8 @@ export type ExtendedProductTestingDays = 3 | 7 | 14;
  */
 export interface DealParticipantInput {
   name: string;
-  email: string;
+  email?: string;
+  phone?: string;
   profileId?: string;
   allocationMinor?: number;
 }
@@ -179,6 +182,7 @@ export interface DealParty {
   id: string;
   name: string;
   email?: string;
+  phone?: string;
   role: DealRole;
   status: PartyStatus;
   /** The current user's own party record. */
@@ -527,7 +531,7 @@ export interface BusinessProfile {
   ownerUserId: string;
   name: string;
   slug?: string;
-  ntId?: string;
+  ntId: string;
   rcNumber: string; // CAC registration number
   category: string;
   /** Everything below is captured at registration and shown on the profile. */
@@ -640,6 +644,10 @@ export interface Beneficiary {
   name: string;
   email?: string;
   phone?: string;
+  /** Naitrust account number or Naitrust ID when email/phone was not used. */
+  naitrustIdentifier?: string;
+  naitrustAccountNumber?: string;
+  naitrustId?: string;
   bankName?: string;
   accountNumber?: string;
   isFavourite: boolean;
@@ -680,6 +688,10 @@ export interface TransferRecipient {
   identifier: string;
   resolvedName?: string;
   bankName?: string;
+  naitrustAccountNumber?: string;
+  naitrustId?: string;
+  accountType?: 'customer' | 'business';
+  identityVerified?: boolean;
 }
 
 export interface CreateInstantTransferInput {
@@ -856,6 +868,10 @@ export interface CounterpartyProfile {
   id: string;
   name: string;
   businessName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
   avatarInitials: string;
   relation: CounterpartyRelation;
   identityVerified: boolean;

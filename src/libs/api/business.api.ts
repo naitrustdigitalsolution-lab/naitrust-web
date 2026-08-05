@@ -4,6 +4,8 @@ import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { BusinessProfile } from '../store/types';
 import mockBusinesses from '../../mocks/apis/businesses.json';
+import { getUserData } from './config';
+import { generateNaitrustId } from '../identity/naitrust-id';
 
 const MOCK_LATENCY_MS = 300;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -66,7 +68,37 @@ function resolveBusiness(userId: string): BusinessProfile | null {
 }
 
 export const businessApi = {
-  create: (data: CreateBusinessData) => httpClient.post(endpoints.businesses.create, data),
+  create: async (data: CreateBusinessData): Promise<ApiSuccess<BusinessProfile>> => {
+    if (appConfig.isMock) {
+      await delay(MOCK_LATENCY_MS);
+      const user = getUserData() as { id?: string; name?: string } | null;
+      const business: BusinessProfile = {
+        id: `biz_mock_${crypto.randomUUID()}`,
+        ownerUserId: user?.id ?? 'usr_mock_unknown',
+        name: data.name,
+        slug: slugifyBusinessName(data.name),
+        ntId: generateNaitrustId('business', mockList.map((item) => item.ntId)),
+        rcNumber: '',
+        category: data.category,
+        description: data.description,
+        ownerName: user?.name,
+        email: data.email,
+        phone: data.phoneNumber,
+        website: data.website,
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        country: data.country ?? 'Nigeria',
+        socialHandles: data.socialHandles ?? [],
+        verified: false,
+        createdAt: new Date().toISOString(),
+      };
+      mockList.push(business);
+      return { success: true, data: business };
+    }
+    const response = await httpClient.post<BusinessProfile>(endpoints.businesses.create, data);
+    return response as ApiSuccess<BusinessProfile>;
+  },
   getMyBusinesses: () => httpClient.get(endpoints.businesses.myBusinesses),
 
   search: async (query: string): Promise<ApiSuccess<BusinessProfile[]>> => {

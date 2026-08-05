@@ -10,9 +10,6 @@ import {
   QrCode,
   Send,
   ShieldCheck,
-  Search,
-  Inbox,
-  Clock3,
   Download,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -25,6 +22,7 @@ import { SecureAccountModal } from '../pieces/security/SecureAccountModal';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
 import { ActivityChart } from '../pieces/dashboard/ActivityChart';
 import { DealBreakdown } from '../pieces/dashboard/DealBreakdown';
+import { CustomerDashboardHome } from '../pieces/dashboard/CustomerDashboardHome';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -55,39 +53,26 @@ const COLLECTION_ACTIONS: {
 }[] = [
   {
     title: 'WhatsApp request',
-    description: 'Create a request and share it in the conversation.',
+    description: 'Create and share a payment request.',
     icon: MessageCircle,
     accent: 'bg-[#eaf8f1] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400',
     kind: 'whatsapp',
   },
   {
     title: 'Show payment QR',
-    description: 'Pull up your scan-to-pay code right here — no page change.',
+    description: 'Show your scan-to-pay code.',
     icon: QrCode,
     accent: 'bg-[#edf4ff] text-primary',
     kind: 'qr',
   },
   {
     title: 'Copy account number',
-    description: 'One tap to copy your verified account number to send anywhere.',
+    description: 'Copy your business account details.',
     icon: Landmark,
     accent: 'bg-[#f5efff] text-violet-700 dark:bg-violet-500/10 dark:text-violet-300',
     kind: 'copy',
   },
 ];
-
-const ACTIVE_DEAL_STATUSES = new Set([
-  'pending_counterparty',
-  'terms_negotiation',
-  'terms_agreed',
-  'awaiting_funding',
-  'funded',
-  'in_progress',
-  'evidence_submitted',
-  'buyer_review',
-  'release_approved',
-  'disputed',
-]);
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -147,156 +132,19 @@ export function DashboardPage() {
   };
 
   if (!isBusiness) {
-    const activeDeals = deals?.filter((deal) => ACTIVE_DEAL_STATUSES.has(deal.status)) ?? [];
-    const pendingInvitations = invitations?.filter((invitation) => invitation.status === 'pending') ?? [];
-    const needsAction = activeDeals.filter((deal) =>
-      ['pending_counterparty', 'terms_negotiation', 'awaiting_funding', 'buyer_review', 'disputed'].includes(deal.status),
-    );
-
     return (
-      <DashboardLayout title="Dashboard">
-        <SecureAccountModal />
-        <div className="mx-auto flex w-full max-w-9xl flex-col gap-6">
-          <header className="relative overflow-hidden rounded-3xl border border-[#071b31]/10 bg-[#c4e9fdb3] px-5 py-6 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground sm:px-7 sm:py-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-white/50 blur-3xl dark:bg-primary/10" />
-            <div className="relative flex flex-wrap items-end justify-between gap-5">
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-medium text-[#35546f] dark:text-muted-foreground">Good day, {firstName}</p>
-                  {security.kycStatus === 'verified' && (
-                    <Badge variant="success" className="gap-1 rounded-md px-2 py-0.5 text-[11px]">
-                      <BadgeCheck size={11} /> Identity verified
-                    </Badge>
-                  )}
-                </div>
-                <h1 className="mt-2 max-w-xl text-2xl font-bold tracking-[-0.035em] text-[#071b31] dark:text-foreground sm:text-3xl">
-                  Pay with confidence.
-                </h1>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground">
-                  Send money when you trust them, or protect the transaction when you need clearer terms and delivery proof.
-                </p>
-              </div>
-              <Button className="rounded-full px-5" onClick={() => navigate('/app/deals/new')}>
-                <ShieldCheck size={16} /> Create Protected Deal
-              </Button>
-            </div>
-          </header>
-
-          <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-            <Card className="relative overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-6">
-              <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-2xl" />
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-white/65">Available balance</p>
-                  {isWalletLoading || !wallet ? (
-                    <Skeleton className="mt-3 h-10 w-52" />
-                  ) : (
-                    <p className="mt-2 text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
-                      {formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency)}
-                    </p>
-                  )}
-                </div>
-                <Button
-                  size="sm"
-                  className="rounded-md bg-white text-[#073158] hover:bg-white/90"
-                  onClick={() => navigate('/app/payments/receive')}
-                >
-                  <ArrowDownToLine size={14} /> Receive money
-                </Button>
-              </div>
-
-              {wallet && (
-                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4 text-sm">
-                  <div>
-                    <p className="text-white/55">Pending</p>
-                    <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/55">Protected</p>
-                    <p className="mt-1 font-semibold text-white">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</p>
-                  </div>
-                </div>
-              )}
-            </Card>
-
-            <Card className="rounded-2xl border-primary/10 bg-gradient-to-br from-white to-[#edf6ff] p-5 shadow-sm dark:from-card dark:to-primary/10 sm:p-6">
-              <div className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Landmark size={19} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Your account</p>
-                  <p className="mt-2 font-mono text-xl font-bold tracking-[0.1em]">
-                    {account?.accountNumber ?? 'Account setup pending'}
-                  </p>
-                  <p className="mt-1 truncate text-xs text-muted-foreground">
-                    {account ? `${account.bankName} · ${account.accountName}` : 'Complete setup to receive your account number'}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-5 flex gap-2">
-                <Button variant="outline" size="sm" className="rounded-md" onClick={() => void copyAccount()}>
-                  <Copy size={14} /> Copy
-                </Button>
-                <Button variant="ghost" size="sm" className="rounded-md" onClick={() => navigate('/app/payments/receive')}>
-                  View details
-                </Button>
-              </div>
-            </Card>
-          </div>
-
-          <Card className="grid gap-0 overflow-hidden rounded-2xl p-0 shadow-sm sm:grid-cols-3">
-            {[
-              { icon: ShieldCheck, value: activeDeals.length, label: 'Active deals', tone: 'bg-blue-500/10 text-blue-700 dark:text-blue-300' },
-              { icon: Inbox, value: pendingInvitations.length, label: 'Invitations', tone: 'bg-violet-500/10 text-violet-700 dark:text-violet-300' },
-              { icon: Clock3, value: needsAction.length, label: 'Need attention', tone: 'bg-amber-500/10 text-amber-700 dark:text-amber-300' },
-            ].map((item, index) => (
-              <button key={item.label} type="button" onClick={() => navigate(index === 1 ? '/app/invitations' : '/app/deals')} className="flex items-center gap-3 border-b px-4 py-4 text-left transition hover:bg-muted/40 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${item.tone}`}><item.icon size={17} /></span>
-                <span><strong className="block text-xl leading-none text-foreground">{item.value}</strong><span className="mt-1 block text-xs text-muted-foreground">{item.label}</span></span>
-              </button>
-            ))}
-          </Card>
-
-          <section>
-            <h2 className="mb-3 text-sm font-semibold text-foreground">What would you like to do?</h2>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                { icon: Send, title: 'Send money', text: 'Pay someone you already trust.', path: '/app/payments/send' },
-                { icon: ShieldCheck, title: 'Protect a transaction', text: 'Agree terms before money moves.', path: '/app/deals/new' },
-                { icon: Search, title: 'Find a business', text: 'Check who you are dealing with.', path: '/app/businesses' },
-              ].map((action) => (
-                <button key={action.title} type="button" onClick={() => navigate(action.path)} className="group flex items-center gap-3 rounded-xl border bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md sm:items-start">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><action.icon size={18} /></span>
-                  <span className="min-w-0 flex-1"><span className="flex items-center gap-1 text-sm font-semibold text-foreground">{action.title}<ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></span><span className="mt-1 block text-xs leading-5 text-muted-foreground">{action.text}</span></span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {pendingInvitations.length > 0 && (
-            <Card className="flex flex-col gap-4 rounded-2xl border-amber-500/20 bg-amber-500/[0.04] p-5 shadow-none sm:flex-row sm:items-center">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400"><Inbox size={19} /></span>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold">You have {pendingInvitations.length} invitation{pendingInvitations.length === 1 ? '' : 's'} waiting</p>
-                <p className="mt-1 text-sm text-muted-foreground">Review the proposed terms before accepting or funding a transaction.</p>
-              </div>
-              <Button variant="outline" className="rounded-md bg-background" onClick={() => navigate('/app/invitations')}>Review now <ArrowRight size={15} /></Button>
-            </Card>
-          )}
-
-          <section>
-            <div className="mb-3 flex items-end justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold">Recent Protected Deals</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Your purchases, invitations, evidence, and completion status.</p>
-              </div>
-              {(deals?.length ?? 0) > 0 && <Button variant="ghost" size="sm" onClick={() => navigate('/app/deals')}>View all <ArrowRight size={14} /></Button>}
-            </div>
-            <TransactionList deals={deals?.slice(0, 4)} isLoading={isLoading} isError={isError} onCreate={() => navigate('/app/businesses')} onSelect={handleOpenDeal} />
-          </section>
-        </div>
-      </DashboardLayout>
+      <CustomerDashboardHome
+        firstName={firstName}
+        naitrustId={user?.naitrustId ?? ''}
+        identityVerified={security.kycStatus === 'verified'}
+        wallet={wallet}
+        walletLoading={isWalletLoading}
+        deals={deals}
+        dealsLoading={isLoading}
+        dealsError={isError}
+        invitations={invitations}
+        onOpenDeal={handleOpenDeal}
+      />
     );
   }
 
@@ -326,27 +174,23 @@ export function DashboardPage() {
       </Dialog>
 
       <div className="mx-auto flex w-full max-w-9xl flex-col gap-7 max-xl:[&>*]:order-3 xl:[&>*]:order-none">
-        <header className="flex flex-wrap items-start justify-between gap-4 rounded-3xl border border-[#071b31]/10 bg-[#c4e9fdb3] px-5 py-5 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground max-xl:!order-0 sm:px-7 sm:py-6">
+        <header className="flex flex-wrap items-center justify-between gap-4 py-1 max-xl:!order-0">
           <div>
-            <p className="text-sm text-[#35546f] dark:text-muted-foreground">Good day, {firstName}</p>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              {isBusinessLoading ? (
-                <Skeleton className="h-8 w-56" />
-              ) : (
-                <h1 className="text-2xl font-bold tracking-[-0.025em] text-[#071b31] dark:text-foreground">{businessName}</h1>
-              )}
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm text-muted-foreground">Good day, {firstName}</p>
               {security.kycStatus === 'verified' && (
-                <Badge variant="success" className="gap-1 rounded-full">
-                  <BadgeCheck size={12} /> Verified business
+                <Badge variant="success" className="gap-1 rounded-full px-2 py-0.5 text-[11px]">
+                  <BadgeCheck size={11} /> Verified business
                 </Badge>
               )}
             </div>
+            {isBusinessLoading ? (
+              <Skeleton className="mt-1 h-9 w-64" />
+            ) : (
+              <h1 className="mt-1 text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-3xl">{businessName}</h1>
+            )}
           </div>
-          <Button
-            variant="outline"
-            className="rounded-full border-[#071b31]/15 bg-white/60 text-[#071b31] hover:bg-white/80 dark:border-border dark:bg-background dark:text-foreground"
-            onClick={() => navigate('/app/payments')}
-          >
+          <Button className="rounded-full px-5" onClick={() => navigate('/app/payments')}>
             <Send size={15} /> Send money
           </Button>
         </header>
@@ -367,24 +211,26 @@ export function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => handleCollectionAction(action.kind)}
-                className="group flex min-h-36 flex-col rounded-2xl border bg-card p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                className="group flex items-center gap-3 rounded-2xl border bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
               >
-                <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.accent}`}>
-                  <action.icon size={19} />
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${action.accent}`}>
+                  <action.icon size={17} />
                 </span>
-                <span className="mt-4 flex items-center gap-1 font-semibold">
-                  {action.title}
-                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1 text-sm font-semibold">
+                    {action.title}
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-muted-foreground">{action.description}</span>
                 </span>
-                <span className="mt-1 text-sm leading-5 text-muted-foreground">{action.description}</span>
               </motion.button>
             ))}
           </div>
         </section>
 
         <div className="grid gap-4 max-xl:!order-1 lg:grid-cols-[1.15fr_.85fr]">
-          <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_65px_rgba(7,49,88,.22)] sm:p-7">
-            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+          <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#071b31] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-7">
+            <div className="pointer-events-none absolute -right-20 -top-24 h-60 w-60 rounded-full bg-primary/20 blur-3xl" />
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
@@ -433,6 +279,9 @@ export function DashboardPage() {
                 </p>
                 <p className="mt-1 truncate text-xs text-muted-foreground">
                   {account ? `${account.bankName} · ${account.accountName}` : 'Complete setup to receive your account number'}
+                </p>
+                <p className="mt-1.5 truncate font-mono text-xs font-semibold text-primary">
+                  {business?.ntId ?? user?.naitrustId}
                 </p>
               </div>
             </div>

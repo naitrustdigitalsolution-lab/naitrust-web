@@ -4,7 +4,7 @@
  * but uses the new modular Zustand stores internally
  */
 
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { useAuthStore } from './store/auth.store';
 import type { User } from './store/types';
 
@@ -31,6 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useAuthStore((state) => state.login);
   const verify2FALogin = useAuthStore((state) => state.verify2FALogin);
   const logout = useAuthStore((state) => state.logout);
+  const fetchProfile = useAuthStore((state) => state.fetchProfile);
+  const refreshedLegacyUserId = useRef<string | null>(null);
+
+  // Existing mock sessions created before Naitrust IDs were introduced are
+  // refreshed once so users receive their issued ID without signing out.
+  useEffect(() => {
+    if (!isHydrated || !user || user.naitrustId || refreshedLegacyUserId.current === user.id) return;
+    refreshedLegacyUserId.current = user.id;
+    void fetchProfile();
+  }, [fetchProfile, isHydrated, user]);
 
   return (
     <AuthContext.Provider value={{ user, token, login, verify2FALogin, logout, isAuthenticated, isLoading, isHydrated }}>

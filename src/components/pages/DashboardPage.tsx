@@ -229,7 +229,7 @@ export function DashboardPage() {
         </section>
 
         <div className="grid gap-4 max-xl:!order-1 lg:grid-cols-[1.15fr_.85fr]">
-          <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#071b31] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-7">
+          <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#04162f] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-7">
             <div className="pointer-events-none absolute -right-20 -top-24 h-60 w-60 rounded-full bg-primary/20 blur-3xl" />
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Building2, Loader2, UserRoundPlus } from 'lucide-react';
+import { BadgeCheck, Building2, Loader2, Search, UserRoundPlus } from 'lucide-react';
 import type { CreateCounterpartyInput } from '../../../libs/counterparties/types';
 import { COUNTERPARTY_RELATION_OPTIONS } from '../../../libs/counterparties/counterparty-options';
 import { Button } from '../../ui/button';
@@ -15,6 +15,7 @@ import {
   SheetTitle,
 } from '../../ui/sheet';
 import { Textarea } from '../../ui/textarea';
+import { lookupNaitrustContact } from '../../../libs/api/naitrust-contact-lookup.api';
 
 interface AddCounterpartySheetProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface AddCounterpartySheetProps {
 
 const emptyForm = (): CreateCounterpartyInput => ({
   name: '',
+  naitrustId: '',
   businessName: '',
   relation: 'customer',
   email: '',
@@ -41,11 +43,14 @@ export function AddCounterpartySheet({
 }: AddCounterpartySheetProps) {
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState('');
+  const [lookingUp, setLookingUp] = useState(false);
+  const [matched, setMatched] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setForm(emptyForm());
       setError('');
+      setMatched(false);
     }
   }, [open]);
 
@@ -54,6 +59,18 @@ export function AddCounterpartySheet({
     value: CreateCounterpartyInput[Key],
   ) => {
     setForm((current) => ({ ...current, [key]: value }));
+    setError('');
+  };
+
+  const lookup = async () => {
+    if (!form.naitrustId?.trim()) return;
+    setLookingUp(true);
+    setMatched(false);
+    const result = await lookupNaitrustContact(form.naitrustId);
+    setLookingUp(false);
+    if (!result) { setError('No Naitrust account was found with this ID. You can still enter the contact manually.'); return; }
+    setForm((current) => ({ ...current, naitrustId: result.naitrustId, name: result.name, businessName: result.businessName ?? current.businessName, email: result.email ?? '', phone: result.phone ?? '', address: result.address ?? '', relation: result.isBusiness ? 'supplier' : current.relation }));
+    setMatched(true);
     setError('');
   };
 
@@ -89,13 +106,19 @@ export function AddCounterpartySheet({
           <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <UserRoundPlus size={20} />
           </div>
-          <SheetTitle className="text-xl">Add a customer or supplier</SheetTitle>
+          <SheetTitle className="text-xl">Add new</SheetTitle>
           <SheetDescription>
             Keep the contact and trading history your business needs in one place.
           </SheetDescription>
         </SheetHeader>
 
         <div className="space-y-5 px-6 py-2">
+          <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
+            <Label htmlFor="counterparty-naitrust-id">Naitrust ID <span className="font-normal text-muted-foreground">(optional)</span></Label>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">Find a registered customer or business and fill their verified contact details automatically.</p>
+            <div className="mt-3 flex gap-2"><Input id="counterparty-naitrust-id" value={form.naitrustId} onChange={(event) => { update('naitrustId', event.target.value); setMatched(false); }} placeholder="e.g. NT-PA-100001" /><Button type="button" variant="outline" className="shrink-0" disabled={!form.naitrustId?.trim() || lookingUp} onClick={() => void lookup()}>{lookingUp ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />} Find</Button></div>
+            {matched && <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-emerald-700"><BadgeCheck size={14} /> Naitrust account found. Contact details filled below.</p>}
+          </div>
           <div>
             <Label>Relationship</Label>
             <Select value={form.relation} onValueChange={(value) => update('relation', value as CreateCounterpartyInput['relation'])}>

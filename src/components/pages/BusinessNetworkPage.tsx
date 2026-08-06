@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Ban, BadgeCheck, Search, Send, Star, UserRoundPlus, Users } from 'lucide-react';
+import { Ban, BadgeCheck, ChevronRight, Search, Send, Star, Trash2, UserRoundPlus, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
@@ -14,6 +14,7 @@ import { Skeleton } from '../ui/skeleton';
 import {
   useCounterparties,
   useCreateCounterparty,
+  useRemoveCounterparty,
   useToggleFavouriteCounterparty,
 } from '../../hooks/useCounterparties';
 import {
@@ -27,6 +28,7 @@ export function BusinessNetworkPage() {
   const { data: counterparties, isLoading } = useCounterparties();
   const toggleFavourite = useToggleFavouriteCounterparty();
   const createCounterparty = useCreateCounterparty();
+  const removeCounterparty = useRemoveCounterparty();
   const [filter, setFilter] = useState<CounterpartyFilter>('all');
   const [search, setSearch] = useState('');
   const [showAddContact, setShowAddContact] = useState(false);
@@ -34,6 +36,12 @@ export function BusinessNetworkPage() {
   const addCounterparty = async (input: CreateCounterpartyInput) => {
     const response = await createCounterparty.mutateAsync(input);
     toast.success(`${response.data.name} was added to your ${input.relation} records.`);
+  };
+
+  const removeContact = async (id: string, name: string) => {
+    if (!window.confirm(`Remove ${name} from your customer and supplier list?`)) return;
+    await removeCounterparty.mutateAsync(id);
+    toast.success(`${name} was removed.`);
   };
 
   const filtered = useMemo(() => {
@@ -50,7 +58,8 @@ export function BusinessNetworkPage() {
         !query
         || contact.name.toLowerCase().includes(query)
         || contact.businessName?.toLowerCase().includes(query),
-      );
+      )
+      .sort((left, right) => Number(right.isFavourite) - Number(left.isFavourite) || left.name.localeCompare(right.name));
   }, [counterparties, filter, search]);
 
   return (
@@ -75,7 +84,7 @@ export function BusinessNetworkPage() {
                 <Send size={15} /> Pay someone
               </Button>
               <Button className="rounded-full" onClick={() => setShowAddContact(true)}>
-                <UserRoundPlus size={15} /> Add customer or supplier
+                <UserRoundPlus size={15} /> Add new
               </Button>
             </div>
           </div>
@@ -109,16 +118,15 @@ export function BusinessNetworkPage() {
             <p className="text-sm text-muted-foreground">Customers and suppliers you transact with will appear here.</p>
           </Card>
         ) : (
-          <Card className="mt-4 gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
-            <div className="hidden grid-cols-[minmax(0,1.4fr)_140px_120px_150px] gap-4 border-b bg-muted/40 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground md:grid">
+          <Card className="mt-4 gap-0 overflow-hidden rounded-2xl border-border/70 p-0 shadow-sm">
+            <div className="hidden grid-cols-[minmax(0,1fr)_130px_190px] gap-2 border-b bg-muted/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground md:grid">
               <span>Contact</span>
               <span>Relationship</span>
-              <span>History</span>
-              <span className="text-right">Actions</span>
+              <span>Actions</span>
             </div>
             {filtered.map((contact) => (
-              <div key={contact.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b px-3 py-3 last:border-b-0 hover:bg-muted/30 md:grid-cols-[minmax(0,1.4fr)_140px_120px_150px] md:gap-4 md:px-5 md:py-3.5">
-                <div className="flex min-w-0 items-center gap-3">
+              <div key={contact.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/60 px-3 py-3 last:border-b-0 hover:bg-muted/20 md:grid-cols-[minmax(0,1fr)_130px_190px] md:gap-2 md:px-5">
+                <button type="button" onClick={() => navigate(`/app/network/${contact.id}`)} className="flex min-w-0 items-center gap-3 text-left">
                   <CounterpartyAvatar name={contact.name} className="h-9 w-9 shrink-0 text-xs md:h-10 md:w-10" />
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
@@ -128,24 +136,17 @@ export function BusinessNetworkPage() {
                     </div>
                     <p className="mt-1 truncate text-xs text-muted-foreground">{contact.businessName ?? 'Individual account'}</p>
                   </div>
-                </div>
+                </button>
                 <div className="justify-self-end md:justify-self-auto">
                   <Badge variant="outline" className="rounded-full px-2 py-0.5 text-[11px] font-normal md:px-2.5 md:text-xs">{counterpartyRelationLabel(contact.relation)}</Badge>
                 </div>
-                <div className="flex min-w-0 items-center gap-2 md:block">
-                  <p className="text-xs font-medium text-muted-foreground md:text-sm md:text-foreground">{contact.completedDealsCount} completed</p>
-                  {contact.ratingAverage != null && <p className="text-xs text-muted-foreground md:mt-0.5">★ {contact.ratingAverage.toFixed(1)}</p>}
-                </div>
-                <div className="flex items-center justify-end gap-0.5 md:gap-1">
+                <div className="col-span-2 flex items-center justify-end gap-1 md:col-span-1 md:justify-start">
                   <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9" aria-label={contact.isFavourite ? 'Remove favourite' : 'Mark favourite'} onClick={() => toggleFavourite.mutate(contact.id)}>
                     <Star size={16} className={contact.isFavourite ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground'} />
                   </Button>
-                  <Button variant="outline" size="sm" className="h-8 rounded-full px-2.5 text-xs md:h-9 md:px-3" onClick={() => navigate('/app/payments/send')}>
-                    <Send size={13} /> Pay
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9" aria-label={`View ${contact.name}`} onClick={() => navigate(`/app/network/${contact.id}`)}>
-                    <ArrowRight size={15} />
-                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 rounded-full px-2.5 text-xs font-semibold text-primary md:h-9" onClick={() => navigate('/app/payments/send')}>Pay</Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive md:h-9 md:w-9" aria-label={`Remove ${contact.name}`} disabled={removeCounterparty.isPending} onClick={() => void removeContact(contact.id, contact.name)}><Trash2 size={14} /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground md:h-9 md:w-9" aria-label={`Open ${contact.name}`} onClick={() => navigate(`/app/network/${contact.id}`)}><ChevronRight size={16} /></Button>
                 </div>
               </div>
             ))}

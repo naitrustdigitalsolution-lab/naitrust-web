@@ -90,7 +90,7 @@ export function SavedCounterpartyPickerDialog({
       <SheetContent className="w-[94vw] gap-0 overflow-hidden p-0 sm:max-w-xl lg:max-w-2xl">
         <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
           <SheetTitle>{directoryMode ? 'Find on Naitrust' : 'Choose a saved contact'}</SheetTitle>
-          <SheetDescription>{directoryMode ? 'Quickly search verified Naitrust businesses and add one directly to this deal.' : 'Search saved beneficiaries and businesses, then add one to this deal.'}</SheetDescription>
+          <SheetDescription>{directoryMode ? 'Quickly search verified Naitrust accounts and add the right person or business directly to this deal.' : 'Search saved beneficiaries and businesses, then add one to this deal.'}</SheetDescription>
         </SheetHeader>
 
         <div className={`grid gap-3 px-5 pt-4 sm:px-6 ${directoryMode ? 'grid-cols-1' : 'sm:grid-cols-[minmax(0,1fr)_190px]'}`}>
@@ -148,6 +148,7 @@ export function SavedCounterpartyPickerDialog({
                         {(counterparty.identityVerified || counterparty.businessVerified) && <BadgeCheck size={13} className="shrink-0 text-emerald-600" />}
                       </span>
                       <span className="mt-0.5 block truncate text-xs text-muted-foreground">{contact}</span>
+                      {directoryMode && <span className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary"><span>{counterparty.businessName ? 'Business account' : 'Personal account'}</span>{counterparty.notes && <><span className="text-muted-foreground">•</span><span>{counterparty.notes}</span></>}</span>}
                       {!directoryMode && <span className="mt-1 block text-[10px] font-semibold uppercase tracking-wider text-primary">{counterparty.id.startsWith('ben_') ? 'Beneficiary' : counterparty.businessName ? 'Saved business' : counterpartyRelationLabel(counterparty.relation)}</span>}
                     </span>
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition ${selected ? 'bg-emerald-500/10 text-emerald-700' : 'bg-primary/10 text-primary'}`}>

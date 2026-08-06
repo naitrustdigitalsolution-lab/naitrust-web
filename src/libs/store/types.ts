@@ -868,6 +868,7 @@ export type CounterpartyRelation = 'supplier' | 'buyer' | 'contractor' | 'custom
 
 export interface CounterpartyProfile {
   id: string;
+  naitrustId?: string;
   name: string;
   businessName?: string;
   email?: string;

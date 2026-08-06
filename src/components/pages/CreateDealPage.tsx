@@ -85,6 +85,7 @@ import {
   type DealType,
   type PartyMode,
 } from '../../libs/store/types';
+import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
   { title: 'Start the deal', description: 'Choose what you are protecting and how money moves.' },
@@ -223,7 +224,8 @@ export function CreateDealPage() {
   const { data: directoryBusinesses = [] } = useBusinessSearch('');
   const { savedBusinessIds } = useSavedBusinesses();
   const businessContacts = useMemo<CounterpartyProfile[]>(() => directoryBusinesses.map((business) => ({ id: business.id, name: business.name, businessName: business.name, email: business.email, phone: business.phone, notes: business.ntId, avatarInitials: business.name.slice(0, 2).toUpperCase(), relation: 'supplier', identityVerified: business.verified, businessVerified: business.verified, memberSince: business.createdAt, completedDealsCount: business.completedProtectedTransactions ?? 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, ratingAverage: business.ratingAverage, isFavourite: savedBusinessIds.includes(business.id), isBlocked: false })), [directoryBusinesses, savedBusinessIds]);
-  const beneficiaryContacts = useMemo<CounterpartyProfile[]>(() => beneficiaries.map((beneficiary) => ({ id: beneficiary.id, name: beneficiary.name, email: beneficiary.email, phone: beneficiary.phone, avatarInitials: beneficiary.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: beneficiary.type === 'naitrust_user', businessVerified: false, memberSince: beneficiary.createdAt, completedDealsCount: 0, hasPriorTransactionWithYou: true, resolvedDisputesCount: 0, isFavourite: beneficiary.isFavourite, isBlocked: false, notes: beneficiary.naitrustId ?? beneficiary.naitrustAccountNumber ?? beneficiary.accountNumber })), [beneficiaries]);
+  const beneficiaryContacts = useMemo<CounterpartyProfile[]>(() => beneficiaries.map((beneficiary) => ({ id: beneficiary.id, name: beneficiary.name, businessName: beneficiary.naitrustId?.startsWith('NT-BIZ-') ? beneficiary.name : undefined, email: beneficiary.email, phone: beneficiary.phone, avatarInitials: beneficiary.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: beneficiary.type === 'naitrust_user', businessVerified: beneficiary.naitrustId?.startsWith('NT-BIZ-') ?? false, memberSince: beneficiary.createdAt, completedDealsCount: 0, hasPriorTransactionWithYou: true, resolvedDisputesCount: 0, isFavourite: beneficiary.isFavourite, isBlocked: false, notes: beneficiary.naitrustId ?? beneficiary.naitrustAccountNumber ?? beneficiary.accountNumber })), [beneficiaries]);
+  const personalDirectoryContacts = useMemo<CounterpartyProfile[]>(() => mockAuthUsers.users.filter(({ user: account }) => account.role === 'customer' && account.id !== user?.id).map(({ user: account }) => ({ id: account.id, naitrustId: account.naitrustId, name: account.name, email: account.email, phone: account.phone, notes: account.naitrustId, avatarInitials: account.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: account.kycVerified, businessVerified: false, memberSince: new Date().toISOString(), completedDealsCount: 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, isFavourite: false, isBlocked: false })), [user?.id]);
   const customerSavedContacts = useMemo(() => [...businessContacts.filter((business) => savedBusinessIds.includes(business.id)), ...beneficiaryContacts], [beneficiaryContacts, businessContacts, savedBusinessIds]);
 
   const requestedDraftId = searchParams.get('draft');
@@ -393,6 +395,10 @@ export function CreateDealPage() {
   const features = featuresForUseCase(form.useCase);
   const amountMinor = Math.round(Number(form.amount || 0) * 100);
   const isReleaser = form.role === 'buyer';
+  const expectedCounterpartyKind = form.partyMode === 'b2b' ? 'business' : form.partyMode === 'p2p' ? 'individual' : form.partyMode === 'b2c' ? (accountType === 'customer' ? 'business' : 'individual') : 'any';
+  const matchesExpectedKind = (contact: CounterpartyProfile) => expectedCounterpartyKind === 'any' || (expectedCounterpartyKind === 'business' ? Boolean(contact.businessName) : !contact.businessName);
+  const eligibleSavedCounterparties = (accountType === 'customer' ? customerSavedContacts : savedCounterparties).filter(matchesExpectedKind);
+  const eligibleDirectoryCounterparties = [...businessContacts, ...personalDirectoryContacts].filter(matchesExpectedKind);
   const multiParty = form.participants.length > 1;
   const myName = user?.name || 'You';
 
@@ -850,9 +856,10 @@ export function CreateDealPage() {
                   maxOpenDays={MAX_DEAL_OPEN_DAYS}
                   showAdvancedTiming={showAdvancedTiming}
                   canUseSavedContacts
-                  savedCounterparties={accountType === 'customer' ? customerSavedContacts : savedCounterparties}
+                  savedCounterparties={eligibleSavedCounterparties}
                   savedCounterpartiesLoading={savedCounterpartiesLoading}
-                  directoryCounterparties={businessContacts}
+                  directoryCounterparties={eligibleDirectoryCounterparties}
+                  expectedCounterpartyKind={expectedCounterpartyKind}
                   customerMode={accountType === 'customer'}
                   onAdvancedTimingChange={setShowAdvancedTiming}
                   onFieldChange={(field, value) => set(field, value)}

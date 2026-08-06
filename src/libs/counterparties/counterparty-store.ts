@@ -60,6 +60,10 @@ export function createMockCounterparty(input: CreateCounterpartyInput): Counterp
   return counterparty;
 }
 
+export function removeMockCounterparty(id: string): void {
+  writeCounterparties(listMockCounterparties().filter((counterparty) => counterparty.id !== id));
+}
+
 function updateMockCounterparty(
   id: string,
   update: (counterparty: CounterpartyProfile) => CounterpartyProfile,
@@ -93,4 +97,3 @@ export function listMockCounterpartyTransactions(counterpartyId: string): Counte
     .filter((transaction) => transaction.counterpartyId === counterpartyId)
     .sort((left, right) => right.completedAt.localeCompare(left.completedAt));
 }
-

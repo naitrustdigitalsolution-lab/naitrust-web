@@ -11,6 +11,7 @@ export type CounterpartyFilter =
 
 export interface CreateCounterpartyInput {
   name: string;
+  naitrustId?: string;
   businessName?: string;
   relation: 'customer' | 'supplier' | 'contractor' | 'agent';
   email?: string;

@@ -53,7 +53,7 @@ export function BusinessDiscoveryPage() {
     }).filter((business) => !showSavedOnly || savedBusinessIds.includes(business.id)),
     [businesses, category, location, minimumRating, query, savedBusinessIds, showSavedOnly, sort],
   );
-  const hasFilters = Boolean(query.trim()) || category !== 'all' || location !== 'all' || minimumRating !== '0';
+  const hasFilters = Boolean(query.trim()) || category !== 'all' || location !== 'all' || minimumRating !== '0' || showSavedOnly;
 
   const clearFilters = () => {
     setQuery('');
@@ -148,7 +148,7 @@ export function BusinessDiscoveryPage() {
                 </div>
               </Card>
             ))}
-            {filteredBusinesses.length === 0 && <Card className="border-[#071b31]/10 bg-[#c4e9fdb3] p-8 text-center text-sm text-[#35546f] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-muted-foreground md:col-span-2 xl:col-span-3">No verified businesses match these filters.</Card>}
+            {filteredBusinesses.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">No verified businesses match these filters.</div>}
           </div>
         )}
       </div>

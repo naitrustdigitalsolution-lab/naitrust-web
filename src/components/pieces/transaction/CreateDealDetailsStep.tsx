@@ -52,6 +52,7 @@ interface CreateDealDetailsStepProps {
   savedCounterpartiesLoading: boolean;
   directoryCounterparties: CounterpartyProfile[];
   customerMode: boolean;
+  expectedCounterpartyKind: 'business' | 'individual' | 'any';
   onAdvancedTimingChange: (open: boolean) => void;
   onFieldChange: (field: TextDetailField, value: string) => void;
   onTestingPeriodChange: (value?: ExtendedProductTestingDays) => void;
@@ -80,6 +81,7 @@ export function CreateDealDetailsStep({
   savedCounterpartiesLoading,
   directoryCounterparties,
   customerMode,
+  expectedCounterpartyKind,
   onAdvancedTimingChange,
   onFieldChange,
   onTestingPeriodChange,
@@ -144,6 +146,7 @@ export function CreateDealDetailsStep({
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
                 They can receive it by email, SMS, or WhatsApp and join this deal on Naitrust.
               </p>
+              {expectedCounterpartyKind !== 'any' && <p className="mt-1 text-xs font-medium text-primary">Showing {expectedCounterpartyKind === 'business' ? 'business accounts only' : 'individuals only'} for this deal setup.</p>}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <SavedCounterpartyPickerDialog counterparties={directoryCounterparties} isLoading={savedCounterpartiesLoading} selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])} selectedIdentifiers={form.participants.flatMap((participant) => [participant.contact, participant.name])} onSelect={onSelectCounterparty} onDeselect={onDeselectCounterparty} customerMode={customerMode} directoryMode />

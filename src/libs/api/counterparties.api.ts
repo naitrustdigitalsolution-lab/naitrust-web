@@ -19,6 +19,7 @@ import {
   listMockCounterpartyTransactions,
   toggleMockCounterpartyBlocked,
   toggleMockCounterpartyFavourite,
+  removeMockCounterparty,
 } from '../counterparties/counterparty-store';
 import type { CreateCounterpartyInput, CounterpartyTransaction } from '../counterparties/types';
 
@@ -51,6 +52,12 @@ export const counterpartiesApi = {
   create: async (input: CreateCounterpartyInput): Promise<ApiSuccess<CounterpartyProfile>> => {
     await delay(300);
     return { success: true, data: createMockCounterparty(input) };
+  },
+
+  remove: async (id: string): Promise<ApiSuccess<null>> => {
+    await delay(250);
+    removeMockCounterparty(id);
+    return { success: true, data: null, message: 'Contact removed' };
   },
 
   /** Frontend mock only; transaction rows are stored in a separate fixture. */

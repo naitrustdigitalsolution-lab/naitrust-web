@@ -43,6 +43,14 @@ export function useCreateCounterparty() {
   });
 }
 
+export function useRemoveCounterparty() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => counterpartiesApi.remove(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: COUNTERPARTIES_QUERY_KEY }),
+  });
+}
+
 export function useToggleFavouriteCounterparty() {
   const queryClient = useQueryClient();
   return useMutation({

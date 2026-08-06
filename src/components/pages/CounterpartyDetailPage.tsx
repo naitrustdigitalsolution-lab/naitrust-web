@@ -75,7 +75,7 @@ export function CounterpartyDetailPage() {
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div><p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Relationship workspace</p><h2 className="mt-1 text-2xl font-bold tracking-tight">Contact overview</h2></div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/payments/send')}><Send size={15} /> Pay</Button>
+                <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/payments/send')}><Send size={15} /> Send Money</Button>
                 <Button variant="outline" className="rounded-full" onClick={startProtectedDeal}><ShieldCheck size={15} /> Start Protected Deal</Button>
                 <Button className="rounded-full" onClick={() => void generateReport()} disabled={generatingReport || transactionsLoading}>
                   {generatingReport ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />} Generate report
@@ -104,4 +104,3 @@ export function CounterpartyDetailPage() {
     </DashboardLayout>
   );
 }
-

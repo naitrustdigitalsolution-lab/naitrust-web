@@ -9,7 +9,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Download, HandCoins, Send, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, Download, HandCoins, ReceiptText, Send, ShieldCheck, Users } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { Button } from '../ui/button';
@@ -23,12 +23,13 @@ const BUSINESS_QUICK_LINKS = [
   { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
   { label: 'Saved Recipients', path: '/app/payments/beneficiaries', icon: Users },
   { label: 'Payment Requests', path: '/app/payments/requests', icon: HandCoins },
-  // Bills stays dormant until the product owner explicitly re-enables it.
+  { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
 ];
 
 const CUSTOMER_QUICK_LINKS = [
   { label: 'Receive Money', path: '/app/payments/receive', icon: Download },
   { label: 'Saved Recipients', path: '/app/payments/beneficiaries', icon: Users },
+  { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
 ];
 
 export function PaymentsHubPage() {

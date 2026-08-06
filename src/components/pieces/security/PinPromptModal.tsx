@@ -21,6 +21,7 @@ interface PinPromptModalProps {
   onVerified: () => void;
   title?: string;
   description?: string;
+  warning?: string;
 }
 
 export function PinPromptModal({
@@ -29,6 +30,7 @@ export function PinPromptModal({
   onVerified,
   title = 'Enter your transaction PIN',
   description = 'For your security, confirm this action with your 4-digit PIN.',
+  warning,
 }: PinPromptModalProps) {
   const navigate = useNavigate();
   const { pinSet, pin: setPinValue } = useSecurity();
@@ -75,6 +77,8 @@ export function PinPromptModal({
           </DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
+
+        {warning && <div className="rounded-xl border border-destructive/25 bg-destructive/[0.06] px-3.5 py-3 text-xs font-medium leading-5 text-destructive">{warning}</div>}
 
         {!pinSet ? (
           <div className="flex flex-col items-center gap-3 py-4 text-center">

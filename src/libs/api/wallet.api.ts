@@ -24,12 +24,35 @@ import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 400;
 let mockAvailableMinor: number | undefined;
+const mockBillActivity: WalletActivityEvent[] = [];
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export const walletApi = {
+  payBill: async (amountMinor: number, description: string): Promise<ApiSuccess<WalletAccount>> => {
+    if (!appConfig.isMock) throw new Error('Bill payment is handled by the bills API.');
+    await delay(MOCK_LATENCY_MS);
+    const current = mockWallet as ApiSuccess<WalletAccount>;
+    const available = mockAvailableMinor ?? current.data.balance.availableMinor;
+    if (amountMinor <= 0) throw new Error('Enter a valid amount.');
+    if (amountMinor > available) throw new Error('Your available NaiTrust balance is not enough for this payment.');
+    mockAvailableMinor = available - amountMinor;
+    mockBillActivity.unshift({
+      id: `wact_bill_${crypto.randomUUID()}`,
+      kind: 'bill_payment',
+      amountMinor,
+      currency: 'NGN',
+      description,
+      createdAt: new Date().toISOString(),
+    });
+    return {
+      success: true,
+      message: 'Bill paid from NaiTrust balance',
+      data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor }, totalOutflowMinor: current.data.totalOutflowMinor + amountMinor },
+    };
+  },
   /**
    * Get the current user's wallet: available, pending and protected
    * balances kept as distinct fields; the UI must never present protected
@@ -145,7 +168,8 @@ export const walletApi = {
   getActivity: async (): Promise<ApiSuccess<WalletActivityEvent[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return mockWalletActivity as ApiSuccess<WalletActivityEvent[]>;
+      const current = mockWalletActivity as ApiSuccess<WalletActivityEvent[]>;
+      return { ...current, data: [...mockBillActivity, ...current.data] };
     }
     const response = await httpClient.get<WalletActivityEvent[]>(endpoints.wallet.activity);
     return response as ApiSuccess<WalletActivityEvent[]>;

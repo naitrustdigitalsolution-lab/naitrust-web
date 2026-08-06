@@ -323,7 +323,7 @@ function PublicAppContent() {
             <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/beneficiaries" element={<DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/bills" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/bills" element={<DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense>} />
             <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
             <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/network/:counterpartyId" element={<RequireBusinessAccount><DashboardRouteSuspense><CounterpartyDetailPage /></DashboardRouteSuspense></RequireBusinessAccount>} />

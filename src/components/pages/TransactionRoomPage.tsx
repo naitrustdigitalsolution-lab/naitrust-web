@@ -334,6 +334,7 @@ function ActivityTab({ events }: { events: DealActivityEvent[] }) {
 }
 
 function OverviewTab({ deal }: { deal: SafeDealDetail }) {
+  const hasSplitPayment = Boolean(deal.initialPaymentMinor && deal.remainingPaymentMinor);
   return (
     <div className="space-y-5">
       {deal.description && (
@@ -345,15 +346,44 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
         </div>
       )}
 
+      {hasSplitPayment && (
+        <div className="rounded-2xl border border-primary/15 bg-primary/[0.04] p-4 sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-bold text-foreground">Split payment</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">The first payment is protected now, and Naitrust tracks the remaining balance for the next stage.</p>
+            </div>
+            <p className="text-sm font-semibold tabular-nums text-foreground">Total {formatMinorAmount(deal.amountMinor, deal.currency)}</p>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border bg-background px-4 py-3">
+              <p className="text-xs text-muted-foreground">First payment</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{formatMinorAmount(deal.initialPaymentMinor!, deal.currency)}</p>
+            </div>
+            <div className="rounded-xl border bg-background px-4 py-3">
+              <p className="text-xs text-muted-foreground">Remaining payment</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{formatMinorAmount(deal.remainingPaymentMinor!, deal.currency)}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">Locked until the first payment is released successfully.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <dl className="divide-y divide-border rounded-xl border">
         <div className="flex gap-4 px-4 py-3">
           <dt className="w-40 shrink-0 text-sm text-muted-foreground">Next milestone</dt>
           <dd className="text-sm font-medium text-foreground">{deal.deliveryDueDate}</dd>
         </div>
         <div className="flex gap-4 px-4 py-3">
-          <dt className="w-40 shrink-0 text-sm text-muted-foreground">Release conditions</dt>
+          <dt className="w-40 shrink-0 text-sm text-muted-foreground">{hasSplitPayment ? 'First payment release' : 'Release conditions'}</dt>
           <dd className="min-w-0 flex-1 text-sm font-medium text-foreground">{deal.releaseConditions}</dd>
         </div>
+        {hasSplitPayment && deal.nextPaymentReleaseConditions && (
+          <div className="flex gap-4 px-4 py-3">
+            <dt className="w-40 shrink-0 text-sm text-muted-foreground">Next payment unlock</dt>
+            <dd className="min-w-0 flex-1 text-sm font-medium text-foreground">{deal.nextPaymentReleaseConditions}</dd>
+          </div>
+        )}
       </dl>
 
       <div>
@@ -377,7 +407,7 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
             Download agreement
           </Button>
         </div>
-        <AgreementDocument agreement={deal.agreement} scrollable hideAiNote />
+        <AgreementDocument agreement={deal.agreement} scrollable hideAiNote collapsible />
       </div>
     </div>
   );
@@ -392,6 +422,8 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
   const revert = useRevertTracking(deal.id);
   const hasNext = deal.milestones.some((m) => m.status === 'current' || m.status === 'pending');
   const nextStage = deal.milestones.find((m) => m.status === 'current' || m.status === 'pending');
+  const needsDeliveryCode = nextStage?.title === 'Dispatched' && deal.delivery.card?.status !== 'active';
+  const requiresBuyerConfirmation = nextStage?.title === 'Delivered & confirmed';
   // Something to revert exists once at least one stage is done.
   const canRevert = deal.milestones.some((m) => m.status === 'done');
 
@@ -415,7 +447,7 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
                   onSuccess: () => toast.success('Tracking advanced.'),
                 })
               }
-              disabled={advance.isPending}
+              disabled={advance.isPending || needsDeliveryCode || requiresBuyerConfirmation}
             >
               <MapPin size={14} className="mr-1.5" />
               Mark "{nextStage?.title}" done
@@ -441,6 +473,8 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
             <Plus size={14} className="mr-1.5" />
             Add custom step
           </Button>
+          {needsDeliveryCode && <p className="basis-full text-right text-[11px] text-muted-foreground">Create the buyer's delivery code before marking this order as dispatched.</p>}
+          {requiresBuyerConfirmation && <p className="basis-full text-right text-[11px] text-muted-foreground">Only the buyer can complete delivery confirmation using the handover code.</p>}
         </div>
       )}
 

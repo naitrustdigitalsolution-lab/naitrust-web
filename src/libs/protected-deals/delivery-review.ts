@@ -55,7 +55,7 @@ export function requiredProductEvidence(evidence: DealEvidenceItem[]) {
 }
 
 export function hasRequiredProductEvidence(evidence: DealEvidenceItem[]): boolean {
-  return requiredProductEvidence(evidence).every((requirement) => requirement.complete);
+  return evidence.length > 0;
 }
 
 export function emptyDeliveryLifecycle(

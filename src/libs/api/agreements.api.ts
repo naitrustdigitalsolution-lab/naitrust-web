@@ -23,6 +23,8 @@ export interface DraftAgreementInput {
   title: string;
   description: string;
   amountMinor: number;
+  initialPaymentMinor?: number;
+  nextPaymentReleaseConditions?: string;
   currency: string;
   deliveryDueDate: string;
   releaseConditions: string;
@@ -37,6 +39,12 @@ function delay(ms: number): Promise<void> {
 
 function buildMockDraft(input: DraftAgreementInput, version: number): AgreementDraft {
   const amount = formatMinorAmount(input.amountMinor, input.currency);
+  const firstPayment = input.initialPaymentMinor && input.initialPaymentMinor < input.amountMinor
+    ? formatMinorAmount(input.initialPaymentMinor, input.currency)
+    : null;
+  const remainingPayment = firstPayment
+    ? formatMinorAmount(input.amountMinor - input.initialPaymentMinor!, input.currency)
+    : null;
   const reviewWindow = input.extendedProductTestingDays
     ? `${input.extendedProductTestingDays}-day extended product testing period`
     : 'standard 24-hour funding-review period';
@@ -50,7 +58,9 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
       },
       {
         heading: 'Protected payment',
-        body: `The Buyer will fund ${amount} into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met.`,
+        body: firstPayment
+          ? `The total deal value is ${amount}. The Buyer will first fund ${firstPayment} into a partner-issued virtual account operated by a regulated payment partner. Naitrust will track the remaining ${remainingPayment}. The remaining payment becomes due only after this condition is confirmed: ${input.nextPaymentReleaseConditions}`
+          : `The Buyer will fund ${amount} into a partner-issued virtual account operated by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met.`,
       },
       {
         heading: 'Delivery obligations',
@@ -58,7 +68,9 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
       },
       {
         heading: 'Release conditions',
-        body: `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten-minute handover review, followed by the ${reviewWindow}. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
+        body: firstPayment
+          ? `Payments are released separately. The first payment releases only after this condition is met: ${input.releaseConditions} Receipt starts a ten-minute handover review followed by the ${reviewWindow}. The second payment remains locked until the first payment has been released successfully, then requires this condition: ${input.nextPaymentReleaseConditions} Each release has its own review period. The Seller may request a release, but only the Buyer can approve an early release with a transaction PIN. A dispute opened before either deadline blocks that release.`
+          : `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten-minute handover review, followed by the ${reviewWindow}. The Seller may request release. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
       },
       {
         heading: 'Product checks and consumer rights',

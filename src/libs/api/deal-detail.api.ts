@@ -413,18 +413,28 @@ function activityFor(summary: SafeDealSummary): DealActivityEvent[] {
   const idx = STATUS_ORDER.indexOf(summary.status);
   const reached = (s: SafeDealStatus) => idx >= STATUS_ORDER.indexOf(s) && STATUS_ORDER.indexOf(s) !== -1;
 
-  if (reached('terms_agreed') || summary.status === 'disputed')
+  if (summary.status === 'terms_negotiation')
+    events.push({ id: 'a_terms', kind: 'agreed', message: 'The counterparty proposed changes to the deal terms.', createdAt: at() });
+  if (reached('terms_agreed') || summary.status === 'disputed' || summary.status === 'refunded')
     events.push({ id: 'a1', kind: 'accepted', message: `${summary.counterpartyName} accepted the invitation and agreement.`, createdAt: at() });
-  if (reached('funded') || summary.status === 'disputed')
-    events.push({ id: 'a2', kind: 'funded', message: `Buyer funded the partner virtual account (${formatMinorAmount(summary.amountMinor, summary.currency)}).`, createdAt: at() });
+  if (reached('funded') || summary.status === 'disputed' || summary.status === 'refunded')
+    events.push({ id: 'a2', kind: 'funded', message: `Buyer funded the partner virtual account (${formatMinorAmount(summary.initialPaymentMinor ?? summary.amountMinor, summary.currency)}${summary.remainingPaymentMinor ? ' first payment' : ''}).`, createdAt: at() });
+  if (reached('in_progress') || summary.status === 'disputed')
+    events.push({ id: 'a_dispatch', kind: 'delivery', message: 'The seller marked the order as dispatched.', createdAt: at() });
   if (reached('evidence_submitted') || summary.status === 'disputed')
     events.push({ id: 'a3', kind: 'evidence', message: `${summary.counterpartyName} submitted delivery evidence.`, createdAt: at() });
+  if (reached('buyer_review'))
+    events.push({ id: 'a_review', kind: 'review', message: 'Delivery was confirmed and the payment review period started.', createdAt: at() });
   if (summary.status === 'disputed')
     events.push({ id: 'a4', kind: 'dispute', message: 'A dispute was opened. Release is paused pending review.', createdAt: at() });
   if (reached('paid_out'))
     events.push({ id: 'a5', kind: 'released', message: 'Funds released to the seller by the partner.', createdAt: at() });
   if (reached('completed'))
     events.push({ id: 'a6', kind: 'completed', message: 'Transaction completed. Reputation updated.', createdAt: at() });
+  if (summary.status === 'refunded')
+    events.push({ id: 'a_refund', kind: 'released', message: 'The protected payment was returned to the buyer.', createdAt: at() });
+  if (summary.status === 'cancelled')
+    events.push({ id: 'a_cancel', kind: 'message', message: 'The deal was cancelled before payment release.', createdAt: at() });
 
   return events.reverse(); // newest first
 }
@@ -458,47 +468,80 @@ function milestoneProgress(status: SafeDealStatus): number {
   }
 }
 
-function milestonesFor(summary: SafeDealSummary): DealMilestone[] {
+function milestonesFor(summary: SafeDealSummary, sellerName = 'Seller'): DealMilestone[] {
   const reached = milestoneProgress(summary.status);
+  // Funding confirms the order, but it does not prove dispatch. The seller
+  // must explicitly complete the Dispatched step after creating the delivery
+  // handover code.
+  const waitingForDispatch = summary.status === 'funded';
   const base = new Date(summary.createdAt).getTime();
   return MILESTONE_STAGES.map((stage, i) => {
     let status: MilestoneStatus = 'pending';
     if (i < reached) status = 'done';
-    else if (i === reached) status = 'current';
+    else if (i === reached && !waitingForDispatch) status = 'current';
     return {
       id: `ms_${i}`,
       title: stage.title,
       description: stage.description,
       status,
-      updatedByName: status === 'done' ? summary.counterpartyName : undefined,
+      updatedByName: status === 'done' ? sellerName : undefined,
       at: status === 'done' ? new Date(base + (i + 1) * 86400000).toISOString() : undefined,
     };
   });
 }
 
-function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefined): AgreementDraft {
+function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefined, youAreSeller: boolean): AgreementDraft {
   const amount = formatMinorAmount(summary.amountMinor, summary.currency);
+  const firstPayment = summary.initialPaymentMinor && summary.remainingPaymentMinor
+    ? formatMinorAmount(summary.initialPaymentMinor, summary.currency)
+    : null;
+  const remainingPayment = summary.remainingPaymentMinor
+    ? formatMinorAmount(summary.remainingPaymentMinor, summary.currency)
+    : null;
+  const releaseCondition = overlay?.releaseConditions ?? `The agreed goods, service, or documents for ${summary.title} are delivered, checked, and accepted in the Transaction Room.`;
+  const deliveryDue = new Date(new Date(summary.createdAt).getTime() + 10 * 86400000).toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
+  const sections: AgreementDraft['sections'] = [
+    {
+      heading: 'Parties and purpose',
+      body: `This Protected Deal is between you (the ${youAreSeller ? 'Seller' : 'Buyer'}) and ${summary.counterpartyName} (the ${youAreSeller ? 'Buyer' : 'Seller'}) for ${summary.title}. Both parties agree to keep payment, evidence, messages, and decisions in the Naitrust Transaction Room.`,
+    },
+    {
+      heading: 'Scope and delivery',
+      body: `The Seller must complete the agreed order or service on or before ${deliveryDue}. Delivery evidence should clearly show the item, work, quantity, condition, and any documents needed to verify that ${summary.title} matches the agreement.`,
+    },
+    {
+      heading: 'Protected payment',
+      body: firstPayment
+        ? `The total deal value is ${amount}. The first protected payment is ${firstPayment}, and Naitrust tracks the remaining ${remainingPayment}. Funds move through a partner-issued account operated by a regulated payment provider. Naitrust does not hold customer funds directly.`
+        : `The Buyer funds ${amount} through a partner-issued account operated by a regulated payment provider. Naitrust does not hold customer funds directly, and the payment remains protected until the agreed release process is completed.`,
+    },
+    {
+      heading: firstPayment ? 'First payment release' : 'Release conditions',
+      body: `${releaseCondition} Once the condition is confirmed, the standard 24-hour funding review begins. The Seller may request release, but that request cannot move money by itself.`,
+    },
+  ];
+  if (firstPayment) sections.push({
+    heading: 'Second payment and stage lock',
+    body: `The remaining ${remainingPayment} stays locked until the first payment is released successfully. It becomes eligible only after this condition is completed: ${summary.nextPaymentReleaseConditions ?? 'the next agreed delivery stage is completed and accepted'}. The second payment then receives its own 24-hour review period.`,
+  });
+  sections.push(
+    {
+      heading: 'Review period and early release',
+      body: 'Every payment release has a 24-hour review period. The Buyer may approve release earlier with a transaction PIN after reviewing a warning that the remaining delay will be bypassed. Early approval applies only to the payment stage currently eligible for release.',
+    },
+    {
+      heading: 'Evidence, issues, and disputes',
+      body: 'Either party may upload supporting evidence or report a problem before release. An open dispute pauses the affected payment. Naitrust reviews the agreement, messages, delivery records, and evidence before documenting a release, refund, replacement, or agreed split outcome.',
+    },
+    {
+      heading: 'Acceptance and record',
+      body: 'By accepting, both parties confirm that these terms reflect their agreement. Accepted terms are frozen for this version, changes require a newly accepted version, and the completed transaction remains available as a record for both parties.',
+    },
+  );
   return {
     version: 1,
     generatedByAi: false,
-    sections: [
-      {
-        heading: 'Parties and purpose',
-        body: `This safe deal agreement covers "${summary.title ?? summary.counterpartyName}" between you (the Buyer) and ${summary.counterpartyName} (the Seller).`,
-      },
-      {
-        heading: 'Protected payment',
-        body: `The Buyer funds ${amount} into a partner-issued virtual account. Naitrust never holds the funds directly.`,
-      },
-      {
-        heading: 'Release conditions',
-        body: overlay?.releaseConditions ?? 'After receipt, the Buyer completes the handover review. Funds release only after the following funding-review period ends without a dispute, or the Buyer approves early release.',
-      },
-      {
-        heading: 'Product review and consumer rights',
-        body: 'The standard funding-review period is 24 hours after handover. This controls only the Naitrust partner-funding release deadline and does not remove statutory, manufacturer, or seller warranty rights.',
-      },
-    ],
+    sections,
   };
 }
 
@@ -515,27 +558,49 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   const input = createdDeal?.input;
   const overlay = DETAIL_OVERLAY[summary.id];
   const created = new Date(summary.createdAt).getTime();
-  const dealType: DealType = input?.dealType ?? overlay?.dealType ?? 'single';
+  const dealType: DealType = input?.dealType ?? overlay?.dealType ?? (summary.remainingPaymentMinor ? 'milestone' : 'single');
   const extendedProductTestingDays = input?.extendedProductTestingDays;
   reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays);
   if (['cancelled', 'refunded'].includes(summary.status)) invalidateDeliveryCard(summary.id);
   const runtime = getMockDealRuntime(summary.id);
-  const signedInAccountRole = useAuthStore.getState().user?.role;
+  const signedInUser = useAuthStore.getState().user;
+  const signedInAccountRole = signedInUser?.role;
   const productBuyerView = summary.id === 'txn_mock_029' && signedInAccountRole === 'customer';
+  const seededOwnerId = (summary as SafeDealSummary & { createdByUserId?: string }).createdByUserId;
+  const seededOwnerNames: Record<string, string> = {
+    usr_mock_001: 'Amaka Eze',
+    usr_mock_002: 'Chidi Okonkwo',
+    usr_mock_003: 'Adaeze Homes & Properties Ltd',
+    usr_mock_004: 'Emeka Trade & Logistics Ltd',
+    usr_mock_006: 'Tunde Balogun',
+    usr_mock_007: 'Aisha Lawal',
+  };
+  const viewingSeededDealAsParticipant = summary.id.startsWith('deal_') && signedInUser?.id !== seededOwnerId;
   const effectiveSummary: SafeDealSummary = {
     ...summary,
-    counterpartyName: productBuyerView ? 'Ayo Mobile Supplies Ltd' : summary.counterpartyName,
+    initialPaymentMinor: summary.initialPaymentMinor ?? input?.initialPaymentMinor,
+    remainingPaymentMinor: summary.remainingPaymentMinor ?? input?.remainingPaymentMinor,
+    nextPaymentReleaseConditions: summary.nextPaymentReleaseConditions ?? input?.nextPaymentReleaseConditions,
+    counterpartyName: productBuyerView ? 'Ayo Mobile Supplies Ltd' : viewingSeededDealAsParticipant ? (seededOwnerNames[seededOwnerId ?? ''] ?? summary.counterpartyName) : summary.counterpartyName,
     status: runtime?.status ?? summary.status,
   };
   // On tracked (milestone) deals you play the seller who delivers and updates
   // tracking; on other deals you're the buyer who funds and confirms.
+  const seededCreatorIsSeller = summary.id.startsWith('deal_adaeze_aisha_') || summary.id.startsWith('deal_emeka_customer_') || summary.id.startsWith('deal_tunde_');
+  const seededViewerIsSeller = signedInUser?.id === seededOwnerId ? seededCreatorIsSeller : !seededCreatorIsSeller;
   const youAreSeller = input
     ? input.role === 'seller'
     : overlay?.youAreSeller ?? (summary.id === 'txn_mock_029'
       ? !productBuyerView
-      : dealType === 'milestone');
-  const milestones =
-    trackingOverrides[summary.id] ?? (dealType === 'milestone' ? milestonesFor(effectiveSummary) : []);
+      : summary.id.startsWith('deal_') ? seededViewerIsSeller : dealType === 'milestone');
+  const inferredPartyMode: PartyMode = summary.id.includes('_person_') || summary.id === 'deal_amaka_02'
+    ? 'p2p'
+    : summary.id.includes('_business_') || summary.id.startsWith('deal_adaeze_emeka_') || summary.id.startsWith('deal_tunde_')
+      ? 'b2b'
+      : 'b2c';
+  const milestones = trackingOverrides[summary.id] ?? (dealType === 'milestone'
+    ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName)
+    : []);
   const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
   return {
     ...effectiveSummary,
@@ -543,7 +608,7 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
     useCase: input?.useCase ?? overlay?.useCase ?? 'supplier-orders',
     dealType,
-    partyMode: input?.partyMode ?? overlay?.partyMode ?? 'b2b',
+    partyMode: input?.partyMode ?? overlay?.partyMode ?? inferredPartyMode,
     deliveryDueDate: input?.deliveryDueDate ?? new Date(created + 10 * 86400000).toISOString().slice(0, 10),
     releaseConditions:
       input?.releaseConditions ?? overlay?.releaseConditions ?? 'Handover and funding review complete without a dispute, or the buyer approves early release.',
@@ -552,8 +617,8 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     recurring: overlay?.recurring ?? dealType === 'recurring',
     previousReference: overlay?.previousReference,
     parties: input ? partiesForCreatedDeal(effectiveSummary, input) : partiesFor(effectiveSummary, youAreSeller),
-    agreement: input?.agreement ?? agreementFor(effectiveSummary, overlay),
-    funding: fundingFor(effectiveSummary.status, summary.amountMinor, summary.currency),
+    agreement: input?.agreement ?? agreementFor(effectiveSummary, overlay, youAreSeller),
+    funding: fundingFor(effectiveSummary.status, effectiveSummary.initialPaymentMinor ?? effectiveSummary.amountMinor, effectiveSummary.currency),
     evidence,
     activity: [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
     milestones,
@@ -703,6 +768,19 @@ export const dealDetailApi = {
         if (next !== -1) list[next] = { ...list[next], status: 'current' };
       }
       trackingOverrides[id] = [...list];
+      const completedStep = idx !== -1 ? list[idx] : undefined;
+      if (completedStep) {
+        const runtime = getMockDealRuntime(id);
+        const nextStatus: SafeDealStatus = completedStep.title === 'Arrived'
+          ? 'evidence_submitted'
+          : completedStep.title === 'Order confirmed'
+            ? 'funded'
+            : 'in_progress';
+        patchMockDealRuntime(id, {
+          status: nextStatus,
+          activity: [{ id: `activity_${crypto.randomUUID()}`, kind: 'delivery', message: `Seller marked "${completedStep.title}" as completed.`, createdAt: new Date().toISOString() }, ...(runtime?.activity ?? [])],
+        });
+      }
       return { success: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.advanceTracking(id));

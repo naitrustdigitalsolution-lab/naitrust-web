@@ -9,7 +9,8 @@
  * offered while creating a deal or when renegotiating: guardrails).
  */
 
-import { FileText, Sparkles } from 'lucide-react';
+import { ChevronDown, FileText, Sparkles } from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '../../ui/badge';
 import { Textarea } from '../../ui/textarea';
 import type { AgreementDraft } from '../../../libs/store/types';
@@ -22,6 +23,8 @@ interface AgreementDocumentProps {
   editable?: boolean;
   /** Hide the AI-drafted note (e.g. on an already-agreed deal being viewed). */
   hideAiNote?: boolean;
+  /** Show a short preview first, with a control to reveal every clause. */
+  collapsible?: boolean;
   onChange?: (next: AgreementDraft) => void;
 }
 
@@ -30,8 +33,10 @@ export function AgreementDocument({
   scrollable = false,
   editable = false,
   hideAiNote = false,
+  collapsible = false,
   onChange,
 }: AgreementDocumentProps) {
+  const [expanded, setExpanded] = useState(!collapsible);
   const editBody = (index: number, body: string) => {
     if (!onChange) return;
     onChange({
@@ -48,15 +53,15 @@ export function AgreementDocument({
           <p className="text-sm font-semibold text-foreground">Protected Deal agreement</p>
           <span className="text-xs text-muted-foreground">v{agreement.version}</span>
         </div>
-        {agreement.generatedByAi && !hideAiNote && (
+        <div className="flex items-center gap-2">{agreement.generatedByAi && !hideAiNote && (
           <Badge variant="outline" className="gap-1 text-xs">
             <Sparkles size={12} className="text-primary" />
             {editable ? 'AI-drafted · editable' : 'AI-drafted · review before accepting'}
           </Badge>
-        )}
+        )}{collapsible && <button type="button" onClick={() => setExpanded((current) => !current)} className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-primary/10">{expanded ? 'Show less' : 'View full agreement'}<ChevronDown size={14} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} /></button>}</div>
       </div>
       <ol className={`space-y-4 px-4 py-4 ${scrollable ? 'max-h-72 overflow-y-auto' : ''}`}>
-        {agreement.sections.map((section, i) => (
+        {(expanded ? agreement.sections : agreement.sections.slice(0, 2)).map((section, i) => (
           <li key={section.heading} className="flex gap-3">
             <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
               {i + 1}
@@ -77,6 +82,7 @@ export function AgreementDocument({
           </li>
         ))}
       </ol>
+      {collapsible && !expanded && agreement.sections.length > 2 && <button type="button" onClick={() => setExpanded(true)} className="flex w-full items-center justify-center gap-1.5 border-t bg-muted/20 px-4 py-3 text-xs font-semibold text-primary hover:bg-muted/40">View all {agreement.sections.length} clauses<ChevronDown size={14} /></button>}
     </div>
   );
 }

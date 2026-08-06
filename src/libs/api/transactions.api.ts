@@ -14,7 +14,7 @@ import { appConfig } from '../../configs/env';
 import type { CreateSafeDealInput, CreateSafeDealResult, SafeDealSummary } from '../store/types';
 import mockTransactions from '../../mocks/apis/transactions.json';
 import type { ApiSuccess } from './types';
-import { listMockCreatedDeals, saveMockCreatedDeal } from './mock-protected-deal-store';
+import { getMockDealRuntime, listMockCreatedDeals, saveMockCreatedDeal } from './mock-protected-deal-store';
 import { useAuthStore } from '../store/auth.store';
 import { canMockUserAccessDeal } from './mock-deal-access';
 
@@ -37,6 +37,7 @@ export const transactionsApi = {
       const userId = useAuthStore.getState().user?.id;
       const visibleDeals = [...created, ...fixture]
         .filter((deal) => canMockUserAccessDeal(deal, userId))
+        .map((deal) => ({ ...deal, status: getMockDealRuntime(deal.id)?.status ?? deal.status }))
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       return { success: true, data: visibleDeals };
     }
@@ -67,6 +68,9 @@ export const transactionsApi = {
         title: input.title,
         counterpartyName,
         amountMinor: input.amountMinor,
+        initialPaymentMinor: input.initialPaymentMinor,
+        remainingPaymentMinor: input.remainingPaymentMinor,
+        nextPaymentReleaseConditions: input.nextPaymentReleaseConditions,
         currency: input.currency,
         status: 'pending_counterparty',
         createdAt: now.toISOString(),

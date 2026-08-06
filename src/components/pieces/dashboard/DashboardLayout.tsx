@@ -24,6 +24,7 @@ import {
   Users,
   HandCoins,
   Receipt,
+  ReceiptText,
   Building2,
   Search,
   MessageCircle,
@@ -100,7 +101,7 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
       { label: 'Send Money', path: '/app/payments', icon: Send },
-      // Bills stays dormant until the product owner explicitly re-enables it.
+      { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
     ],
   },
   {
@@ -138,6 +139,7 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
       { label: 'Send Money', path: '/app/payments', icon: Send },
       { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
       { label: 'Transaction History', path: '/app/transactions', icon: Receipt },
+      { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
     ],
   },
   {

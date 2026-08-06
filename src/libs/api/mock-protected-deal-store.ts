@@ -6,7 +6,7 @@ import type {
   SafeDealStatus,
 } from '../store/types';
 
-const STORAGE_KEY = 'naitrust:protected-deal-runtime:v1';
+const STORAGE_KEY = 'naitrust:protected-deal-runtime:v2';
 
 export interface MockCreatedDeal {
   summary: CreateSafeDealResult;
@@ -28,12 +28,12 @@ export function grantMockDealAccess(dealId: string, userId: string): void {
 }
 
 interface MockProtectedDealState {
-  version: 1;
+  version: 2;
   createdDeals: MockCreatedDeal[];
   deals: Record<string, MockDealRuntime>;
 }
 
-const EMPTY_STATE: MockProtectedDealState = { version: 1, createdDeals: [], deals: {} };
+const EMPTY_STATE: MockProtectedDealState = { version: 2, createdDeals: [], deals: {} };
 
 function canUseStorage(): boolean {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -45,11 +45,11 @@ function readState(): MockProtectedDealState {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return structuredClone(EMPTY_STATE);
     const parsed = JSON.parse(raw) as Partial<MockProtectedDealState>;
-    if (parsed.version !== 1 || !Array.isArray(parsed.createdDeals) || !parsed.deals) {
+    if (parsed.version !== 2 || !Array.isArray(parsed.createdDeals) || !parsed.deals) {
       return structuredClone(EMPTY_STATE);
     }
     return {
-      version: 1,
+      version: 2,
       createdDeals: parsed.createdDeals,
       deals: parsed.deals,
     };

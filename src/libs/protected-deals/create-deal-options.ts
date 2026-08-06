@@ -6,6 +6,7 @@ const QUICK_USE_CASE_SLUGS = [
   'service-delivery',
   'contractor-engagement',
   'equipment-purchase',
+  'vehicle-transactions',
   'custom-business-deal',
 ] as const;
 

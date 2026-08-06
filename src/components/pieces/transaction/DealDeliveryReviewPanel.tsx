@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { AlertTriangle, Check, CheckCircle2, KeyRound, PackageCheck, QrCode, RefreshCw, ShieldCheck, Upload } from 'lucide-react';
+import { AlertTriangle, Check, CheckCircle2, HandCoins, KeyRound, PackageCheck, QrCode, RefreshCw, ShieldCheck, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { useApproveEarlyRelease, useCompleteHandoverReview, useConfirmReceiptByOtp, useGenerateDeliveryCard } from '../../../hooks/useDealDetail';
-import { fundingReviewLabel, isDeliveryCardStatusEligible, requiredProductEvidence, supportsDeliveryReview } from '../../../libs/protected-deals/delivery-review';
+import { fundingReviewLabel, isDeliveryCardStatusEligible, supportsDeliveryReview } from '../../../libs/protected-deals/delivery-review';
 import type { SafeDealDetail } from '../../../libs/store/types';
 import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
@@ -33,11 +33,11 @@ export function DealDeliveryReviewPanel({ deal, hasDispute, onReportIssue, onUpl
   const [otp, setOtp] = useState('');
   const [showCard, setShowCard] = useState(false);
   const [showPin, setShowPin] = useState(false);
+  const [releaseRequested, setReleaseRequested] = useState(false);
 
   const delivery = generate.data?.data.delivery ?? deal.delivery;
   const card = delivery.card;
-  const evidenceRequirements = requiredProductEvidence(deal.evidence);
-  const evidenceReady = evidenceRequirements.every((item) => item.complete);
+  const evidenceReady = deal.evidence.length > 0;
   const canGenerate = isSeller && deal.funding.status === 'funded' && isDeliveryCardStatusEligible(deal.status) && delivery.handover.status === 'not_started';
   const showFeature = supportsDeliveryReview(deal.useCase) || delivery.handover.status !== 'not_started' || Boolean(card);
   if (!showFeature) return null;
@@ -56,37 +56,41 @@ export function DealDeliveryReviewPanel({ deal, hasDispute, onReportIssue, onUpl
     onError: (error) => toast.error(actionError(error)),
   });
 
-  return <Card className="mb-4 gap-0 overflow-hidden border-primary/15 p-0 shadow-sm">
-    <div className="border-b bg-[#edf7ff] px-5 py-4 dark:bg-primary/[0.08]">
-      <div className="flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background"><PackageCheck size={20}/></span>
+  return <Card className="mb-4 gap-0 overflow-hidden p-0 shadow-none">
+    <div className="border-b px-4 py-3.5 sm:px-5">
+      <div className="flex items-center gap-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/[0.08] text-primary"><PackageCheck size={16}/></span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold text-foreground">Delivery and payment</p>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">Confirm delivery, check the item, then approve payment or report a problem.</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{isSeller ? 'Prepare the handover, then follow the buyer’s confirmation and payment release.' : 'Confirm delivery, check the item, then decide whether payment can be released.'}</p>
         </div>
-        {deal.extendedProductTestingDays && <span className="hidden shrink-0 rounded-full border bg-white px-3 py-1 text-[10px] font-semibold text-foreground sm:inline">{deal.extendedProductTestingDays} day check</span>}
+        <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">Step {activeStep} of 3</span>
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-2">
+      <div className="mt-3 grid grid-cols-3 gap-1.5">
         {[
-          { number: 1, label: 'Delivery', done: activeStep > 1 },
-          { number: 2, label: 'Check item', done: handoverDone },
-          { number: 3, label: 'Payment', done: paymentDone },
-        ].map((step) => <div key={step.number} className={`flex items-center gap-2 rounded-xl border px-2.5 py-2 text-[10px] font-semibold sm:px-3 ${activeStep === step.number ? 'border-primary/30 bg-white text-primary dark:bg-background' : step.done ? 'border-emerald-500/20 bg-emerald-500/[0.07] text-emerald-700 dark:text-emerald-400' : 'border-transparent bg-white/45 text-muted-foreground dark:bg-white/[0.03]'}`}>
-          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] ${step.done ? 'bg-emerald-600 text-white' : activeStep === step.number ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>{step.done ? <Check size={12}/> : step.number}</span><span className="truncate">{step.label}</span>
+          { number: 1, label: isSeller ? 'Prepare handover' : 'Receive delivery', done: activeStep > 1 },
+          { number: 2, label: isSeller ? 'Buyer confirmation' : 'Check item', done: handoverDone },
+          { number: 3, label: isSeller ? 'Payment release' : 'Release payment', done: paymentDone },
+        ].map((step) => <div key={step.number} className="min-w-0">
+          <span className={`block h-1 rounded-full ${step.done ? 'bg-emerald-500' : activeStep === step.number ? 'bg-primary' : 'bg-muted'}`} />
+          <span className={`mt-1.5 block truncate text-[10px] font-medium ${activeStep === step.number ? 'text-foreground' : 'text-muted-foreground'}`}>{step.label}</span>
         </div>)}
       </div>
     </div>
 
-    <div className="p-5">
+    <div className="p-4 sm:p-5">
       {delivery.handover.status === 'not_started' && isSeller && <div>
         <p className="text-sm font-semibold">Create the buyer’s delivery code</p>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">First record the item you are handing over. Then create one code for the buyer.</p>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">{evidenceRequirements.map((requirement) => <div key={requirement.kind} className="flex items-center gap-2 text-xs"><span className={requirement.complete ? 'text-emerald-600' : 'text-muted-foreground'}>{requirement.complete ? <CheckCircle2 size={15}/> : <span className="block h-3.5 w-3.5 rounded-full border"/>}</span><span className={requirement.complete ? 'text-foreground' : 'text-muted-foreground'}>{requirement.kind}</span></div>)}</div>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">Add supporting proof that fits this handover, then create the one-time code for the buyer.</p>
+        {deal.evidence.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{Array.from(new Set(deal.evidence.map((item) => item.kind))).slice(0, 6).map((kind) => <span key={kind} className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">{kind}</span>)}</div>}
+        <p className={`mt-3 flex items-center gap-1.5 text-[11px] font-medium ${evidenceReady ? 'text-emerald-600' : 'text-muted-foreground'}`}>{evidenceReady && <CheckCircle2 size={13}/>} {evidenceReady ? `${deal.evidence.length} supporting ${deal.evidence.length === 1 ? 'file' : 'files'} added.` : 'Add at least one supporting file of your choice.'}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {!evidenceReady && <Button size="sm" variant="outline" className="rounded-full" onClick={() => onUploadEvidence(evidenceRequirements.find((item) => !item.complete)?.kind)}><Upload size={14}/> Add next required proof</Button>}
+          <Button size="sm" variant="outline" className="rounded-full" onClick={() => onUploadEvidence('Photo')}><Upload size={14}/> {evidenceReady ? 'Add more proof' : 'Add supporting proof'}</Button>
           {card?.status === 'active' && <Button size="sm" variant="outline" className="rounded-full" onClick={() => setShowCard(true)}><QrCode size={14}/> View code</Button>}
           <Button size="sm" className="rounded-full" disabled={!canGenerate || !evidenceReady || generate.isPending} onClick={generateCard}>{card?.status === 'active' ? <RefreshCw size={14}/> : <KeyRound size={14}/>} {card?.status === 'active' ? 'Create a new code' : 'Create delivery code'}</Button>
         </div>
+        {!evidenceReady && <p className="mt-2 text-[11px] text-muted-foreground">The delivery-code button unlocks after any supporting file is added.</p>}
+        {evidenceReady && !canGenerate && <p className="mt-2 text-[11px] text-destructive">A delivery code can only be created by the seller while the deal is funded and awaiting handover.</p>}
       </div>}
 
       {delivery.handover.status === 'not_started' && isBuyer && <div>
@@ -103,7 +107,7 @@ export function DealDeliveryReviewPanel({ deal, hasDispute, onReportIssue, onUpl
 
       {delivery.fundingReview.status === 'in_progress' && <div className="grid gap-5 md:grid-cols-[220px_1fr] md:items-center">
         <LiveDealCountdown deadline={delivery.fundingReview.endsAt} label="Payment review time"/>
-        <div><p className="text-sm font-semibold">{fundingReviewLabel(delivery.fundingReview.extendedProductTestingDays)}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Payment releases when this time ends. The buyer can release it sooner or report a problem.</p>{isBuyer && !hasDispute ? <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" className="rounded-full" onClick={() => setShowPin(true)}><ShieldCheck size={15}/> Release payment</Button><Button size="sm" variant="outline" className="rounded-full" onClick={() => onUploadEvidence('Photo')}><Upload size={14}/> Add photos</Button><Button size="sm" variant="outline" className="rounded-full text-destructive" onClick={onReportIssue}><AlertTriangle size={14}/> Report a problem</Button></div> : null}</div>
+        <div><p className="text-sm font-semibold">{fundingReviewLabel(delivery.fundingReview.extendedProductTestingDays)}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Payment releases when this time ends. The seller can request release, but only the buyer can approve it sooner or report a problem.</p>{isBuyer && !hasDispute ? <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" className="rounded-full" onClick={() => setShowPin(true)}><ShieldCheck size={15}/> Release payment now</Button><Button size="sm" variant="outline" className="rounded-full" onClick={() => onUploadEvidence('Photo')}><Upload size={14}/> Add photos</Button><Button size="sm" variant="outline" className="rounded-full text-destructive" onClick={onReportIssue}><AlertTriangle size={14}/> Report a problem</Button></div> : isSeller && !hasDispute ? <div className="mt-4"><Button size="sm" variant="outline" className="rounded-full" disabled={releaseRequested} onClick={() => { setReleaseRequested(true); toast.success('Release request sent to the buyer.'); }}><HandCoins size={15}/>{releaseRequested ? 'Release requested' : 'Request fund release'}</Button>{releaseRequested && <p className="mt-2 text-[11px] text-muted-foreground">The buyer has been notified. The 24-hour review continues unless they approve early release.</p>}</div> : null}</div>
       </div>}
 
       {(hasDispute || delivery.fundingReview.status === 'blocked' || delivery.handover.status === 'issue_reported') && <StatusNotice danger title="Payment is paused" text="A problem was reported. Funds remain protected while the dispute is reviewed."/>}
@@ -112,7 +116,7 @@ export function DealDeliveryReviewPanel({ deal, hasDispute, onReportIssue, onUpl
     </div>
 
     {card && <DeliveryCardDialog open={showCard} onOpenChange={setShowCard} title={deal.title} reference={deal.reference} card={card}/>} 
-    <PinPromptModal open={showPin} onOpenChange={setShowPin} title="Release protected payment?" description="Confirm that you have finished checking the item. This payment release cannot be reversed from the Transaction Room." onVerified={() => release.mutate(undefined,{onSuccess:()=>toast.success('Payment release approved.'),onError:(error)=>toast.error(actionError(error))})}/>
+    <PinPromptModal open={showPin} onOpenChange={setShowPin} title="Release protected payment now?" description="Confirm that you have finished checking the item and want Naitrust to proceed without waiting for the review period to end." warning="Warning: this bypasses the remaining 24-hour review time. Once approved, this payment release cannot be reversed from the Transaction Room." onVerified={() => release.mutate(undefined,{onSuccess:()=>toast.success('Payment release approved.'),onError:(error)=>toast.error(actionError(error))})}/>
   </Card>;
 }
 

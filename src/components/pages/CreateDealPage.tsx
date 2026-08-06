@@ -26,6 +26,8 @@ import {
   ChevronDown,
   Clock3,
   Coins,
+  Download,
+  Eye,
   FileCheck2,
   Loader2,
   Pencil,
@@ -51,11 +53,13 @@ import {
   type DealParticipantForm,
 } from '../pieces/transaction/CreateDealDetailsStep';
 import { DraftSavedForPinModal } from '../pieces/transaction/DraftSavedForPinModal';
+import { PaymentConditionsStep } from '../pieces/transaction/PaymentConditionsStep';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
 import { useCreateDeal } from '../../hooks/useTransactions';
 import { useCounterparties } from '../../hooks/useCounterparties';
 import { useBeneficiaries } from '../../hooks/useBeneficiaries';
@@ -77,6 +81,7 @@ import {
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
 import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
 import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/deal-draft';
+import { downloadAgreementDraft } from '../../libs/utils/deal-documents';
 import {
   MAX_DEAL_OPEN_DAYS,
   type AgreementDraft,
@@ -89,7 +94,8 @@ import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
   { title: 'Start the deal', description: 'Choose what you are protecting and how money moves.' },
-  { title: 'Add the details', description: 'Enter the amount, terms, and the other party.' },
+  { title: 'Money and recipients', description: 'Enter the total and decide how each recipient is paid.' },
+  { title: 'Payment conditions', description: 'Set what must happen before each payment is available or released.' },
   { title: 'Agreement', description: 'Review the agreement prepared from your terms.' },
   { title: 'Review & send', description: 'Confirm everything and invite the counterparty.' },
 ];
@@ -109,7 +115,7 @@ interface FormState extends DealDetailsValues {
   role: DealRole | null;
 }
 
-const emptyParticipant = (): DealParticipantForm => ({ name: '', contact: '', allocation: '' });
+const emptyParticipant = (paymentTargets: Array<'first' | 'second'> = ['first', 'second']): DealParticipantForm => ({ name: '', contact: '', allocation: '', allocationMode: 'fixed', secondAllocation: '', secondAllocationMode: 'fixed', paymentTargets, isManualSaved: false });
 
 const INITIAL: FormState = {
   useCase: '',
@@ -120,6 +126,10 @@ const INITIAL: FormState = {
   title: '',
   description: '',
   amount: '',
+  splitPayment: false,
+  initialPaymentMode: 'fixed',
+  initialPayment: '',
+  nextPaymentReleaseConditions: '',
   deliveryDueDate: '',
   openUntil: '',
   releaseConditions: '',
@@ -248,6 +258,11 @@ export function CreateDealPage() {
           format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
         participants: recoveredDraft.form.participants.map((participant) => ({
           ...participant,
+          allocationMode: participant.allocationMode ?? 'fixed',
+          secondAllocation: participant.secondAllocation ?? '',
+          secondAllocationMode: participant.secondAllocationMode ?? 'fixed',
+          paymentTargets: participant.paymentTargets ?? ['first', 'second'],
+          isManualSaved: participant.isManualSaved ?? Boolean(participant.profileId),
           contact:
             participant.contact ||
             ((participant as DealParticipantForm & { email?: string }).email ?? ''),
@@ -262,13 +277,14 @@ export function CreateDealPage() {
       openUntil: format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
       partyMode: accountType === 'customer' && businessId ? 'b2c' : null,
       role: accountType === 'customer' ? 'buyer' : null,
-      participants: [{ name: businessName, contact: businessEmail, allocation: '', profileId: businessId }],
+      participants: [{ name: businessName, contact: businessEmail, allocation: '', allocationMode: 'fixed', secondAllocation: '', secondAllocationMode: 'fixed', paymentTargets: ['first', 'second'], isManualSaved: Boolean(businessId), profileId: businessId }],
     };
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [agreement, setAgreement] = useState<AgreementDraft | null>(null);
   const [agreementConfirmed, setAgreementConfirmed] = useState(false);
   const [editingAgreement, setEditingAgreement] = useState(false);
+  const [agreementPreviewOpen, setAgreementPreviewOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAllUseCases, setShowAllUseCases] = useState(() =>
     CREATE_DEAL_USE_CASES.more.some((useCase) => useCase.slug === recoveredDraft?.form?.useCase),
@@ -321,7 +337,7 @@ export function CreateDealPage() {
     invalidateAgreement();
   };
 
-  const updateParticipant = (index: number, key: keyof DealParticipantForm, value: string) => {
+  const updateParticipant = (index: number, key: keyof DealParticipantForm, value: string | boolean) => {
     setForm((prev) => ({
       ...prev,
       participants: prev.participants.map((participant, participantIndex) => {
@@ -338,12 +354,12 @@ export function CreateDealPage() {
     invalidateAgreement();
   };
 
-  const addParticipant = () => {
-    setForm((prev) => ({ ...prev, participants: [...prev.participants, emptyParticipant()] }));
+  const addParticipant = (paymentTarget?: 'first' | 'second') => {
+    setForm((prev) => ({ ...prev, participants: [...prev.participants, emptyParticipant(paymentTarget ? [paymentTarget] : ['first', 'second'])] }));
     invalidateAgreement();
   };
 
-  const selectSavedCounterparty = (counterparty: CounterpartyProfile) => {
+  const selectSavedCounterparty = (counterparty: CounterpartyProfile, paymentTarget: 'first' | 'second' | 'both' = 'both') => {
     const contact = counterparty.email ?? counterparty.phone ?? counterparty.notes;
     if (!contact) {
       toast.error('Add an email or phone number to this saved contact before inviting them.');
@@ -354,12 +370,21 @@ export function CreateDealPage() {
       name: counterparty.businessName ?? counterparty.name,
       contact,
       allocation: '',
+      allocationMode: 'fixed',
+      secondAllocation: '',
+      secondAllocationMode: 'fixed',
+      paymentTargets: paymentTarget === 'both' ? ['first', 'second'] : [paymentTarget],
+      isManualSaved: true,
       profileId: counterparty.id,
       relation: counterparty.relation,
     };
 
     setForm((current) => {
-      if (current.participants.some((item) => item.profileId === counterparty.id)) return current;
+      const existingIndex = current.participants.findIndex((item) => item.profileId === counterparty.id);
+      if (existingIndex >= 0) {
+        const targets = paymentTarget === 'both' ? ['first', 'second'] as const : [paymentTarget];
+        return { ...current, participants: current.participants.map((item, index) => index === existingIndex ? { ...item, paymentTargets: Array.from(new Set([...item.paymentTargets, ...targets])) } : item) };
+      }
       const emptyIndex = current.participants.findIndex(
         (item) => !item.name.trim() && !item.contact.trim(),
       );
@@ -378,7 +403,10 @@ export function CreateDealPage() {
   };
 
   const removeParticipant = (index: number) => {
-    setForm((prev) => ({ ...prev, participants: prev.participants.filter((_, i) => i !== index) }));
+    setForm((prev) => {
+      const remaining = prev.participants.filter((_, i) => i !== index);
+      return { ...prev, participants: remaining.length > 0 ? remaining : [emptyParticipant()] };
+    });
     invalidateAgreement();
   };
 
@@ -394,18 +422,30 @@ export function CreateDealPage() {
   const selectedUseCase = useCases.find((u) => u.slug === form.useCase);
   const features = featuresForUseCase(form.useCase);
   const amountMinor = Math.round(Number(form.amount || 0) * 100);
+  const initialPaymentMinor = form.splitPayment
+    ? form.initialPaymentMode === 'percentage'
+      ? Math.round(amountMinor * Number(form.initialPayment || 0) / 100)
+      : Math.round(Number(form.initialPayment || 0) * 100)
+    : amountMinor;
+  const remainingPaymentMinor = form.splitPayment ? Math.max(0, amountMinor - initialPaymentMinor) : 0;
+  const firstPaymentPoolMinor = form.splitPayment ? initialPaymentMinor : amountMinor;
   const isReleaser = form.role === 'buyer';
   const expectedCounterpartyKind = form.partyMode === 'b2b' ? 'business' : form.partyMode === 'p2p' ? 'individual' : form.partyMode === 'b2c' ? (accountType === 'customer' ? 'business' : 'individual') : 'any';
   const matchesExpectedKind = (contact: CounterpartyProfile) => expectedCounterpartyKind === 'any' || (expectedCounterpartyKind === 'business' ? Boolean(contact.businessName) : !contact.businessName);
   const eligibleSavedCounterparties = (accountType === 'customer' ? customerSavedContacts : savedCounterparties).filter(matchesExpectedKind);
   const eligibleDirectoryCounterparties = [...businessContacts, ...personalDirectoryContacts].filter(matchesExpectedKind);
   const multiParty = form.participants.length > 1;
+  const firstStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved) && (!form.splitPayment || participant.paymentTargets.includes('first')));
+  const secondStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved) && participant.paymentTargets.includes('second'));
   const myName = user?.name || 'You';
 
   const allocatedMinor = useMemo(
-    () => form.participants.reduce((sum, p) => sum + Math.round(Number(p.allocation || 0) * 100), 0),
-    [form.participants],
+    () => firstStageParticipants.length === 1 ? firstPaymentPoolMinor : firstStageParticipants.reduce((sum, p) => sum + (form.initialPaymentMode === 'percentage'
+      ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100)
+      : Math.round(Number(p.allocation || 0) * 100)), 0),
+    [firstPaymentPoolMinor, firstStageParticipants, form.initialPaymentMode],
   );
+  const secondAllocatedMinor = useMemo(() => secondStageParticipants.length === 1 ? remainingPaymentMinor : secondStageParticipants.reduce((sum, participant) => sum + (form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(participant.secondAllocation || 0) / 100) : Math.round(Number(participant.secondAllocation || 0) * 100)), 0), [form.initialPaymentMode, remainingPaymentMinor, secondStageParticipants]);
 
   const today = useMemo(() => new Date(), []);
   const minOpen = format(addDays(today, 1), 'yyyy-MM-dd');
@@ -437,6 +477,8 @@ export function CreateDealPage() {
           title: form.title,
           description: form.description,
           amountMinor,
+          initialPaymentMinor,
+          nextPaymentReleaseConditions: form.splitPayment ? form.nextPaymentReleaseConditions : undefined,
           currency: 'NGN',
           deliveryDueDate: form.deliveryDueDate,
           releaseConditions: form.releaseConditions,
@@ -453,7 +495,7 @@ export function CreateDealPage() {
   };
 
   useEffect(() => {
-    if (step >= 3 && !agreement && !isGenerating) void generateAgreement(1);
+    if (step >= 4 && !agreement && !isGenerating) void generateAgreement(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, agreement]);
 
@@ -470,7 +512,26 @@ export function CreateDealPage() {
       const amount = Number(form.amount);
       if (!form.amount || Number.isNaN(amount) || amount <= 0)
         next.amount = 'Enter an amount greater than zero.';
+      if (form.splitPayment) {
+        const firstPayment = Number(form.initialPayment);
+        if (!form.initialPayment || Number.isNaN(firstPayment) || firstPayment <= 0)
+          next.initialPayment = 'Enter the amount to send first.';
+        else if (form.initialPaymentMode === 'percentage' && firstPayment >= 100)
+          next.initialPayment = 'Enter a percentage below 100.';
+        else if (form.initialPaymentMode === 'fixed' && firstPayment >= amount)
+          next.initialPayment = 'The first payment must be less than the total deal amount.';
+      }
       if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the next milestone or completion date.';
+      form.participants.forEach((participant, index) => {
+        if (!participant.name.trim()) next[`participant_${index}_name`] = 'Enter a name.';
+        if (!isValidContact(participant.contact)) next[`participant_${index}_contact`] = 'Enter a valid Naitrust ID, account number, email, or phone.';
+      });
+      if (firstPaymentPoolMinor > 0 && allocatedMinor !== firstPaymentPoolMinor)
+        next.allocation = `First payment allocations must add up to ${formatMinorAmount(firstPaymentPoolMinor, 'NGN')}.`;
+      else if (form.splitPayment && secondAllocatedMinor !== remainingPaymentMinor)
+        next.allocation = `Second payment allocations must add up to ${formatMinorAmount(remainingPaymentMinor, 'NGN')}.`;
+    }
+    if (step === 3) {
       if (!form.openUntil) {
         next.openUntil = 'Set how long the deal stays open.';
       } else {
@@ -480,13 +541,8 @@ export function CreateDealPage() {
       }
       if (!form.releaseConditions.trim())
         next.releaseConditions = 'Describe what must happen before funds release.';
-      form.participants.forEach((p, i) => {
-        if (!p.name.trim()) next[`participant_${i}_name`] = 'Enter a name.';
-        if (!isValidContact(p.contact)) next[`participant_${i}_contact`] = 'Enter a valid email or phone number.';
-      });
-      if (multiParty && amountMinor > 0 && allocatedMinor !== amountMinor) {
-        next.allocation = `Amounts must add up to ${formatMinorAmount(amountMinor, 'NGN')}.`;
-      }
+      if (form.splitPayment && !form.nextPaymentReleaseConditions.trim())
+        next.nextPaymentReleaseConditions = 'Describe what must be completed before the next payment.';
     }
     setErrors(next);
     if (next.openUntil) setShowAdvancedTiming(true);
@@ -495,7 +551,7 @@ export function CreateDealPage() {
 
   const handleNext = () => {
     if (!validateStep()) return;
-    if (step === 3 && (!agreement || !agreementConfirmed)) return;
+    if (step === 4 && (!agreement || !agreementConfirmed)) return;
     setStep((s) => Math.min(s + 1, STEPS.length));
   };
 
@@ -538,11 +594,21 @@ export function CreateDealPage() {
           name: p.name.trim(),
           ...participantContact(p.contact),
           profileId: p.profileId,
-          allocationMinor: multiParty ? Math.round(Number(p.allocation || 0) * 100) : amountMinor,
+          allocationMinor: (p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : Math.round(Number(p.allocation || 0) * 100)) : 0)
+            + (form.splitPayment && p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : Math.round(Number(p.secondAllocation || 0) * 100)) : 0),
+          paymentAllocations: form.splitPayment ? [
+            { stage: 1 as const, amountMinor: p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : Math.round(Number(p.allocation || 0) * 100)) : 0 },
+            { stage: 2 as const, amountMinor: p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : Math.round(Number(p.secondAllocation || 0) * 100)) : 0 },
+          ] : undefined,
         })),
         title: form.title.trim(),
         description: form.description.trim(),
         amountMinor,
+        initialPaymentMinor,
+        initialPaymentMode: form.splitPayment ? form.initialPaymentMode : undefined,
+        initialPaymentPercentage: form.splitPayment && form.initialPaymentMode === 'percentage' ? Number(form.initialPayment) : undefined,
+        remainingPaymentMinor,
+        nextPaymentReleaseConditions: form.splitPayment ? form.nextPaymentReleaseConditions.trim() : undefined,
         currency: 'NGN',
         deliveryDueDate: form.deliveryDueDate,
         releaseConditions: form.releaseConditions.trim(),
@@ -597,7 +663,7 @@ export function CreateDealPage() {
   };
 
   const continueDisabled =
-    createDeal.isPending || !livenessOk || (step === 3 && (isGenerating || !agreement || !agreementConfirmed));
+    createDeal.isPending || !livenessOk || (step === 4 && (isGenerating || !agreement || !agreementConfirmed));
 
   // Hard gate: no deal starts until email + KYC are verified.
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
@@ -710,8 +776,8 @@ export function CreateDealPage() {
                     <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {(showAllUseCases
                         ? [...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
-                        : CREATE_DEAL_USE_CASES.quick
-                      ).map((useCase) => {
+                        : [...CREATE_DEAL_USE_CASES.quick]
+                      ).sort((left, right) => Number(left.slug === 'custom-business-deal') - Number(right.slug === 'custom-business-deal')).map((useCase) => {
                         const Icon = useCase.icon;
                         const selected = form.useCase === useCase.slug;
                         return (
@@ -864,6 +930,13 @@ export function CreateDealPage() {
                   onAdvancedTimingChange={setShowAdvancedTiming}
                   onFieldChange={(field, value) => set(field, value)}
                   onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)}
+                  onSplitPaymentChange={(value) => setForm((current) => ({
+                    ...current,
+                    splitPayment: value,
+                    initialPayment: value ? current.initialPayment : '',
+                    nextPaymentReleaseConditions: value ? current.nextPaymentReleaseConditions : '',
+                  }))}
+                  onInitialPaymentModeChange={(value) => setForm((current) => ({ ...current, initialPaymentMode: value, initialPayment: '' }))}
                   onParticipantChange={updateParticipant}
                   onAddParticipant={addParticipant}
                   onSelectCounterparty={selectSavedCounterparty}
@@ -873,6 +946,10 @@ export function CreateDealPage() {
               )}
 
               {step === 3 && (
+                <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
+              )}
+
+              {step === 4 && (
                 <div className="flex flex-col gap-4">
                   {isGenerating || !agreement ? (
                     <AgreementPreparationState />
@@ -946,7 +1023,7 @@ export function CreateDealPage() {
                 </div>
               )}
 
-              {step === 4 && (
+              {step === 5 && (
                 !agreement || isGenerating ? (
                   <AgreementPreparationState />
                 ) : (
@@ -969,10 +1046,17 @@ export function CreateDealPage() {
                     <ReviewRow
                       label={multiParty ? (isReleaser ? 'Recipients' : 'Payers') : 'Counterparty'}
                       value={form.participants
-                        .map((p) => (multiParty && p.allocation ? `${p.name} (${formatMinorAmount(Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
+                        .map((p) => (multiParty && p.allocation ? `${p.name} (${p.allocationMode === 'percentage' ? `${p.allocation}% = ` : ''}${formatMinorAmount(p.allocationMode === 'percentage' ? Math.round(amountMinor * Number(p.allocation) / 100) : Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
                         .join(', ')}
                     />
                     <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || 'Not available'} />
+                    {form.splitPayment && (
+                      <>
+                        <ReviewRow label="First payment" value={`${formatMinorAmount(initialPaymentMinor, 'NGN')}${form.initialPaymentMode === 'percentage' ? ` (${form.initialPayment}% of total)` : ''}`} />
+                        <ReviewRow label="Remaining payment" value={formatMinorAmount(remainingPaymentMinor, 'NGN')} />
+                        <ReviewRow label="Condition for next payment" value={form.nextPaymentReleaseConditions} />
+                      </>
+                    )}
                     <ReviewRow
                       label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
@@ -987,10 +1071,13 @@ export function CreateDealPage() {
                         }
                       />
                     )}
-                    <ReviewRow
-                      label="Agreement"
-                      value={`v${agreement.version} · ${agreement.sections.length} clauses · confirmed by you`}
-                    />
+                    <div className="flex items-center gap-4 px-4 py-3">
+                      <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
+                      <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
+                        <span>{`v${agreement.version} · ${agreement.sections.length} clauses · confirmed by you`}</span>
+                        <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full text-primary" onClick={() => setAgreementPreviewOpen(true)}><Eye size={14} />Preview agreement</Button>
+                      </dd>
+                    </div>
                   </dl>
 
                   {form.dealType === 'recurring' && (
@@ -1094,6 +1181,19 @@ export function CreateDealPage() {
           </main>
         </div>
       </div>
+      <Sheet open={agreementPreviewOpen} onOpenChange={setAgreementPreviewOpen}>
+        <SheetContent className="w-[96vw] gap-0 overflow-hidden p-0 sm:max-w-2xl lg:max-w-3xl">
+          <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
+            <div className="flex flex-wrap items-start justify-between gap-3 pr-8">
+              <div><SheetTitle>Agreement preview</SheetTitle><SheetDescription className="mt-1">Review the complete agreement before creating this deal.</SheetDescription></div>
+              {agreement && <Button type="button" variant="outline" size="sm" className="rounded-full" onClick={() => toast.promise(downloadAgreementDraft({ agreement, title: form.title, amountMinor, currency: 'NGN' }), { loading: 'Preparing agreement PDF...', success: 'Agreement downloaded.', error: 'Could not download the agreement.' })}><Download size={14} />Download agreement</Button>}
+            </div>
+          </SheetHeader>
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+            {agreement && <AgreementDocument agreement={agreement} hideAiNote />}
+          </div>
+        </SheetContent>
+      </Sheet>
     </DashboardLayout>
   );
 }

@@ -66,6 +66,12 @@ export interface SafeDealSummary {
   title: string;
   counterpartyName: string;
   amountMinor: number;
+  /** Amount required for the first funding stage. Equal to amountMinor for a single payment. */
+  initialPaymentMinor?: number;
+  /** Balance tracked for later funding stages. */
+  remainingPaymentMinor?: number;
+  /** Agreed outcome required before the remaining balance can be funded or released. */
+  nextPaymentReleaseConditions?: string;
   currency: string;
   status: SafeDealStatus;
   createdAt: string; // ISO 8601
@@ -115,6 +121,7 @@ export interface DealParticipantInput {
   identifier?: string;
   profileId?: string;
   allocationMinor?: number;
+  paymentAllocations?: Array<{ stage: 1 | 2; amountMinor: number }>;
 }
 
 /** Longest an invitation can stay open before it expires. */
@@ -155,6 +162,11 @@ export interface CreateSafeDealInput {
   title: string;
   description: string;
   amountMinor: number;
+  initialPaymentMinor?: number;
+  initialPaymentMode?: 'fixed' | 'percentage';
+  initialPaymentPercentage?: number;
+  remainingPaymentMinor?: number;
+  nextPaymentReleaseConditions?: string;
   currency: string;
   deliveryDueDate: string; // ISO date (yyyy-mm-dd)
   releaseConditions: string;
@@ -623,6 +635,7 @@ export type WalletActivityKind =
   | 'instant_transfer_in'
   | 'protected_allocation'
   | 'protected_release'
+  | 'bill_payment'
   | 'fee';
 
 export interface WalletActivityEvent {
@@ -632,6 +645,40 @@ export interface WalletActivityEvent {
   currency: string;
   description: string;
   createdAt: string; // ISO 8601
+}
+
+export type BillServiceCategory = 'electricity' | 'internet' | 'tv' | 'airtime';
+export type BillPaymentStatus = 'successful' | 'pending' | 'failed';
+
+export interface BillProvider {
+  id: string;
+  name: string;
+  category: BillServiceCategory;
+  identifierLabel: string;
+  identifierPlaceholder: string;
+  minimumAmountMinor: number;
+  maximumAmountMinor: number;
+  presetAmountsMinor?: number[];
+}
+
+export interface BillPayment {
+  id: string;
+  providerId: string;
+  providerName: string;
+  category: BillServiceCategory;
+  customerIdentifier: string;
+  amountMinor: number;
+  currency: string;
+  status: BillPaymentStatus;
+  reference: string;
+  createdAt: string;
+}
+
+export interface CreateBillPaymentInput {
+  providerId: string;
+  customerIdentifier: string;
+  amountMinor: number;
+  currency: 'NGN';
 }
 
 /* ------------------------------------------------------------------ *

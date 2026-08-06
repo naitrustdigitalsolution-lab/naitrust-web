@@ -107,6 +107,12 @@ export const endpoints = {
     activity: '/wallet/activity',
   },
 
+  bills: {
+    providers: '/bills/providers',
+    purchase: '/bills/payments',
+    history: '/bills/payments/my',
+  },
+
   instantTransfers: {
     validateRecipient: '/instant-transfers/validate-recipient',
     create: '/instant-transfers',

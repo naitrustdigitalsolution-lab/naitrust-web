@@ -1,207 +1,137 @@
 import { useMemo, useState } from 'react';
-import { format, parseISO } from 'date-fns';
-import {
-  CalendarClock,
-  Check,
-  CircleAlert,
-  Clock3,
-  Plus,
-  ReceiptText,
-  Search,
-} from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { CheckCircle2, History, Loader2, Radio, Smartphone, Tv, WalletCards, Zap } from 'lucide-react';
 import { toast } from 'sonner';
-import { useMyBusiness } from '../../hooks/useMyBusiness';
-import {
-  useBusinessBills,
-  useCreateBusinessBill,
-  useMarkBusinessBillPaid,
-} from '../../hooks/useBusinessBills';
-import {
-  BUSINESS_BILL_CATEGORY_OPTIONS,
-  BUSINESS_BILL_STATUS_FILTERS,
-  businessBillCategoryLabel,
-  businessBillRecurrenceLabel,
-} from '../../libs/business-bills/bill-options';
-import { businessBillStatus } from '../../libs/business-bills/bill-store';
-import type { BusinessBillStatus, CreateBusinessBillInput } from '../../libs/business-bills/types';
+import { useBillPayments, useBillProviders, usePayBill } from '../../hooks/useBills';
+import { useWallet } from '../../hooks/useWallet';
+import type { BillPayment, BillProvider, BillServiceCategory } from '../../libs/store/types';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
-import { AddBusinessBillDialog } from '../pieces/payments/AddBusinessBillDialog';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Skeleton } from '../ui/skeleton';
 
-type StatusFilter = 'all' | BusinessBillStatus;
+const CATEGORIES: Array<{ value: BillServiceCategory; label: string; description: string; icon: typeof Zap }> = [
+  { value: 'electricity', label: 'Electricity', description: 'Prepaid and postpaid meters', icon: Zap },
+  { value: 'internet', label: 'Internet', description: 'Mobile data and broadband', icon: Radio },
+  { value: 'tv', label: 'TV', description: 'Renew your subscription', icon: Tv },
+  { value: 'airtime', label: 'Airtime', description: 'Top up any Nigerian number', icon: Smartphone },
+];
 
-const STATUS_STYLE: Record<BusinessBillStatus, string> = {
-  upcoming: 'border-sky-500/20 bg-sky-500/10 text-sky-700 dark:text-sky-300',
-  due: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300',
-  overdue: 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-300',
-  paid: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
-};
-
-const STATUS_LABEL: Record<BusinessBillStatus, string> = {
-  upcoming: 'Upcoming',
-  due: 'Due soon',
-  overdue: 'Overdue',
-  paid: 'Paid',
-};
+function paymentError(error: unknown): string {
+  return error instanceof Error ? error.message : 'We could not complete this payment. Please try again.';
+}
 
 export function BusinessBillsPage() {
-  const { data: business, isLoading: isBusinessLoading } = useMyBusiness();
-  const { data: bills = [], isLoading: isBillsLoading } = useBusinessBills(business?.id);
-  const createBill = useCreateBusinessBill(business?.id);
-  const markPaid = useMarkBusinessBillPaid(business?.id);
-  const [showAddBill, setShowAddBill] = useState(false);
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState<StatusFilter>('all');
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState<BillServiceCategory>('electricity');
+  const [providerId, setProviderId] = useState('');
+  const [identifier, setIdentifier] = useState('');
+  const [amount, setAmount] = useState('');
+  const [receipt, setReceipt] = useState<BillPayment | null>(null);
+  const { data: wallet, isLoading: walletLoading } = useWallet();
+  const { data: providers = [], isLoading: providersLoading } = useBillProviders();
+  const { data: payments = [], isLoading: paymentsLoading } = useBillPayments();
+  const payBill = usePayBill();
 
-  const rows = useMemo(
-    () => bills.map((bill) => ({ bill, status: businessBillStatus(bill) })),
-    [bills],
-  );
-  const filtered = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    return rows.filter(({ bill, status: billStatus }) => {
-      const matchesSearch = !term || [bill.title, bill.payeeName, bill.reference]
-        .filter(Boolean)
-        .some((value) => value!.toLowerCase().includes(term));
-      return matchesSearch && (status === 'all' || status === billStatus) && (category === 'all' || category === bill.category);
-    });
-  }, [category, query, rows, status]);
+  const categoryProviders = useMemo(() => providers.filter((provider) => provider.category === category), [category, providers]);
+  const provider = providers.find((item) => item.id === providerId);
+  const amountMinor = Math.round(Number(amount || 0) * 100);
+  const availableMinor = wallet?.balance.availableMinor ?? 0;
+  const canPay = Boolean(provider && identifier.trim().length >= 7 && amountMinor >= provider.minimumAmountMinor && amountMinor <= provider.maximumAmountMinor && amountMinor <= availableMinor);
 
-  const openTotal = rows
-    .filter(({ status: billStatus }) => billStatus !== 'paid')
-    .reduce((sum, { bill }) => sum + bill.amountMinor, 0);
-  const dueCount = rows.filter(({ status: billStatus }) => billStatus === 'due').length;
-  const overdueCount = rows.filter(({ status: billStatus }) => billStatus === 'overdue').length;
-
-  const saveBill = async (input: Omit<CreateBusinessBillInput, 'businessId'>) => {
-    await createBill.mutateAsync(input);
-    toast.success('Bill added to your schedule.');
+  const chooseCategory = (next: BillServiceCategory) => {
+    setCategory(next);
+    setProviderId('');
+    setIdentifier('');
+    setAmount('');
+    setReceipt(null);
   };
 
-  const markAsPaid = async (billId: string, title: string) => {
-    await markPaid.mutateAsync(billId);
-    toast.success(`${title} marked as paid.`);
+  const submit = async () => {
+    if (!provider || !canPay) return;
+    try {
+      const response = await payBill.mutateAsync({ providerId: provider.id, customerIdentifier: identifier, amountMinor, currency: 'NGN' });
+      setReceipt(response.data);
+      setIdentifier('');
+      setAmount('');
+      toast.success(`${provider.name} payment completed.`);
+    } catch (error) {
+      toast.error(paymentError(error));
+    }
   };
-
-  const loading = isBusinessLoading || isBillsLoading;
 
   return (
-    <DashboardLayout title="Bills">
-      <AddBusinessBillDialog
-        open={showAddBill}
-        onOpenChange={setShowAddBill}
-        isSaving={createBill.isPending}
-        onCreate={saveBill}
-      />
-      <div className="mx-auto w-full max-w-9xl">
-        <PageHero
-          eyebrow="Business bills"
-          title="Know what your business needs to pay next."
-          description="Track supplier and operating bills, recurring due dates, and paid records in one simple place."
-          icon={ReceiptText}
-          actions={
-            <Button className="rounded-full" onClick={() => setShowAddBill(true)}>
-              <Plus size={16} className="mr-1" /> Add bill
-            </Button>
-          }
-        />
+    <DashboardLayout title="Bills & airtime">
+      <div className="mx-auto w-full max-w-6xl">
+        <PageHero eyebrow="Everyday payments" title="Pay bills without moving your money out." description="Use your available NaiTrust balance for electricity, internet, TV subscriptions, and airtime." icon={WalletCards} />
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Card className="gap-2 rounded-2xl p-4 shadow-sm">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><CalendarClock size={17} /></span>
-            <p className="text-xs text-muted-foreground">Open bills</p>
-            <p className="text-xl font-bold tabular-nums">{formatMinorAmount(openTotal, 'NGN')}</p>
-          </Card>
-          <Card className="gap-2 rounded-2xl p-4 shadow-sm">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600"><Clock3 size={17} /></span>
-            <p className="text-xs text-muted-foreground">Due in 3 days</p>
-            <p className="text-xl font-bold tabular-nums">{dueCount}</p>
-          </Card>
-          <Card className="gap-2 rounded-2xl p-4 shadow-sm">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-500/10 text-red-600"><CircleAlert size={17} /></span>
-            <p className="text-xs text-muted-foreground">Overdue</p>
-            <p className="text-xl font-bold tabular-nums">{overdueCount}</p>
-          </Card>
-        </div>
-
-        <Card className="mt-5 gap-4 rounded-2xl p-4 shadow-sm">
-          <div className="flex flex-wrap gap-2">
-            {BUSINESS_BILL_STATUS_FILTERS.map((option) => (
-              <Button
-                key={option.value}
-                type="button"
-                size="sm"
-                variant={status === option.value ? 'default' : 'outline'}
-                className="rounded-full"
-                onClick={() => setStatus(option.value)}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </div>
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px]">
-            <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-9" placeholder="Search bill, payee, or reference" />
-            </div>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-full"><SelectValue placeholder="All categories" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All categories</SelectItem>
-                {BUSINESS_BILL_CATEGORY_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Card>
-
-        <div className="mt-5">
-          {loading ? (
-            <div className="space-y-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 w-full rounded-2xl" />)}</div>
-          ) : filtered.length === 0 ? (
-            <Card className="items-center rounded-2xl p-10 text-center shadow-sm">
-              <ReceiptText size={28} className="text-muted-foreground" />
-              <p className="font-semibold">No bills match these filters</p>
-              <p className="text-sm text-muted-foreground">Clear the filters or add a new bill.</p>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {filtered.map(({ bill, status: billStatus }) => (
-                <Card key={bill.id} className="gap-4 rounded-2xl p-4 shadow-sm sm:flex-row sm:items-center sm:p-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ReceiptText size={19} /></span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold text-foreground">{bill.title}</p>
-                      <Badge variant="outline" className={STATUS_STYLE[billStatus]}>{STATUS_LABEL[billStatus]}</Badge>
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{bill.payeeName}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {businessBillCategoryLabel(bill.category)} · {businessBillRecurrenceLabel(bill.recurrence)}
-                      {bill.reference ? ` · ${bill.reference}` : ''}
-                    </p>
-                  </div>
-                  <div className="sm:text-right">
-                    <p className="font-bold tabular-nums text-foreground">{formatMinorAmount(bill.amountMinor, bill.currency)}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">Due {format(parseISO(bill.dueDate), 'MMM d, yyyy')}</p>
-                  </div>
-                  {billStatus !== 'paid' && (
-                    <Button type="button" variant="outline" className="rounded-full" disabled={markPaid.isPending} onClick={() => void markAsPaid(bill.id, bill.title)}>
-                      <Check size={15} className="mr-1" /> Mark paid
-                    </Button>
-                  )}
-                </Card>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {CATEGORIES.map((item) => (
+                <button key={item.value} type="button" onClick={() => chooseCategory(item.value)} className={`rounded-2xl border p-4 text-left transition-colors ${category === item.value ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'bg-card hover:border-primary/40'}`}>
+                  <item.icon size={20} className={category === item.value ? 'text-primary' : 'text-muted-foreground'} />
+                  <p className="mt-3 text-sm font-semibold">{item.label}</p>
+                  <p className="mt-1 hidden text-xs text-muted-foreground sm:block">{item.description}</p>
+                </button>
               ))}
             </div>
-          )}
+
+            <Card className="gap-5 rounded-2xl p-5 shadow-sm sm:p-6">
+              <div>
+                <h2 className="text-lg font-semibold">{CATEGORIES.find((item) => item.value === category)?.label} payment</h2>
+                <p className="text-sm text-muted-foreground">Payment comes directly from your available balance.</p>
+              </div>
+              {providersLoading ? <Skeleton className="h-10 w-full" /> : (
+                <div>
+                  <Label>Service provider</Label>
+                  <Select value={providerId} onValueChange={(value) => { setProviderId(value); setIdentifier(''); setAmount(''); setReceipt(null); }}>
+                    <SelectTrigger className="mt-1.5 w-full"><SelectValue placeholder="Choose provider" /></SelectTrigger>
+                    <SelectContent>{categoryProviders.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+              )}
+              {provider && (
+                <>
+                  <div>
+                    <Label htmlFor="bill-identifier">{provider.identifierLabel}</Label>
+                    <Input id="bill-identifier" className="mt-1.5" value={identifier} onChange={(event) => setIdentifier(event.target.value)} placeholder={provider.identifierPlaceholder} inputMode={category === 'airtime' || category === 'internet' ? 'tel' : 'numeric'} />
+                  </div>
+                  <div>
+                    <Label htmlFor="bill-amount">Amount (NGN)</Label>
+                    <Input id="bill-amount" className="mt-1.5" type="number" min={provider.minimumAmountMinor / 100} max={provider.maximumAmountMinor / 100} value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0.00" inputMode="decimal" />
+                    {provider.presetAmountsMinor && <div className="mt-2 flex flex-wrap gap-2">{provider.presetAmountsMinor.map((preset) => <Button key={preset} type="button" size="sm" variant="outline" className="rounded-full" onClick={() => setAmount(String(preset / 100))}>{formatMinorAmount(preset, 'NGN')}</Button>)}</div>}
+                  </div>
+                  {amountMinor > availableMinor && <p className="text-sm text-destructive">Your available balance is not enough. Add money to NaiTrust before paying.</p>}
+                  <div className="rounded-xl border bg-muted/40 p-4">
+                    <div className="flex justify-between text-sm"><span className="text-muted-foreground">You pay</span><strong>{formatMinorAmount(amountMinor, 'NGN')}</strong></div>
+                    <div className="mt-2 flex justify-between text-sm"><span className="text-muted-foreground">Fee</span><strong>{formatMinorAmount(0, 'NGN')}</strong></div>
+                  </div>
+                  <Button className="w-full rounded-full" disabled={!canPay || payBill.isPending} onClick={() => void submit()}>
+                    {payBill.isPending ? <Loader2 size={16} className="mr-2 animate-spin" /> : <WalletCards size={16} className="mr-2" />}Pay from NaiTrust balance
+                  </Button>
+                </>
+              )}
+              {receipt && <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-sm"><p className="flex items-center gap-2 font-semibold text-emerald-700 dark:text-emerald-300"><CheckCircle2 size={17} /> Payment successful</p><p className="mt-1 text-muted-foreground">Reference: {receipt.reference}</p></div>}
+            </Card>
+          </div>
+
+          <div className="space-y-4">
+            <Card className="rounded-2xl bg-primary p-5 text-primary-foreground shadow-sm">
+              <p className="text-sm text-primary-foreground/75">Available to spend</p>
+              {walletLoading ? <Skeleton className="mt-2 h-9 w-40" /> : <p className="mt-1 text-3xl font-bold">{formatMinorAmount(availableMinor, wallet?.balance.currency ?? 'NGN')}</p>}
+              <p className="mt-3 text-xs leading-5 text-primary-foreground/70">Pending and Protected Deal funds are kept separate and cannot be used for bills.</p>
+            </Card>
+            <Card className="gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
+              <div className="flex items-center gap-2 border-b p-4"><History size={17} /><h2 className="font-semibold">Recent bill payments</h2></div>
+              {paymentsLoading ? <div className="space-y-2 p-4"><Skeleton className="h-12" /><Skeleton className="h-12" /></div> : payments.length === 0 ? <p className="p-6 text-center text-sm text-muted-foreground">Your completed payments will appear here.</p> : payments.slice(0, 6).map((payment) => <div key={payment.id} className="flex items-center gap-3 border-b p-4 last:border-0"><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{payment.providerName}</p><p className="text-xs text-muted-foreground">{payment.customerIdentifier} · {formatDistanceToNow(new Date(payment.createdAt), { addSuffix: true })}</p></div><div className="text-right"><p className="text-sm font-semibold">{formatMinorAmount(payment.amountMinor, payment.currency)}</p><Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-[10px] text-emerald-700">Paid</Badge></div></div>)}
+            </Card>
+          </div>
         </div>
       </div>
     </DashboardLayout>

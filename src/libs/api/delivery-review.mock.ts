@@ -184,7 +184,7 @@ export function generateDeliveryCard(context: DeliveryDealContext): DealDelivery
     throw new Error('The deal must be funded and active before a delivery card can be generated.');
   }
   if (!hasRequiredProductEvidence(context.evidence)) {
-    throw new Error('Add the product model, serial or IMEI, packaging, and tamper-seal evidence first.');
+    throw new Error('Add at least one supporting file before creating a delivery card.');
   }
 
   const now = new Date();

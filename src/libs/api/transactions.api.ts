@@ -15,6 +15,8 @@ import type { CreateSafeDealInput, CreateSafeDealResult, SafeDealSummary } from 
 import mockTransactions from '../../mocks/apis/transactions.json';
 import type { ApiSuccess } from './types';
 import { listMockCreatedDeals, saveMockCreatedDeal } from './mock-protected-deal-store';
+import { useAuthStore } from '../store/auth.store';
+import { canMockUserAccessDeal } from './mock-deal-access';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -32,7 +34,11 @@ export const transactionsApi = {
       await delay(MOCK_LATENCY_MS);
       const fixture = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
       const created = listMockCreatedDeals().map((deal) => deal.summary);
-      return { success: true, data: [...created, ...fixture] };
+      const userId = useAuthStore.getState().user?.id;
+      const visibleDeals = [...created, ...fixture]
+        .filter((deal) => canMockUserAccessDeal(deal, userId))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      return { success: true, data: visibleDeals };
     }
     const response = await httpClient.get<SafeDealSummary[]>(
       endpoints.transactions.getMyTransactions,
@@ -55,7 +61,7 @@ export const transactionsApi = {
           ? `${first?.name ?? 'Counterparty'} +${input.participants.length - 1}`
           : (first?.name ?? 'Counterparty');
       const token = `nt-invite-new-${crypto.randomUUID()}`;
-      const summary: CreateSafeDealResult = {
+      const summary: CreateSafeDealResult & { createdByUserId?: string } = {
         id: `txn_${crypto.randomUUID()}`,
         reference: `NT-${now.getFullYear()}-${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`,
         title: input.title,
@@ -64,6 +70,7 @@ export const transactionsApi = {
         currency: input.currency,
         status: 'pending_counterparty',
         createdAt: now.toISOString(),
+        createdByUserId: useAuthStore.getState().user?.id,
         publicInvitePath: `/invite/${token}`,
       };
       saveMockCreatedDeal({ summary, input });

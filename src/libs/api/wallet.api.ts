@@ -23,6 +23,7 @@ import mockWalletActivity from '../../mocks/apis/wallet-activity.json';
 import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 400;
+let mockAvailableMinor: number | undefined;
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,10 +39,27 @@ export const walletApi = {
   getMine: async (): Promise<ApiSuccess<WalletAccount>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return mockWallet as ApiSuccess<WalletAccount>;
+      const current = mockWallet as ApiSuccess<WalletAccount>;
+      return mockAvailableMinor === undefined
+        ? current
+        : { ...current, data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor } } };
     }
     const response = await httpClient.get<WalletAccount>(endpoints.wallet.getMine);
     return response as ApiSuccess<WalletAccount>;
+  },
+
+  payProtectedDeal: async (amountMinor: number): Promise<ApiSuccess<WalletAccount>> => {
+    if (!appConfig.isMock) throw new Error('Wallet deal funding is not enabled by the API yet.');
+    await delay(MOCK_LATENCY_MS);
+    const current = mockWallet as ApiSuccess<WalletAccount>;
+    const available = mockAvailableMinor ?? current.data.balance.availableMinor;
+    if (amountMinor > available) throw new Error('Your available wallet balance is not enough for this deal.');
+    mockAvailableMinor = available - amountMinor;
+    return {
+      success: true,
+      message: 'Protected deal funded from wallet',
+      data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor, protectedMinor: current.data.balance.protectedMinor + amountMinor } },
+    };
   },
 
   /**

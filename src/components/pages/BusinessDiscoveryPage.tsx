@@ -8,6 +8,7 @@ import {
   Search,
   SlidersHorizontal,
   Star,
+  Bookmark,
   X,
 } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -27,6 +28,7 @@ import {
   filterBusinessDirectory,
   type BusinessDirectorySort,
 } from '../../libs/business-directory/filters';
+import { useSavedBusinesses } from '../../hooks/useSavedBusinesses';
 
 export function BusinessDiscoveryPage() {
   const { businessId } = useParams<{ businessId: string }>();
@@ -36,7 +38,9 @@ export function BusinessDiscoveryPage() {
   const [location, setLocation] = useState('all');
   const [minimumRating, setMinimumRating] = useState('0');
   const [sort, setSort] = useState<BusinessDirectorySort>('trusted');
+  const [showSavedOnly, setShowSavedOnly] = useState(false);
   const { data: businesses = [], isLoading } = useBusinessSearch('');
+  const { savedBusinessIds, toggleSavedBusiness } = useSavedBusinesses();
   const categories = useMemo(() => businessDirectoryCategories(businesses), [businesses]);
   const locations = useMemo(() => businessDirectoryLocations(businesses), [businesses]);
   const filteredBusinesses = useMemo(
@@ -46,8 +50,8 @@ export function BusinessDiscoveryPage() {
       location,
       minimumRating: Number(minimumRating),
       sort,
-    }),
-    [businesses, category, location, minimumRating, query, sort],
+    }).filter((business) => !showSavedOnly || savedBusinessIds.includes(business.id)),
+    [businesses, category, location, minimumRating, query, savedBusinessIds, showSavedOnly, sort],
   );
   const hasFilters = Boolean(query.trim()) || category !== 'all' || location !== 'all' || minimumRating !== '0';
 
@@ -57,6 +61,7 @@ export function BusinessDiscoveryPage() {
     setLocation('all');
     setMinimumRating('0');
     setSort('trusted');
+    setShowSavedOnly(false);
   };
 
   if (businessId) {
@@ -70,10 +75,9 @@ export function BusinessDiscoveryPage() {
   return (
     <DashboardLayout title="Find a business">
       <div className="mx-auto w-full max-w-9xl">
-        <div className="mb-7">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Verified business directory</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight">Find a business</h1>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Search verified businesses by name, category, location, Naitrust ID, email, or phone number.</p>
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+          <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Verified business directory</p><h1 className="mt-2 text-2xl font-bold tracking-tight">Find a business</h1><p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Search verified businesses by name, category, location, Naitrust ID, email, or phone number.</p></div>
+          <Button variant={showSavedOnly ? 'default' : 'outline'} className="rounded-full" onClick={() => setShowSavedOnly((value) => !value)}><Bookmark size={15} className={showSavedOnly ? 'fill-current' : ''} /> Saved businesses <Badge variant="secondary" className="ml-1 rounded-full px-2">{savedBusinessIds.length}</Badge></Button>
         </div>
 
         <Card className="mb-6 gap-4 rounded-2xl p-4 shadow-sm sm:p-5">
@@ -137,7 +141,10 @@ export function BusinessDiscoveryPage() {
                 </div>
                 <div className="mt-5 flex items-center justify-between gap-2">
                   <Badge variant="outline">{business.ntId}</Badge>
-                  <Button variant="ghost" size="sm" className="rounded-full" onClick={() => navigate(`/app/businesses/${business.id}`)}>View profile <ArrowRight size={14} className="ml-1" /></Button>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" aria-label={savedBusinessIds.includes(business.id) ? `Remove ${business.name} from saved businesses` : `Save ${business.name}`} onClick={() => toggleSavedBusiness(business.id)}><Bookmark size={14} className={savedBusinessIds.includes(business.id) ? 'fill-primary text-primary' : ''} /></Button>
+                    <Button variant="ghost" size="sm" className="rounded-full" onClick={() => navigate(`/app/businesses/${business.id}`)}>View profile <ArrowRight size={14} className="ml-1" /></Button>
+                  </div>
                 </div>
               </Card>
             ))}

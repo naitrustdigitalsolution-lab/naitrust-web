@@ -22,7 +22,7 @@ export function BusinessReviewFeed({
   if (reviews.length === 0) {
     return (
       <div className="mt-4 rounded-2xl border border-dashed p-6 text-center text-sm text-muted-foreground">
-        No transaction-backed customer reviews yet.
+        No verified customer reviews yet.
       </div>
     );
   }
@@ -100,4 +100,3 @@ export function BusinessReviewFeed({
     </>
   );
 }
-

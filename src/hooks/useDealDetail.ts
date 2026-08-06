@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { dealDetailApi } from '../libs/api/deal-detail.api';
 import { dealMessagesApi } from '../libs/api/deal-messages.api';
+import { walletApi } from '../libs/api/wallet.api';
 import type { DeliveryHandoverPreview, SafeDealDetail } from '../libs/store/types';
 import type { DealMessage } from '../libs/store/types';
 
@@ -26,6 +27,23 @@ export function useDealDetail(id: string | undefined) {
         delivery?.fundingReview.status === 'release_approved'
         ? 1_000
         : false;
+    },
+  });
+}
+
+export function useFundDealFromWallet(id: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const deal = (await dealDetailApi.getOne(id!)).data;
+      if (!deal) throw new Error('Deal not found.');
+      await walletApi.payProtectedDeal(deal.funding.amountExpectedMinor);
+      return dealDetailApi.fundFromWallet(id!);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...DEAL_DETAIL_QUERY_KEY, id] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['wallet'] });
     },
   });
 }

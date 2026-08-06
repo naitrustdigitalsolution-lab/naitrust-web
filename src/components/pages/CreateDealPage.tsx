@@ -22,6 +22,7 @@ import {
   ArrowUpRight,
   Building2,
   Check,
+  Copy,
   ChevronDown,
   Clock3,
   Coins,
@@ -57,6 +58,9 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { useCreateDeal } from '../../hooks/useTransactions';
 import { useCounterparties } from '../../hooks/useCounterparties';
+import { useBeneficiaries } from '../../hooks/useBeneficiaries';
+import { useBusinessSearch } from '../../hooks/useBusinessDirectory';
+import { useSavedBusinesses } from '../../hooks/useSavedBusinesses';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useAuth } from '../../libs/auth-context';
 import { agreementsApi } from '../../libs/api/agreements.api';
@@ -123,15 +127,19 @@ const INITIAL: FormState = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9][0-9\s()-]{8,18}$/;
+const NAITRUST_ID_RE = /^(NT|NIT)[-_]?[A-Z0-9]{4,}$/i;
+const ACCOUNT_RE = /^\d{10}$/;
 
 function isValidContact(value: string): boolean {
   const contact = value.trim();
-  return EMAIL_RE.test(contact) || PHONE_RE.test(contact);
+  return EMAIL_RE.test(contact) || PHONE_RE.test(contact) || NAITRUST_ID_RE.test(contact) || ACCOUNT_RE.test(contact);
 }
 
-function participantContact(value: string): { email?: string; phone?: string } {
+function participantContact(value: string): { email?: string; phone?: string; identifier?: string } {
   const contact = value.trim();
-  return EMAIL_RE.test(contact) ? { email: contact } : { phone: contact };
+  if (EMAIL_RE.test(contact)) return { email: contact };
+  if (PHONE_RE.test(contact) && !ACCOUNT_RE.test(contact)) return { phone: contact };
+  return { identifier: contact };
 }
 
 function FieldError({ message }: { message?: string }) {
@@ -210,7 +218,13 @@ export function CreateDealPage() {
   const createDeal = useCreateDeal();
   const security = useSecurity();
   const accountType = accountTypeOf(user);
-  const { data: savedCounterparties = [], isLoading: savedCounterpartiesLoading } = useCounterparties(accountType === 'business');
+  const { data: savedCounterparties = [], isLoading: savedCounterpartiesLoading } = useCounterparties(true);
+  const { data: beneficiaries = [] } = useBeneficiaries();
+  const { data: directoryBusinesses = [] } = useBusinessSearch('');
+  const { savedBusinessIds } = useSavedBusinesses();
+  const businessContacts = useMemo<CounterpartyProfile[]>(() => directoryBusinesses.map((business) => ({ id: business.id, name: business.name, businessName: business.name, email: business.email, phone: business.phone, notes: business.ntId, avatarInitials: business.name.slice(0, 2).toUpperCase(), relation: 'supplier', identityVerified: business.verified, businessVerified: business.verified, memberSince: business.createdAt, completedDealsCount: business.completedProtectedTransactions ?? 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, ratingAverage: business.ratingAverage, isFavourite: savedBusinessIds.includes(business.id), isBlocked: false })), [directoryBusinesses, savedBusinessIds]);
+  const beneficiaryContacts = useMemo<CounterpartyProfile[]>(() => beneficiaries.map((beneficiary) => ({ id: beneficiary.id, name: beneficiary.name, email: beneficiary.email, phone: beneficiary.phone, avatarInitials: beneficiary.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: beneficiary.type === 'naitrust_user', businessVerified: false, memberSince: beneficiary.createdAt, completedDealsCount: 0, hasPriorTransactionWithYou: true, resolvedDisputesCount: 0, isFavourite: beneficiary.isFavourite, isBlocked: false, notes: beneficiary.naitrustId ?? beneficiary.naitrustAccountNumber ?? beneficiary.accountNumber })), [beneficiaries]);
+  const customerSavedContacts = useMemo(() => [...businessContacts.filter((business) => savedBusinessIds.includes(business.id)), ...beneficiaryContacts], [beneficiaryContacts, businessContacts, savedBusinessIds]);
 
   const requestedDraftId = searchParams.get('draft');
   const recoveredDraft = useMemo(
@@ -259,6 +273,7 @@ export function CreateDealPage() {
   );
   const [showDealTypeOptions, setShowDealTypeOptions] = useState(false);
   const [showAdvancedTiming, setShowAdvancedTiming] = useState(false);
+  const [createdInvitation, setCreatedInvitation] = useState<{ dealId: string; title: string; url: string } | null>(null);
 
   useEffect(() => {
     if (recoveredDraft) toast.info('Deal draft opened.');
@@ -327,7 +342,7 @@ export function CreateDealPage() {
   };
 
   const selectSavedCounterparty = (counterparty: CounterpartyProfile) => {
-    const contact = counterparty.email ?? counterparty.phone;
+    const contact = counterparty.email ?? counterparty.phone ?? counterparty.notes;
     if (!contact) {
       toast.error('Add an email or phone number to this saved contact before inviting them.');
       return;
@@ -362,6 +377,15 @@ export function CreateDealPage() {
 
   const removeParticipant = (index: number) => {
     setForm((prev) => ({ ...prev, participants: prev.participants.filter((_, i) => i !== index) }));
+    invalidateAgreement();
+  };
+
+  const removeSelectedCounterparty = (counterparty: CounterpartyProfile) => {
+    const identities = [counterparty.email, counterparty.phone, counterparty.notes].filter(Boolean).map((value) => value!.trim().toLowerCase());
+    setForm((prev) => {
+      const remaining = prev.participants.filter((participant) => participant.profileId !== counterparty.id && !identities.includes(participant.contact.trim().toLowerCase()));
+      return { ...prev, participants: remaining.length > 0 ? remaining : [emptyParticipant()] };
+    });
     invalidateAgreement();
   };
 
@@ -522,17 +546,38 @@ export function CreateDealPage() {
       });
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success('Protected Deal created. The secure invitation link was copied for sharing.');
-      } catch {
-        toast.success(`Protected Deal created. Share this invitation: ${shareUrl}`);
-      }
-      navigate('/app/deals');
+      setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
+      toast.success('Protected Deal created. Your invitation link is ready.');
     } catch {
       toast.error('Could not create the Protected Deal. Please try again.');
     }
   };
+
+  if (createdInvitation) {
+    return (
+      <DashboardLayout title="Invitation ready">
+        <div className="mx-auto w-full max-w-2xl py-8">
+          <Card className="rounded-3xl p-6 shadow-sm sm:p-8">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-700"><Check size={22} /></div>
+            <h1 className="mt-5 text-2xl font-bold">Protected Deal created</h1>
+            <p className="mt-2 text-sm text-muted-foreground">{createdInvitation.title}</p>
+            <div className="mt-6 rounded-2xl border bg-muted/30 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Deal invitation link</p>
+              <p className="mt-2 break-all text-sm font-medium">{createdInvitation.url}</p>
+              <Button className="mt-4 w-full rounded-full" onClick={() => void navigator.clipboard.writeText(createdInvitation.url).then(() => toast.success('Invitation link copied'))}>
+                <Copy size={15} /> Copy invitation link
+              </Button>
+            </div>
+            <p className="mt-4 text-xs leading-5 text-muted-foreground">Send this link by email, SMS, or WhatsApp. The recipient will verify their invited contact or Naitrust identity before joining.</p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+              <Button variant="outline" className="flex-1 rounded-full" onClick={() => navigate('/app/deals/new')}>Create another deal</Button>
+              <Button className="flex-1 rounded-full" onClick={() => navigate(`/app/deals/${createdInvitation.dealId}`)}>Open deal</Button>
+            </div>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   // Final submit is guarded by the transaction PIN (money-moving action).
   const requestSubmit = () => {
@@ -804,15 +849,18 @@ export function CreateDealPage() {
                   maxOpen={maxOpen}
                   maxOpenDays={MAX_DEAL_OPEN_DAYS}
                   showAdvancedTiming={showAdvancedTiming}
-                  canUseSavedContacts={accountType === 'business'}
-                  savedCounterparties={savedCounterparties}
+                  canUseSavedContacts
+                  savedCounterparties={accountType === 'customer' ? customerSavedContacts : savedCounterparties}
                   savedCounterpartiesLoading={savedCounterpartiesLoading}
+                  directoryCounterparties={businessContacts}
+                  customerMode={accountType === 'customer'}
                   onAdvancedTimingChange={setShowAdvancedTiming}
                   onFieldChange={(field, value) => set(field, value)}
                   onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)}
                   onParticipantChange={updateParticipant}
                   onAddParticipant={addParticipant}
                   onSelectCounterparty={selectSavedCounterparty}
+                  onDeselectCounterparty={removeSelectedCounterparty}
                   onRemoveParticipant={removeParticipant}
                 />
               )}
@@ -1027,7 +1075,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           <ShieldCheck size={16} className="mr-1.5" />
-                          Create and copy invitation
+                          Create Protected Deal
                         </>
                       )}
                     </Button>

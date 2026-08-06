@@ -26,6 +26,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import Spinner from '../ui/spinner';
 import { usePublicBusiness } from '../../hooks/useBusinessDirectory';
+import { useAuth } from '../../libs/auth-context';
 import { useConfirmTrustCheckoutTransfer, useTrustCheckout } from '../../hooks/useTrustCheckouts';
 import { trustCheckoutsApi } from '../../libs/api/trust-checkouts.api';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
@@ -38,6 +39,7 @@ function titleFromSlug(slug = '') {
 export function PublicBusinessPaymentPage() {
   const { businessSlug } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const requestId = searchParams.get('request');
   const legacyFixedAmount = Number(searchParams.get('amount') || 0);
@@ -134,8 +136,15 @@ export function PublicBusinessPaymentPage() {
 
   const startProtectedTransaction = () => {
     if (requestId) void trustCheckoutsApi.recordEvent(requestId, 'protection_selected');
-    const returnTo = `/app/deals/new${requestId ? `?checkout=${encodeURIComponent(requestId)}` : ''}`;
-    navigate(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+    const dealQuery = new URLSearchParams();
+    if (requestId) dealQuery.set('checkout', requestId);
+    if (business) {
+      dealQuery.set('business', business.id);
+      dealQuery.set('name', business.name);
+      if (business.email) dealQuery.set('email', business.email);
+    }
+    const returnTo = `/app/deals/new?${dealQuery.toString()}`;
+    navigate(isAuthenticated ? returnTo : `/login?returnTo=${encodeURIComponent(returnTo)}`);
   };
 
   const isUnavailable = checkout?.status === 'expired' || checkout?.status === 'revoked';
@@ -252,10 +261,10 @@ export function PublicBusinessPaymentPage() {
 
             <p className="flex gap-2 text-xs leading-5 text-muted-foreground"><ShieldCheck size={14} className="mt-0.5 shrink-0 text-emerald-600" /> Confirm the account name before paying. Screenshots are not proof of payment; Naitrust waits for provider confirmation.</p>
 
-            {allowsProtected && !isUnavailable && !isPaid && <div className="rounded-2xl border border-primary/20 bg-[#071b31] p-5 text-white">
-              <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><LockKeyhole size={18} /></span><div><p className="font-semibold">Need more than a transfer?</p><p className="mt-1 text-xs leading-5 text-white/65">Keep agreed terms, delivery evidence, milestones, messages, payment status, and issues in one Protected Transaction.</p></div></div>
-              {checkout && (checkout.evidenceRequirements.length > 0 || checkout.milestones.length > 0) && <div className="mt-4 grid gap-2 text-xs text-white/70">{checkout.evidenceRequirements.map((item) => <p key={item}>Evidence · {item}</p>)}{checkout.milestones.map((item) => <p key={item}>Milestone · {item}</p>)}</div>}
-              <Button className="mt-4 w-full rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={startProtectedTransaction}>Protect this transaction <ArrowRight size={16} /></Button>
+            {allowsProtected && !isUnavailable && !isPaid && <div className="rounded-2xl border border-sky-200 bg-sky-50 p-5 text-[#071b31] dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-foreground">
+              <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background"><LockKeyhole size={18} /></span><div><p className="font-semibold">Need more than a transfer?</p><p className="mt-1 text-xs leading-5 text-[#527086] dark:text-muted-foreground">Keep the agreement, delivery evidence, milestones, messages, payment status, and any issues together in one Protected Deal.</p></div></div>
+              {checkout && (checkout.evidenceRequirements.length > 0 || checkout.milestones.length > 0) && <div className="mt-4 grid gap-2 text-xs text-[#527086] dark:text-muted-foreground">{checkout.evidenceRequirements.map((item) => <p key={item}>Evidence: {item}</p>)}{checkout.milestones.map((item) => <p key={item}>Milestone: {item}</p>)}</div>}
+              <Button className="mt-4 w-full rounded-full" onClick={startProtectedTransaction}>Protect this transaction <ArrowRight size={16} /></Button>
             </div>}
             {allowsDirect && !isPaid && <p className="text-center text-[11px] text-muted-foreground">A direct transfer is not a Protected Transaction.</p>}
           </div>

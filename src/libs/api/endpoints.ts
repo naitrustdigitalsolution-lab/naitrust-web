@@ -52,6 +52,7 @@ export const endpoints = {
     revertTracking: (id: string) => `/transactions/${id}/tracking/revert`,
     termination: (id: string) => `/transactions/${id}/termination`,
     respondToTermination: (id: string) => `/transactions/${id}/termination/respond`,
+    fund: (id: string) => `/transactions/${id}/fund`,
   },
 
   agreements: {

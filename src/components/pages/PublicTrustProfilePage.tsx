@@ -1,4 +1,4 @@
-import { ArrowLeft, BadgeCheck, Building2, CalendarDays, CheckCircle2, Copy, ExternalLink, MessageCircle, ShieldCheck, Star } from 'lucide-react';
+import { ArrowLeft, BadgeCheck, Bookmark, Building2, CalendarDays, CheckCircle2, Copy, ExternalLink, Landmark, MessageCircle, Send, ShieldCheck, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -13,6 +13,11 @@ import { Card } from '../ui/card';
 import Spinner from '../ui/spinner';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { SEOHead } from '../utility/SEOHead';
+import { useSavedBusinesses } from '../../hooks/useSavedBusinesses';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -24,12 +29,17 @@ interface PublicTrustProfilePageProps {
 
 export function PublicTrustProfilePage({ businessIdentifier, embedded = false, showBackToBusinesses = true }: PublicTrustProfilePageProps = {}) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [reviewPage, setReviewPage] = useState(1);
+  const [payOpen, setPayOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [payAmount, setPayAmount] = useState('');
+  const [message, setMessage] = useState('');
   const { businessSlug } = useParams();
   const [searchParams] = useSearchParams();
   const profileIdentifier = businessIdentifier ?? businessSlug;
   const { data: business, isLoading } = usePublicBusiness(profileIdentifier);
+  const { savedBusinessIds, toggleSavedBusiness } = useSavedBusinesses();
   const { data: reviewData, isLoading: reviewsLoading } = useBusinessReviews(business?.id, user);
   const reviews = reviewData?.reviews ?? [];
   const reviewPageStart = (reviewPage - 1) * REVIEWS_PER_PAGE;
@@ -63,6 +73,14 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
     else window.close();
   };
 
+  const paymentAccount = business.paymentAccount ?? { bankName: 'Anchor Bank', accountNumber: '7012345678', accountName: `Naitrust / ${business.name}` };
+  const startProtectedDeal = () => {
+    const query = new URLSearchParams({ business: business.id, name: business.name });
+    if (business.email) query.set('email', business.email);
+    const destination = `/app/deals/new?${query.toString()}`;
+    navigate(isAuthenticated ? destination : `/login?returnTo=${encodeURIComponent(destination)}`);
+  };
+
   return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10'}>
     <SEOHead title={`${business.name} Trust Profile`} description={`Review verified business and transaction activity for ${business.name} on Naitrust.`} noindex />
     <div className="mx-auto max-w-5xl">
@@ -75,6 +93,12 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
           </div>
         </div>
         <div className="space-y-7 p-5 sm:p-8">
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border bg-muted/20 p-2.5">
+            <Button size="sm" className="rounded-full px-4" onClick={() => setPayOpen(true)}><Building2 size={15} /> Pay</Button>
+            <Button size="sm" variant="outline" className="rounded-full bg-background px-4" onClick={() => toggleSavedBusiness(business.id)}><Bookmark size={15} className={savedBusinessIds.includes(business.id) ? 'fill-primary text-primary' : ''} /> {savedBusinessIds.includes(business.id) ? 'Saved' : 'Save'}</Button>
+            <Button size="sm" variant="outline" className="rounded-full bg-background px-4" onClick={() => setContactOpen(true)}><MessageCircle size={15} /> Contact</Button>
+            {business.website && <Button size="icon" variant="outline" className="ml-auto h-9 w-9 rounded-full bg-background" aria-label={`Open ${business.name} website`} title="Open business website" onClick={() => window.open(business.website, '_blank', 'noopener,noreferrer')}><ExternalLink size={15} /></Button>}
+          </div>
           <div className="grid divide-y rounded-2xl border bg-muted/20 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
             {[['Protected Deals completed', business.completedProtectedTransactions ?? 0], ['Completion rate', `${business.completionRatePercent ?? 0}%`], ['Response rate', `${business.responseRatePercent ?? 0}%`], ['Transaction reviews', displayedReviewCount]].map(([label, value]) => <div key={String(label)} className="p-4"><p className="text-xl font-bold sm:text-2xl">{value}</p><p className="mt-1 text-xs text-muted-foreground">{label}</p></div>)}
           </div>
@@ -102,9 +126,29 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
             </>}
           </section>
           <div className="rounded-2xl bg-muted/50 p-4 text-xs leading-5 text-muted-foreground">Verification confirms information checked by Naitrust or its providers at a point in time. It is not a guarantee of delivery, quality, solvency, or future behaviour.</div>
-          <div className="flex flex-col gap-2 sm:flex-row"><Button className="flex-1 rounded-full" onClick={() => window.location.assign(paymentUrl)}><Building2 size={16} /> Pay with Naitrust</Button>{business.phone && <Button variant="outline" className="flex-1 rounded-full" onClick={() => window.location.assign(`tel:${business.phone}`)}><MessageCircle size={16} /> Contact business</Button>}{business.website && <Button variant="outline" className="rounded-full" onClick={() => window.open(business.website, '_blank', 'noopener,noreferrer')}><ExternalLink size={16} /></Button>}</div>
         </div>
       </Card>
     </div>
+    <Sheet open={payOpen} onOpenChange={setPayOpen}>
+      <SheetContent className="w-[94vw] gap-0 overflow-y-auto p-0 sm:max-w-xl">
+        <SheetHeader className="border-b px-6 py-5"><SheetTitle>Pay {business.name}</SheetTitle><SheetDescription>Make a normal transfer or protect the transaction with agreed terms.</SheetDescription></SheetHeader>
+        <div className="space-y-5 p-6">
+          <div><Label htmlFor="profile-pay-amount">Amount to pay (NGN)</Label><Input id="profile-pay-amount" type="number" min="1" className="mt-2 h-12 text-lg font-semibold" value={payAmount} onChange={(event) => setPayAmount(event.target.value)} placeholder="0.00" /></div>
+          <div className="rounded-2xl border bg-muted/30 p-4"><p className="flex items-center gap-2 text-sm font-semibold"><Landmark size={16} className="text-primary" /> Business payment account</p><p className="mt-4 text-xs text-muted-foreground">{paymentAccount.bankName}</p><div className="mt-1 flex items-center justify-between gap-3"><p className="font-mono text-2xl font-bold tracking-wider">{paymentAccount.accountNumber}</p><Button size="icon" variant="ghost" className="rounded-full" aria-label="Copy account number" onClick={() => void navigator.clipboard.writeText(paymentAccount.accountNumber).then(() => toast.success('Account number copied'))}><Copy size={15} /></Button></div><p className="mt-1 text-sm font-medium">{paymentAccount.accountName}</p></div>
+          <Button className="h-11 w-full rounded-full" disabled={Number(payAmount) <= 0} onClick={() => toast.success('Transfer monitoring started. Naitrust will confirm when the provider reports payment.')}>I have made the transfer</Button>
+          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-400/15 dark:bg-sky-400/10"><p className="font-semibold">Need payment protection?</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Create a Protected Deal with this business and keep terms, evidence, delivery, and payment status together.</p><Button variant="outline" className="mt-4 w-full rounded-full bg-background" onClick={startProtectedDeal}><ShieldCheck size={15} /> Start Protected Deal</Button></div>
+        </div>
+      </SheetContent>
+    </Sheet>
+    <Sheet open={contactOpen} onOpenChange={setContactOpen}>
+      <SheetContent className="w-[94vw] gap-0 overflow-y-auto p-0 sm:max-w-xl">
+        <SheetHeader className="border-b px-6 py-5"><SheetTitle>Contact {business.name}</SheetTitle><SheetDescription>Review the verified contact details or send a message through Naitrust.</SheetDescription></SheetHeader>
+        <div className="space-y-5 p-6">
+          <div className="rounded-2xl border bg-muted/30 p-4 text-sm"><p className="font-semibold">Business contact</p><div className="mt-3 space-y-2 text-muted-foreground">{business.email && <p><span className="text-foreground">Email:</span> {business.email}</p>}{business.phone && <p><span className="text-foreground">Phone:</span> {business.phone}</p>}<p><span className="text-foreground">Naitrust ID:</span> {business.ntId}</p>{business.address && <p><span className="text-foreground">Address:</span> {business.address}</p>}<p><span className="text-foreground">Category:</span> {business.category}</p></div></div>
+          <div><Label htmlFor="business-message">Message</Label><Textarea id="business-message" rows={6} className="mt-2 resize-none" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Ask about an order, service, delivery, or payment..." /></div>
+          <Button className="w-full rounded-full" disabled={!message.trim()} onClick={() => { toast.success(`Message sent to ${business.name}`); setMessage(''); setContactOpen(false); }}><Send size={15} /> Send message</Button>
+        </div>
+      </SheetContent>
+    </Sheet>
   </div>;
 }

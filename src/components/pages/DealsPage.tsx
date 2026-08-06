@@ -33,17 +33,20 @@ const CLOSED: SafeDealStatus[] = ['draft', 'completed', 'paid_out', 'refunded', 
 const PAGE_SIZE = 10;
 
 function byStatus(deals: SafeDealSummary[], filter: Filter): SafeDealSummary[] {
+  // Drafts have their own workspace at /app/drafts and must never appear on
+  // the Active Deals screen, including its "All" and "Needs action" views.
+  const publishedDeals = deals.filter((deal) => deal.status !== 'draft');
   switch (filter) {
     case 'active':
-      return deals.filter((d) => !CLOSED.includes(d.status));
+      return publishedDeals.filter((d) => !CLOSED.includes(d.status));
     case 'action':
-      return dealsNeedingAction(deals);
+      return dealsNeedingAction(publishedDeals);
     case 'disputed':
-      return deals.filter((d) => d.status === 'disputed');
+      return publishedDeals.filter((d) => d.status === 'disputed');
     case 'completed':
-      return deals.filter((d) => d.status === 'completed' || d.status === 'paid_out');
+      return publishedDeals.filter((d) => d.status === 'completed' || d.status === 'paid_out');
     default:
-      return deals;
+      return publishedDeals;
   }
 }
 
@@ -51,7 +54,7 @@ export function DealsPage() {
   const navigate = useNavigate();
   const { data: deals, isLoading, isError } = useTransactions();
 
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<Filter>('active');
   const [search, setSearch] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');

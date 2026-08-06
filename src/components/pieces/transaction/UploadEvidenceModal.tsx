@@ -5,7 +5,7 @@
  * object URLs retain selected files for preview/download during the mock session.
  */
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FileText, Loader2, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
 import { Button } from '../../ui/button';
@@ -21,20 +21,25 @@ interface UploadEvidenceModalProps {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   submitting?: boolean;
+  initialKind?: string;
   onSubmit: (input: { items: { fileName: string; kind: string; note?: string; fileUrl: string; mimeType: string }[] }) => void;
 }
 
-export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }: UploadEvidenceModalProps) {
-  const [kind, setKind] = useState('Invoice');
+export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKind = 'Invoice', onSubmit }: UploadEvidenceModalProps) {
+  const [kind, setKind] = useState(initialKind);
   const [files, setFiles] = useState<Array<{ fileName: string; fileUrl: string; mimeType: string }>>([]);
   const [note, setNote] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
-    setKind('Invoice');
+    setKind(initialKind);
     setFiles([]);
     setNote('');
   };
+
+  useEffect(() => {
+    if (open) setKind(initialKind);
+  }, [initialKind, open]);
 
   const submit = () => {
     if (files.length === 0) return;
@@ -53,7 +58,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, onSubmit }
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Upload evidence</DialogTitle>
-          <DialogDescription>Attach proof to this deal for both parties to see.</DialogDescription>
+          <DialogDescription>Attach proof to this deal for both parties to see. This upload will be saved as <strong>{kind}</strong>.</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div>

@@ -87,7 +87,7 @@ export function BusinessReviewComposer({
     return (
       <div className="flex gap-3 rounded-2xl border bg-muted/30 p-4">
         <CheckCircle2 className="mt-0.5 shrink-0 text-muted-foreground" size={18} />
-        <div><p className="text-sm font-semibold">Transaction-backed reviews</p><p className="mt-1 text-xs leading-5 text-muted-foreground">You can rate this business after completing a Naitrust transfer or Protected Deal with it. Each completed transaction can be reviewed once.</p></div>
+        <div><p className="text-sm font-semibold">Reviews from completed transactions</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Complete a Naitrust payment or Protected Deal with this business to leave a verified review. Each transaction can be reviewed once.</p></div>
       </div>
     );
   }
@@ -166,4 +166,3 @@ export function BusinessReviewComposer({
     </>
   );
 }
-

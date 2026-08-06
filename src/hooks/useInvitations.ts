@@ -53,7 +53,7 @@ export function usePublicInvitation(token: string | undefined) {
 export function useClaimInvitation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ token, user }: { token: string; user: Pick<User, 'id' | 'email' | 'role' | 'kycVerified'> }) =>
+    mutationFn: ({ token, user }: { token: string; user: Pick<User, 'id' | 'email' | 'phone' | 'naitrustId' | 'role' | 'kycVerified'> }) =>
       invitationsApi.claim(token, user),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: INVITATIONS_QUERY_KEY }),
   });

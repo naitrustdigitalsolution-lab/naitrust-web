@@ -19,6 +19,7 @@ import type {
 } from '../store/types';
 import type { ApiSuccess } from './types';
 import mockInvitations from '../../mocks/apis/invitations.json';
+import { grantMockDealAccess, listMockCreatedDeals } from './mock-protected-deal-store';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -45,9 +46,28 @@ function maskContact(contact?: string): string | undefined {
 }
 
 function publicPreview(token: string): PublicInvitationPreview | null {
-  const scenario = token.startsWith('nt-invite-new-')
-    ? { index: 0, status: 'pending' as const, intendedContact: 'invited@example.com' }
-    : PUBLIC_SCENARIOS[token];
+  const createdDeal = listMockCreatedDeals().find((deal) => deal.summary.publicInvitePath?.endsWith(`/${token}`));
+  if (createdDeal) {
+    const participant = createdDeal.input.participants[0];
+    const contact = participant?.email ?? participant?.phone ?? participant?.identifier;
+    return {
+      token,
+      invitationId: createdDeal.summary.id,
+      reference: createdDeal.summary.reference,
+      inviterName: 'Naitrust member',
+      inviterVerified: true,
+      inviterAccountType: createdDeal.input.partyMode === 'b2b' ? 'business' : createdDeal.input.role === 'seller' ? 'business' : 'customer',
+      intendedAccountType: createdDeal.input.partyMode === 'b2b' ? 'business' : 'customer',
+      yourRole: createdDeal.input.role === 'seller' ? 'buyer' : 'seller',
+      title: createdDeal.summary.title,
+      amountMinor: createdDeal.summary.amountMinor,
+      currency: createdDeal.summary.currency,
+      expiresAt: new Date(new Date(createdDeal.summary.createdAt).getTime() + 14 * 86400000).toISOString(),
+      status: 'pending',
+      maskedContact: maskContact(contact),
+    };
+  }
+  const scenario = PUBLIC_SCENARIOS[token];
   if (!scenario) return null;
   const invitation = mockList[scenario.index];
   if (!invitation) return null;
@@ -89,7 +109,7 @@ export const invitationsApi = {
   /** POST /invitations/public/:token/claim: binds token to authenticated account. */
   claim: async (
     token: string,
-    user: Pick<User, 'id' | 'email' | 'role' | 'kycVerified'>,
+    user: Pick<User, 'id' | 'email' | 'phone' | 'naitrustId' | 'role' | 'kycVerified'>,
   ): Promise<ApiSuccess<{ invitationId: string; destination: string }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
@@ -97,6 +117,15 @@ export const invitationsApi = {
       if (!preview) throw new Error('This invitation cannot be claimed.');
       if (preview.status === 'wrong_recipient') throw new Error('This invitation belongs to another recipient.');
       if (preview.status !== 'pending') throw new Error('This invitation cannot be claimed.');
+      const createdDeal = listMockCreatedDeals().find((deal) => deal.summary.publicInvitePath?.endsWith(`/${token}`));
+      if (createdDeal) {
+        const participant = createdDeal.input.participants[0];
+        const intended = (participant?.email ?? participant?.phone ?? participant?.identifier)?.toLowerCase();
+        const identities = [user.email, user.phone, user.naitrustId].filter(Boolean).map((value) => value!.toLowerCase());
+        if (intended && !identities.includes(intended)) throw new Error('Sign in with the email, phone number, or Naitrust ID this invitation was sent to.');
+        grantMockDealAccess(createdDeal.summary.id, user.id);
+        return { success: true, data: { invitationId: createdDeal.summary.id, destination: `/app/deals/${createdDeal.summary.id}` } };
+      }
       if (
         preview.intendedAccountType === 'business' &&
         ((user.role !== 'business' && user.role !== 'business-member') || !user.kycVerified)

@@ -32,7 +32,7 @@ import {
 } from '../../libs/utils/safe-deal-presentation';
 
 function CenteredCard({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-9xl">{children}</div>;
+  return <div className="mx-auto w-full max-w-5xl">{children}</div>;
 }
 
 export function InvitationDetailPage() {

@@ -21,6 +21,7 @@ import type {
   FundingStatus,
   MilestoneStatus,
   SafeDealDetail,
+  PartyMode,
 } from '../store/types';
 import type { AgreementDraft, DealType, SafeDealStatus, SafeDealSummary } from '../store/types';
 import type { CreateSafeDealInput, DealRole } from '../store/types';
@@ -40,8 +41,10 @@ import {
   findMockCreatedDeal,
   getMockDealRuntime,
   listMockCreatedDeals,
+  patchMockDealRuntime,
 } from './mock-protected-deal-store';
 import { useAuthStore } from '../store/auth.store';
+import { canMockUserAccessDeal } from './mock-deal-access';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -56,7 +59,10 @@ function allSummaries(): SafeDealSummary[] {
 }
 
 function findSummary(id: string): SafeDealSummary | undefined {
-  return allSummaries().find((summary) => summary.id === id || summary.reference === id);
+  const userId = useAuthStore.getState().user?.id;
+  return allSummaries().find(
+    (summary) => (summary.id === id || summary.reference === id) && canMockUserAccessDeal(summary, userId),
+  );
 }
 
 interface DetailOverlay {
@@ -66,6 +72,8 @@ interface DetailOverlay {
   dealType?: DealType;
   recurring?: boolean;
   previousReference?: string;
+  partyMode?: PartyMode;
+  youAreSeller?: boolean;
 }
 
 /**
@@ -97,6 +105,140 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
     useCase: 'supplier-orders',
     releaseConditions: 'Buyer completes handover review and the funding-review deadline passes without a dispute, or the buyer approves early release.',
     dealType: 'milestone',
+  },
+  txn_mock_030: {
+    description: 'A custom furniture order created for Amaka. The invitation has been sent, but the customer has not accepted the deal yet.',
+    useCase: 'social-commerce',
+    releaseConditions: 'Customer accepts the invitation, funds the protected account, and confirms the completed furniture at handover.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_031: {
+    description: 'An event catering booking accepted by Aisha. The terms are agreed and the protected account is waiting for her payment.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'The agreed catering service is delivered and confirmed by the customer after the event.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_032: {
+    description: 'A generator purchase funded by Chidi. The full payment is now protected in the partner account while delivery is arranged.',
+    useCase: 'equipment-purchase',
+    releaseConditions: 'The correct generator is delivered, inspected, and accepted by the customer.',
+    dealType: 'milestone',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_033: {
+    description: 'A business supply order between Emeka Nwosu Enterprises and Northstar Wholesale Ltd for August retail stock.',
+    useCase: 'supplier-orders',
+    releaseConditions: 'The complete stock order is delivered with the supplier invoice and accepted after quantity checks.',
+    dealType: 'milestone',
+    partyMode: 'b2b',
+    youAreSeller: false,
+  },
+  txn_mock_034: {
+    description: 'A completed customer uniform order. Delivery was confirmed and the protected payment was released successfully.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'The finished uniforms are delivered in the agreed sizes and accepted by the customer.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_035: {
+    description: 'Website redesign terms are being reviewed with a business client before either party commits funds.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'The approved website is deployed and the client confirms the agreed pages and functions are working.',
+    partyMode: 'b2b',
+    youAreSeller: true,
+  },
+  txn_mock_036: {
+    description: 'A customer has paid for a refrigerator and the business has uploaded dispatch and product evidence for review.',
+    useCase: 'equipment-purchase',
+    releaseConditions: 'The refrigerator model and condition match the order and the customer confirms delivery.',
+    dealType: 'milestone',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_037: {
+    description: 'Office cleaning was completed and the customer is reviewing the completion evidence before approving payment.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'The customer confirms the agreed deep-cleaning checklist has been completed.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_038: {
+    description: 'A wholesale packaging order has been reviewed and approved for release to the supplier.',
+    useCase: 'supplier-orders',
+    releaseConditions: 'All cartons and branded packaging are received in the agreed quantities without material defects.',
+    dealType: 'milestone',
+    partyMode: 'b2b',
+    youAreSeller: false,
+  },
+  txn_mock_039: {
+    description: 'A customer reported that delivered solar panels did not match the agreed specification. Funds remain protected during resolution.',
+    useCase: 'equipment-purchase',
+    releaseConditions: 'Both parties accept a replacement, partial refund, or documented resolution from the dispute process.',
+    dealType: 'milestone',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_040: {
+    description: 'A recurring monthly produce supply arrangement for a restaurant, currently in active fulfilment.',
+    useCase: 'supplier-orders',
+    releaseConditions: 'Each monthly produce delivery passes the agreed quantity and freshness checks.',
+    dealType: 'recurring',
+    recurring: true,
+    partyMode: 'b2b',
+    youAreSeller: true,
+  },
+  txn_mock_041: {
+    description: 'A photography booking was cancelled before service delivery and the protected customer payment was returned.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'No release is required because the booking was cancelled and the payment was refunded.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_042: {
+    description: 'A completed business equipment lease where the final handover was accepted and payment was paid out.',
+    useCase: 'equipment-purchase',
+    releaseConditions: 'Equipment handover, serial-number checks, and acceptance are complete.',
+    partyMode: 'b2b',
+    youAreSeller: true,
+  },
+  txn_mock_043: {
+    description: 'A draft bulk uniform supply deal that has not been sent to the school administrator yet.',
+    useCase: 'supplier-orders',
+    releaseConditions: 'The complete uniform order is delivered in the approved sizes, colours, and quantities.',
+    partyMode: 'b2b',
+    youAreSeller: true,
+  },
+  txn_mock_044: {
+    description: 'A customer accepted the terms for an air conditioner installation and is preparing to fund the protected account.',
+    useCase: 'equipment-purchase',
+    releaseConditions: 'The specified unit is installed, tested, and accepted by the customer.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_045: {
+    description: 'A shop renovation is underway with protected funding and progress tracked against agreed project stages.',
+    useCase: 'custom-business-deal',
+    releaseConditions: 'Each renovation stage is evidenced and the completed shop passes the final client inspection.',
+    dealType: 'milestone',
+    partyMode: 'b2b',
+    youAreSeller: true,
+  },
+  txn_mock_046: {
+    description: 'A customer invitation for a birthday cake order expired and the deal was cancelled before any payment was made.',
+    useCase: 'social-commerce',
+    releaseConditions: 'No release is required because the deal was cancelled before funding.',
+    partyMode: 'b2c',
+    youAreSeller: true,
+  },
+  txn_mock_047: {
+    description: 'A protected business purchase for a used laptop, with the business waiting for the individual seller to confirm the final terms.',
+    useCase: 'social-commerce',
+    releaseConditions: 'The laptop serial number, battery condition, accessories, and working state match the listing at handover.',
+    partyMode: 'b2c',
+    youAreSeller: false,
   },
 };
 
@@ -389,9 +531,9 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   // tracking; on other deals you're the buyer who funds and confirms.
   const youAreSeller = input
     ? input.role === 'seller'
-    : summary.id === 'txn_mock_029'
+    : overlay?.youAreSeller ?? (summary.id === 'txn_mock_029'
       ? !productBuyerView
-      : dealType === 'milestone';
+      : dealType === 'milestone');
   const milestones =
     trackingOverrides[summary.id] ?? (dealType === 'milestone' ? milestonesFor(effectiveSummary) : []);
   const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
@@ -401,7 +543,7 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
     useCase: input?.useCase ?? overlay?.useCase ?? 'supplier-orders',
     dealType,
-    partyMode: input?.partyMode ?? 'b2b',
+    partyMode: input?.partyMode ?? overlay?.partyMode ?? 'b2b',
     deliveryDueDate: input?.deliveryDueDate ?? new Date(created + 10 * 86400000).toISOString().slice(0, 10),
     releaseConditions:
       input?.releaseConditions ?? overlay?.releaseConditions ?? 'Handover and funding review complete without a dispute, or the buyer approves early release.',
@@ -450,6 +592,29 @@ function getMockDetailOrThrow(id: string): SafeDealDetail {
 }
 
 export const dealDetailApi = {
+  fundFromWallet: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) {
+      const res = await httpClient.post<SafeDealDetail>(endpoints.transactions.fund(id), { source: 'wallet' });
+      return res as ApiSuccess<SafeDealDetail>;
+    }
+    await delay(400);
+    const deal = getMockDetailOrThrow(id);
+    if (deal.funding.status !== 'awaiting_transfer') throw new Error('This deal is not waiting for funding.');
+    const current = getMockDealRuntime(id);
+    patchMockDealRuntime(id, {
+      status: 'funded',
+      activity: [
+        {
+          id: `act_wallet_${Date.now()}`,
+          kind: 'funded',
+          message: 'Deal funded from Naitrust wallet. Funds are now protected with the partner.',
+          createdAt: new Date().toISOString(),
+        },
+        ...(current?.activity ?? []),
+      ],
+    });
+    return { success: true, data: getMockDetailOrThrow(id), message: 'Deal funded from wallet' };
+  },
   /** GET /transactions/:id */
   getOne: async (id: string): Promise<ApiSuccess<SafeDealDetail | null>> => {
     if (appConfig.isMock) {

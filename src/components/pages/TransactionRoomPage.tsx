@@ -36,6 +36,7 @@ import {
   Undo2,
   Upload,
   Users,
+  WalletCards,
   Gift,
   Sparkles,
 } from 'lucide-react';
@@ -66,7 +67,9 @@ import {
   useEditTrackingStep,
   useRevertTracking,
   useAddEvidence,
+  useFundDealFromWallet,
 } from '../../hooks/useDealDetail';
+import { useWallet } from '../../hooks/useWallet';
 import { useNegotiation, useProposeNegotiation } from '../../hooks/useNegotiation';
 import { useDispute, useOpenDispute } from '../../hooks/useDispute';
 import { useTermination, useRequestTermination, useRespondTermination } from '../../hooks/useTermination';
@@ -127,8 +130,14 @@ function PartiesPanel({ deal }: { deal: SafeDealDetail }) {
 
 function FundingPanel({ deal }: { deal: SafeDealDetail }) {
   const { funding } = deal;
+  const [showMethods, setShowMethods] = useState(false);
+  const wallet = useWallet();
+  const fundFromWallet = useFundDealFromWallet(deal.id);
   const presentation = getFundingPresentation(funding.status);
   const showAccount = funding.status === 'awaiting_transfer' || funding.status === 'unfunded';
+  const canFund = funding.status === 'awaiting_transfer' && deal.parties.some((party) => party.isYou && party.role === 'buyer');
+  const walletBalance = wallet.data?.balance.availableMinor ?? 0;
+  const walletHasEnough = walletBalance >= funding.amountExpectedMinor;
 
   const copyAccount = () => {
     navigator.clipboard?.writeText(funding.accountNumber).then(
@@ -153,7 +162,34 @@ function FundingPanel({ deal }: { deal: SafeDealDetail }) {
         </div>
 
         {showAccount ? (
-          <div className="rounded-xl border bg-muted/40 p-3">
+          <div className="space-y-3">
+          {canFund && (
+            <Button className="w-full rounded-full" onClick={() => setShowMethods((value) => !value)}>
+              <Landmark size={16} className="mr-1.5" />
+              Choose how to fund
+            </Button>
+          )}
+          {canFund && showMethods && (
+            <div className="grid gap-2">
+              <button type="button" className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-left" onClick={() => document.getElementById(`bank-${deal.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                <span className="flex items-center gap-2 text-sm font-semibold"><Landmark size={16} /> Bank transfer</span>
+                <span className="mt-1 block text-xs text-muted-foreground">Transfer to the protected partner account below.</span>
+              </button>
+              <div className="rounded-xl border p-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <span className="flex items-center gap-2 text-sm font-semibold"><WalletCards size={16} /> Naitrust wallet</span>
+                    <span className="mt-1 block text-xs text-muted-foreground">Available: {formatMinorAmount(walletBalance, funding.currency)}</span>
+                  </div>
+                  <Button size="sm" className="rounded-full" disabled={!walletHasEnough || wallet.isLoading || fundFromWallet.isPending} onClick={() => fundFromWallet.mutate(undefined, { onSuccess: () => toast.success('Deal funded. Your payment is now protected.'), onError: (error) => toast.error(error.message) })}>
+                    {fundFromWallet.isPending ? 'Funding...' : 'Pay from wallet'}
+                  </Button>
+                </div>
+                {!wallet.isLoading && !walletHasEnough && <p className="mt-2 text-xs text-destructive">Your available wallet balance is not enough for this deal.</p>}
+              </div>
+            </div>
+          )}
+          <div id={`bank-${deal.id}`} className="rounded-xl border bg-muted/40 p-3">
             <p className="text-xs text-muted-foreground">Pay into this partner virtual account</p>
             <div className="mt-1 flex items-center justify-between gap-2">
               <span className="font-mono text-base font-semibold tracking-wide text-foreground">
@@ -165,6 +201,7 @@ function FundingPanel({ deal }: { deal: SafeDealDetail }) {
             </div>
             <p className="text-xs text-muted-foreground">{funding.accountName}</p>
             <p className="text-xs text-muted-foreground">{funding.bankName}</p>
+          </div>
           </div>
         ) : (
           <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-2.5 text-sm text-emerald-700 dark:text-emerald-400">
@@ -602,6 +639,7 @@ export function TransactionRoomPage() {
   const [showTerminate, setShowTerminate] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [showDeliveryEvidence, setShowDeliveryEvidence] = useState(false);
+  const [deliveryEvidenceKind, setDeliveryEvidenceKind] = useState('Invoice');
   const requestedTab = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
   const [chatFullscreen, setChatFullscreen] = useState(false);
@@ -853,15 +891,6 @@ export function TransactionRoomPage() {
               </Card>
             )}
 
-            {deal && (
-              <DealDeliveryReviewPanel
-                deal={deal}
-                hasDispute={hasDispute}
-                onReportIssue={() => setShowDispute(true)}
-                onUploadEvidence={() => setShowDeliveryEvidence(true)}
-              />
-            )}
-
             {/* Body */}
             <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
               <Tabs value={activeTab} onValueChange={changeTab} className="w-full min-w-0">
@@ -909,6 +938,15 @@ export function TransactionRoomPage() {
                 </TabsList>
 
                 <TabsContent value="overview">
+                  <DealDeliveryReviewPanel
+                    deal={deal}
+                    hasDispute={hasDispute}
+                    onReportIssue={() => setShowDispute(true)}
+                    onUploadEvidence={(kind) => {
+                      setDeliveryEvidenceKind(kind ?? 'Photo');
+                      setShowDeliveryEvidence(true);
+                    }}
+                  />
                   <Card className="p-5 shadow-sm">
                     <OverviewTab deal={deal} />
                   </Card>
@@ -1071,6 +1109,7 @@ export function TransactionRoomPage() {
               open={showDeliveryEvidence}
               onOpenChange={setShowDeliveryEvidence}
               submitting={addDeliveryEvidence.isPending}
+              initialKind={deliveryEvidenceKind}
               onSubmit={({ items }) =>
                 addDeliveryEvidence.mutate(
                   { items, uploadedByName: youParty?.name ?? 'You' },

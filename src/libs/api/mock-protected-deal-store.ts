@@ -17,6 +17,14 @@ interface MockDealRuntime {
   delivery?: DealDeliveryLifecycle;
   status?: SafeDealStatus;
   activity?: DealActivityEvent[];
+  participantUserIds?: string[];
+}
+
+export function grantMockDealAccess(dealId: string, userId: string): void {
+  const current = getMockDealRuntime(dealId);
+  patchMockDealRuntime(dealId, {
+    participantUserIds: Array.from(new Set([...(current?.participantUserIds ?? []), userId])),
+  });
 }
 
 interface MockProtectedDealState {

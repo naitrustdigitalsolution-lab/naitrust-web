@@ -111,6 +111,8 @@ export interface DealParticipantInput {
   name: string;
   email?: string;
   phone?: string;
+  /** Naitrust ID or Naitrust account number when no email or phone is used. */
+  identifier?: string;
   profileId?: string;
   allocationMinor?: number;
 }

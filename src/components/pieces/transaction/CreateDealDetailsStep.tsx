@@ -50,12 +50,15 @@ interface CreateDealDetailsStepProps {
   canUseSavedContacts: boolean;
   savedCounterparties: CounterpartyProfile[];
   savedCounterpartiesLoading: boolean;
+  directoryCounterparties: CounterpartyProfile[];
+  customerMode: boolean;
   onAdvancedTimingChange: (open: boolean) => void;
   onFieldChange: (field: TextDetailField, value: string) => void;
   onTestingPeriodChange: (value?: ExtendedProductTestingDays) => void;
   onParticipantChange: (index: number, field: keyof DealParticipantForm, value: string) => void;
   onAddParticipant: () => void;
   onSelectCounterparty: (counterparty: CounterpartyProfile) => void;
+  onDeselectCounterparty: (counterparty: CounterpartyProfile) => void;
   onRemoveParticipant: (index: number) => void;
 }
 
@@ -75,12 +78,15 @@ export function CreateDealDetailsStep({
   canUseSavedContacts,
   savedCounterparties,
   savedCounterpartiesLoading,
+  directoryCounterparties,
+  customerMode,
   onAdvancedTimingChange,
   onFieldChange,
   onTestingPeriodChange,
   onParticipantChange,
   onAddParticipant,
   onSelectCounterparty,
+  onDeselectCounterparty,
   onRemoveParticipant,
 }: CreateDealDetailsStepProps) {
   const amountMinor = Math.round(Number(form.amount || 0) * 100);
@@ -140,12 +146,16 @@ export function CreateDealDetailsStep({
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <SavedCounterpartyPickerDialog counterparties={directoryCounterparties} isLoading={savedCounterpartiesLoading} selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])} selectedIdentifiers={form.participants.flatMap((participant) => [participant.contact, participant.name])} onSelect={onSelectCounterparty} onDeselect={onDeselectCounterparty} customerMode={customerMode} directoryMode />
               {canUseSavedContacts && (
                 <SavedCounterpartyPickerDialog
                   counterparties={savedCounterparties}
                   isLoading={savedCounterpartiesLoading}
                   selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])}
+                  selectedIdentifiers={form.participants.flatMap((participant) => [participant.contact, participant.name])}
                   onSelect={onSelectCounterparty}
+                  onDeselect={onDeselectCounterparty}
+                  customerMode={customerMode}
                 />
               )}
               <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full" onClick={onAddParticipant}>
@@ -195,7 +205,7 @@ export function CreateDealDetailsStep({
                   <div>
                     <Input
                       type="text"
-                      placeholder="Email or phone number"
+                      placeholder="Naitrust ID, account number, email, or phone"
                       value={participant.contact}
                       onChange={(event) => onParticipantChange(index, 'contact', event.target.value)}
                     />

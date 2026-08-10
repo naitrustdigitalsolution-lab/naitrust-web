@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { SEOHead } from '../components/utility/SEOHead';
 import { NaitrustLogo } from '../components/utility/NaitrustLogo';
+import spiralBackground from '../assets/spiral.svg';
 import { joinWaitlist } from '../services/publicService';
 import type { TransactionRange, WaitlistPayload, WaitlistUserType } from '../types/global';
 
@@ -93,33 +94,36 @@ export default function WaitlistPage() {
   }
 
   return (
-    <div className="min-h-svh bg-background">
+    <div className="relative min-h-svh overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead title="Join the Naitrust Waitlist" description="Join Naitrust early access to find registered businesses, review Trust Profiles, pay with confidence, and use Protected Deals." canonicalPath="/waitlist" />
-      <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
-          <button type="button" onClick={() => navigate('/')} className="inline-flex h-10 items-center gap-2 rounded-full px-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">
-            <ArrowLeft size={18} /> <span>Back home</span>
-          </button>
-          <NaitrustLogo size="sm" showText />
-        </div>
+      <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
+      <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-7xl px-8 lg:block">
+        <img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-8 top-1/2 h-[900px] w-[900px] max-w-none -translate-y-1/2 rotate-180 opacity-70" />
+      </div>
+
+      <header className="relative z-20 mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <button type="button" onClick={() => navigate('/')} className="inline-flex h-9 items-center gap-2 rounded-full px-2 text-sm font-semibold text-muted-foreground transition hover:text-foreground">
+          <ArrowLeft size={17} /> <span>Back home</span>
+        </button>
+        <NaitrustLogo size="sm" showText />
       </header>
 
-      <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[.78fr_1.22fr] lg:items-start">
-        <aside className="overflow-hidden rounded-3xl bg-gradient-to-br from-[#061a31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-xl sm:p-8 lg:sticky lg:top-24">
-          <div className="flex items-center gap-3 lg:block">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/12 lg:h-11 lg:w-11"><ShieldCheck size={21} /></div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-300 lg:mt-7">Naitrust early access</p>
+      <main className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 pb-10 sm:px-6 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[.78fr_1.22fr] lg:items-center lg:gap-3 lg:px-8 lg:pb-16">
+        <aside className="py-5 lg:pr-12">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust early access</p>
           </div>
-          <h1 className="mt-4 text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-4xl lg:mt-3">Know who you are dealing with before money moves.</h1>
-          <p className="mt-2 text-sm leading-6 text-white/70 sm:mt-4 sm:text-base">Find a business, review its Trust Profile, then pay normally or protect the deal.</p>
-          <div className="mt-7 hidden space-y-3 text-sm text-white/80 lg:block">
+          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">Know who you are dealing with before money moves.</h1>
+          <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Find a business, review its Trust Profile, then pay normally or protect the deal.</p>
+          <div className="mt-7 hidden space-y-3 text-sm text-[#496274] dark:text-slate-300 lg:block">
             {['Search registered businesses and Trust Profiles', 'Review available verification details before paying', 'Pay normally or create a Protected Deal'].map((item) => (
-              <p key={item} className="flex items-start gap-2"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-300" />{item}</p>
+              <p key={item} className="flex items-start gap-2.5"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</p>
             ))}
           </div>
         </aside>
 
-        <section className="-mx-4 bg-background px-4 py-6 sm:mx-0 sm:rounded-3xl sm:border sm:p-8 sm:shadow-sm">
+        <section className="mx-auto w-full max-w-2xl bg-background py-5 lg:px-10 lg:py-10 xl:px-14">
           {complete ? (
             <div className="grid min-h-[28rem] place-items-center text-center">
               <div>
@@ -130,7 +134,7 @@ export default function WaitlistPage() {
               </div>
             </div>
           ) : (
-            <form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-6">
               <div>
                 <div className="mb-5 flex items-center gap-2" aria-label={`Step ${step} of 2`}>
                   <span className="h-1.5 flex-1 rounded-full bg-primary" />
@@ -155,7 +159,7 @@ export default function WaitlistPage() {
 
                   <fieldset><legend className="text-sm font-semibold">I’m most interested in</legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{PAYMENT_NEEDS.map((item) => { const active = form.needs.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => setForm({ ...form, needs: toggle(form.needs, item.value) })} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span>{item.label}</button>; })}</div></fieldset>
 
-                  <details open className="group rounded-2xl border bg-muted/20 p-4">
+                  <details open className="group rounded-xl border bg-muted/20 p-4">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold marker:hidden">
                       <span>Add more details <span className="font-normal text-muted-foreground">(optional)</span></span>
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm transition group-open:rotate-180 group-open:text-primary">

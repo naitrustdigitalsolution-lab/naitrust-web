@@ -84,8 +84,8 @@ export function AudiencePage({ audience, onNavigate }: AudiencePageProps) {
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-7 text-white/65 sm:text-lg sm:leading-8">{page.description}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="sm" className="h-9 rounded-full px-4 text-[10px] font-bold sm:h-14 sm:px-7 sm:text-base" onClick={() => onNavigate(page.register)}>{page.primary}<ArrowRight size={16}/></Button>
-            <Button variant="outline" className="h-9 rounded-full border-white/20 bg-white/[.06] px-4 text-[10px] text-white hover:bg-white/10 hover:text-white sm:h-14 sm:px-6 sm:text-sm" onClick={() => document.querySelector('#audience-how')?.scrollIntoView({behavior:'smooth'})}>See how it works</Button>
+            <Button size="sm" className="h-10 rounded-full px-6 text-xs font-bold sm:h-12 sm:px-7 sm:text-sm" onClick={() => onNavigate(page.register)}>{page.primary}<ArrowRight size={16}/></Button>
+            <Button variant="outline" className="h-10 rounded-full border-white/20 bg-white/[.06] px-6 text-xs text-white hover:bg-white/10 hover:text-white sm:h-12 sm:px-7 sm:text-sm" onClick={() => document.querySelector('#audience-how')?.scrollIntoView({behavior:'smooth'})}>See how it works</Button>
           </div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/60">
             <span className="inline-flex items-center gap-2"><CheckCircle2 size={15} className="text-emerald-400"/>Verified identity</span>

@@ -130,14 +130,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <AnimatedHeroText />
 
             <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
-              <Button size="sm" onClick={openWaitlistModal} className="group h-9 w-auto rounded-full bg-[#1e90ff] px-4 text-[10px] font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:px-7 sm:text-base">
+              <Button size="sm" onClick={openWaitlistModal} className="group h-10 w-auto rounded-full bg-[#1e90ff] px-6 text-xs font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-12 sm:px-7 sm:text-sm">
                 Join the waitlist
                 <ArrowRight size={18} className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6" />
               </Button>
               <button
                 type="button"
                 onClick={() => document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex h-9 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-4 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-14 sm:gap-2 sm:px-6 sm:text-sm"
+                className="inline-flex h-10 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-6 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-12 sm:gap-2 sm:px-7 sm:text-sm"
               >
                 See how it works
                 <ChevronRight size={18} />
@@ -984,7 +984,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 size="lg"
                 variant="secondary"
                 onClick={openWaitlistModal}
-                className="h-9 w-auto flex-none rounded-full bg-primary px-4 text-[10px] font-bold text-white ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-14 sm:px-10 sm:text-lg"
+                className="h-10 w-auto flex-none rounded-full bg-primary px-6 text-xs font-bold text-white ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-12 sm:px-8 sm:text-base"
               >
                 Join Early Access
                 <ArrowRight size={14} className="ml-1 sm:h-5 sm:w-5" />
@@ -992,7 +992,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <Button
                 size="lg"
                 onClick={() => window.open('/register-business', '_blank', 'noopener,noreferrer')}
-                className="h-9 w-auto flex-none rounded-full border border-white/30 bg-white/[0.1] px-4 text-[10px] font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-14 sm:px-10 sm:text-lg"
+                className="h-10 w-auto flex-none rounded-full border border-white/30 bg-white/[0.1] px-6 text-xs font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-12 sm:px-8 sm:text-base"
               >
                 Join as a Business
               </Button>

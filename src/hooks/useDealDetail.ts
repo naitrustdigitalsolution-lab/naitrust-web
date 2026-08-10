@@ -10,15 +10,19 @@ import { dealMessagesApi } from '../libs/api/deal-messages.api';
 import { walletApi } from '../libs/api/wallet.api';
 import type { DeliveryHandoverPreview, SafeDealDetail } from '../libs/store/types';
 import type { DealMessage } from '../libs/store/types';
+import { useAuthStore } from '../libs/store/auth.store';
 
 export const DEAL_DETAIL_QUERY_KEY = ['deal'] as const;
 export const DEAL_MESSAGES_QUERY_KEY = ['deal-messages'] as const;
 export const DELIVERY_PREVIEW_QUERY_KEY = ['delivery-preview'] as const;
 
 export function useDealDetail(id: string | undefined) {
+  const userId = useAuthStore((state) => state.user?.id);
   return useQuery<SafeDealDetail | null>({
-    queryKey: [...DEAL_DETAIL_QUERY_KEY, id],
-    enabled: !!id,
+    // Deal detail contains viewer-specific party roles and actions. Never
+    // reuse one participant's resolved deal after another account signs in.
+    queryKey: [...DEAL_DETAIL_QUERY_KEY, id, userId],
+    enabled: !!id && !!userId,
     queryFn: async () => (id ? (await dealDetailApi.getOne(id)).data : null),
     refetchInterval: (query) => {
       const delivery = query.state.data?.delivery;
@@ -37,6 +41,9 @@ export function useFundDealFromWallet(id: string | undefined) {
     mutationFn: async () => {
       const deal = (await dealDetailApi.getOne(id!)).data;
       if (!deal) throw new Error('Deal not found.');
+      if (deal.funding.status !== 'awaiting_transfer') {
+        throw new Error('This deal is not ready for funding.');
+      }
       await walletApi.payProtectedDeal(deal.funding.amountExpectedMinor);
       return dealDetailApi.fundFromWallet(id!);
     },
@@ -168,14 +175,20 @@ export function useRevertTracking(id: string | undefined) {
 
 export function useAddEvidence(id: string | undefined) {
   const invalidate = useDealDetailInvalidator(id);
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
       items,
       uploadedByName,
+      uploadedByRole,
     }: {
-      items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string }[];
+      items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string; notApplicable?: boolean }[];
       uploadedByName: string;
-    }) => dealDetailApi.addEvidence(id!, items, uploadedByName),
-    onSuccess: invalidate,
+      uploadedByRole: 'buyer' | 'seller';
+    }) => dealDetailApi.addEvidence(id!, items, uploadedByName, uploadedByRole),
+    onSuccess: () => {
+      invalidate();
+      queryClient.invalidateQueries({ queryKey: ['dispute', id] });
+    },
   });
 }

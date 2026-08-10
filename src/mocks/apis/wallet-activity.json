@@ -2,6 +2,14 @@
   "success": true,
   "data": [
     {
+      "id": "wact_mock_test_topup_001",
+      "kind": "funding",
+      "amountMinor": 600000000,
+      "currency": "NGN",
+      "description": "Sandbox test funding",
+      "createdAt": "2026-08-09T00:00:00Z"
+    },
+    {
       "id": "wact_mock_001",
       "kind": "instant_transfer_out",
       "amountMinor": 1500000,

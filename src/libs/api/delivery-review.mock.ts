@@ -15,8 +15,8 @@ import {
   fundingReviewDurationMs,
   fundingReviewLabel,
   HANDOVER_REVIEW_MS,
-  hasRequiredProductEvidence,
   isDeliveryCardStatusEligible,
+  hasRequiredProductEvidence,
 } from '../protected-deals/delivery-review';
 import {
   findMockDealByDeliveryToken,
@@ -32,8 +32,12 @@ export interface DeliveryDealContext {
   status: SafeDealStatus;
   fundingStatus: FundingStatus;
   actorRole: DealRole;
+  actorUserId?: string;
+  buyerUserId?: string;
   evidence: DealEvidenceItem[];
   extendedProductTestingDays?: ExtendedProductTestingDays;
+  amountMinor: number;
+  useCase?: string;
 }
 
 function event(kind: DealActivityEvent['kind'], message: string, at = new Date()): DealActivityEvent {
@@ -162,6 +166,22 @@ export function reconcileDeliveryLifecycle(
     delivery.fundingReview.releaseApprovedAt &&
     new Date(delivery.fundingReview.releaseApprovedAt).getTime() + 1_000 <= now.getTime()
   ) {
+    const firstSplitPaymentCompleted = runtime?.activePaymentStage === 1 && Boolean(runtime.remainingPaymentMinor);
+    if (firstSplitPaymentCompleted) {
+      const activatedAt = now.toISOString();
+      delivery = emptyDeliveryLifecycle(testingDays);
+      status = 'awaiting_funding';
+      patchMockDealRuntime(dealId, {
+        activePaymentStage: 2,
+        firstPaymentReleasedAt: activatedAt,
+      });
+      nextEvents.push(
+        event('completed', 'The first payment allocation reached the seller.', now),
+        event('funded', 'The second payment allocation activated automatically and is awaiting funding.', now),
+      );
+      notify('Next payment activated', 'The first allocation was released successfully. The second allocation is now active.', dealId);
+      return saveLifecycle(dealId, delivery, status, nextEvents);
+    }
     delivery = {
       ...delivery,
       fundingReview: {
@@ -184,9 +204,8 @@ export function generateDeliveryCard(context: DeliveryDealContext): DealDelivery
     throw new Error('The deal must be funded and active before a delivery card can be generated.');
   }
   if (!hasRequiredProductEvidence(context.evidence)) {
-    throw new Error('Add at least one supporting file before creating a delivery card.');
+    throw new Error('Complete each applicable seller evidence item, or mark it Not applicable with a reason, before creating a delivery code.');
   }
-
   const now = new Date();
   const current = reconcileDeliveryLifecycle(context.id, context.extendedProductTestingDays, now);
   if (current.handover.status !== 'not_started') {
@@ -198,6 +217,7 @@ export function generateDeliveryCard(context: DeliveryDealContext): DealDelivery
     card: {
       token: createOpaqueToken(),
       otpCode: createHandoverOtp(),
+      intendedBuyerUserId: context.buyerUserId,
       generatedAt: now.toISOString(),
       expiresAt: new Date(now.getTime() + DELIVERY_CARD_VALIDITY_MS).toISOString(),
       status: 'active',
@@ -231,6 +251,9 @@ function assertReceiptAllowed(
   delivery: DealDeliveryLifecycle,
 ): void {
   if (context.actorRole !== 'buyer') throw new Error('Only the buyer on this deal can confirm receipt.');
+  if (delivery.card?.intendedBuyerUserId && context.actorUserId !== delivery.card.intendedBuyerUserId) {
+    throw new Error('This delivery card belongs to a different buyer account.');
+  }
   if (context.fundingStatus !== 'funded' || !isDeliveryCardStatusEligible(context.status)) {
     throw new Error('This deal is not active and funded.');
   }
@@ -262,14 +285,16 @@ export function confirmDeliveryReceipt(
   };
   notify(
     'Buyer received the product',
-    'The buyer received the product. Handover review ends in 10 minutes.',
+    'The buyer verified the rider’s delivery card and confirmed receipt.',
     context.id,
   );
   return saveLifecycle(
     context.id,
     delivery,
     'buyer_review',
-    [event('delivery', 'Buyer confirmed product receipt. The ten-minute handover review started.')],
+    [
+      event('delivery', 'Buyer verified the delivery card. The ten-minute handover review started.'),
+    ],
   );
 }
 

@@ -15,6 +15,7 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { SEOHead } from '../utility/SEOHead';
 import { openWaitlistModal } from '../modals/waitlist-events';
+import businessPaymentHero from '../../assets/nigerian-business-payment-hero.webp';
 
 interface AboutPageProps {
   onNavigate: (page: string, params?: unknown) => void;
@@ -36,45 +37,60 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
         canonicalPath="/about"
       />
 
-      <section className="relative overflow-hidden bg-[#04162f] px-4 pb-24 pt-20 text-white sm:px-6 sm:py-28 lg:px-8">
-        <div className="pointer-events-none absolute -right-28 top-0 h-[28rem] w-[28rem] rounded-full bg-primary/15 blur-[120px]" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.3)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.3)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <section className="relative overflow-hidden bg-[#04162f] px-4 py-20 text-white sm:px-6 sm:py-24 lg:px-8 lg:py-28">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65 }}
           className="relative mx-auto max-w-[90rem]"
         >
-          <Badge className="mb-6 border border-white/15 bg-white/[0.08] px-4 py-2 text-white hover:bg-white/[0.08]">
-            Why Naitrust exists
-          </Badge>
-          <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-            <h1 className="max-w-4xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              <span className="block">Nigeria’s digital economy</span>
-              <span className="block">deserves trust built into</span>
-              <span className="block text-[#50adff]">every transaction.</span>
-            </h1>
-            <div>
-              <p className="text-lg leading-8 text-white/68">
-                Customers should know who they are paying. Businesses should be able to prove who they are. Naitrust connects verified identity, everyday payments, and Protected Transactions so both sides can move with greater confidence.
+          <div className="grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 xl:gap-20">
+            <div className="max-w-2xl">
+              <Badge className="mb-6 rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-white hover:bg-white/[0.08]">
+                Why Naitrust exists
+              </Badge>
+              <h1 className="text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-[4.25rem]">
+                Nigeria’s digital economy deserves trust built into <span className="text-[#50adff]">every transaction.</span>
+              </h1>
+              <p className="mt-7 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
+                Customers should know who they are paying. Businesses should be able to prove who they are. Naitrust connects verified identity, everyday payments, and Protected Deals so both sides can move with greater confidence.
               </p>
-              <Button className="mt-7 h-12 rounded-full px-6" onClick={openWaitlistModal}>
+              <Button className="mt-8 h-12 rounded-full px-7 shadow-lg shadow-primary/20" onClick={openWaitlistModal}>
                 Join Naitrust
                 <ArrowRight size={17} className="ml-2" />
               </Button>
+            </div>
+            <div className="relative">
+              <div className="absolute -inset-3 rounded-[2.25rem] border border-white/10 bg-white/[0.04]" />
+              <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/5 shadow-2xl shadow-black/30">
+                <img
+                  src={businessPaymentHero}
+                  alt="Nigerian business owners celebrating a successful mobile payment"
+                  className="aspect-[4/3] w-full object-cover object-center"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#04162f]/25 via-transparent to-transparent" />
+              </div>
             </div>
           </div>
         </motion.div>
       </section>
 
-      <section className="border-b bg-background px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-[90rem] gap-4 rounded-2xl border border-primary/15 bg-primary/[0.035] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+      <section className="border-b bg-background px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto grid max-w-[90rem] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">The official Naitrust brand</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight">What is Naitrust?</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-              Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It brings customer and business payments, participant verification, and Protected Transactions into one clear experience.
-            </p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">About Naitrust</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Payments built around trust.</h2>
+          </div>
+          <div className="max-w-3xl space-y-4 text-base leading-7 text-muted-foreground">
+              <p>
+                Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It brings payments, verified participants, and Protected Deals into one clear experience for customers and businesses.
+              </p>
+              <p>
+                Customers can send and receive money, pay bills and airtime, and fund protected purchases from their available balance. Businesses can collect payments, manage counterparties, create deal invitations, and follow delivery and payment activity in one deal room.
+              </p>
+              <p>
+                Protected Deals bring roles, agreed terms, delivery verification, and transaction records together before money is released. Funds are maintained through Naitrust’s regulated financial partners, while Naitrust provides the technology connecting identity, agreements, payments, and fulfilment.
+              </p>
           </div>
         </div>
       </section>

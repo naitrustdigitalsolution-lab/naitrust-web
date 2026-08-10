@@ -623,6 +623,8 @@ function SetPinModal({
               <Label className="text-xs">Current PIN</Label>
               <InputOTP
                 maxLength={4}
+                autoComplete="off"
+                aria-label="Current four-digit transaction PIN"
                 value={oldPin}
                 onChange={(v) => {
                   setOldPin(v);
@@ -631,7 +633,7 @@ function SetPinModal({
               >
                 <InputOTPGroup>
                   {[0, 1, 2, 3].map((i) => (
-                    <InputOTPSlot key={i} index={i} className="h-11 w-11" />
+                    <InputOTPSlot key={i} index={i} variant="pin" />
                   ))}
                 </InputOTPGroup>
               </InputOTP>
@@ -639,10 +641,10 @@ function SetPinModal({
           )}
           <div className="flex flex-col items-center gap-1.5">
             <Label className="text-xs">{requireOld ? 'New PIN' : 'Enter PIN'}</Label>
-            <InputOTP maxLength={4} value={pin} onChange={setPin}>
+            <InputOTP maxLength={4} value={pin} onChange={setPin} autoComplete="off" aria-label="New four-digit transaction PIN">
               <InputOTPGroup>
                 {[0, 1, 2, 3].map((i) => (
-                  <InputOTPSlot key={i} index={i} className="h-11 w-11" />
+                  <InputOTPSlot key={i} index={i} variant="pin" />
                 ))}
               </InputOTPGroup>
             </InputOTP>
@@ -651,6 +653,8 @@ function SetPinModal({
             <Label className="text-xs">{requireOld ? 'Confirm new PIN' : 'Confirm PIN'}</Label>
             <InputOTP
               maxLength={4}
+              autoComplete="off"
+              aria-label="Confirm four-digit transaction PIN"
               value={confirm}
               onChange={(v) => {
                 setConfirm(v);
@@ -659,7 +663,7 @@ function SetPinModal({
             >
               <InputOTPGroup>
                 {[0, 1, 2, 3].map((i) => (
-                  <InputOTPSlot key={i} index={i} className="h-11 w-11" />
+                  <InputOTPSlot key={i} index={i} variant="pin" />
                 ))}
               </InputOTPGroup>
             </InputOTP>
@@ -792,7 +796,7 @@ export function SecurityCenterPage() {
             <SecurityRow
               icon={ScanFace}
               title="Liveness check"
-              description="A live photo confirms you're really present. Valid for 30 days."
+              description="A live photo confirms you're really present. General account check valid for six months; every deal action still requires a fresh check."
               done={security.livenessFresh}
               doneLabel="Fresh"
               actionLabel={security.livenessFresh ? 'Redo check' : 'Run check'}

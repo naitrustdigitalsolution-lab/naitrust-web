@@ -78,7 +78,7 @@ export function DeliveryHandoverPage() {
               Only the buyer assigned to {preview.reference} can confirm receipt. Sellers, riders, and other accounts cannot use this card.
             </p>
             <Button variant="outline" className="mt-6 rounded-full" onClick={() => navigate(`/app/deals/${preview.dealId}`)}>
-              Open Transaction Room
+              Open Deal Room
             </Button>
           </Card>
         ) : (
@@ -104,7 +104,7 @@ export function DeliveryHandoverPage() {
                     Keep the rider present while you compare the package, tamper seal, product model, contents, and serial or IMEI with the deal evidence.
                   </p>
                   <div className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.07] p-4 text-sm leading-6 text-emerald-950 dark:text-emerald-100">
-                    Confirming receipt starts a ten-minute handover review. It does not release payment, confirm satisfaction, or waive defect and consumer rights.
+                  Confirming receipt records only that the parcel is physically with you and starts a ten-minute handover review. It does not confirm that the item is fault-free, release payment, or waive consumer and warranty rights.
                   </div>
                   <Button
                     className="mt-6 w-full rounded-full"
@@ -156,10 +156,10 @@ export function DeliveryHandoverPage() {
                   <ShieldCheck size={34} className="mx-auto text-emerald-600" />
                   <h2 className="mt-4 text-xl font-bold">Handover recorded</h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Continue product checks and follow the funding-review deadline in the Transaction Room.
+                    Continue product checks and follow the funding-review deadline in the Deal Room.
                   </p>
                   <Button className="mt-6 rounded-full" onClick={() => navigate(`/app/deals/${preview.dealId}`)}>
-                    Open Transaction Room <ArrowRight size={16} />
+                    Open Deal Room <ArrowRight size={16} />
                   </Button>
                 </div>
               )}
@@ -171,15 +171,19 @@ export function DeliveryHandoverPage() {
       <RaiseDisputeModal
         open={showDispute}
         onOpenChange={setShowDispute}
-        submitting={openDispute.isPending}
-        onSubmit={(input) =>
-          openDispute.mutate(input, {
-            onSuccess: () => {
-              setShowDispute(false);
-              toast.success('Problem reported. Countdown-based release is blocked.');
-            },
-          })
-        }
+        submitting={openDispute.isPending || addEvidence.isPending}
+        onSubmit={async ({ evidence, ...input }) => {
+          try {
+            await addEvidence.mutateAsync({ items: evidence, uploadedByName: 'You', uploadedByRole: 'buyer' });
+            await openDispute.mutateAsync({ ...input, hasEvidence: evidence.length > 0 });
+            setShowDispute(false);
+            toast.success(evidence.length > 0
+              ? 'Evidence submitted. Payment is now paused while the dispute is reviewed.'
+              : 'Report opened. Payment will freeze after buyer evidence is uploaded.');
+          } catch (error) {
+            toast.error(errorMessage(error));
+          }
+        }}
       />
       <UploadEvidenceModal
         open={showEvidence}
@@ -187,7 +191,7 @@ export function DeliveryHandoverPage() {
         submitting={addEvidence.isPending}
         onSubmit={({ items }) =>
           addEvidence.mutate(
-            { items, uploadedByName: 'You' },
+            { items, uploadedByName: 'You', uploadedByRole: 'buyer' },
             {
               onSuccess: () => {
                 setShowEvidence(false);

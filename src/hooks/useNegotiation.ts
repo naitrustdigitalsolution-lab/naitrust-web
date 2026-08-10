@@ -22,7 +22,13 @@ export function useProposeNegotiation(dealId: string | undefined) {
   return useMutation({
     mutationFn: (input: { message: string; changes: ProposedChanges }) =>
       negotiationApi.propose(dealId!, input),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [...NEGOTIATION_QUERY_KEY, dealId] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [...NEGOTIATION_QUERY_KEY, dealId] });
+      qc.invalidateQueries({ queryKey: ['deal'] });
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['invitations'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 }
 

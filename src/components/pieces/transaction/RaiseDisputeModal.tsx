@@ -4,18 +4,29 @@
  * Opening pauses release and starts an evidence-based admin review.
  */
 
-import { useState } from 'react';
-import { Loader2, ShieldAlert } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { FileText, Loader2, ShieldAlert, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
 import { Button } from '../../ui/button';
 import { Label } from '../../ui/label';
 import { Textarea } from '../../ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import { DEAL_EVIDENCE_ACCEPT, DEAL_EVIDENCE_FORMATS } from '../../../libs/protected-deals/evidence';
+
+interface DisputeEvidenceUpload {
+  fileName: string;
+  fileUrl: string;
+  mimeType: string;
+  kind: 'Buyer problem evidence';
+}
 
 const REASONS = [
-  'Item not as described',
-  'Not delivered',
-  'Damaged on arrival',
-  'Wrong quantity',
+  'Damaged in transit',
+  'Wrong item',
+  'Defective item',
+  'Missing contents',
+  'Tampered packaging',
+  'Non-delivery',
   'Missed deal milestone',
   'Other',
 ];
@@ -24,17 +35,20 @@ interface RaiseDisputeModalProps {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   submitting?: boolean;
-  onSubmit: (input: { reason: string; description: string }) => void;
+  onSubmit: (input: { reason: string; description: string; evidence: DisputeEvidenceUpload[] }) => void;
 }
 
 export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: RaiseDisputeModalProps) {
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');
+  const [evidence, setEvidence] = useState<DisputeEvidenceUpload[]>([]);
   const [error, setError] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setReason('');
     setDescription('');
+    setEvidence([]);
     setError('');
   };
 
@@ -47,7 +61,7 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
       setError('Describe the issue so we can review it.');
       return;
     }
-    onSubmit({ reason, description: description.trim() });
+    onSubmit({ reason, description: description.trim(), evidence });
   };
 
   return (
@@ -66,33 +80,21 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
           </DialogTitle>
           <DialogDescription>
             Opening a dispute pauses the release while our team reviews the evidence from both
-            parties.
+            parties. Payment will not release automatically while the outcome is unclear.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
           <div>
-            <Label>Reason</Label>
-            <div className="mt-1.5 flex flex-wrap gap-2">
-              {REASONS.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => {
-                    setReason(r);
-                    setError('');
-                  }}
-                  className={
-                    'rounded-full border px-3 py-1 text-sm transition-colors ' +
-                    (reason === r
-                      ? 'border-destructive bg-destructive text-destructive-foreground'
-                      : 'border-border text-muted-foreground hover:bg-accent/40')
-                  }
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
+            <Label htmlFor="dispute-reason">Reason</Label>
+            <Select value={reason} onValueChange={(value) => { setReason(value); setError(''); }}>
+              <SelectTrigger id="dispute-reason" className="mt-1.5 w-full">
+                <SelectValue placeholder="Choose a reason for the dispute" />
+              </SelectTrigger>
+              <SelectContent>
+                {REASONS.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
@@ -101,13 +103,53 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
               id="dispute-desc"
               className="mt-1.5"
               rows={4}
-              placeholder="Explain the issue with as much detail as you can. You can add evidence after opening."
+              placeholder="Explain the issue and what the attached evidence shows."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
+          <div>
+            <Label>Buyer evidence (recommended)</Label>
+            <input
+              ref={fileRef}
+              type="file"
+              accept={DEAL_EVIDENCE_ACCEPT}
+              multiple
+              className="hidden"
+              onChange={(event) => {
+                const incoming = Array.from(event.target.files ?? []).map((file) => ({
+                  fileName: file.name,
+                  fileUrl: URL.createObjectURL(file),
+                  mimeType: file.type || 'application/octet-stream',
+                  kind: 'Buyer problem evidence' as const,
+                }));
+                setEvidence((current) => [...current, ...incoming]);
+                event.currentTarget.value = '';
+                setError('');
+              }}
+            />
+            {evidence.map((item, index) => (
+              <div key={`${item.fileName}-${index}`} className="mt-2 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm">
+                <FileText size={15} className="shrink-0 text-primary" />
+                <span className="min-w-0 flex-1 truncate">{item.fileName}</span>
+                <button type="button" aria-label={`Remove ${item.fileName}`} onClick={() => {
+                  URL.revokeObjectURL(item.fileUrl);
+                  setEvidence((current) => current.filter((_, itemIndex) => itemIndex !== index));
+                }}><X size={15} /></button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" className="mt-2 w-full rounded-xl" onClick={() => fileRef.current?.click()}>
+              <Upload size={15} /> {evidence.length ? 'Add more evidence' : 'Attach evidence'}
+            </Button>
+            <p className="mt-1 text-[11px] text-muted-foreground">{DEAL_EVIDENCE_FORMATS}</p>
+          </div>
+
           {error && <p className="text-xs text-destructive">{error}</p>}
+
+          <div className="rounded-xl border bg-muted/30 p-3 text-xs leading-5 text-muted-foreground">
+            You may open the report without evidence, but payment will not freeze until evidence is uploaded. Insufficient evidence may affect the final decision.
+          </div>
 
           <div className="flex justify-end gap-2">
             <Button variant="ghost" className="rounded-md" onClick={() => onOpenChange(false)}>

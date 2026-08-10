@@ -115,7 +115,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
               <VerificationRow
                 label="Liveness check"
                 verified={security.livenessFresh}
-                hint="Run a live photo check (valid 30 days)."
+                hint="General account check valid for six months; deal actions require a fresh check."
               />
               <VerificationRow
                 label="Transaction PIN"

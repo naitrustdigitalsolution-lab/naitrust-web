@@ -1,6 +1,6 @@
 /**
  * TransactionRoomPage
- * The transaction room (`/app/deals/:id`): the most important screen
+ * The deal room (`/app/deals/:id`): the most important screen
  * (guardrails/ui.md). Centered, modern layout: a deal header, a tabbed main
  * column (Overview, Chat between the parties, Evidence, Activity), and a side
  * rail with the Parties panel, partner Funding panel, and contextual actions.
@@ -10,6 +10,7 @@
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatDistanceToNow, format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import {
   ArrowLeft,
   Ban,
@@ -29,7 +30,6 @@ import {
   Paperclip,
   Pencil,
   Plus,
-  Repeat,
   ScrollText,
   ShieldAlert,
   Truck,
@@ -58,7 +58,9 @@ import { TerminationReasonModal } from '../pieces/transaction/TerminationReasonM
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { PinPromptModal } from '../pieces/security/PinPromptModal';
 import Spinner from '../ui/spinner';
 import {
   useDealDetail,
@@ -78,13 +80,16 @@ import {
   formatMinorAmount,
   getFundingPresentation,
   getPartyStatusPresentation,
-  partyModeShort,
   roleLabel,
 } from '../../libs/utils/safe-deal-presentation';
 import { downloadAgreementDocument, downloadDealSummaryCard } from '../../libs/utils/deal-documents';
 import type { DealActivityEvent, SafeDealDetail } from '../../libs/store/types';
 import type { DealNegotiation } from '../../libs/store/types';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
+import { useAuth } from '../../libs/auth-context';
+import { accountTypeOf } from '../../libs/utils/account';
+
+const CELEBRATION_EMOJIS = ['🎉', '✨', '🎊', '⭐', '🥳', '💙', '✅', '🎉', '✨', '🎊', '⭐', '🥳'];
 
 function SectionHeading({ icon: Icon, children }: { icon: typeof Users; children: React.ReactNode }) {
   return (
@@ -104,19 +109,15 @@ function PartiesPanel({ deal }: { deal: SafeDealDetail }) {
           const status = getPartyStatusPresentation(party.status);
           return (
             <li key={party.id} className="flex items-center gap-3 px-4 py-3">
-              <CounterpartyAvatar name={party.isYou ? 'You' : party.name} />
+              <CounterpartyAvatar name={party.name} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="truncate text-sm font-semibold text-foreground">
-                    {party.isYou ? 'You' : party.name}
+                    {party.name}
                   </p>
-                  {party.isYou && <Badge variant="outline">You</Badge>}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {roleLabel(party.role)}
-                  {party.allocationMinor
-                    ? ` · receives ${formatMinorAmount(party.allocationMinor, deal.currency)}`
-                    : ''}
                 </p>
               </div>
               <Badge variant={status.variant}>{status.label}</Badge>
@@ -130,25 +131,39 @@ function PartiesPanel({ deal }: { deal: SafeDealDetail }) {
 
 function FundingPanel({ deal }: { deal: SafeDealDetail }) {
   const { funding } = deal;
-  const [showMethods, setShowMethods] = useState(false);
+  const [showFundingConfirmation, setShowFundingConfirmation] = useState(false);
+  const [showFundingPin, setShowFundingPin] = useState(false);
   const wallet = useWallet();
   const fundFromWallet = useFundDealFromWallet(deal.id);
   const presentation = getFundingPresentation(funding.status);
   const showAccount = funding.status === 'awaiting_transfer' || funding.status === 'unfunded';
-  const canFund = funding.status === 'awaiting_transfer' && deal.parties.some((party) => party.isYou && party.role === 'buyer');
+  const canFund = funding.status === 'awaiting_transfer'
+    && deal.parties.some((party) => party.isYou && party.role === 'buyer');
   const walletBalance = wallet.data?.balance.availableMinor ?? 0;
   const walletHasEnough = walletBalance >= funding.amountExpectedMinor;
+  const shortfallMinor = Math.max(0, funding.amountExpectedMinor - walletBalance);
+  const balanceAccount = wallet.data?.virtualAccount;
 
-  const copyAccount = () => {
-    navigator.clipboard?.writeText(funding.accountNumber).then(
-      () => toast.success('Account number copied'),
-      () => toast.error('Could not copy'),
+  const copyBalanceAccount = () => {
+    if (!balanceAccount) return;
+    navigator.clipboard?.writeText(balanceAccount.accountNumber).then(
+      () => toast.success('Naitrust account number copied.'),
+      () => toast.error('Could not copy the account number.'),
     );
   };
 
+  const confirmFundingWithPin = () => {
+    setShowFundingPin(false);
+    fundFromWallet.mutate(undefined, {
+      onSuccess: () => toast.success(`${formatMinorAmount(funding.amountExpectedMinor, funding.currency)} is now protected for ${deal.title}.`),
+      onError: (error) => toast.error(error.message),
+    });
+  };
+
   return (
+    <>
     <Card className="gap-0 p-0 shadow-sm">
-      <SectionHeading icon={Landmark}>Protected funding</SectionHeading>
+      <SectionHeading icon={canFund ? WalletCards : Landmark}>{canFund ? 'Protect payment' : 'Payment status'}</SectionHeading>
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Status</span>
@@ -161,69 +176,79 @@ function FundingPanel({ deal }: { deal: SafeDealDetail }) {
           </span>
         </div>
 
-        {showAccount ? (
+        {showAccount ? canFund ? (
           <div className="space-y-3">
-          {canFund && (
-            <Button className="w-full rounded-full" onClick={() => setShowMethods((value) => !value)}>
-              <Landmark size={16} className="mr-1.5" />
-              Choose how to fund
-            </Button>
-          )}
-          {canFund && showMethods && (
-            <div className="grid gap-2">
-              <button type="button" className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-left" onClick={() => document.getElementById(`bank-${deal.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-                <span className="flex items-center gap-2 text-sm font-semibold"><Landmark size={16} /> Bank transfer</span>
-                <span className="mt-1 block text-xs text-muted-foreground">Transfer to the protected partner account below.</span>
-              </button>
-              <div className="rounded-xl border p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <span className="flex items-center gap-2 text-sm font-semibold"><WalletCards size={16} /> Naitrust wallet</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">Available: {formatMinorAmount(walletBalance, funding.currency)}</span>
-                  </div>
-                  <Button size="sm" className="rounded-full" disabled={!walletHasEnough || wallet.isLoading || fundFromWallet.isPending} onClick={() => fundFromWallet.mutate(undefined, { onSuccess: () => toast.success('Deal funded. Your payment is now protected.'), onError: (error) => toast.error(error.message) })}>
-                    {fundFromWallet.isPending ? 'Funding...' : 'Pay from wallet'}
-                  </Button>
+            <div className="rounded-xl border border-primary/20 bg-primary/[0.04] p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="flex items-center gap-2 text-sm font-semibold"><WalletCards size={15} className="text-primary"/> Available balance</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Available {formatMinorAmount(walletBalance, funding.currency)}</p>
                 </div>
-                {!wallet.isLoading && !walletHasEnough && <p className="mt-2 text-xs text-destructive">Your available wallet balance is not enough for this deal.</p>}
               </div>
+              {walletHasEnough ? (
+                <Button className="mt-3 w-full rounded-full" disabled={wallet.isLoading || fundFromWallet.isPending} onClick={() => setShowFundingConfirmation(true)}>
+                  {fundFromWallet.isPending ? 'Protecting payment…' : 'Pay from available balance'}
+                </Button>
+              ) : !wallet.isLoading && (
+                <div className="mt-3">
+                  <p className="text-xs text-destructive">Add {formatMinorAmount(shortfallMinor, funding.currency)} to protect this payment from your balance.</p>
+                </div>
+              )}
+              {!walletHasEnough && balanceAccount && <div className="mt-3 border-t pt-3">
+                <p className="text-[11px] font-medium text-muted-foreground">Add money to your Naitrust balance</p>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <span className="font-mono text-base font-semibold tracking-wide">{balanceAccount.accountNumber}</span>
+                  <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={copyBalanceAccount} aria-label="Copy Naitrust account number"><Copy size={14}/></Button>
+                </div>
+                <p className="text-xs text-muted-foreground">{balanceAccount.accountName} · {balanceAccount.bankName}</p>
+              </div>}
             </div>
-          )}
-          <div id={`bank-${deal.id}`} className="rounded-xl border bg-muted/40 p-3">
-            <p className="text-xs text-muted-foreground">Pay into this partner virtual account</p>
-            <div className="mt-1 flex items-center justify-between gap-2">
-              <span className="font-mono text-base font-semibold tracking-wide text-foreground">
-                {funding.accountNumber}
-              </span>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={copyAccount} aria-label="Copy account number">
-                <Copy size={15} />
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">{funding.accountName}</p>
-            <p className="text-xs text-muted-foreground">{funding.bankName}</p>
-          </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-2.5 text-sm text-emerald-700 dark:text-emerald-400">
-            <Check size={15} />
+          <p className="rounded-xl bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">Waiting for the buyer to protect this payment.</p>
+        ) : (
+          <div className="flex items-center gap-1.5 rounded-xl bg-emerald-500/10 px-3 py-2 text-[11px] leading-4 text-emerald-700 dark:text-emerald-400">
+            <Check size={13} className="shrink-0" />
             {funding.status === 'released'
               ? 'Funds have been released to the seller.'
-              : 'Funds are protected with the partner.'}
+              : `Protected with Naitrust’s regulated financial partner, ${funding.partner}.`}
           </div>
         )}
-
-        <p className="text-[0.7rem] leading-4 text-muted-foreground">
-          Funds are held by {funding.partner}, a regulated financial provider. Naitrust never holds
-          your money directly.
-        </p>
       </div>
     </Card>
+    <Dialog open={showFundingConfirmation} onOpenChange={setShowFundingConfirmation}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Protect this payment?</DialogTitle>
+          <DialogDescription>
+            You are about to place {formatMinorAmount(funding.amountExpectedMinor, funding.currency)} into “{deal.title}” from your available balance.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="rounded-xl border bg-muted/30 px-4 py-3 text-sm">
+          <div className="flex justify-between gap-4"><span className="text-muted-foreground">Available balance</span><span className="font-semibold tabular-nums">{formatMinorAmount(walletBalance, funding.currency)}</span></div>
+          <div className="mt-2 flex justify-between gap-4"><span className="text-muted-foreground">Balance after payment</span><span className="font-semibold tabular-nums">{formatMinorAmount(walletBalance - funding.amountExpectedMinor, funding.currency)}</span></div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setShowFundingConfirmation(false)}>Decline</Button>
+          <Button onClick={() => { setShowFundingConfirmation(false); setShowFundingPin(true); }}>Accept and continue</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    <PinPromptModal
+      open={showFundingPin}
+      onOpenChange={setShowFundingPin}
+      onVerified={confirmFundingWithPin}
+      title="Confirm protected payment"
+      description={`Enter your transaction PIN to place ${formatMinorAmount(funding.amountExpectedMinor, funding.currency)} into “${deal.title}”.`}
+    />
+    </>
   );
 }
 
 function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
   const [showUpload, setShowUpload] = useState(false);
   const addEvidence = useAddEvidence(deal.id);
+  const viewerRole = deal.parties.find((party) => party.isYou)?.role ?? 'buyer';
 
   return (
     <div className="space-y-4">
@@ -256,7 +281,7 @@ function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
         submitting={addEvidence.isPending}
         onSubmit={({ items }) =>
           addEvidence.mutate(
-            { items, uploadedByName: 'You' },
+            { items, uploadedByName: 'You', uploadedByRole: viewerRole },
             {
               onSuccess: () => {
                 setShowUpload(false);
@@ -346,30 +371,21 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
         </div>
       )}
 
-      {hasSplitPayment && (
-        <div className="rounded-2xl border border-primary/15 bg-primary/[0.04] p-4 sm:p-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-bold text-foreground">Split payment</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">The first payment is protected now, and Naitrust tracks the remaining balance for the next stage.</p>
-            </div>
-            <p className="text-sm font-semibold tabular-nums text-foreground">Total {formatMinorAmount(deal.amountMinor, deal.currency)}</p>
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border bg-background px-4 py-3">
-              <p className="text-xs text-muted-foreground">First payment</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{formatMinorAmount(deal.initialPaymentMinor!, deal.currency)}</p>
-            </div>
-            <div className="rounded-xl border bg-background px-4 py-3">
-              <p className="text-xs text-muted-foreground">Remaining payment</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{formatMinorAmount(deal.remainingPaymentMinor!, deal.currency)}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">Locked until the first payment is released successfully.</p>
-            </div>
-          </div>
+      {hasSplitPayment && deal.activePaymentStage === 2 && (
+        <div className="flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/[0.06] p-4">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Sparkles size={17} /></span>
+          <div><p className="text-sm font-semibold">Second payment is now active</p><p className="mt-1 text-xs leading-5 text-muted-foreground">The first allocation reached the seller successfully. The remaining allocation is ready for its own funding, delivery checks, and release review.</p></div>
         </div>
       )}
 
       <dl className="divide-y divide-border rounded-xl border">
+        {hasSplitPayment && (
+          <div className="grid gap-3 px-4 py-3 sm:grid-cols-[160px_1fr_1fr] sm:items-center">
+            <dt className="text-sm text-muted-foreground">Payment allocation</dt>
+            <dd><span className="flex items-center gap-2 text-xs text-muted-foreground">First payment <Badge variant={deal.activePaymentStage === 2 ? 'success' : 'default'} className="px-1.5 py-0 text-[9px]">{deal.activePaymentStage === 2 ? 'Released' : 'Active'}</Badge></span><span className="text-sm font-semibold tabular-nums">{formatMinorAmount(deal.initialPaymentMinor!, deal.currency)}</span></dd>
+            <dd><span className="flex items-center gap-2 text-xs text-muted-foreground">Remaining <Badge variant={deal.activePaymentStage === 2 ? 'default' : 'outline'} className="px-1.5 py-0 text-[9px]">{deal.activePaymentStage === 2 ? 'Active' : 'Locked'}</Badge></span><span className="text-sm font-semibold tabular-nums">{formatMinorAmount(deal.remainingPaymentMinor!, deal.currency)}</span></dd>
+          </div>
+        )}
         <div className="flex gap-4 px-4 py-3">
           <dt className="w-40 shrink-0 text-sm text-muted-foreground">Next milestone</dt>
           <dd className="text-sm font-medium text-foreground">{deal.deliveryDueDate}</dd>
@@ -573,7 +589,9 @@ function ActionsPanel({
   youIsReleaser,
   canNegotiate,
   hasDispute,
+  disputeBlocksRelease,
   canTerminate,
+  terminationLocked,
   onRequestChanges,
   onRaiseDispute,
   onTerminate,
@@ -582,23 +600,23 @@ function ActionsPanel({
   youIsReleaser: boolean;
   canNegotiate: boolean;
   hasDispute: boolean;
+  disputeBlocksRelease: boolean;
   canTerminate: boolean;
+  terminationLocked: boolean;
   onRequestChanges: () => void;
   onRaiseDispute: () => void;
   onTerminate: () => void;
 }) {
-  // Funding must be done by the party who releases the finance (the buyer).
-  const canFund = deal.funding.status === 'awaiting_transfer' && youIsReleaser;
   // Release is blocked while a dispute is open.
   const canConfirm =
     youIsReleaser &&
-    !hasDispute &&
+    !disputeBlocksRelease &&
     !supportsDeliveryReview(deal.useCase) &&
     ['funded', 'in_progress', 'evidence_submitted', 'buyer_review'].includes(deal.status);
   const canDispute =
     !hasDispute && !['paid_out', 'completed', 'refunded', 'cancelled', 'draft'].includes(deal.status);
 
-  if (!canFund && !canConfirm && !canDispute && !canNegotiate && !canTerminate) return null;
+  if (!canConfirm && !canDispute && !canNegotiate && !canTerminate) return null;
 
   return (
     <Card className="gap-3 p-4 shadow-sm">
@@ -607,12 +625,6 @@ function ActionsPanel({
         <Button variant="outline" className="w-full rounded-full" onClick={onRequestChanges}>
           <GitPullRequestArrow size={16} className="mr-1.5" />
           Request changes
-        </Button>
-      )}
-      {canFund && (
-        <Button className="w-full rounded-full" onClick={() => toast.info('Funding instructions are in the Protected funding panel.')}>
-          <Landmark size={16} className="mr-1.5" />
-          Fund this deal
         </Button>
       )}
       {canConfirm && (
@@ -633,18 +645,24 @@ function ActionsPanel({
       )}
       {hasDispute && (
         <p className="text-xs leading-5 text-muted-foreground">
-          A dispute is open: release is paused while it's reviewed. See the Dispute tab.
+          {disputeBlocksRelease
+            ? "A dispute is open: release is paused while it's reviewed. See the Dispute tab."
+            : 'A report is awaiting buyer evidence. Payment is not frozen yet. See the Dispute tab.'}
         </p>
       )}
       {canTerminate && (
         <Button
           variant="outline"
           className="w-full rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+          disabled={terminationLocked}
           onClick={onTerminate}
         >
           <Ban size={16} className="mr-1.5" />
           Terminate deal
         </Button>
+      )}
+      {canTerminate && terminationLocked && (
+        <p className="text-xs leading-5 text-muted-foreground">This deal cannot be terminated while the handover or funding-review countdown is active. Raise a dispute if there is a problem.</p>
       )}
       {!youIsReleaser && deal.funding.status === 'awaiting_transfer' && (
         <p className="text-xs leading-5 text-muted-foreground">
@@ -658,6 +676,7 @@ function ActionsPanel({
 export function TransactionRoomPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: deal, isLoading, isError } = useDealDetail(id);
   const { data: negotiation } = useNegotiation(id);
@@ -673,6 +692,8 @@ export function TransactionRoomPage() {
   const [showTerminate, setShowTerminate] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [showDeliveryEvidence, setShowDeliveryEvidence] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [deliveryEvidenceKind, setDeliveryEvidenceKind] = useState('Invoice');
   const requestedTab = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
@@ -689,13 +710,17 @@ export function TransactionRoomPage() {
 
   const claimCompletionReward = () => {
     if (!id || rewardClaimed) return;
+    const rewardPoints = deal?.parties.find((party) => party.isYou)?.role === 'buyer' ? 300 : 100;
     let claimed: string[] = [];
     try { claimed = JSON.parse(localStorage.getItem('naitrust_mock_claimed_deal_rewards') || '[]') as string[]; } catch { /* start a fresh mock list */ }
     localStorage.setItem('naitrust_mock_claimed_deal_rewards', JSON.stringify([...new Set([...claimed, id])]));
     const currentPoints = Number(localStorage.getItem('naitrust_mock_reward_points') || 0);
-    localStorage.setItem('naitrust_mock_reward_points', String(currentPoints + 100));
+    localStorage.setItem('naitrust_mock_reward_points', String(currentPoints + rewardPoints));
+    let rewardAmounts: Record<string, number> = {};
+    try { rewardAmounts = JSON.parse(localStorage.getItem('naitrust_mock_deal_reward_amounts') || '{}') as Record<string, number>; } catch { /* start a fresh reward map */ }
+    localStorage.setItem('naitrust_mock_deal_reward_amounts', JSON.stringify({ ...rewardAmounts, [id]: rewardPoints }));
     setRewardClaimed(true);
-    toast.success('100 Naitrust reward points claimed');
+    toast.success(`${rewardPoints} Naitrust reward points claimed`);
   };
 
   useEffect(() => {
@@ -722,8 +747,11 @@ export function TransactionRoomPage() {
 
   const counterparty = deal?.parties.find((p) => !p.isYou);
   const youParty = deal?.parties.find((p) => p.isYou);
+  const viewerIsCreator = youParty?.status === 'creator';
   const youIsReleaser = youParty?.role === 'buyer';
   const youIsSeller = youParty?.role === 'seller';
+  const completionRewardPoints = youIsSeller ? 100 : 300;
+  const viewerIsBusiness = accountTypeOf(user) === 'business';
   const useCaseTitle = useCases.find((u) => u.slug === deal?.useCase)?.title;
   const expired = deal ? new Date(deal.expiresAt).getTime() < Date.now() : false;
   const hasTracking = (deal?.milestones.length ?? 0) > 0;
@@ -731,15 +759,28 @@ export function TransactionRoomPage() {
   const hasNegotiation = (negotiation?.proposals.length ?? 0) > 0;
   const negotiationOpen = negotiation?.status === 'open';
   const hasDispute = !!dispute;
+  const disputeBlocksRelease = !!dispute && dispute.status !== 'awaiting_evidence';
   const disputeOpen = dispute?.status === 'open' || dispute?.status === 'under_review';
   const terminationPending = termination?.status === 'requested';
   const terminated = termination?.status === 'accepted';
+  const terminationLocked = deal?.delivery.handover.status === 'in_progress' || deal?.delivery.fundingReview.status === 'in_progress';
   // Anyone on the deal can request termination while it's live and none is pending.
   const canTerminate =
     !!deal &&
     !terminationPending &&
     !terminated &&
     !['paid_out', 'completed', 'refunded', 'cancelled'].includes(deal.status);
+
+  useEffect(() => {
+    if (!id || !deal || !youIsSeller || !viewerIsBusiness || !['paid_out', 'completed'].includes(deal.status)) return;
+    const storageKey = `naitrust:completed-deal-celebration:${user?.id ?? 'business'}:${id}`;
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, 'shown');
+    setShowCompletionModal(true);
+    setShowCelebration(true);
+    const timer = window.setTimeout(() => setShowCelebration(false), 4_500);
+    return () => window.clearTimeout(timer);
+  }, [deal, id, user?.id, viewerIsBusiness, youIsSeller]);
 
   const submitTermination = (reason: string) =>
     requestTermination.mutate(reason, {
@@ -766,6 +807,7 @@ export function TransactionRoomPage() {
   // A deal can be renegotiated before it's funded/closed.
   const canNegotiate =
     !!deal &&
+    !viewerIsCreator &&
     !hasNegotiation &&
     ['pending_counterparty', 'terms_negotiation', 'terms_agreed', 'awaiting_funding'].includes(deal.status);
 
@@ -797,7 +839,45 @@ export function TransactionRoomPage() {
 
   return (
     <DashboardLayout title="Protected Deal">
-      <div className="mx-auto w-full max-w-9xl">
+      {showCelebration && (
+        <div className="pointer-events-none fixed inset-0 z-[90] overflow-hidden" aria-hidden="true">
+          {CELEBRATION_EMOJIS.map((emoji, index) => (
+            <motion.span
+              key={`${emoji}-${index}`}
+              initial={{ y: -80, x: 0, rotate: 0, opacity: 0 }}
+              animate={{ y: '110vh', x: index % 2 === 0 ? 45 : -45, rotate: index % 2 === 0 ? 540 : -540, opacity: [0, 1, 1, 0.9] }}
+              transition={{ duration: 3.2 + (index % 4) * 0.35, delay: index * 0.12, ease: 'easeIn' }}
+              className="absolute top-0 text-2xl drop-shadow-sm sm:text-3xl"
+              style={{ left: `${5 + index * 8}%` }}
+            >
+              {emoji}
+            </motion.span>
+          ))}
+        </div>
+      )}
+      <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
+        <DialogContent className="overflow-hidden sm:max-w-md">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-emerald-500/12 to-transparent" />
+          <DialogHeader className="relative items-center text-center sm:text-center">
+            <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/12 text-3xl">🎉</div>
+            <DialogTitle className="text-xl">Transaction completed successfully</DialogTitle>
+            <DialogDescription className="max-w-sm leading-6">
+              The protected payment has reached the seller account and this deal is now complete.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-4">
+            <div className="flex items-start gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600"><Sparkles size={17} /></span>
+              <div><p className="text-sm font-semibold">Your business history increased</p><p className="mt-1 text-xs leading-5 text-muted-foreground">This successful Protected Deal was added to your completed-transaction activity and strengthens your Trust Profile. Your {completionRewardPoints}-point completion reward is also ready to claim.</p></div>
+            </div>
+          </div>
+          <DialogFooter className="relative gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setShowCompletionModal(false)}>Done</Button>
+            <Button onClick={() => navigate('/app/trust-profile')}><Sparkles size={15} /> View Trust Profile</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <div className="mx-auto w-full max-w-9xl [&_.shadow-sm]:shadow-none">
         <button
           type="button"
           onClick={() => navigate('/app/deals')}
@@ -824,34 +904,21 @@ export function TransactionRoomPage() {
         ) : (
           <>
             {/* Header */}
-            <Card className="gap-4 p-5 shadow-sm md:p-6">
+            <Card className="gap-3 rounded-2xl p-4 shadow-none md:p-5">
               <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <CounterpartyAvatar
                     name={counterparty?.name ?? deal.counterpartyName}
-                    className="h-12 w-12 text-base"
+                    className="h-10 w-10 text-sm"
                   />
                   <div className="min-w-0">
-                    <h1 className="text-xl font-bold tracking-tight text-foreground">{deal.title}</h1>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {deal.reference} · with {counterparty?.name ?? deal.counterpartyName}
+                    <h1 className="text-lg font-bold tracking-tight text-foreground md:text-xl">{deal.title}</h1>
+                    <p className="mt-0.5 text-xs text-muted-foreground md:text-sm">
+                      {counterparty?.name ?? deal.counterpartyName} · {deal.reference}
                     </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       <TransactionStatusBadge status={deal.status} />
-                      <Badge variant="outline">{partyModeShort(deal.partyMode)}</Badge>
                       {useCaseTitle && <Badge variant="outline">{useCaseTitle}</Badge>}
-                      {deal.dealType === 'milestone' && (
-                        <Badge variant="outline" className="gap-1">
-                          <Truck size={12} />
-                          Tracked
-                        </Badge>
-                      )}
-                      {deal.recurring && (
-                        <Badge variant="outline" className="gap-1 text-primary">
-                          <Repeat size={12} />
-                          Recurring
-                        </Badge>
-                      )}
                       {negotiationOpen && (
                         <Badge variant="outline" className="gap-1 text-amber-600 dark:text-amber-400">
                           <GitPullRequestArrow size={12} />
@@ -884,8 +951,8 @@ export function TransactionRoomPage() {
                     )}
                   </div>
                 </div>
-                <div className="shrink-0 text-left md:text-right">
-                  <p className="text-2xl font-bold text-foreground tabular-nums">
+                <div className="shrink-0 border-t pt-3 text-left md:border-0 md:pt-0 md:text-right">
+                  <p className="text-xl font-bold text-foreground tabular-nums md:text-2xl">
                     {formatMinorAmount(deal.amountMinor, deal.currency)}
                   </p>
                   <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground md:justify-end">
@@ -894,10 +961,11 @@ export function TransactionRoomPage() {
                       ? 'Invitation expired'
                       : `Open until ${format(new Date(deal.expiresAt), 'MMM d')} · ${formatDistanceToNow(new Date(deal.expiresAt))} left`}
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2 md:justify-end">
                   <Button
                     size="sm"
-                    variant="outline"
-                    className="mt-3 rounded-full"
+                    variant="ghost"
+                    className="rounded-full text-muted-foreground"
                     onClick={() =>
                       toast.promise(downloadDealSummaryCard(deal), {
                         loading: 'Preparing summary PDF…',
@@ -907,8 +975,20 @@ export function TransactionRoomPage() {
                     }
                   >
                     <Download size={14} className="mr-1.5" />
-                    Download summary card
+                    Summary
                   </Button>
+                  {deal.parties.some((party) => party.isYou && party.status === 'creator') && ['pending_counterparty', 'terms_negotiation'].includes(deal.status) && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-full"
+                      onClick={() => navigate(`/app/deals/new?edit=${encodeURIComponent(deal.id)}`)}
+                    >
+                      <Pencil size={14} className="mr-1.5" />
+                      Edit deal
+                    </Button>
+                  )}
+                  </div>
                 </div>
               </div>
             </Card>
@@ -918,7 +998,7 @@ export function TransactionRoomPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-start gap-3">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:text-emerald-400">{rewardClaimed ? <Sparkles size={18} /> : <Gift size={18} />}</span>
-                        <div><p className="text-sm font-semibold">{rewardClaimed ? 'Completion reward claimed' : 'Your completion reward is ready'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{rewardClaimed ? '100 reward points were added for this completed Protected Deal.' : 'Claim 100 reward points for successfully completing this Protected Deal.'}</p></div>
+                        <div><p className="text-sm font-semibold">{rewardClaimed ? 'Completion reward claimed' : 'Your completion reward is ready'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{rewardClaimed ? `${completionRewardPoints} reward points were added for this completed Protected Deal.` : `Claim ${completionRewardPoints} reward points for successfully completing this Protected Deal.`}</p></div>
                   </div>
                   <Button size="sm" className="rounded-full sm:shrink-0" disabled={rewardClaimed} onClick={claimCompletionReward}>{rewardClaimed ? <Check size={15} /> : <Gift size={15} />}{rewardClaimed ? 'Claimed' : 'Claim reward'}</Button>
                 </div>
@@ -926,9 +1006,9 @@ export function TransactionRoomPage() {
             )}
 
             {/* Body */}
-            <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
+            <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_360px]">
               <Tabs value={activeTab} onValueChange={changeTab} className="w-full min-w-0">
-                <TabsList className="w-full justify-start overflow-x-auto">
+                <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-muted/60 p-1">
                   <TabsTrigger value="overview">
                     <ScrollText size={15} className="mr-1.5" />
                     Overview
@@ -972,15 +1052,15 @@ export function TransactionRoomPage() {
                 </TabsList>
 
                 <TabsContent value="overview">
-                  <DealDeliveryReviewPanel
+                  {youParty && <DealDeliveryReviewPanel
                     deal={deal}
-                    hasDispute={hasDispute}
-                    onReportIssue={() => setShowDispute(true)}
-                    onUploadEvidence={(kind) => {
+                    viewerRole={youParty.role}
+                  hasDispute={disputeBlocksRelease}
+                  onUploadEvidence={(kind) => {
                       setDeliveryEvidenceKind(kind ?? 'Photo');
                       setShowDeliveryEvidence(true);
                     }}
-                  />
+                  />}
                   <Card className="p-5 shadow-sm">
                     <OverviewTab deal={deal} />
                   </Card>
@@ -988,7 +1068,7 @@ export function TransactionRoomPage() {
                 {hasNegotiation && negotiation && (
                   <TabsContent value="negotiations">
                     <Card className="p-5 shadow-sm">
-                      <NegotiationPanel deal={deal} negotiation={negotiation as DealNegotiation} />
+                      <NegotiationPanel deal={deal} negotiation={negotiation as DealNegotiation} canProposeChanges={!viewerIsCreator} />
                     </Card>
                   </TabsContent>
                 )}
@@ -1075,13 +1155,15 @@ export function TransactionRoomPage() {
                 </TabsContent>
               </Tabs>
 
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4">
                 <ActionsPanel
                   deal={deal}
                   youIsReleaser={youIsReleaser}
                   canNegotiate={canNegotiate}
                   hasDispute={hasDispute}
+                  disputeBlocksRelease={disputeBlocksRelease}
                   canTerminate={canTerminate}
+                  terminationLocked={terminationLocked}
                   onRequestChanges={() => setShowPropose(true)}
                   onRaiseDispute={() => setShowDispute(true)}
                   onTerminate={() => setShowTerminate(true)}
@@ -1111,7 +1193,7 @@ export function TransactionRoomPage() {
               onSubmit={rejectTermination}
             />
 
-            <ProposeChangesModal
+            {!viewerIsCreator && <ProposeChangesModal
               open={showPropose}
               onOpenChange={setShowPropose}
               deal={deal}
@@ -1120,24 +1202,34 @@ export function TransactionRoomPage() {
                 propose.mutate(input, {
                   onSuccess: () => {
                     setShowPropose(false);
-                    toast.success('Change request sent: opened a negotiation.');
+                    toast.success(deal.status === 'terms_negotiation'
+                      ? 'Invitation updated and sent back for review.'
+                      : 'Change request sent: opened a negotiation.');
                   },
                 })
               }
-            />
+            />}
 
             <RaiseDisputeModal
               open={showDispute}
               onOpenChange={setShowDispute}
-              submitting={openDispute.isPending}
-              onSubmit={(input) =>
-                openDispute.mutate(input, {
-                  onSuccess: () => {
-                    setShowDispute(false);
-                    toast.success('Dispute opened: release is paused while it is reviewed.');
-                  },
-                })
-              }
+              submitting={openDispute.isPending || addDeliveryEvidence.isPending}
+              onSubmit={async ({ evidence, ...input }) => {
+                try {
+                  await addDeliveryEvidence.mutateAsync({
+                    items: evidence,
+                    uploadedByName: youParty?.name ?? 'You',
+                    uploadedByRole: 'buyer',
+                  });
+                  await openDispute.mutateAsync({ ...input, hasEvidence: evidence.length > 0 });
+                  setShowDispute(false);
+                  toast.success(evidence.length > 0
+                    ? 'Evidence submitted. Payment is now paused while the dispute is reviewed.'
+                    : 'Report opened. Payment will freeze after buyer evidence is uploaded.');
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : 'The dispute could not be submitted.');
+                }
+              }}
             />
             <UploadEvidenceModal
               open={showDeliveryEvidence}
@@ -1146,7 +1238,7 @@ export function TransactionRoomPage() {
               initialKind={deliveryEvidenceKind}
               onSubmit={({ items }) =>
                 addDeliveryEvidence.mutate(
-                  { items, uploadedByName: youParty?.name ?? 'You' },
+                  { items, uploadedByName: youParty?.name ?? 'You', uploadedByRole: youParty?.role ?? 'buyer' },
                   {
                     onSuccess: () => {
                       setShowDeliveryEvidence(false);

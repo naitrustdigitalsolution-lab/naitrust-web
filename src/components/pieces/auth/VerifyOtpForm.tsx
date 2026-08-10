@@ -27,9 +27,9 @@ export function VerifyOtpForm({ otp, email, error, isVerifying, onChange, onSubm
         Back
       </button>
 
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/10 rounded-2xl mb-4">
-          <Sparkles size={32} className="text-green-500" />
+      <div className="mb-6 text-center">
+        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
+          <Sparkles size={24} className="text-green-500" />
         </div>
         <h2 className="mb-2 text-2xl font-bold">Enter Verification Code</h2>
         <p className="text-muted-foreground">
@@ -39,13 +39,13 @@ export function VerifyOtpForm({ otp, email, error, isVerifying, onChange, onSubm
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6">
+      <form onSubmit={onSubmit} className="space-y-5">
         {error && <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm">{error}</div>}
         <div className="flex justify-center">
-          <InputOTP maxLength={6} value={otp} onChange={onChange} disabled={isVerifying}>
+          <InputOTP maxLength={6} value={otp} onChange={onChange} disabled={isVerifying} autoComplete="one-time-code" aria-label="Six-digit email verification code">
             <InputOTPGroup>
               {[0, 1, 2, 3, 4, 5].map((i) => (
-                <InputOTPSlot key={i} index={i} className="w-12 h-12 text-lg" />
+                <InputOTPSlot key={i} index={i} />
               ))}
             </InputOTPGroup>
           </InputOTP>
@@ -58,7 +58,7 @@ export function VerifyOtpForm({ otp, email, error, isVerifying, onChange, onSubm
             </>
           ) : (
             <>
-              Verify Code
+              Verify code
               <ArrowRight size={18} className="ml-2" />
             </>
           )}

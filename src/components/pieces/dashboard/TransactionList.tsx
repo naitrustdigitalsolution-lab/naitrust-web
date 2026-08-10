@@ -55,7 +55,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <p className="font-semibold text-foreground">No active Protected Deals yet</p>
       <p className="max-w-sm text-sm leading-6 text-muted-foreground">
         Create a Protected Deal to document terms, payment records, and supporting
-        evidence in one transaction room.
+        evidence in one deal room.
       </p>
       <Button onClick={onCreate} className="mt-2 rounded-full">
         New Protected Deal

@@ -15,6 +15,7 @@ const content = {
   business: {
     eyebrow: 'Naitrust for business',
     title: 'Get paid, pay suppliers, and protect the orders that matter.',
+    titleHighlight: 'protect the orders that matter.',
     description: 'One practical account for Nigerian traders, shops, wholesalers, artisans, service providers, and growing businesses.',
     heroImage: tradersImage,
     heroAlt: 'Nigerian traders reviewing a transaction at their local shop',
@@ -26,10 +27,10 @@ const content = {
       { icon: Store, title: 'Market traders and shops', text: 'Receive customer payments and keep regular supplier details close.' },
       { icon: PackageCheck, title: 'Wholesalers and online sellers', text: 'Document stock orders, delivery expectations, and payment status.' },
       { icon: Building2, title: 'Local service businesses', text: 'Record customer jobs, milestones, completion evidence, and payment.' },
-      { icon: Users, title: 'Growing teams', text: 'Build a verified business identity customers and partners can check.' },
+      { icon: Users, title: 'Growing teams', text: 'Build a verified, searchable business profile customers and partners can check before paying.' },
     ],
     steps: [
-      { icon: Fingerprint, title: 'Create and verify your business', text: 'Set up the business profile customers and counterparties can recognise.' },
+      { icon: Fingerprint, title: 'Create and verify your business', text: 'Set up a Trust Profile customers can find and review before deciding how to pay.' },
       { icon: QrCode, title: 'Collect customer payments', text: 'Share your Naitrust account, payment link, request, or QR code.' },
       { icon: Send, title: 'Pay the people you trust', text: 'Send normal payments to known suppliers, workers, and businesses.' },
       { icon: Shield, title: 'Protect important orders', text: 'For new suppliers or bigger commitments, agree terms and protect payment until completion.' },
@@ -38,23 +39,24 @@ const content = {
   customer: {
     eyebrow: 'Naitrust for customers',
     title: 'Know who you are paying, and protect purchases when trust is still new.',
+    titleHighlight: 'protect purchases when trust is still new.',
     description: 'Pay people and businesses normally when you know them. For important purchases, keep the seller, terms, evidence, delivery, and payment status together.',
     heroImage: customerImage,
     heroAlt: 'A customer paying a Nigerian local business digitally',
     primary: 'Open a customer account',
     register: 'register-customer',
     whoTitle: 'A clearer path from finding a seller to receiving what you paid for.',
-    whoCopy: 'Naitrust helps everyday customers check counterparties, choose the right payment path, and preserve a useful record when delivery matters.',
+    whoCopy: 'Naitrust helps customers search registered businesses, review available verification details, choose the right payment path, and preserve a useful record when delivery matters.',
     useCases: [
-      { icon: Search, title: 'Check before paying', text: 'Review available identity and business details before deciding how to proceed.' },
+      { icon: Search, title: 'Find and check businesses', text: 'Search by business name, category, or Naitrust details and review the Trust Profile before paying.' },
       { icon: Send, title: 'Pay people you know', text: 'Send normal payments quickly when trust already exists.' },
       { icon: Shield, title: 'Protect important purchases', text: 'Use shared terms and protected funding for unfamiliar or higher-value deals.' },
       { icon: PackageCheck, title: 'Inspect before release', text: 'Confirm handover, review what arrived, and report a problem before release.' },
     ],
     steps: [
       { icon: Fingerprint, title: 'Create and verify your account', text: 'Start with an identity-backed customer profile.' },
-      { icon: Search, title: 'Check who you are dealing with', text: 'Review the available profile before choosing how to pay.' },
-      { icon: Shield, title: 'Choose instant or protected', text: 'Pay normally when you trust them, or create a Protected Deal when the transaction needs structure.' },
+      { icon: Search, title: 'Find and check the business', text: 'Search registered businesses and review the available verification status and profile details.' },
+      { icon: Shield, title: 'Choose how to pay', text: 'Pay the verified business normally, or create a Protected Deal when the payment needs more structure.' },
       { icon: CheckCircle2, title: 'Follow through to completion', text: 'Keep terms, messages, evidence, handover review, and payment release visible.' },
     ],
   },
@@ -73,16 +75,17 @@ export function AudiencePage({ audience, onNavigate }: AudiencePageProps) {
     <SEOHead title={isBusiness ? 'Naitrust for Nigerian Businesses' : 'Naitrust for Customers'} description={page.description} canonicalPath={isBusiness ? '/business' : '/customer'} />
 
     <section className="relative overflow-hidden bg-[#04162f] px-4 pb-16 pt-24 text-white sm:px-6 sm:pb-24 sm:pt-32 lg:px-8">
-      <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
-      <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-emerald-400/10 blur-[120px]" />
       <div className="relative mx-auto grid max-w-[90rem] items-center gap-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
         <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#72c1ff]">{page.eyebrow}</p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-7xl">{page.title}</h1>
+          <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+            {page.title.slice(0, -page.titleHighlight.length)}
+            <span className="text-[#50adff]">{page.titleHighlight}</span>
+          </h1>
           <p className="mt-6 max-w-2xl text-base leading-7 text-white/65 sm:text-lg sm:leading-8">{page.description}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button className="rounded-full px-6" onClick={() => onNavigate(page.register)}>{page.primary}<ArrowRight size={16}/></Button>
-            <Button variant="outline" className="rounded-full border-white/20 bg-white/[.06] px-6 text-white hover:bg-white/10 hover:text-white" onClick={() => document.querySelector('#audience-how')?.scrollIntoView({behavior:'smooth'})}>See how it works</Button>
+            <Button size="sm" className="h-9 rounded-full px-4 text-[10px] font-bold sm:h-14 sm:px-7 sm:text-base" onClick={() => onNavigate(page.register)}>{page.primary}<ArrowRight size={16}/></Button>
+            <Button variant="outline" className="h-9 rounded-full border-white/20 bg-white/[.06] px-4 text-[10px] text-white hover:bg-white/10 hover:text-white sm:h-14 sm:px-6 sm:text-sm" onClick={() => document.querySelector('#audience-how')?.scrollIntoView({behavior:'smooth'})}>See how it works</Button>
           </div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/60">
             <span className="inline-flex items-center gap-2"><CheckCircle2 size={15} className="text-emerald-400"/>Verified identity</span>
@@ -91,6 +94,7 @@ export function AudiencePage({ audience, onNavigate }: AudiencePageProps) {
           </div>
         </motion.div>
         <motion.div initial={{opacity:0,x:24}} animate={{opacity:1,x:0}} transition={{delay:.15}} className="relative min-h-[25rem] sm:min-h-[34rem]">
+          <div className="absolute -inset-3 rounded-[2.25rem] border border-white/10 bg-white/[0.04] sm:rounded-[3rem]" />
           <div className="absolute inset-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_35px_90px_rgba(0,0,0,.35)] sm:rounded-[2.75rem]">
             <ImageWithFallback src={page.heroImage} alt={page.heroAlt} className="h-full w-full object-cover brightness-[1.08] contrast-[1.04] saturate-[1.07]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#04162f]/45 via-transparent to-transparent"/>

@@ -187,7 +187,7 @@ export function SavedCounterpartyPickerDialog({
             <div className="rounded-2xl border border-dashed p-8 text-center">
               {directoryMode ? <Search className="mx-auto text-muted-foreground" size={23} /> : <UsersRound className="mx-auto text-muted-foreground" size={23} />}
               <p className="mt-3 text-sm font-semibold">{directoryMode && !search.trim() ? 'Search for a Naitrust business' : 'No matching contacts found'}</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{directoryMode && !search.trim() ? 'Enter a business name, Naitrust ID, email, or phone number.' : 'Try another search or enter the counterparty manually in the deal form.'}</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{directoryMode && !search.trim() ? 'Enter a business name, Naitrust ID, email, or phone number.' : 'Try another search or enter the other party manually in the deal form.'}</p>
             </div>
           ) : (
             <div className="overflow-hidden rounded-2xl border">

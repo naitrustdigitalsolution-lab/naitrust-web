@@ -1,30 +1,22 @@
 /**
  * Deal Documents
  * Generates real, customer-friendly PDF documents from a safe deal: the Safe
- * deal agreement and a concise deal summary card. Rendered client-side from a
- * styled, offscreen HTML node via html2pdf.js (html2canvas + jsPDF), so the
- * customer gets a normal .pdf they can open on any phone: never raw HTML.
+ * deal agreement and a concise deal summary card. PDFs are drawn directly
+ * with jsPDF so downloads remain reliable across browsers.
  *
  * The heavy PDF library is imported dynamically so it only loads when a user
  * actually downloads, keeping it out of the main bundle.
  */
 
 import type { AgreementDraft, DealDeliveryCard, SafeDealDetail } from '../store/types';
+import naitrustLogo from '../../assets/naitrust-logo/naitrust-icon-3.png';
+import type { jsPDF as JsPdfDocument } from 'jspdf';
 import {
   formatMinorAmount,
   getStatusPresentation,
   partyModeLabel,
   roleLabel,
 } from './safe-deal-presentation';
-
-/** Escape strings before injecting into the HTML template. */
-function esc(value: string | undefined | null): string {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 function formatDate(iso: string): string {
   try {
@@ -53,125 +45,79 @@ function slug(reference: string): string {
   return reference.replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
 
-/**
- * html2canvas-safe styling: plain block/flex/table only (no CSS grid, no
- * ::before counters, no emoji), so the rasteriser reproduces it faithfully.
- */
-const DOC_STYLE = `
-  .nt-doc *{box-sizing:border-box;margin:0;padding:0}
-  .nt-doc{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;background:#fff;padding:40px;width:794px;line-height:1.55}
-  .nt-brand{display:flex;align-items:center;margin-bottom:6px}
-  .nt-logo{width:26px;height:26px;border-radius:7px;background:#1e90ff;color:#fff;font-weight:800;font-size:15px;text-align:center;line-height:26px;margin-right:8px}
-  .nt-brandname{font-weight:800;font-size:18px;color:#1e90ff}
-  .nt-kicker{color:#64748b;font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
-  .nt-title{font-size:23px;font-weight:800;margin:14px 0 4px}
-  .nt-sub{color:#64748b;font-size:13px}
-  .nt-meta{width:100%;border-collapse:separate;border-spacing:0;margin:22px 0;background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;overflow:hidden}
-  .nt-meta td{padding:12px 16px;font-size:13px;vertical-align:top;width:50%;border-bottom:1px solid #eef2f7}
-  .nt-label{color:#64748b;text-transform:uppercase;letter-spacing:.04em;font-size:10px;font-weight:700;display:block;margin-bottom:3px}
-  .nt-value{color:#0f172a;font-weight:600;font-size:14px}
-  .nt-amount{font-size:24px;font-weight:800;color:#0f172a}
-  .nt-section{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:700;margin:26px 0 12px;border-bottom:1px solid #eef2f7;padding-bottom:6px}
-  .nt-clause{display:flex;margin:14px 0}
-  .nt-num{flex:0 0 auto;width:24px;height:24px;background:#e8f2ff;color:#1e90ff;border-radius:999px;font-size:12px;font-weight:700;text-align:center;line-height:24px;margin-right:12px}
-  .nt-clause h3{font-size:14px;margin-bottom:3px}
-  .nt-clause p{color:#334155;font-size:13px}
-  .nt-party{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px dashed #eef2f7}
-  .nt-party .role{color:#64748b}
-  .nt-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#e8f2ff;color:#1e90ff}
-  .nt-note{color:#475569;font-size:13px}
-  .nt-foot{margin-top:30px;padding-top:14px;border-top:1px solid #eef2f7;font-size:11px;color:#94a3b8}
-`;
+async function logoDataUrl(): Promise<string> {
+  const blob = await fetch(naitrustLogo).then((response) => response.blob());
+  return await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
 
-/** Render an inner-HTML string to a downloaded PDF via an offscreen node. */
-async function renderPdf(filename: string, innerHtml: string): Promise<void> {
-  const holder = document.createElement('div');
-  holder.className = 'nt-doc';
-  holder.style.position = 'fixed';
-  holder.style.left = '-99999px';
-  holder.style.top = '0';
-  holder.innerHTML = `<style>${DOC_STYLE}</style>${innerHtml}`;
-  document.body.appendChild(holder);
-  try {
-    const { default: html2pdf } = await import('html2pdf.js');
-    await html2pdf()
-      .set({
-        margin: [18, 0, 18, 0],
-        filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true, windowWidth: 794 },
-        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
-      })
-      .from(holder)
-      .save();
-  } finally {
-    holder.remove();
+async function brandedPdf(kicker: string, title: string, subtitle?: string): Promise<{ pdf: JsPdfDocument; y: number }> {
+  const { jsPDF } = await import('jspdf');
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+  pdf.addImage(await logoDataUrl(), 'PNG', 44, 38, 28, 28);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(17);
+  pdf.setTextColor('#1e90ff');
+  pdf.text('Naitrust', 82, 59);
+  pdf.setFontSize(9);
+  pdf.setTextColor('#64748b');
+  pdf.text(kicker.toUpperCase(), 44, 88);
+  pdf.setFontSize(22);
+  pdf.setTextColor('#071b31');
+  pdf.text(title, 44, 118, { maxWidth: 505 });
+  let y = 140;
+  if (subtitle) {
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.setTextColor('#64748b');
+    pdf.text(subtitle, 44, y, { maxWidth: 505 });
+    y += 22;
   }
+  return { pdf, y };
+}
+
+function ensurePdfSpace(pdf: JsPdfDocument, y: number, needed = 80): number {
+  if (y + needed <= 790) return y;
+  pdf.addPage();
+  return 48;
+}
+
+function pdfSection(pdf: JsPdfDocument, heading: string, body: string, y: number): number {
+  y = ensurePdfSpace(pdf, y, 90);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(11);
+  pdf.setTextColor('#071b31');
+  pdf.text(heading, 44, y);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(10.5);
+  pdf.setTextColor('#334155');
+  const lines = pdf.splitTextToSize(body || 'Not available', 500) as string[];
+  pdf.text(lines, 44, y + 18);
+  return y + 22 + lines.length * 14;
 }
 
 /** Download an agreement while the deal is still on the review screen. */
 export async function downloadAgreementDraft(input: { agreement: AgreementDraft; title: string; amountMinor: number; currency: string }): Promise<void> {
-  const clauses = input.agreement.sections.map((section, index) => `<div class="nt-clause"><span class="nt-num">${index + 1}</span><div><h3>${esc(section.heading)}</h3><p>${esc(section.body)}</p></div></div>`).join('');
-  const inner = `
-    <div class="nt-brand"><span class="nt-logo">N</span><span class="nt-brandname">Naitrust</span></div>
-    <div class="nt-kicker">Protected Deal agreement preview</div>
-    <div class="nt-title">${esc(input.title)}</div>
-    <table class="nt-meta"><tbody><tr><td><span class="nt-label">Protected amount</span><span class="nt-amount">${esc(formatMinorAmount(input.amountMinor, input.currency))}</span></td><td><span class="nt-label">Agreement version</span><span class="nt-value">v${esc(String(input.agreement.version))}</span></td></tr></tbody></table>
-    <div class="nt-section">Agreement clauses</div>${clauses}
-    <div class="nt-foot">Agreement preview generated by Naitrust on ${esc(formatDate(new Date().toISOString()))}.</div>
-  `;
-  await renderPdf(`naitrust-agreement-v${input.agreement.version}-${slug(input.title || 'protected-deal')}.pdf`, inner);
+  const { pdf, y: startY } = await brandedPdf('Protected Deal agreement preview', input.title, `${formatMinorAmount(input.amountMinor, input.currency)} · Agreement v${input.agreement.version}`);
+  let y = startY + 12;
+  input.agreement.sections.forEach((section, index) => { y = pdfSection(pdf, `${index + 1}. ${section.heading}`, section.body, y); });
+  pdf.setFontSize(9); pdf.setTextColor('#94a3b8'); pdf.text(`Generated by Naitrust on ${formatDate(new Date().toISOString())}.`, 44, ensurePdfSpace(pdf, y + 12, 20));
+  pdf.save(`naitrust-agreement-v${input.agreement.version}-${slug(input.title || 'protected-deal')}.pdf`);
 }
 
 /** Download the Safe deal agreement as a PDF. */
 export async function downloadAgreementDocument(deal: SafeDealDetail): Promise<void> {
-  const clauses = deal.agreement.sections
-    .map(
-      (s, i) =>
-        `<div class="nt-clause"><span class="nt-num">${i + 1}</span><div><h3>${esc(
-          s.heading,
-        )}</h3><p>${esc(s.body)}</p></div></div>`,
-    )
-    .join('');
-  const parties = deal.parties
-    .map(
-      (p) =>
-        `<div class="nt-party"><span>${esc(p.name)}${p.isYou ? ' (you)' : ''}</span><span class="role">${esc(
-          roleLabel(p.role),
-        )} &middot; ${esc(p.status)}</span></div>`,
-    )
-    .join('');
-
-  const inner = `
-    <div class="nt-brand"><span class="nt-logo">N</span><span class="nt-brandname">Naitrust</span></div>
-    <div class="nt-kicker">Safe deal agreement</div>
-    <div class="nt-title">${esc(deal.title)}</div>
-    <div class="nt-sub">Reference ${esc(deal.reference)} &middot; ${esc(partyModeLabel(deal.partyMode))}</div>
-    <table class="nt-meta"><tbody>
-      <tr><td><span class="nt-label">Protected amount</span><span class="nt-amount">${esc(
-        formatMinorAmount(deal.amountMinor, deal.currency),
-      )}</span></td><td><span class="nt-label">Created</span><span class="nt-value">${esc(
-    formatDate(deal.createdAt),
-  )}</span></td></tr>
-      <tr><td><span class="nt-label">Delivery due</span><span class="nt-value">${esc(
-        deal.deliveryDueDate ? formatDate(deal.deliveryDueDate) : 'Not available',
-      )}</span></td><td><span class="nt-label">Agreement version</span><span class="nt-value">v${esc(
-    String(deal.agreement.version),
-  )}</span></td></tr>
-    </tbody></table>
-    <div class="nt-section">Parties</div>
-    ${parties}
-    <div class="nt-section">Terms</div>
-    ${clauses}
-    <div class="nt-section">Release conditions</div>
-    <p class="nt-note">${esc(deal.releaseConditions || 'Not available')}</p>
-    <div class="nt-foot">Generated by Naitrust on ${esc(
-      formatDate(new Date().toISOString()),
-    )}. Funds are held by a regulated financial provider and released per the terms above. This document reflects the agreement both parties accepted for reference ${esc(
-    deal.reference,
-  )}.</div>
-  `;
-  await renderPdf(`naitrust-agreement-${slug(deal.reference)}.pdf`, inner);
+  const { pdf, y: startY } = await brandedPdf('Protected Deal agreement', deal.title, `${deal.reference} · ${partyModeLabel(deal.partyMode)} · ${formatMinorAmount(deal.amountMinor, deal.currency)}`);
+  let y = pdfSection(pdf, 'Parties', deal.parties.map((party) => `${party.name} — ${roleLabel(party.role)} (${party.status})`).join('\n'), startY + 10);
+  y = pdfSection(pdf, 'Deal dates', `Created: ${formatDate(deal.createdAt)}\nDelivery due: ${deal.deliveryDueDate ? formatDate(deal.deliveryDueDate) : 'Not available'}\nAgreement version: v${deal.agreement.version}`, y);
+  deal.agreement.sections.forEach((section, index) => { y = pdfSection(pdf, `${index + 1}. ${section.heading}`, section.body, y); });
+  y = pdfSection(pdf, 'Release conditions', deal.releaseConditions, y);
+  pdf.setFontSize(9); pdf.setTextColor('#94a3b8'); pdf.text(`Generated by Naitrust for ${deal.reference}.`, 44, ensurePdfSpace(pdf, y + 12, 20));
+  pdf.save(`naitrust-agreement-${slug(deal.reference)}.pdf`);
 }
 
 /** Download a concise deal summary card as a PDF. */
@@ -180,41 +126,14 @@ export async function downloadDealSummaryCard(deal: SafeDealDetail): Promise<voi
   const you = deal.parties.find((p) => p.isYou);
   const other = deal.parties.find((p) => !p.isYou);
 
-  const inner = `
-    <div class="nt-brand"><span class="nt-logo">N</span><span class="nt-brandname">Naitrust</span></div>
-    <div class="nt-kicker">Deal summary card</div>
-    <div class="nt-title">${esc(deal.title)}</div>
-    <div class="nt-sub">Reference ${esc(deal.reference)} &middot; <span class="nt-pill">${esc(
-    status.label,
-  )}</span></div>
-    <table class="nt-meta"><tbody>
-      <tr><td><span class="nt-label">Protected amount</span><span class="nt-amount">${esc(
-        formatMinorAmount(deal.amountMinor, deal.currency),
-      )}</span></td><td><span class="nt-label">Type</span><span class="nt-value">${esc(
-    partyModeLabel(deal.partyMode),
-  )}</span></td></tr>
-      <tr><td><span class="nt-label">You</span><span class="nt-value">${esc(
-        you ? `${you.name} · ${roleLabel(you.role)}` : 'Not available',
-      )}</span></td><td><span class="nt-label">Counterparty</span><span class="nt-value">${esc(
-    other ? `${other.name} · ${roleLabel(other.role)}` : deal.counterpartyName,
-  )}</span></td></tr>
-      <tr><td><span class="nt-label">Created</span><span class="nt-value">${esc(
-        formatDate(deal.createdAt),
-      )}</span></td><td><span class="nt-label">Delivery due</span><span class="nt-value">${esc(
-    deal.deliveryDueDate ? formatDate(deal.deliveryDueDate) : 'Not available',
-  )}</span></td></tr>
-    </tbody></table>
-    <div class="nt-section">Funding</div>
-    <p class="nt-note">Held by ${esc(deal.funding.partner)}: ${esc(
-    formatMinorAmount(deal.funding.amountReceivedMinor, deal.funding.currency),
-  )} received of ${esc(formatMinorAmount(deal.funding.amountExpectedMinor, deal.funding.currency))} expected.</p>
-    <div class="nt-section">What's protected</div>
-    <p class="nt-note">${esc(deal.description || deal.releaseConditions || 'Not available')}</p>
-    <div class="nt-foot">Generated by Naitrust on ${esc(
-      formatDate(new Date().toISOString()),
-    )}. This card summarises deal ${esc(deal.reference)} for your records.</div>
-  `;
-  await renderPdf(`naitrust-deal-${slug(deal.reference)}.pdf`, inner);
+  const { pdf, y: startY } = await brandedPdf('Deal summary', deal.title, `${deal.reference} · ${status.label}`);
+  let y = pdfSection(pdf, 'Protected amount', formatMinorAmount(deal.amountMinor, deal.currency), startY + 10);
+  y = pdfSection(pdf, 'Parties', `You: ${you ? `${you.name} — ${roleLabel(you.role)}` : 'Not available'}\nCounterparty: ${other ? `${other.name} — ${roleLabel(other.role)}` : deal.counterpartyName}`, y);
+  y = pdfSection(pdf, 'Deal details', `Type: ${partyModeLabel(deal.partyMode)}\nCreated: ${formatDate(deal.createdAt)}\nDelivery due: ${deal.deliveryDueDate ? formatDate(deal.deliveryDueDate) : 'Not available'}`, y);
+  y = pdfSection(pdf, 'Funding', `${formatMinorAmount(deal.funding.amountReceivedMinor, deal.funding.currency)} received of ${formatMinorAmount(deal.funding.amountExpectedMinor, deal.funding.currency)} expected. Protected with ${deal.funding.partner}.`, y);
+  y = pdfSection(pdf, "What's protected", deal.description || deal.releaseConditions, y);
+  pdf.setFontSize(9); pdf.setTextColor('#94a3b8'); pdf.text(`Generated by Naitrust for ${deal.reference}.`, 44, ensurePdfSpace(pdf, y + 12, 20));
+  pdf.save(`naitrust-deal-${slug(deal.reference)}.pdf`);
 }
 
 export interface DeliveryCardDocumentInput {
@@ -226,33 +145,76 @@ export interface DeliveryCardDocumentInput {
 
 /** Download the limited delivery card. No financial or party data is included. */
 export async function downloadDeliveryCardPdf(input: DeliveryCardDocumentInput): Promise<void> {
-  const { toDataURL } = await import('qrcode');
+  const [{ toDataURL }, { jsPDF }] = await Promise.all([import('qrcode'), import('jspdf')]);
   const qrDataUrl = await toDataURL(input.handoverUrl, {
     errorCorrectionLevel: 'H',
     margin: 1,
     width: 280,
     color: { dark: '#071b31', light: '#ffffff' },
   });
-  const inner = `
-    <div class="nt-brand"><span class="nt-logo">N</span><span class="nt-brandname">Naitrust</span></div>
-    <div class="nt-kicker">Secure product handover</div>
-    <div class="nt-title">${esc(input.title)}</div>
-    <div class="nt-sub">Deal reference ${esc(input.reference)}</div>
-    <div style="display:flex;align-items:center;gap:28px;margin:30px 0;padding:24px;border:1px solid #dbeafe;border-radius:18px;background:#f8fbff">
-      <img src="${esc(qrDataUrl)}" width="220" height="220" alt="Delivery handover QR" style="display:block;border-radius:12px" />
-      <div style="flex:1">
-        <span class="nt-label">Handover OTP</span>
-        <div style="font-size:36px;font-weight:800;letter-spacing:7px;color:#071b31;margin:8px 0 18px">${esc(input.card.otpCode)}</div>
-        <span class="nt-label">Card expires</span>
-        <div class="nt-value">${esc(formatDateTime(input.card.expiresAt))}</div>
-      </div>
-    </div>
-    <div class="nt-section">Buyer instructions</div>
-    <div class="nt-clause"><span class="nt-num">1</span><div><h3>Check the package with the rider present</h3><p>Compare the model, seal, serial or IMEI, and package condition with the deal record.</p></div></div>
-    <div class="nt-clause"><span class="nt-num">2</span><div><h3>Scan or enter the OTP</h3><p>Scan this QR with your phone, or enter the six-digit OTP in your Naitrust Transaction Room.</p></div></div>
-    <div class="nt-clause"><span class="nt-num">3</span><div><h3>Complete the handover review</h3><p>Confirm the correct product or report a problem during the ten-minute review.</p></div></div>
-    <div style="margin-top:22px;padding:14px 16px;border-radius:12px;background:#eaf7f3;color:#14532d;font-size:12px;line-height:1.6">Confirming receipt starts product checks. It does not release payment or waive defect or consumer rights.</div>
-    <div class="nt-foot">This one-time card becomes invalid after confirmation, cancellation, expiry, or regeneration. Do not share it outside this delivery.</div>
-  `;
-  await renderPdf(`naitrust-delivery-${slug(input.reference)}.pdf`, inner);
+  const logoBlob = await fetch(naitrustLogo).then((response) => response.blob());
+  const logoDataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(logoBlob);
+  });
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+  const navy = '#071b31';
+  pdf.setFillColor(navy);
+  pdf.roundedRect(36, 32, 523, 112, 14, 14, 'F');
+  pdf.addImage(logoDataUrl, 'PNG', 58, 50, 30, 30);
+  pdf.setTextColor('#ffffff');
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(18);
+  pdf.text('Naitrust', 98, 70);
+  pdf.setFontSize(10);
+  pdf.setTextColor('#9fb0c2');
+  pdf.text('SECURE PRODUCT HANDOVER', 58, 100);
+  pdf.setFontSize(17);
+  pdf.setTextColor('#ffffff');
+  pdf.text(input.title, 58, 123, { maxWidth: 470 });
+
+  pdf.setTextColor(navy);
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text(`Deal reference ${input.reference}`, 48, 170);
+  pdf.setDrawColor('#dbeafe');
+  pdf.setFillColor('#f8fbff');
+  pdf.roundedRect(40, 188, 515, 230, 12, 12, 'FD');
+  pdf.addImage(qrDataUrl, 'PNG', 65, 215, 175, 175);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(9);
+  pdf.setTextColor('#64748b');
+  pdf.text('HANDOVER OTP', 282, 250);
+  pdf.setTextColor(navy);
+  pdf.setFontSize(27);
+  pdf.text(input.card.otpCode.split('').join('  '), 282, 287);
+  pdf.setTextColor('#64748b');
+  pdf.setFontSize(9);
+  pdf.text('CARD EXPIRES', 282, 330);
+  pdf.setTextColor(navy);
+  pdf.setFontSize(12);
+  pdf.text(formatDateTime(input.card.expiresAt), 282, 351, { maxWidth: 235 });
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(11);
+  pdf.text('BUYER INSTRUCTIONS', 48, 458);
+  const instructions = [
+    'Check the package, model, seal and serial or IMEI with the rider present.',
+    'Scan this QR or enter the six-digit OTP in your Naitrust Transaction Room.',
+    'Confirm the correct product or report a problem during the handover review.',
+  ];
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(11);
+  instructions.forEach((instruction, index) => pdf.text(`${index + 1}. ${instruction}`, 56, 488 + index * 34, { maxWidth: 485 }));
+  pdf.setFillColor('#eaf7f3');
+  pdf.roundedRect(44, 594, 507, 58, 9, 9, 'F');
+  pdf.setTextColor('#14532d');
+  pdf.setFontSize(10);
+  pdf.text('Confirming receipt starts product checks. It does not release payment or waive defect or consumer rights.', 58, 619, { maxWidth: 475 });
+  pdf.setTextColor('#94a3b8');
+  pdf.setFontSize(9);
+  pdf.text('This one-time card is valid only for the intended buyer account and becomes invalid after use, expiry or regeneration.', 48, 700, { maxWidth: 500 });
+  pdf.save(`naitrust-delivery-${slug(input.reference)}.pdf`);
 }

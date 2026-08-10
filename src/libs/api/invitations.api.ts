@@ -19,15 +19,58 @@ import type {
 } from '../store/types';
 import type { ApiSuccess } from './types';
 import mockInvitations from '../../mocks/apis/invitations.json';
-import { grantMockDealAccess, listMockCreatedDeals } from './mock-protected-deal-store';
+import authFixtures from '../../mocks/apis/auth-users.json';
+import businessFixtures from '../../mocks/apis/businesses.json';
+import { getMockDealRuntime, grantMockDealAccess, listMockCreatedDeals, patchMockDealRuntime } from './mock-protected-deal-store';
+import { mockCreatedDealParticipantIndex, mockCreatedDealRoleContext } from './mock-deal-participants';
+import { useAuthStore } from '../store/auth.store';
+import { notificationsApi } from './notifications.api';
 
 const MOCK_LATENCY_MS = 400;
-
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const mockList = (mockInvitations as ApiSuccess<DealInvitation[]>).data;
+
+function createdInvitationFor(deal: ReturnType<typeof listMockCreatedDeals>[number], userId: string): DealInvitation | null {
+  const participantIndex = mockCreatedDealParticipantIndex(deal.summary.id, userId);
+  if (participantIndex < 0) return null;
+  const ownerId = (deal.summary as typeof deal.summary & { createdByUserId?: string }).createdByUserId;
+  const owner = authFixtures.users.find((record) => record.user.id === ownerId)?.user;
+  const ownerBusiness = businessFixtures.data.find((business) => business.id === deal.summary.businessId)
+    ?? businessFixtures.data.find((business) => business.ownerUserId === ownerId);
+  const runtime = getMockDealRuntime(deal.summary.id);
+  // One-time compatibility migration: declines made before the confirmation
+  // flow recorded a response timestamp are restored for another review.
+  if (runtime?.invitationStatus === 'declined' && !runtime.invitationRespondedAt) {
+    patchMockDealRuntime(deal.summary.id, { invitationStatus: 'pending', status: 'pending_counterparty' });
+  }
+  const currentRuntime = getMockDealRuntime(deal.summary.id);
+  const runtimeStatus = currentRuntime?.invitationStatus;
+  const expiresAt = new Date(new Date(deal.summary.createdAt).getTime() + deal.input.expiresInDays * 86400000).toISOString();
+  const expired = Date.now() > new Date(expiresAt).getTime();
+  const { creatorRole } = mockCreatedDealRoleContext(deal.summary.id);
+  return {
+    id: deal.summary.id,
+    publicToken: deal.summary.publicInvitePath?.split('/').pop(),
+    recipientUserId: userId,
+    reference: deal.summary.reference,
+    fromName: ownerBusiness?.name ?? owner?.name ?? 'Naitrust member',
+    fromRole: creatorRole,
+    yourRole: creatorRole === 'seller' ? 'buyer' : 'seller',
+    partyMode: deal.input.partyMode,
+    title: deal.summary.title,
+    amountMinor: deal.summary.amountMinor,
+    currency: deal.summary.currency,
+    message: deal.input.description,
+    agreement: deal.input.agreement,
+    createdAt: deal.summary.createdAt,
+    expiresAt,
+    status: runtimeStatus ?? (expired ? 'expired' : 'pending'),
+    responseReason: currentRuntime?.invitationResponseReason,
+  };
+}
 
 const PUBLIC_SCENARIOS: Record<string, { index: number; status?: PublicInvitationPreview['status']; intendedContact?: string }> = {
   'nt-invite-live': { index: 0, status: 'pending' },
@@ -50,15 +93,20 @@ function publicPreview(token: string): PublicInvitationPreview | null {
   if (createdDeal) {
     const participant = createdDeal.input.participants[0];
     const contact = participant?.email ?? participant?.phone ?? participant?.identifier;
+    const creatorUserId = (createdDeal.summary as typeof createdDeal.summary & { createdByUserId?: string }).createdByUserId;
+    const creatorUser = authFixtures.users.find((record) => record.user.id === creatorUserId)?.user;
+    const creatorBusiness = businessFixtures.data.find((business) => business.id === createdDeal.summary.businessId)
+      ?? businessFixtures.data.find((business) => business.ownerUserId === creatorUserId);
+    const { creatorRole } = mockCreatedDealRoleContext(createdDeal.summary.id);
     return {
       token,
       invitationId: createdDeal.summary.id,
       reference: createdDeal.summary.reference,
-      inviterName: 'Naitrust member',
+      inviterName: creatorBusiness?.name ?? creatorUser?.name ?? 'Naitrust member',
       inviterVerified: true,
-      inviterAccountType: createdDeal.input.partyMode === 'b2b' ? 'business' : createdDeal.input.role === 'seller' ? 'business' : 'customer',
+      inviterAccountType: creatorBusiness ? 'business' : 'customer',
       intendedAccountType: createdDeal.input.partyMode === 'b2b' ? 'business' : 'customer',
-      yourRole: createdDeal.input.role === 'seller' ? 'buyer' : 'seller',
+      yourRole: creatorRole === 'seller' ? 'buyer' : 'seller',
       title: createdDeal.summary.title,
       amountMinor: createdDeal.summary.amountMinor,
       currency: createdDeal.summary.currency,
@@ -150,7 +198,17 @@ export const invitationsApi = {
   list: async (): Promise<ApiSuccess<DealInvitation[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return mockInvitations as ApiSuccess<DealInvitation[]>;
+      const userId = useAuthStore.getState().user?.id;
+      if (!userId) return { success: true, data: [] };
+      const created = listMockCreatedDeals()
+        .map((deal) => createdInvitationFor(deal, userId))
+        .filter((invitation): invitation is DealInvitation => Boolean(invitation));
+      const seeded = mockList
+        .filter((invitation) => !invitation.recipientUserId || invitation.recipientUserId === userId)
+        .map((invitation) => invitation.status === 'pending' && Date.now() > new Date(invitation.expiresAt).getTime()
+          ? { ...invitation, status: 'expired' as const }
+          : invitation);
+      return { success: true, data: [...created, ...seeded].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) };
     }
     const response = await httpClient.get<DealInvitation[]>(endpoints.invitations.list);
     return response as ApiSuccess<DealInvitation[]>;
@@ -160,7 +218,14 @@ export const invitationsApi = {
   getOne: async (id: string): Promise<ApiSuccess<DealInvitation>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      const found = mockList.find((inv) => inv.id === id);
+      const userId = useAuthStore.getState().user?.id;
+      const createdDeal = userId ? listMockCreatedDeals().find((deal) => deal.summary.id === id) : undefined;
+      const rawFound = createdDeal && userId
+        ? createdInvitationFor(createdDeal, userId)
+        : mockList.find((inv) => inv.id === id && (!inv.recipientUserId || inv.recipientUserId === userId));
+      const found = rawFound?.status === 'pending' && Date.now() > new Date(rawFound.expiresAt).getTime()
+        ? { ...rawFound, status: 'expired' as const }
+        : rawFound;
       if (!found) {
         return { success: true, data: undefined as unknown as DealInvitation };
       }
@@ -173,15 +238,56 @@ export const invitationsApi = {
   /** POST /invitations/:id/accept | /decline */
   respond: async (
     id: string,
-    action: Extract<InvitationStatus, 'accepted' | 'declined'>,
+    action: Extract<InvitationStatus, 'accepted' | 'changes_requested' | 'declined'>,
+    reason?: string,
+    livenessVerifiedAt?: string,
   ): Promise<ApiSuccess<{ id: string; status: InvitationStatus }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      const userId = useAuthStore.getState().user?.id;
+      const createdDeal = listMockCreatedDeals().find((deal) => deal.summary.id === id);
+      if (createdDeal && userId && mockCreatedDealParticipantIndex(id, userId) >= 0) {
+        const ownerUserId = createdDeal.summary.createdByUserId;
+        const currentRuntime = getMockDealRuntime(id);
+        const responseAt = new Date().toISOString();
+        patchMockDealRuntime(id, {
+          invitationStatus: action,
+          status: action === 'accepted' ? 'awaiting_funding' : action === 'changes_requested' ? 'terms_negotiation' : 'cancelled',
+          invitationResponseReason: reason?.trim() || undefined,
+          invitationRespondedAt: responseAt,
+          invitationLivenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined,
+          activity: action === 'changes_requested'
+            ? [
+                ...(currentRuntime?.activity ?? []),
+                {
+                  id: `invite_changes_${crypto.randomUUID()}`,
+                  kind: 'message',
+                  message: `Invitee requested changes${reason?.trim() ? `: ${reason.trim()}` : '.'}`,
+                  createdAt: responseAt,
+                },
+              ]
+            : currentRuntime?.activity,
+        });
+        if (action === 'accepted') grantMockDealAccess(id, userId);
+        if (ownerUserId && action === 'changes_requested') {
+          notificationsApi.pushLocal({ userId: ownerUserId, type: 'deal', title: 'Invitation changes requested', message: `${createdDeal.summary.counterpartyName} requested changes to ${createdDeal.summary.title}${reason?.trim() ? `: ${reason.trim()}` : '.'}`, link: `/app/deals/${id}` });
+        }
+        if (ownerUserId && action === 'declined') {
+          notificationsApi.pushLocal({ userId: ownerUserId, type: 'deal', title: 'Deal invitation declined', message: `${createdDeal.summary.counterpartyName} declined ${createdDeal.summary.title}${reason?.trim() ? `: ${reason.trim()}` : '.'}`, link: `/app/deals/${id}` });
+        }
+      }
       return { success: true, data: { id, status: action } };
     }
-    const endpoint =
-      action === 'accepted' ? endpoints.invitations.accept(id) : endpoints.invitations.decline(id);
-    const response = await httpClient.post<{ id: string; status: InvitationStatus }>(endpoint);
+    const endpoint = action === 'accepted'
+      ? endpoints.invitations.accept(id)
+      : action === 'changes_requested'
+        ? endpoints.negotiations.propose(id)
+        : endpoints.invitations.decline(id);
+    const response = await httpClient.post<{ id: string; status: InvitationStatus }>(endpoint, {
+      action,
+      reason: reason?.trim() || undefined,
+      livenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined,
+    });
     return response as ApiSuccess<{ id: string; status: InvitationStatus }>;
   },
 };

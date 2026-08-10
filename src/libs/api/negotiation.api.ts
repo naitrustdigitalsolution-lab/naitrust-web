@@ -16,6 +16,10 @@ import type {
   NegotiationProposal,
   ProposedChanges,
 } from '../store/types';
+import { useAuthStore } from '../store/auth.store';
+import { getMockDealRuntime, patchMockDealRuntime, updateMockCreatedDeal } from './mock-protected-deal-store';
+import { mockCreatedDealRoleContext, mockParticipantUserId } from './mock-deal-participants';
+import { notificationsApi } from './notifications.api';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -107,6 +111,64 @@ export const negotiationApi = {
           }
         : { dealId, status: 'open', proposals: [proposal] };
       negotiations[dealId] = next;
+
+      // When an invitee has requested changes, the creator edits the original
+      // deal and returns that same invitation for review. This deliberately
+      // does not create a second invitation or grant active-deal access.
+      const currentUserId = useAuthStore.getState().user?.id;
+      const runtime = getMockDealRuntime(dealId);
+      let revisedInviteeUserId: string | undefined;
+      const revised = runtime?.invitationStatus === 'changes_requested'
+        ? updateMockCreatedDeal(dealId, (deal) => {
+            if (!currentUserId || deal.summary.createdByUserId !== currentUserId) return deal;
+            const { selfParticipantIndex } = mockCreatedDealRoleContext(dealId);
+            revisedInviteeUserId = deal.input.participants
+              .filter((_, index) => index !== selfParticipantIndex)
+              .map(mockParticipantUserId)
+              .find(Boolean);
+            const note = input.changes.agreementNote?.trim();
+            return {
+              summary: {
+                ...deal.summary,
+                amountMinor: input.changes.amountMinor ?? deal.summary.amountMinor,
+                status: 'pending_counterparty',
+              },
+              input: {
+                ...deal.input,
+                amountMinor: input.changes.amountMinor ?? deal.input.amountMinor,
+                deliveryDueDate: input.changes.deliveryDueDate ?? deal.input.deliveryDueDate,
+                releaseConditions: input.changes.releaseConditions ?? deal.input.releaseConditions,
+                agreement: note
+                  ? {
+                      ...deal.input.agreement,
+                      version: deal.input.agreement.version + 1,
+                      sections: [
+                        ...deal.input.agreement.sections.filter((section) => section.heading !== 'Updated terms'),
+                        { heading: 'Updated terms', body: note },
+                      ],
+                    }
+                  : deal.input.agreement,
+              },
+            };
+          })
+        : undefined;
+      if (revised && revised.summary.createdByUserId === currentUserId) {
+        patchMockDealRuntime(dealId, {
+          invitationStatus: 'pending',
+          status: 'pending_counterparty',
+          invitationResponseReason: undefined,
+          invitationRespondedAt: undefined,
+        });
+        if (revisedInviteeUserId) {
+          notificationsApi.pushLocal({
+            userId: revisedInviteeUserId,
+            type: 'deal',
+            title: 'Revised deal invitation',
+            message: `${revised.summary.title} has been updated and is ready for your review.`,
+            link: `/app/invitations/${dealId}`,
+          });
+        }
+      }
       return { success: true, data: structuredClone(next) };
     }
     const res = await httpClient.post<DealNegotiation>(endpoints.negotiations.propose(dealId), input);

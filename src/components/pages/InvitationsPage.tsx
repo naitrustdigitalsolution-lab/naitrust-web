@@ -116,7 +116,7 @@ export function InvitationsPage() {
     <DashboardLayout title="Invitations">
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
-          eyebrow="Protected payments"
+          eyebrow="Protected Deals"
           title="Deal invitations"
           description="Review Protected Deals you have been invited to, then accept to agree the terms."
           icon={Inbox}

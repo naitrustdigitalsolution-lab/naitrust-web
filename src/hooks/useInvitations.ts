@@ -7,20 +7,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invitationsApi } from '../libs/api/invitations.api';
 import type { DealInvitation, InvitationStatus, PublicInvitationPreview, User } from '../libs/store/types';
+import { useAuthStore } from '../libs/store/auth.store';
+import { TRANSACTIONS_QUERY_KEY } from './useTransactions';
 
 export const INVITATIONS_QUERY_KEY = ['invitations'] as const;
 
 export function useInvitations() {
+  const userId = useAuthStore((state) => state.user?.id);
   return useQuery<DealInvitation[]>({
-    queryKey: INVITATIONS_QUERY_KEY,
+    queryKey: [...INVITATIONS_QUERY_KEY, userId],
+    enabled: !!userId,
     queryFn: async () => (await invitationsApi.list()).data,
   });
 }
 
 export function useInvitation(id: string | undefined) {
+  const userId = useAuthStore((state) => state.user?.id);
   return useQuery<DealInvitation | null>({
-    queryKey: [...INVITATIONS_QUERY_KEY, id],
-    enabled: !!id,
+    queryKey: [...INVITATIONS_QUERY_KEY, id, userId],
+    enabled: !!id && !!userId,
     queryFn: async () => (id ? (await invitationsApi.getOne(id)).data ?? null : null),
   });
 }
@@ -31,12 +36,17 @@ export function useRespondToInvitation() {
     mutationFn: ({
       id,
       action,
+      reason,
+      livenessVerifiedAt,
     }: {
       id: string;
-      action: Extract<InvitationStatus, 'accepted' | 'declined'>;
-    }) => invitationsApi.respond(id, action),
+      action: Extract<InvitationStatus, 'accepted' | 'changes_requested' | 'declined'>;
+      reason?: string;
+      livenessVerifiedAt?: string;
+    }) => invitationsApi.respond(id, action, reason, livenessVerifiedAt),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: INVITATIONS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });
     },
   });
 }

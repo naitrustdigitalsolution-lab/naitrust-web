@@ -21,11 +21,11 @@ const USER_TYPES: Array<{ value: WaitlistUserType; label: string }> = [
 ];
 
 const PAYMENT_NEEDS = [
-  { value: 'conversation-payments', label: 'Receive payments from conversations' },
-  { value: 'payment-links-qr', label: 'Share payment links and QR codes' },
-  { value: 'supplier-payments', label: 'Pay suppliers and saved businesses' },
-  { value: 'protected-transactions', label: 'Protect important transactions' },
-  { value: 'payment-reconciliation', label: 'Confirm and reconcile payments' },
+  { value: 'business-discovery', label: 'Find and check registered businesses' },
+  { value: 'verified-business-payments', label: 'Pay a business after checking its Trust Profile' },
+  { value: 'protected-deals', label: 'Protect an important payment with a Protected Deal' },
+  { value: 'business-payments', label: 'Receive and manage business payments' },
+  { value: 'supplier-payments', label: 'Find and pay suppliers' },
   { value: 'other', label: 'Something else' },
 ];
 
@@ -94,7 +94,7 @@ export default function WaitlistPage() {
 
   return (
     <div className="min-h-svh bg-background">
-      <SEOHead title="Join the Naitrust Waitlist" description="Join Naitrust early access for trusted payment links, business payments, and Protected Transactions." canonicalPath="/waitlist" />
+      <SEOHead title="Join the Naitrust Waitlist" description="Join Naitrust early access to find registered businesses, review Trust Profiles, pay with confidence, and use Protected Deals." canonicalPath="/waitlist" />
       <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
           <button type="button" onClick={() => navigate('/')} className="inline-flex h-10 items-center gap-2 rounded-full px-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">
@@ -110,10 +110,10 @@ export default function WaitlistPage() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/12 lg:h-11 lg:w-11"><ShieldCheck size={21} /></div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-300 lg:mt-7">Naitrust early access</p>
           </div>
-          <h1 className="mt-4 text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-4xl lg:mt-3">Payments built around trust.</h1>
-          <p className="mt-2 text-sm leading-6 text-white/70 sm:mt-4 sm:text-base">Join early access for trusted payments and Protected Transactions.</p>
+          <h1 className="mt-4 text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-4xl lg:mt-3">Know who you are dealing with before money moves.</h1>
+          <p className="mt-2 text-sm leading-6 text-white/70 sm:mt-4 sm:text-base">Find a business, review its Trust Profile, then pay normally or protect the deal.</p>
           <div className="mt-7 hidden space-y-3 text-sm text-white/80 lg:block">
-            {['Trusted payment links and QR codes', 'Clear business and participant identity', 'Protected terms, evidence, and payment status'].map((item) => (
+            {['Search registered businesses and Trust Profiles', 'Review available verification details before paying', 'Pay normally or create a Protected Deal'].map((item) => (
               <p key={item} className="flex items-start gap-2"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-300" />{item}</p>
             ))}
           </div>
@@ -155,7 +155,7 @@ export default function WaitlistPage() {
 
                   <fieldset><legend className="text-sm font-semibold">I’m most interested in</legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{PAYMENT_NEEDS.map((item) => { const active = form.needs.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => setForm({ ...form, needs: toggle(form.needs, item.value) })} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span>{item.label}</button>; })}</div></fieldset>
 
-                  <details className="group rounded-2xl border bg-muted/20 p-4">
+                  <details open className="group rounded-2xl border bg-muted/20 p-4">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold marker:hidden">
                       <span>Add more details <span className="font-normal text-muted-foreground">(optional)</span></span>
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm transition group-open:rotate-180 group-open:text-primary">

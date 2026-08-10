@@ -13,6 +13,7 @@ import { appConfig } from '../../configs/env';
 import type { AppNotification } from '../store/types';
 import type { ApiSuccess } from './types';
 import mockNotifications from '../../mocks/apis/notifications.json';
+import { useAuthStore } from '../store/auth.store';
 
 const MOCK_LATENCY_MS = 300;
 
@@ -42,7 +43,8 @@ export const notificationsApi = {
   list: async (): Promise<ApiSuccess<AppNotification[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: mockList.map((n) => ({ ...n })) };
+      const userId = useAuthStore.getState().user?.id;
+      return { success: true, data: mockList.filter((notification) => !notification.userId || notification.userId === userId).map((n) => ({ ...n })) };
     }
     const response = await httpClient.get<AppNotification[]>(endpoints.notifications.list);
     return response as ApiSuccess<AppNotification[]>;

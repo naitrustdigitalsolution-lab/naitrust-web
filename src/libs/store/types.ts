@@ -62,6 +62,10 @@ export type SafeDealStatus =
  */
 export interface SafeDealSummary {
   id: string;
+  /** User who created the deal; used for party identity and authorization. */
+  createdByUserId?: string;
+  /** Business represented by the creator, when the deal was sent as a business. */
+  businessId?: string;
   reference: string;
   title: string;
   counterpartyName: string;
@@ -127,8 +131,8 @@ export interface DealParticipantInput {
 /** Longest an invitation can stay open before it expires. */
 export const MAX_DEAL_OPEN_DAYS = 30;
 
-/** Liveness freshness window: a check older than this must be redone. */
-export const LIVENESS_FRESHNESS_DAYS = 30;
+/** General account liveness freshness; deal actions always require a new check. */
+export const LIVENESS_FRESHNESS_DAYS = 180;
 
 /** One clause of a deal agreement document. */
 export interface AgreementSection {
@@ -175,6 +179,8 @@ export interface CreateSafeDealInput {
   /** Days the invitation stays open (1..MAX_DEAL_OPEN_DAYS). */
   expiresInDays: number;
   agreement: AgreementDraft;
+  /** Fresh action-specific liveness proof recorded for this deal creation. */
+  actionLiveness: { actorUserId: string; verifiedAt: string; captureId: string };
 }
 
 export interface CreateSafeDealResult extends SafeDealSummary {
@@ -226,6 +232,9 @@ export interface DealEvidenceItem {
   fileUrl?: string;
   mimeType?: string;
   uploadedByName: string;
+  /** Role at upload time; production derives this from the authenticated deal participant. */
+  uploadedByRole?: DealRole;
+  notApplicable?: boolean;
   note?: string;
   createdAt: string; // ISO 8601
 }
@@ -271,6 +280,8 @@ export type DeliveryCardStatus = 'active' | 'used' | 'invalidated' | 'expired';
 export interface DealDeliveryCard {
   token: string;
   otpCode: string;
+  /** Only this buyer account may consume the QR or OTP. */
+  intendedBuyerUserId?: string;
   generatedAt: string;
   expiresAt: string;
   status: DeliveryCardStatus;
@@ -324,6 +335,9 @@ export interface DeliveryHandoverPreview {
 }
 
 export interface SafeDealDetail extends SafeDealSummary {
+  /** Current release/funding stage for split-payment deals. */
+  activePaymentStage?: 1 | 2;
+  firstPaymentReleasedAt?: string;
   description: string;
   useCase: string;
   dealType: DealType;
@@ -366,7 +380,8 @@ export interface DealMessage {
  * Dispute: raised on a deal before release; blocks release while open
  * ------------------------------------------------------------------ */
 
-export type DisputeStatus = 'open' | 'under_review' | 'resolved_release' | 'resolved_refund';
+export type DisputeStatus = 'awaiting_evidence' | 'open' | 'under_review' | 'resolved_release' | 'resolved_refund';
+export type DisputeResolution = 'buyer_refund' | 'seller_payout' | 'partial_settlement' | 'replacement' | 'return';
 
 export interface DisputeMessage {
   id: string;
@@ -383,6 +398,10 @@ export interface DealDispute {
   description: string;
   openedByName: string;
   createdAt: string; // ISO 8601
+  initialDecisionDueAt?: string;
+  resolution?: DisputeResolution;
+  resolutionReason?: string;
+  resolvedAt?: string;
   messages: DisputeMessage[];
 }
 
@@ -416,6 +435,7 @@ export interface DealTermination {
 
 export type InvitationStatus =
   | 'pending'
+  | 'changes_requested'
   | 'accepted'
   | 'declined'
   | 'expired'
@@ -448,6 +468,8 @@ export interface DealInvitation {
   createdAt: string; // ISO 8601
   expiresAt: string; // ISO 8601
   status: InvitationStatus;
+  /** Optional explanation supplied when the invitee declines. */
+  responseReason?: string;
 }
 
 /** Safe subset returned before authentication for a tokenised invitation. */
@@ -478,10 +500,14 @@ export type ProposalStatus = 'proposed' | 'accepted' | 'declined' | 'superseded'
 /** The specific changes a proposal is requesting. All fields optional. */
 export interface ProposedChanges {
   amountMinor?: number;
+  initialPaymentMinor?: number;
+  remainingPaymentMinor?: number;
   deliveryDueDate?: string;
   releaseConditions?: string;
   /** A plain-language request to change the agreement wording. */
   agreementNote?: string;
+  /** Requested receiving allocation changes, keyed to the existing deal party. */
+  participantAllocations?: Array<{ partyId: string; partyName: string; amountMinor: number }>;
 }
 
 export interface NegotiationProposal {
@@ -523,6 +549,8 @@ export interface AppNotification {
   createdAt: string; // ISO 8601
   /** In-app route this notification points at, if any. */
   link?: string;
+  /** Recipient for mock/backend filtering. */
+  userId?: string;
 }
 
 /* ------------------------------------------------------------------ *

@@ -8,6 +8,7 @@ import {
   Landmark,
   MessageCircle,
   QrCode,
+  Search,
   Send,
   ShieldCheck,
   Download,
@@ -190,10 +191,23 @@ export function DashboardPage() {
               <h1 className="mt-1 text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-3xl">{businessName}</h1>
             )}
           </div>
-          <Button className="rounded-full px-5" onClick={() => navigate('/app/payments')}>
-            <Send size={15} /> Send money
+          <Button className="rounded-full px-5" onClick={() => navigate('/app/deals/new')}>
+            <ShieldCheck size={15} /> Protect a payment
           </Button>
         </header>
+
+        <section className="grid gap-3 sm:grid-cols-3 max-xl:!order-1">
+          {[
+            { title: 'Your Trust Profile', detail: 'Show customers the checks you have completed.', path: '/app/trust-profile', icon: BadgeCheck },
+            { title: 'Find a business', detail: 'Check a supplier or business before paying.', path: '/app/businesses', icon: Search },
+            { title: 'Protect a payment', detail: 'Agree on terms and keep the proof together.', path: '/app/deals/new', icon: ShieldCheck },
+          ].map((action) => (
+            <button key={action.title} type="button" onClick={() => navigate(action.path)} className="group flex items-center gap-3 rounded-2xl border bg-card p-4 text-left shadow-sm transition hover:border-primary/30 hover:shadow-md">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><action.icon size={18} /></span>
+              <span className="min-w-0 flex-1"><span className="flex items-center gap-1 text-sm font-semibold">{action.title}<ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></span><span className="mt-0.5 block text-xs leading-4 text-muted-foreground">{action.detail}</span></span>
+            </button>
+          ))}
+        </section>
 
         <section className="max-xl:!order-2">
           <div className="mb-4">
@@ -229,8 +243,7 @@ export function DashboardPage() {
         </section>
 
         <div className="grid gap-4 max-xl:!order-1 lg:grid-cols-[1.15fr_.85fr]">
-          <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#04162f] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-7">
-            <div className="pointer-events-none absolute -right-20 -top-24 h-60 w-60 rounded-full bg-primary/20 blur-3xl" />
+          <Card className="relative overflow-hidden rounded-3xl border-0 bg-primary dark:bg-[#04162f] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)] sm:p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
@@ -314,19 +327,19 @@ export function DashboardPage() {
           <div className="min-w-0 flex-1">
             <h2 className="font-semibold">Need protection before money is released?</h2>
             <p className="mt-1 text-sm leading-5 text-muted-foreground">
-              Record the terms, payment and delivery evidence in a Protected Transaction.
+              Record the terms, payment and delivery evidence in a Protected Deal.
             </p>
           </div>
           <Button variant="outline" className="rounded-full bg-background" onClick={() => navigate('/app/deals/new')}>
-            Create protected transaction <ArrowRight size={15} />
+            Protect a payment <ArrowRight size={15} />
           </Button>
         </Card>
 
         <section>
           <div className="mb-3 flex items-start justify-between gap-3 sm:items-end">
             <div className="min-w-0">
-              <h2 className="text-lg font-semibold">Recent protected transactions</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Only transactions that need extra trust and evidence.</p>
+              <h2 className="text-lg font-semibold">Recent Protected Deals</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Deals where the terms, payment status, and evidence stay together.</p>
             </div>
             {(deals?.length ?? 0) > 0 && (
               <Button variant="ghost" size="sm" className="shrink-0" onClick={() => navigate('/app/deals')}>

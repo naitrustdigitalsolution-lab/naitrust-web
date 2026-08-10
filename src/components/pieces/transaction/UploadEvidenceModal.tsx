@@ -22,19 +22,21 @@ interface UploadEvidenceModalProps {
   onOpenChange: (o: boolean) => void;
   submitting?: boolean;
   initialKind?: string;
-  onSubmit: (input: { items: { fileName: string; kind: string; note?: string; fileUrl: string; mimeType: string }[] }) => void;
+  onSubmit: (input: { items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string; notApplicable?: boolean }[] }) => void;
 }
 
 export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKind = 'Invoice', onSubmit }: UploadEvidenceModalProps) {
   const [kind, setKind] = useState(initialKind);
   const [files, setFiles] = useState<Array<{ fileName: string; fileUrl: string; mimeType: string }>>([]);
   const [note, setNote] = useState('');
+  const [notApplicable, setNotApplicable] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setKind(initialKind);
     setFiles([]);
     setNote('');
+    setNotApplicable(false);
   };
 
   useEffect(() => {
@@ -42,8 +44,13 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
   }, [initialKind, open]);
 
   const submit = () => {
-    if (files.length === 0) return;
-    onSubmit({ items: files.map((file) => ({ ...file, kind, note: note.trim() || undefined })) });
+    if (notApplicable) {
+      if (!note.trim()) return;
+      onSubmit({ items: [{ fileName: 'Not applicable', kind, note: note.trim(), notApplicable: true }] });
+    } else {
+      if (files.length === 0) return;
+      onSubmit({ items: files.map((file) => ({ ...file, kind, note: note.trim() || undefined })) });
+    }
     reset();
   };
 
@@ -61,7 +68,12 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
           <DialogDescription>Attach proof to this deal for both parties to see. This upload will be saved as <strong>{kind}</strong>.</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
-          <div>
+          <label className="flex items-start gap-2 rounded-xl border p-3 text-sm">
+            <input type="checkbox" className="mt-0.5" checked={notApplicable} onChange={(event) => setNotApplicable(event.target.checked)} />
+            <span><strong>Not applicable</strong><span className="mt-0.5 block text-xs text-muted-foreground">Use this only when this evidence type does not apply. A reason is required.</span></span>
+          </label>
+
+          {!notApplicable && <div>
             <Label>Type</Label>
             <div className="mt-1.5 flex flex-wrap gap-2">
               {DEAL_EVIDENCE_KINDS.map((k) => (
@@ -80,7 +92,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           <div>
             <Label>Files</Label>
@@ -139,7 +151,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
           </div>
 
           <div>
-            <Label htmlFor="ev-note">Note (optional)</Label>
+            <Label htmlFor="ev-note">{notApplicable ? 'Reason (required)' : 'Note (optional)'}</Label>
             <Textarea
               id="ev-note"
               className="mt-1.5"
@@ -153,9 +165,9 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
             <Button variant="ghost" className="rounded-md" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button className="rounded-md" onClick={submit} disabled={files.length === 0 || submitting}>
+            <Button className="rounded-md" onClick={submit} disabled={submitting || (notApplicable ? !note.trim() : files.length === 0)}>
               {submitting ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : <Upload size={16} className="mr-1.5" />}
-              Upload {files.length > 0 ? `(${files.length})` : ''}
+              {notApplicable ? 'Save as not applicable' : `Upload ${files.length > 0 ? `(${files.length})` : ''}`}
             </Button>
           </div>
         </div>

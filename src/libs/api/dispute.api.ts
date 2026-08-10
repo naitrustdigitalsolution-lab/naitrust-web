@@ -12,11 +12,29 @@ import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { DealDispute, DisputeMessage } from '../store/types';
 import { blockDeliveryRelease } from './delivery-review.mock';
+import { addBusinessDays } from 'date-fns';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 const disputes: Record<string, DealDispute> = {};
+
+export function activateDisputeWithEvidence(dealId: string): void {
+  const dispute = disputes[dealId];
+  if (!dispute || dispute.status !== 'awaiting_evidence') return;
+  disputes[dealId] = {
+    ...dispute,
+    status: 'under_review',
+    messages: [...dispute.messages, {
+      id: `${dealId}_dm_${crypto.randomUUID()}`,
+      byName: 'Naitrust Support',
+      byYou: false,
+      body: 'Buyer evidence was received. Automatic payment release is now frozen while the dispute is reviewed.',
+      createdAt: new Date().toISOString(),
+    }],
+  };
+  blockDeliveryRelease(dealId);
+}
 
 /** Deals that already have an open dispute in the mock. */
 const SEEDS: Record<string, Omit<DealDispute, 'dealId'>> = {
@@ -61,29 +79,33 @@ export const disputeApi = {
   /** Open a dispute: pauses release, starts admin review. */
   open: async (
     dealId: string,
-    input: { reason: string; description: string },
+    input: { reason: string; description: string; hasEvidence?: boolean },
   ): Promise<ApiSuccess<DealDispute>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      const openedAt = new Date();
       const dispute: DealDispute = {
         dealId,
-        status: 'under_review',
+        status: input.hasEvidence ? 'under_review' : 'awaiting_evidence',
         reason: input.reason,
         description: input.description,
         openedByName: 'You',
-        createdAt: new Date().toISOString(),
+        createdAt: openedAt.toISOString(),
+        initialDecisionDueAt: addBusinessDays(openedAt, 2).toISOString(),
         messages: [
           {
             id: `${dealId}_dm_${crypto.randomUUID()}`,
             byName: 'Naitrust Support',
             byYou: false,
-            body: 'Your dispute has been received. Add any evidence and we will review it shortly.',
+            body: input.hasEvidence
+              ? 'Your report and evidence were received. Automatic payment release is frozen while the dispute is reviewed.'
+              : 'Your report was received without evidence. Payment is not frozen yet. Upload relevant evidence as soon as possible; insufficient evidence may affect the final decision.',
             createdAt: new Date().toISOString(),
           },
         ],
       };
       disputes[dealId] = dispute;
-      blockDeliveryRelease(dealId);
+      if (input.hasEvidence) blockDeliveryRelease(dealId);
       return { success: true, data: structuredClone(dispute) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.open(dealId), input);

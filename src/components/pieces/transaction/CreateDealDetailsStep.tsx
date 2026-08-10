@@ -365,13 +365,17 @@ export function CreateDealDetailsStep({
         </div>
 
         <div className="order-2 mt-4 rounded-2xl border bg-muted/15 p-4">
-          <label className="flex cursor-pointer items-start gap-3">
-            <Checkbox checked={form.splitPayment} onCheckedChange={(checked) => onSplitPaymentChange(checked === true)} className="mt-0.5" />
-            <span>
-              <span className="block text-sm font-semibold text-foreground">Split this payment</span>
-              <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">Fund part of the total now and track what remains for the next payment.</span>
-            </span>
-          </label>
+          <p className="text-xs font-semibold text-foreground">Payment release setup</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <button type="button" onClick={() => onSplitPaymentChange(false)} className={`rounded-xl border p-3 text-left transition-colors ${!form.splitPayment ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'bg-background hover:bg-muted/40'}`}>
+              <span className="flex items-center justify-between gap-2"><span className="text-sm font-semibold">Single release</span><Badge variant="success" className="text-[10px]">Recommended</Badge></span>
+              <span className="mt-1 block text-xs leading-4 text-muted-foreground">One payment held safely, released once on delivery.</span>
+            </button>
+            <button type="button" onClick={() => onSplitPaymentChange(true)} className={`rounded-xl border p-3 text-left transition-colors ${form.splitPayment ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'bg-background hover:bg-muted/40'}`}>
+              <span className="text-sm font-semibold">Split release</span>
+              <span className="mt-1 block text-xs leading-4 text-muted-foreground">Release a first portion, then the remaining payment after the next condition.</span>
+            </button>
+          </div>
 
           {form.splitPayment && (
             <div className="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-2">

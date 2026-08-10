@@ -1,27 +1,8 @@
-# Frontend Guardrails
+# Naitrust Web Guardrails
 
-This folder contains the product, design, architecture, workflow, and AI rules for building the new Naitrust frontend.
+These guardrails are the current product and implementation source of truth for `naitrust-web`.
 
-Read order:
+Read [product-guardrails.md](./product-guardrails.md) before changing authentication, Protected Deals, money movement, delivery, evidence, disputes, or payment-release behaviour.
 
-1. `../../futureidea.md`
-2. `../../TECHNICAL_BUILD_ROADMAP.md`
-3. `../../Naitrust Technical Spec v2.docx`
-4. `pre-build-checklist.md`
-5. `domain-glossary.md`
-6. `plan.md`
-7. `mvp-product-lock.md`
-8. `skill.md`
-9. `architecture.md`
-10. `ui.md`
-11. `workflow.md`
-12. `verification-flow.md`
-13. `ai-intelligence-plan.md`
-14. `api-contract.md`
-15. `anchor-kora-payments.md`
-16. `tool.md`
-17. `database-design.md`
+When code and this document disagree, stop and resolve the conflict deliberately. Do not silently weaken a financial or identity control to make a flow easier to complete.
 
-The root `../../futureidea.md` is the company/product source of truth. The local `futureidea.md` is a snapshot copy kept for convenience.
-
-If there is conflict, the approved Word spec controls Phase 1 engineering scope.

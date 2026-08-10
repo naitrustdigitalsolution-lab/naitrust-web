@@ -266,7 +266,7 @@ export function PublicBusinessPaymentPage() {
               {checkout && (checkout.evidenceRequirements.length > 0 || checkout.milestones.length > 0) && <div className="mt-4 grid gap-2 text-xs text-[#527086] dark:text-muted-foreground">{checkout.evidenceRequirements.map((item) => <p key={item}>Evidence: {item}</p>)}{checkout.milestones.map((item) => <p key={item}>Milestone: {item}</p>)}</div>}
               <Button className="mt-4 w-full rounded-full" onClick={startProtectedTransaction}>Protect this transaction <ArrowRight size={16} /></Button>
             </div>}
-            {allowsDirect && !isPaid && <p className="text-center text-[11px] text-muted-foreground">A direct transfer is not a Protected Transaction.</p>}
+            {allowsDirect && !isPaid && <p className="text-center text-[11px] text-muted-foreground">A direct transfer is not a Protected Deal.</p>}
           </div>
         </Card>
       </div>

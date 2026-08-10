@@ -22,9 +22,10 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Textarea } from '../ui/textarea';
 import Spinner from '../ui/spinner';
 import { useInvitation, useRespondToInvitation } from '../../hooks/useInvitations';
-import { useSecurity } from '../../hooks/useSecurity';
 import {
   formatMinorAmount,
   partyModeLabel,
@@ -40,11 +41,14 @@ export function InvitationDetailPage() {
   const navigate = useNavigate();
   const { data: invitation, isLoading, isError } = useInvitation(id);
   const respond = useRespondToInvitation();
-  const security = useSecurity();
   const [agreementAccepted, setAgreementAccepted] = useState(false);
-  const [livenessOk, setLivenessOk] = useState(security.livenessFresh);
+  const [livenessOk, setLivenessOk] = useState(false);
+  const [livenessVerifiedAt, setLivenessVerifiedAt] = useState<string>();
   const [showLiveness, setShowLiveness] = useState(false);
   const [showPin, setShowPin] = useState(false);
+  const [showDecline, setShowDecline] = useState(false);
+  const [declineReason, setDeclineReason] = useState('');
+  const [declineMode, setDeclineMode] = useState<'choose' | 'changes' | 'decline'>('choose');
 
   // Prompt a liveness check when the user opens a live invitation without a
   // fresh check: a photo of who is accepting, for the counterparty's records.
@@ -52,15 +56,21 @@ export function InvitationDetailPage() {
     if (invitation?.status === 'pending' && !livenessOk) setShowLiveness(true);
   }, [invitation?.status, livenessOk]);
 
-  const runResponse = async (action: 'accepted' | 'declined') => {
+  const runResponse = async (action: 'accepted' | 'changes_requested' | 'declined', reason?: string) => {
     if (!id) return;
     try {
-      await respond.mutateAsync({ id, action });
+      await respond.mutateAsync({ id, action, reason, livenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined });
       if (action === 'accepted') {
-        toast.success('Invitation accepted: the Protected Deal is now in your dashboard.');
-        navigate('/app');
+        toast.success('Invitation accepted. Opening the deal room.');
+        navigate(`/app/deals/${id}`, { replace: true });
+      } else if (action === 'changes_requested') {
+        toast.success('Change request sent. This invitation remains open for an update.');
+        setShowDecline(false);
+        setDeclineMode('choose');
+        navigate('/app/invitations');
       } else {
         toast.info('Invitation declined.');
+        setShowDecline(false);
         navigate('/app/invitations');
       }
     } catch {
@@ -74,7 +84,9 @@ export function InvitationDetailPage() {
       setShowPin(true);
       return;
     }
-    void runResponse('declined');
+    setDeclineMode('choose');
+    setDeclineReason('');
+    setShowDecline(true);
   };
 
   return (
@@ -83,10 +95,12 @@ export function InvitationDetailPage() {
         open={showLiveness}
         onOpenChange={setShowLiveness}
         onVerified={() => {
+          setLivenessVerifiedAt(new Date().toISOString());
           setLivenessOk(true);
           setShowLiveness(false);
         }}
-        reason="You have a new invitation. We'll take a live photo to confirm it is really you: this is shared with the counterparty for their records."
+        reason="You have a new invitation. We'll take a live photo to confirm it is really you. It is linked to this deal for both parties' records."
+        footerText="Every deal acceptance requires a new liveness check recorded with that action."
       />
       <PinPromptModal
         open={showPin}
@@ -95,6 +109,52 @@ export function InvitationDetailPage() {
         title="Confirm with your PIN"
         description="Enter your 4-digit transaction PIN to accept this deal."
       />
+      <Dialog open={showDecline} onOpenChange={setShowDecline}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{declineMode === 'changes' ? 'Request changes to this deal' : declineMode === 'decline' ? 'Decline this deal invitation?' : 'How would you like to respond?'}</DialogTitle>
+            <DialogDescription>
+              {declineMode === 'changes' ? 'The invitation stays open. The creator will be asked to update its terms and send the revised invitation back to you.' : declineMode === 'decline' ? 'This closes the invitation. The creator will be notified.' : 'Request an update without closing the invitation, or decline it completely.'}
+            </DialogDescription>
+          </DialogHeader>
+          {declineMode === 'choose' ? <div className="grid gap-3 sm:grid-cols-2">
+            <button type="button" onClick={() => setDeclineMode('changes')} className="rounded-xl border border-primary/25 bg-primary/5 p-4 text-left transition-colors hover:border-primary">
+              <p className="font-semibold text-foreground">Request changes</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">Keep the invitation open and ask the creator to adjust or renegotiate the terms.</p>
+            </button>
+            <button type="button" onClick={() => setDeclineMode('decline')} className="rounded-xl border p-4 text-left transition-colors hover:border-destructive/50">
+              <p className="font-semibold text-foreground">Decline deal</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">Close this invitation and optionally tell the creator why.</p>
+            </button>
+          </div> : <div>
+            <p className="mb-2 text-sm font-medium text-foreground">
+              {declineMode === 'changes' ? 'What should the creator adjust?' : 'Reason (optional)'}
+            </p>
+            <div className="mb-3 flex flex-wrap gap-2">
+              {(declineMode === 'changes'
+                ? ['I’d like to renegotiate the deal', 'The deal needs adjustment']
+                : ['I’m unable to proceed with this deal', 'I no longer need this deal']
+              ).map((hint) => (
+                <Button key={hint} type="button" size="sm" variant="outline" className="h-auto rounded-full py-1.5 text-xs" onClick={() => setDeclineReason(hint)}>{hint}</Button>
+              ))}
+            </div>
+            <Textarea
+              value={declineReason}
+              onChange={(event) => setDeclineReason(event.target.value)}
+              rows={4}
+              maxLength={500}
+              placeholder={declineMode === 'changes' ? 'Describe the terms or details that should be updated…' : 'Tell the creator why you’re declining…'}
+            />
+            <p className="mt-1 text-right text-xs text-muted-foreground">{declineReason.length}/500</p>
+          </div>}
+          {declineMode !== 'choose' && <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setDeclineMode('choose')}>Back</Button>
+            <Button type="button" variant={declineMode === 'decline' ? 'destructive' : 'default'} disabled={respond.isPending || (declineMode === 'changes' && !declineReason.trim())} onClick={() => void runResponse(declineMode === 'changes' ? 'changes_requested' : 'declined', declineReason)}>
+              {respond.isPending ? <Loader2 size={16} className="animate-spin" /> : declineMode === 'decline' ? <X size={16} /> : <Check size={16} />} {declineMode === 'changes' ? 'Send change request' : 'Decline invitation'}
+            </Button>
+          </DialogFooter>}
+        </DialogContent>
+      </Dialog>
       <CenteredCard>
         <button
           type="button"

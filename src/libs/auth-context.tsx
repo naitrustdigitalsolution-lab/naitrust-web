@@ -5,6 +5,7 @@
  */
 
 import React, { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import { useAuthStore } from './store/auth.store';
 import type { User } from './store/types';
 
@@ -20,6 +21,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const INACTIVITY_LIMIT_MS = 5 * 60 * 1000;
+const ACTIVITY_KEY_PREFIX = 'naitrust:last-authenticated-activity:';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Use individual stores
@@ -33,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useAuthStore((state) => state.logout);
   const fetchProfile = useAuthStore((state) => state.fetchProfile);
   const refreshedLegacyUserId = useRef<string | null>(null);
+  const inactivityLogoutStarted = useRef(false);
 
   // Existing mock sessions created before Naitrust IDs were introduced are
   // refreshed once so users receive their issued ID without signing out.
@@ -41,6 +45,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshedLegacyUserId.current = user.id;
     void fetchProfile();
   }, [fetchProfile, isHydrated, user]);
+
+  useEffect(() => {
+    if (!isHydrated || !isAuthenticated || !user) return;
+    const activityKey = `${ACTIVITY_KEY_PREFIX}${user.id}`;
+    const existing = Number(localStorage.getItem(activityKey));
+    if (!Number.isFinite(existing) || existing <= 0) localStorage.setItem(activityKey, String(Date.now()));
+
+    let lastRecorded = 0;
+    const recordActivity = () => {
+      const now = Date.now();
+      // Mouse and touch events can fire rapidly; one shared write every second is sufficient.
+      if (now - lastRecorded < 1_000) return;
+      lastRecorded = now;
+      localStorage.setItem(activityKey, String(now));
+    };
+    const enforceExpiry = () => {
+      const lastActivity = Number(localStorage.getItem(activityKey));
+      if (!Number.isFinite(lastActivity) || Date.now() - lastActivity < INACTIVITY_LIMIT_MS) return;
+      if (inactivityLogoutStarted.current) return;
+      inactivityLogoutStarted.current = true;
+      localStorage.removeItem(activityKey);
+      toast.warning('For your security, you were signed out after 5 minutes of inactivity.');
+      void logout().finally(() => {
+        inactivityLogoutStarted.current = false;
+      });
+    };
+
+    const activityEvents: Array<keyof WindowEventMap> = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
+    activityEvents.forEach((event) => window.addEventListener(event, recordActivity, { passive: true }));
+    window.addEventListener('focus', enforceExpiry);
+    document.addEventListener('visibilitychange', enforceExpiry);
+    const interval = window.setInterval(enforceExpiry, 15_000);
+
+    return () => {
+      activityEvents.forEach((event) => window.removeEventListener(event, recordActivity));
+      window.removeEventListener('focus', enforceExpiry);
+      document.removeEventListener('visibilitychange', enforceExpiry);
+      window.clearInterval(interval);
+      if (!useAuthStore.getState().isAuthenticated) localStorage.removeItem(activityKey);
+    };
+  }, [isAuthenticated, isHydrated, logout, user]);
 
   return (
     <AuthContext.Provider value={{ user, token, login, verify2FALogin, logout, isAuthenticated, isLoading, isHydrated }}>

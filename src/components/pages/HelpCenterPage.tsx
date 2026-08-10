@@ -59,7 +59,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p2',
         question: 'What is protected funding?',
-        answer: 'Protected funding is the flow where a buyer funds a partner-issued virtual account for a specific deal. Both parties can see payment status, evidence requirements, confirmation steps, and release conditions in the transaction room.'
+        answer: 'Protected funding is the flow where a buyer funds a partner-issued virtual account for a specific deal. Both parties can see payment status, evidence requirements, confirmation steps, and release conditions in the deal room.'
       },
       {
         id: 'p3',
@@ -69,7 +69,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p4',
         question: 'What happens if there is a dispute?',
-        answer: 'A participant can raise an issue from the Protected Deal room. Naitrust keeps the agreement, messages, receipts, evidence, photographs, inspection notes, milestones, and confirmations together so the issue can be reviewed with context.'
+        answer: 'A participant can raise an issue from the Deal Room. Naitrust keeps the agreement, messages, receipts, evidence, photographs, inspection notes, milestones, and confirmations together so the issue can be reviewed with context.'
       },
       {
         id: 'p5',
@@ -130,7 +130,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'm1',
         question: 'How do I contact a business on Naitrust?',
-        answer: 'Open the participant profile or Protected Deal room and use messaging to clarify roles, terms, payment plan, evidence, or milestones. Important messages should stay attached to the transaction where possible.'
+        answer: 'Open the participant profile or Deal Room and use messaging to clarify roles, terms, payment plan, evidence, or milestones. Important messages should stay attached to the transaction where possible.'
       },
       {
         id: 'm2',
@@ -152,7 +152,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g2',
         question: 'How can I verify a business I found on social media?',
-        answer: 'Use the participant’s account number, email, phone number, or Naitrust profile link to review the intended person or business. A Protected Deal room can then keep the terms, payments, evidence, and confirmations together.'
+        answer: 'Use the participant’s account number, email, phone number, or Naitrust profile link to review the intended person or business. A Deal Room can then keep the terms, payments, evidence, and confirmations together.'
       },
       {
         id: 'g3',
@@ -167,7 +167,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g5',
         question: 'Is Naitrust available outside Nigeria?',
-        answer: 'Naitrust is built for individuals and businesses in Nigeria. Customers can pay trusted recipients, check a business before paying, or create a Protected Transaction when they do not yet know the other party. Businesses can receive customer payments, pay suppliers, demonstrate verified identity, and protect B2B or customer transactions. Business verification requirements depend on the account and service being used.'
+        answer: 'Naitrust is built for individuals and businesses in Nigeria. Customers can pay trusted recipients, check a business before paying, or create a Protected Deal when they do not yet know the other party. Businesses can receive customer payments, pay suppliers, demonstrate verified identity, and protect B2B or customer transactions. Business verification requirements depend on the account and service being used.'
       },
       {
         id: 'g6',

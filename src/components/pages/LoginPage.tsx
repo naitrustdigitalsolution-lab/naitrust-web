@@ -317,8 +317,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
-        title="Sign in to Payments and Protected Transactions"
-        description="Sign in to Naitrust to send and receive money, manage customer or business payments, and continue your Protected Transactions."
+        title="Sign in to Payments and Protected Deals"
+        description="Sign in to Naitrust to send and receive money, manage customer or business payments, and continue your Protected Deals."
         canonicalPath="/login"
       />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
@@ -356,7 +356,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                   Welcome back. Pick up with confidence.
                 </h1>
                 <p className="text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:text-md xl:text-lg lg:leading-8">
-                  Pay someone you trust, collect from a customer, or continue a Protected Transaction with the full story still attached.
+                  Pay someone you trust, collect from a customer, or continue a Protected Deal with the full story still attached.
                 </p>
               </div>
 

@@ -29,6 +29,7 @@ import {
   Search,
   MessageCircle,
   BadgeCheck,
+  Gift,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -79,6 +80,7 @@ interface NavGroup {
 const SHARED_ACCOUNT_GROUP: NavGroup = {
   label: 'Account',
   items: [
+    { label: 'Rewards', path: '/app/rewards', icon: Gift, matchPrefix: true },
     { label: 'Security', path: '/app/security', icon: Lock, matchPrefix: true },
     { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
   ],
@@ -97,30 +99,30 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }],
   },
   {
-    label: 'Business money',
+    label: 'Business trust',
     items: [
-      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
-      { label: 'Send Money', path: '/app/payments', icon: Send },
-      { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
+      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
+      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2, matchPrefix: true },
     ],
   },
   {
     label: 'Protected Deals',
     items: [
-      { label: 'Active Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'Create Protected Deal', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'All Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
       { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },
   {
-    label: 'Trading',
+    label: 'Business money',
     items: [
-      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
+      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
+      { label: 'Send Money', path: '/app/payments', icon: Send },
       { label: 'Transactions', path: '/app/transactions', icon: Receipt },
-      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2, matchPrefix: true },
     ],
   },
+  { label: 'More', items: [{ label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText }] },
   {
     label: 'Support',
     items: [
@@ -134,25 +136,25 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
 const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   { items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }] },
   {
-    label: 'Payments',
-    items: [
-      { label: 'Send Money', path: '/app/payments', icon: Send },
-      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
-      { label: 'Transaction History', path: '/app/transactions', icon: Receipt },
-      { label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText },
-    ],
-  },
-  {
     label: 'Businesses',
     items: [
       { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
     ],
   },
   {
-    label: 'Protected payments',
+    label: 'Money',
     items: [
-      { label: 'Protected Purchases', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'Protect a Purchase', path: '/app/deals/new', icon: PlusCircle },
+      { label: 'Pay a Business', path: '/app/payments', icon: Send },
+      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
+      { label: 'Money Activity', path: '/app/transactions', icon: Receipt },
+    ],
+  },
+  { label: 'More', items: [{ label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText }] },
+  {
+    label: 'Protected Deals',
+    items: [
+      { label: 'All Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
       { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],

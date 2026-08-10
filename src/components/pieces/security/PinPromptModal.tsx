@@ -100,9 +100,11 @@ export function PinPromptModal({
             </Button>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-4 py-4">
+          <div className="flex flex-col items-center gap-3 py-2">
             <InputOTP
               maxLength={4}
+              autoComplete="off"
+              aria-label="Four-digit transaction PIN"
               value={pin}
               onChange={(v) => {
                 setPin(v);
@@ -113,7 +115,7 @@ export function PinPromptModal({
             >
               <InputOTPGroup>
                 {[0, 1, 2, 3].map((i) => (
-                  <InputOTPSlot key={i} index={i} className="h-12 w-12 text-lg" />
+                  <InputOTPSlot key={i} index={i} variant="pin" />
                 ))}
               </InputOTPGroup>
             </InputOTP>

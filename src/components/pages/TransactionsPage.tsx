@@ -90,8 +90,8 @@ export function TransactionsPage() {
     <DashboardLayout title="Transactions">
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
-          eyebrow={isCustomer ? 'Protected payments' : 'Money activity'}
-          title={isCustomer ? 'Protected payment activity' : 'Transactions'}
+          eyebrow="Money"
+          title="Money activity"
           description={isCustomer
             ? 'Payment activity connected only to your Protected Deals.'
             : 'Every Instant Payment, Protected Deal, and business account movement in one place.'}
@@ -100,7 +100,7 @@ export function TransactionsPage() {
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Input
-            placeholder="Search by counterparty or reference"
+            placeholder="Search by person, business, or reference"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="sm:max-w-xs"
@@ -205,7 +205,7 @@ export function TransactionsPage() {
                 <span className="font-medium text-foreground">{selected.reference}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Counterparty</span>
+                <span className="text-muted-foreground">Other party</span>
                 <span className="font-medium text-foreground">{selected.counterpartyName}</span>
               </div>
               <div className="flex justify-between">

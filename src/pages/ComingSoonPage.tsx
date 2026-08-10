@@ -240,7 +240,7 @@ function ComingSoonPage() {
         <div className="details-grid">
           <article className="deal-panel">
             <div className="deal-header">
-              <span>Example transaction room</span>
+              <span>Example deal room</span>
               <strong>Property reservation</strong>
             </div>
             <ol className="deal-steps">

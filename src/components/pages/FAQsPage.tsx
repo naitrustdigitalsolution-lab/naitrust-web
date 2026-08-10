@@ -117,7 +117,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-3',
       category: 'payments',
       question: 'What is a partner-issued virtual account?',
-      answer: 'It is an account issued by a regulated partner for a specific transaction. The buyer funds it for that deal, and both parties can track funding status and release conditions from the transaction room.'
+      answer: 'It is an account issued by a regulated partner for a specific transaction. The buyer funds it for that deal, and both parties can track funding status and release conditions from the deal room.'
     },
     {
       id: 'p-4',
@@ -167,7 +167,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'f-1',
       category: 'features',
       question: 'What is the shareable profile link?',
-      answer: 'A shareable profile link helps participants confirm they are dealing with the intended person or business. It can lead into a Protected Deal room where the roles, terms, payments, evidence, milestones, and documents are tracked.'
+      answer: 'A shareable profile link helps participants confirm they are dealing with the intended person or business. It can lead into a Deal Room where the roles, terms, payments, evidence, milestones, and documents are tracked.'
     },
     {
       id: 'f-2',
@@ -198,7 +198,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 't-1',
       category: 'troubleshooting',
       question: 'Why was my payment declined?',
-      answer: 'A funding attempt may fail because of insufficient funds, bank limits, blocked transfers, incorrect details, partner downtime, or transaction risk checks. Confirm the virtual account details in the transaction room and contact support with the deal reference if the issue continues.'
+      answer: 'A funding attempt may fail because of insufficient funds, bank limits, blocked transfers, incorrect details, partner downtime, or transaction risk checks. Confirm the virtual account details in the deal room and contact support with the deal reference if the issue continues.'
     },
     {
       id: 't-2',

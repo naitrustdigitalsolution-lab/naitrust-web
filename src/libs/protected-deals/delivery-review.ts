@@ -13,9 +13,15 @@ export const EXTENDED_TESTING_OPTIONS: ExtendedProductTestingDays[] = [3, 7, 14]
 export const PRODUCT_EVIDENCE_KINDS = {
   model: 'Product model',
   serial: 'Serial / IMEI',
+  workingCondition: 'Working condition',
   packaging: 'Packaging condition',
   seal: 'Tamper seal',
+  courier: 'Courier details',
+  pickup: 'Pickup evidence',
 } as const;
+
+export const DELIVERY_INSURANCE_EVIDENCE_KIND = 'Delivery insurance';
+export const PILOT_HIGH_VALUE_THRESHOLD_MINOR = 100_000_000;
 
 const PHYSICAL_PRODUCT_USE_CASES = new Set([
   'supplier-purchase',
@@ -46,16 +52,28 @@ export function isDeliveryCardStatusEligible(status: SafeDealStatus): boolean {
   return CARD_ELIGIBLE_STATUSES.includes(status);
 }
 
-export function requiredProductEvidence(evidence: DealEvidenceItem[]) {
-  const kinds = new Set(evidence.map((item) => item.kind.toLowerCase()));
+export function isPilotRestrictedDelivery(amountMinor: number, useCase?: string): boolean {
+  return amountMinor >= PILOT_HIGH_VALUE_THRESHOLD_MINOR || [
+    'vehicle-transactions',
+    'equipment-purchase',
+    'import-export',
+  ].includes(useCase ?? '');
+}
+
+export function requiredProductEvidence(
+  evidence: DealEvidenceItem[],
+) {
+  const sellerEvidence = evidence.filter((item) => item.uploadedByRole === 'seller');
   return Object.values(PRODUCT_EVIDENCE_KINDS).map((kind) => ({
     kind,
-    complete: kinds.has(kind.toLowerCase()),
+    complete: sellerEvidence.some((item) => item.kind === kind),
   }));
 }
 
-export function hasRequiredProductEvidence(evidence: DealEvidenceItem[]): boolean {
-  return evidence.length > 0;
+export function hasRequiredProductEvidence(
+  evidence: DealEvidenceItem[],
+): boolean {
+  return requiredProductEvidence(evidence).every((item) => item.complete);
 }
 
 export function emptyDeliveryLifecycle(

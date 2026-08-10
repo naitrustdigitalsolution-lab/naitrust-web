@@ -68,6 +68,7 @@ const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetwo
 const CounterpartyDetailPage = lazyWithMinDelay(() => import("./pages/CounterpartyDetailPage"));
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
 const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
+const RewardsPage = lazyWithMinDelay(() => import("./pages/RewardsPage"));
 
 // Public pages outside the landing-page critical path load only when visited.
 // This keeps their forms, article data and policy content out of the mobile
@@ -317,6 +318,7 @@ function PublicAppContent() {
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />
+            <Route path="/app/rewards" element={<DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense>} />
             <Route path="/app/wallet" element={<Navigate to="/app/payments/send" replace />} />
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />

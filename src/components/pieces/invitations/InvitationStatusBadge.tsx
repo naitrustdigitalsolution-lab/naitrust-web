@@ -9,6 +9,7 @@ import type { StatusBadgeVariant } from '../../../libs/utils/safe-deal-presentat
 
 const PRESENTATION: Record<InvitationStatus, { label: string; variant: StatusBadgeVariant }> = {
   pending: { label: 'Pending', variant: 'default' },
+  changes_requested: { label: 'Changes requested', variant: 'outline' },
   accepted: { label: 'Accepted', variant: 'success' },
   declined: { label: 'Declined', variant: 'secondary' },
   expired: { label: 'Expired', variant: 'secondary' },

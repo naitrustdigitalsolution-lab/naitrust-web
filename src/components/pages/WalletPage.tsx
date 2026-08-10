@@ -38,7 +38,7 @@ import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import type { WalletActivityKind } from '../../libs/store/types';
 
 const ACTIVITY_META: Record<WalletActivityKind, { label: string; positive: boolean }> = {
-  funding: { label: 'Wallet funding', positive: true },
+  funding: { label: 'Money added', positive: true },
   withdrawal: { label: 'Withdrawal', positive: false },
   instant_transfer_out: { label: 'Instant transfer', positive: false },
   instant_transfer_in: { label: 'Instant transfer received', positive: true },
@@ -71,7 +71,7 @@ export function WalletPage() {
       setFundOpen(false);
       setAmount('');
     } catch {
-      toast.error('Could not fund the wallet. Please try again.');
+      toast.error('Could not add money. Please try again.');
     }
   };
 
@@ -92,7 +92,7 @@ export function WalletPage() {
   };
 
   return (
-    <DashboardLayout title="Wallet">
+    <DashboardLayout title="Money">
       <div className="mx-auto w-full max-w-3xl">
         {isLoading || !wallet ? (
           <Skeleton className="h-56 w-full rounded-2xl" />
@@ -104,23 +104,23 @@ export function WalletPage() {
             </p>
             <div className="flex flex-wrap gap-4 text-sm text-primary-foreground/80">
               <span>
-                Pending: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</strong>
+                Processing: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.pendingMinor, wallet.balance.currency)}</strong>
               </span>
               <span className="flex items-center gap-1">
                 <ShieldCheck size={14} />
-                Protected: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</strong>
+                In Protected Deals: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</strong>
               </span>
             </div>
             <p className="text-xs leading-5 text-primary-foreground/70">
-              Protected funds are managed through NaiTrust's regulated payment partners and released
-              according to the agreed transaction terms: they aren't available for withdrawal or
+              Money in Protected Deals is managed through Naitrust's regulated payment partners and released
+              according to the agreed deal terms. It isn't available for withdrawal or
               instant transfer until a deal completes.
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">
               <Button variant="secondary" className="rounded-full" onClick={() => setFundOpen(true)}>
                 <Plus size={15} className="mr-1.5" />
-                Fund account
+                Add money
               </Button>
               <Button variant="secondary" className="rounded-full" onClick={() => setWithdrawOpen(true)}>
                 <ArrowUpFromLine size={15} className="mr-1.5" />
@@ -181,7 +181,7 @@ export function WalletPage() {
 
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-sm font-semibold text-foreground">Wallet activity</p>
+            <p className="text-sm font-semibold text-foreground">Money activity</p>
             <Button variant="ghost" size="sm" className="text-xs" onClick={() => navigate('/app/transactions')}>
               <Download size={13} className="mr-1" />
               View statement
@@ -194,7 +194,7 @@ export function WalletPage() {
               ))}
             </div>
           ) : !activity || activity.length === 0 ? (
-            <Card className="p-6 text-center text-sm text-muted-foreground shadow-sm">No wallet activity yet.</Card>
+            <Card className="p-6 text-center text-sm text-muted-foreground shadow-sm">No money activity yet.</Card>
           ) : (
             <Card className="gap-0 overflow-hidden p-0 shadow-sm">
               {activity.map((event) => {
@@ -222,7 +222,7 @@ export function WalletPage() {
       <Dialog open={fundOpen} onOpenChange={setFundOpen}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Fund account</DialogTitle>
+            <DialogTitle>Add money</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground">
@@ -234,7 +234,7 @@ export function WalletPage() {
           <DialogFooter>
             <Button className="w-full rounded-md" disabled={!amountMinor || fundWallet.isPending} onClick={() => void handleFund()}>
               {fundWallet.isPending && <Loader2 size={15} className="mr-1.5 animate-spin" />}
-              Fund account
+              Add money
             </Button>
           </DialogFooter>
         </DialogContent>

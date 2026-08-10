@@ -1,6 +1,6 @@
 /**
  * NegotiationPanel
- * The Negotiations tab in the transaction room. Shows the back-and-forth
+ * The Negotiations tab in the deal room. Shows the back-and-forth
  * proposal thread, the concrete changes each proposal requests (diffed against
  * the current terms), and the right actions depending on whose turn it is:
  * accept / decline / counter when it's a counterparty proposal, or withdraw /
@@ -36,12 +36,20 @@ function ChangeList({ deal, changes }: { deal: SafeDealDetail; changes: Proposed
       from: formatMinorAmount(deal.amountMinor, deal.currency),
       to: formatMinorAmount(changes.amountMinor, deal.currency),
     });
+  if (changes.initialPaymentMinor !== undefined)
+    rows.push({ label: 'First payment', from: formatMinorAmount(deal.initialPaymentMinor ?? 0, deal.currency), to: formatMinorAmount(changes.initialPaymentMinor, deal.currency) });
+  if (changes.remainingPaymentMinor !== undefined)
+    rows.push({ label: 'Remaining payment', from: formatMinorAmount(deal.remainingPaymentMinor ?? 0, deal.currency), to: formatMinorAmount(changes.remainingPaymentMinor, deal.currency) });
   if (changes.deliveryDueDate)
     rows.push({ label: 'Next milestone', from: deal.deliveryDueDate, to: changes.deliveryDueDate });
   if (changes.releaseConditions)
     rows.push({ label: 'Release conditions', from: deal.releaseConditions, to: changes.releaseConditions });
   if (changes.agreementNote)
     rows.push({ label: 'Agreement', from: 'Current wording', to: changes.agreementNote });
+  changes.participantAllocations?.forEach((allocation) => {
+    const current = deal.parties.find((party) => party.id === allocation.partyId)?.allocationMinor ?? 0;
+    rows.push({ label: `${allocation.partyName} allocation`, from: formatMinorAmount(current, deal.currency), to: formatMinorAmount(allocation.amountMinor, deal.currency) });
+  });
 
   if (rows.length === 0) return null;
   return (
@@ -101,9 +109,11 @@ function ProposalCard({
 export function NegotiationPanel({
   deal,
   negotiation,
+  canProposeChanges,
 }: {
   deal: SafeDealDetail;
   negotiation: DealNegotiation;
+  canProposeChanges: boolean;
 }) {
   const propose = useProposeNegotiation(deal.id);
   const respond = useRespondNegotiation(deal.id);
@@ -166,9 +176,9 @@ export function NegotiationPanel({
                     )}
                     Accept changes
                   </Button>
-                  <Button size="sm" variant="outline" className="rounded-md" onClick={() => setShowPropose(true)}>
+                  {canProposeChanges && <Button size="sm" variant="outline" className="rounded-md" onClick={() => setShowPropose(true)}>
                     Counter-propose
-                  </Button>
+                  </Button>}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -183,7 +193,7 @@ export function NegotiationPanel({
               )}
               {waiting && (
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Waiting for the counterparty to accept, decline, or counter your proposal.
+                  Waiting for the other party to accept, decline, or counter your proposal.
                 </p>
               )}
             </ProposalCard>
@@ -191,7 +201,7 @@ export function NegotiationPanel({
         })}
       </div>
 
-      {!accepted && (
+      {!accepted && canProposeChanges && (
         <ProposeChangesModal
           open={showPropose}
           onOpenChange={setShowPropose}

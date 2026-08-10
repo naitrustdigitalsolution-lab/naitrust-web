@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { OTPInput, OTPInputContext } from "input-otp";
+import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
 import { MinusIcon } from "lucide-react";
 
 import { cn } from "./utils";
@@ -16,8 +16,10 @@ function InputOTP({
   return (
     <OTPInput
       data-slot="input-otp"
+      inputMode="numeric"
+      pattern={REGEXP_ONLY_DIGITS}
       containerClassName={cn(
-        "flex items-center gap-2 has-disabled:opacity-50",
+        "flex items-center has-disabled:opacity-50",
         containerClassName,
       )}
       className={cn("disabled:cursor-not-allowed", className)}
@@ -30,7 +32,7 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn("flex items-center gap-1", className)}
+      className={cn("flex items-center gap-2", className)}
       {...props}
     />
   );
@@ -38,10 +40,14 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
 
 function InputOTPSlot({
   index,
+  mask = false,
+  variant = "code",
   className,
   ...props
 }: React.ComponentProps<"div"> & {
   index: number;
+  mask?: boolean;
+  variant?: "code" | "pin";
 }) {
   const inputOTPContext = React.useContext(OTPInputContext) as any;
   const { char, hasFakeCaret, isActive } = inputOTPContext?.slots?.[index] ?? {};
@@ -51,12 +57,12 @@ function InputOTPSlot({
       data-slot="input-otp-slot"
       data-active={isActive}
       className={cn(
-        "data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive dark:bg-input/30 border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm bg-input-background transition-all outline-none first:rounded-l-md first:border-l last:rounded-r-md data-[active=true]:z-10 data-[active=true]:ring-[3px]",
+        "relative flex h-11 w-10 items-center justify-center rounded-lg border border-input bg-muted/25 text-base font-semibold tabular-nums text-foreground shadow-xs transition-all outline-none sm:w-11 data-[active=true]:border-primary data-[active=true]:bg-background data-[active=true]:text-primary data-[active=true]:ring-3 data-[active=true]:ring-primary/10",
         className,
       )}
       {...props}
     >
-      {char}
+      {variant === "pin" ? (char ? '•' : null) : (char && mask ? '•' : char)}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="animate-caret-blink bg-foreground h-4 w-px duration-1000" />

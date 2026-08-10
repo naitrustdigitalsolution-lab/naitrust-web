@@ -106,7 +106,7 @@ export function DealsPage() {
     <DashboardLayout title="Protected Deals">
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
-          eyebrow="Protected payments"
+          eyebrow="Protected Deals"
           title="Active Deals"
           description="Review every protected transaction, track progress, and respond when a deal needs your attention."
           icon={ShieldCheck}

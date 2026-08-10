@@ -16,6 +16,22 @@ export interface StoredDealDraft<T = unknown> {
   step: number;
   createdAt: string;
   updatedAt: string;
+  /** Liveness proof is scoped to this draft and expires independently of draft edits. */
+  actionLiveness?: DealDraftLiveness;
+}
+
+export interface DealDraftLiveness {
+  captureId: string;
+  verifiedAt: string;
+  photoDataUrl?: string;
+}
+
+export const DEAL_DRAFT_LIVENESS_MS = 24 * 60 * 60 * 1000;
+
+export function isDealDraftLivenessFresh(proof?: DealDraftLiveness, now = Date.now()): boolean {
+  if (!proof) return false;
+  const verifiedAt = Date.parse(proof.verifiedAt);
+  return Number.isFinite(verifiedAt) && now >= verifiedAt && now - verifiedAt < DEAL_DRAFT_LIVENESS_MS;
 }
 
 export interface DealDraftListItem extends StoredDealDraft {
@@ -90,6 +106,7 @@ export function saveDealDraft<T>(
   draftId: string,
   form: T,
   step: number,
+  actionLiveness?: DealDraftLiveness,
 ): void {
   if (!userId || typeof window === 'undefined') return;
   const drafts = read<T>(userId);
@@ -101,6 +118,7 @@ export function saveDealDraft<T>(
     step,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
+    actionLiveness,
   };
   localStorage.setItem(
     key(userId),

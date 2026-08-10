@@ -1,6 +1,6 @@
 /**
  * DisputePanel
- * The Dispute tab in the transaction room: shows the dispute status, reason,
+ * The Dispute tab in the deal room: shows the dispute status, reason,
  * description, and a message/evidence thread with the review team. Release is
  * blocked while a dispute is open.
  */
@@ -17,6 +17,7 @@ import type { DealDispute, DisputeStatus } from '../../../libs/store/types';
 import type { StatusBadgeVariant } from '../../../libs/utils/safe-deal-presentation';
 
 const STATUS: Record<DisputeStatus, { label: string; variant: StatusBadgeVariant }> = {
+  awaiting_evidence: { label: 'Awaiting buyer evidence', variant: 'secondary' },
   open: { label: 'Open', variant: 'destructive' },
   under_review: { label: 'Under review', variant: 'default' },
   resolved_release: { label: 'Resolved · released', variant: 'success' },
@@ -48,7 +49,15 @@ export function DisputePanel({ dealId, dispute }: { dealId: string; dispute: Dea
         <p className="mt-2 text-sm leading-6 text-foreground">{dispute.description}</p>
         <p className="mt-2 text-xs text-muted-foreground">
           Opened by {dispute.openedByName} · {format(new Date(dispute.createdAt), 'MMM d, h:mm a')} ·
-          Release is paused while this is reviewed.
+          {dispute.status === 'awaiting_evidence' ? ' Payment is not frozen until buyer evidence is uploaded.' : ' Release is paused while this is reviewed.'}
+        </p>
+        {dispute.initialDecisionDueAt && (
+          <div className="mt-3 rounded-lg border bg-background/70 p-3 text-xs">
+            <p><span className="font-semibold">Initial decision target:</span> {format(new Date(dispute.initialDecisionDueAt), 'MMM d, h:mm a')}</p>
+          </div>
+        )}
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          Possible outcomes are buyer refund, seller payout, partial settlement, replacement, or return. The final outcome and reason remain on the deal record.
         </p>
       </div>
 

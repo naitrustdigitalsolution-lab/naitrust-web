@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle, Building2 } from 'lucide-react';
+import { Shield, CheckCircle2, Users, Lock, ArrowRight, Star, ChevronRight, Globe, Handshake, Fingerprint, QrCode, ScanLine, Landmark, Send, ArrowDownToLine, Wallet as WalletIcon, MessageCircle, Building2, Search } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -80,11 +80,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const faqs = [
     {
       question: 'What is a Naitrust Protected Deal?',
-      answer: 'It is a shared transaction room where participants can see the deal, roles, amount, terms, payment records, document requirements, milestones, and issue history.',
+      answer: 'It is a shared deal room where participants can see the deal, roles, amount, terms, payment records, document requirements, milestones, and issue history.',
     },
     {
-      question: 'What is the difference between Instant and Protected payments?',
-      answer: 'Send Money for people and businesses you already trust: it moves like a normal transfer. Protect a Payment when you are dealing with a new supplier, contractor, agent, or large order: funds are held until the agreed conditions are met.',
+      question: 'What is the difference between sending money and using a Protected Deal?',
+      answer: 'Send Money for people and businesses you already trust: it moves like a normal transfer. Protect a Payment when you are dealing with someone new or the deal needs clear terms, delivery evidence, and conditional release through a regulated payment partner.',
     },
     {
       question: 'Does Naitrust hold customer funds?',
@@ -99,9 +99,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="home-page relative min-h-screen">
       <SEOHead
-        title="Payments, Verification and Protected Transactions"
-        description="Naitrust is a Nigerian fintech platform for payments and Protected Transactions. Check who you are dealing with, pay, get paid, or protect P2P, customer and business trades."
-        keywords="Naitrust, Nigerian fintech app, payments Nigeria, Protected Transactions Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
+        title="Verify, Agree and Protect Important Payments"
+        description="Naitrust helps Nigerian buyers and businesses verify participants, agree on clear terms, protect important payments, track delivery, and keep evidence in one Deal Room."
+        keywords="Naitrust, Nigerian fintech app, payments Nigeria, Protected Deals Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
         canonicalPath="/"
       />
       
@@ -125,9 +125,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
             <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
-              Pay with confidence, every time.
+              Know who you are dealing with
             </Badge>
-            <AnimatedHeroText compact={!useHeroViewportHeight} />
+            <AnimatedHeroText />
 
             <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-2 sm:mt-7 sm:gap-3 xl:justify-start">
               <Button size="sm" onClick={openWaitlistModal} className="group h-9 w-auto rounded-full bg-[#1e90ff] px-4 text-[10px] font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-14 sm:px-7 sm:text-base">
@@ -145,15 +145,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
 
             <div className="mx-auto mt-7 grid w-full max-w-[22rem] grid-cols-2 items-center gap-2 text-[9px] font-medium leading-tight text-white/75 sm:hidden">
-              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Pay people and businesses</span>
-              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Get paid by any customer</span>
-              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Protect important transactions</span>
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Verify the participant</span>
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Record clear terms</span>
+              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Protect the payment and proof</span>
             </div>
 
             <div className="mt-7 hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-white/65 sm:flex xl:justify-start">
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Pay people and businesses</span>
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Get paid by any customer</span>
-              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect important transactions</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Verify the participant</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Record clear terms</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect the payment and proof</span>
             </div>
           </motion.div>
 
@@ -261,12 +261,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="relative overflow-hidden border-b bg-background py-12 sm:py-20">
         <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">One platform, both sides of the deal</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">One shared record for both sides</p>
             <h2 className="mt-3 text-2xl font-bold tracking-[-0.04em] sm:mt-4 sm:text-5xl">
-              Built for customers. Built for business.
+              Important deals should not be scattered across chats and screenshots.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:mt-5 sm:text-lg sm:leading-7">
-              Pay and get paid normally when trust already exists. When the transaction matters more, bring both sides into one Protected Deal.
+              Buyers worry about wrong items, damaged goods, incomplete work, or non-delivery. Sellers worry about fake payment claims, dishonest complaints, and customers changing what was agreed. Naitrust keeps both sides on the same record.
             </p>
           </div>
 
@@ -274,25 +274,24 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Card className="group rounded-3xl border-primary/10 p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:p-8">
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Users size={23} /></span>
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-primary">For customers</p>
-              <h3 className="mt-2 text-xl font-bold sm:text-2xl">Buy, pay, and follow every important purchase.</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">Send money to people you trust, pay verified businesses, and protect a purchase when delivery still needs to be proven.</p>
+              <h3 className="mt-2 text-xl font-bold sm:text-2xl">Know who you are paying and what should arrive.</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">Verify the intended seller, record what you agreed to buy, follow delivery, and report a supported issue with evidence.</p>
               <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('customer')}>See how it works for customers <ArrowRight size={15} /></Button>
             </Card>
 
-            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-5 text-white shadow-[0_24px_60px_rgba(7,49,88,.24)] sm:p-8">
-              <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+            <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#04162f] p-5 text-white sm:p-8">
               <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white"><Shield size={23} /></span>
-              <p className="relative mt-6 text-xs font-bold uppercase tracking-[0.15em] text-sky-300">Protected Transactions</p>
-              <h3 className="relative mt-2 text-xl font-bold sm:text-2xl">One shared record. Clear terms. Protected payment.</h3>
-              <p className="relative mt-3 text-sm leading-6 text-white/70">Customers and businesses see the same agreement, milestones, messages, evidence, payment status, and issue history.</p>
-              <Button className="relative mt-6 rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => onNavigate('register')}>Protect a transaction <ArrowRight size={15} /></Button>
+              <p className="relative mt-6 text-xs font-bold uppercase tracking-[0.15em] text-sky-300">Protected Deals</p>
+              <h3 className="relative mt-2 text-xl font-bold sm:text-2xl">Agree clearly. Protect the payment. Keep the proof.</h3>
+              <p className="relative mt-3 text-sm leading-6 text-white/70">Both parties see the same terms, payment status, delivery milestones, messages, evidence, and issue history in one Deal Room.</p>
+              <Button className="relative mt-6 rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => onNavigate('register')}>Protect a payment <ArrowRight size={15} /></Button>
             </Card>
 
             <Card className="group rounded-3xl border-emerald-500/15 p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:p-8">
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600"><Landmark size={23} /></span>
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">For businesses</p>
-              <h3 className="mt-2 text-xl font-bold sm:text-2xl">Collect sales, pay suppliers, and trade with confidence.</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">Share an account, link, or QR code with customers. Use Protected Deals for new suppliers, contractors, and high-value orders.</p>
+              <h3 className="mt-2 text-xl font-bold sm:text-2xl">Show what was promised and what you delivered.</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">Document the order, provide relevant evidence before dispatch, track handover, and build a record of successfully completed deals.</p>
               <Button variant="outline" className="mt-6 rounded-full" onClick={() => onNavigate('business')}>See how it works for business <ArrowRight size={15} /></Button>
             </Card>
           </div>
@@ -393,10 +392,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button className="rounded-full px-5" onClick={() => onNavigate('register-business')}>
+              <Button className="h-9 rounded-full px-4 text-sm" onClick={() => onNavigate('register-business')}>
                 Open a business account <ArrowRight size={15} />
               </Button>
-              <Button variant="outline" className="rounded-full px-5" onClick={() => onNavigate('business')}>
+              <Button variant="outline" className="h-9 rounded-full px-4 text-sm" onClick={() => onNavigate('business')}>
                 See how it works for business
               </Button>
             </div>
@@ -421,8 +420,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="mt-10 grid overflow-hidden rounded-3xl border border-[#071b31]/10 bg-white/30 shadow-[0_18px_45px_rgba(7,49,88,.07)] backdrop-blur-sm md:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: Fingerprint, step: '01', title: 'Create and verify', text: 'Set up your customer account and confirm the details that identify you.' },
-              { icon: Building2, step: '02', title: 'Check the business', text: 'Review the business identity and profile before deciding how to pay.' },
-              { icon: Shield, step: '03', title: 'Choose the right protection', text: 'Send normally when you trust them, or create a Protected Transaction for an important purchase.' },
+              { icon: Building2, step: '02', title: 'Find and check the business', text: 'Search registered businesses and review the Trust Profile and available verification status before deciding how to pay.' },
+              { icon: Shield, step: '03', title: 'Choose the right protection', text: 'Send normally when you trust them, or create a Protected Deal for an important purchase.' },
               { icon: CheckCircle2, step: '04', title: 'Check delivery before release', text: 'Confirm handover, inspect what arrived, report a problem if needed, and follow the protected payment to completion.' },
             ].map((item, index) => (
               <motion.div
@@ -468,7 +467,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </h2>
               </div>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground lg:justify-self-end lg:text-lg">
-                Naitrust connects verified identity, everyday payments, protected transactions, and reputation for people and businesses.
+                Search registered businesses, review available verification details, pay a business, or create a Protected Deal when the payment needs more structure.
               </p>
             </div>
 
@@ -480,24 +479,41 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   iconComponent: Landmark,
                   description: 'Receive money and payment requests whether you sell as a business or collect as an individual.',
                   gradient: 'from-emerald-400 to-emerald-600',
-                  className: 'lg:col-span-7 bg-[#09243b] text-white'
+                  className: 'lg:col-span-4 bg-[#09243b] text-white'
                 },
                 {
-                  platform: 'Pay Suppliers',
-                  kicker: 'Keep business moving',
-                  iconComponent: Shield,
-                  description: 'Send money instantly to people, suppliers, and businesses you already know.',
+                  platform: 'Find Businesses',
+                  kicker: 'Search before you pay',
+                  iconComponent: Search,
+                  description: 'Search registered businesses by name, category, or Naitrust details and open their Trust Profile.',
+                  gradient: 'from-sky-400 to-blue-600',
+                  className: 'lg:col-span-4 bg-white dark:bg-card'
+                },
+                {
+                  platform: 'Pay a Verified Business',
+                  kicker: 'Confirm the intended recipient',
+                  iconComponent: Send,
+                  description: 'Review the available verification status and business details, then choose how you want to pay.',
                   gradient: 'from-blue-400 to-blue-600',
-                  className: 'lg:col-span-5 bg-[#1e90ff] text-white'
+                  className: 'lg:col-span-4 bg-[#1e90ff] text-white'
                 },
                 {
                   platform: 'Protect Important Orders',
                   kicker: 'When trust is still new',
                   iconComponent: Handshake,
-                  description: 'Use a shared protected transaction for B2B, person-to-person, or business-to-person deals.',
+                  description: 'Create a Protected Deal with clear terms, payment conditions, delivery milestones, and evidence.',
                   gradient: 'from-amber-400 to-orange-500',
                   showAccentGlow: false,
-                  className: 'lg:col-span-5 bg-white dark:bg-card'
+                  className: 'lg:col-span-4 bg-white dark:bg-card'
+                },
+                {
+                  platform: 'Keep the Proof Together',
+                  kicker: 'One shared Deal Room',
+                  iconComponent: Handshake,
+                  description: 'Keep the agreement, messages, delivery updates, evidence, payment status, and issues on one record.',
+                  gradient: 'from-cyan-400 to-sky-600',
+                  showAccentGlow: false,
+                  className: 'lg:col-span-4 bg-white dark:bg-card'
                 },
                 {
                   platform: 'Build Business History',
@@ -506,7 +522,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   description: 'Turn verified details and completed transactions into a stronger, reusable reputation.',
                   gradient: 'from-violet-400 to-indigo-600',
                   showAccentGlow: false,
-                  className: 'lg:col-span-7 bg-white dark:bg-card'
+                  className: 'lg:col-span-4 bg-white dark:bg-card'
                 },
               ].map((platform, index) => (
                 <motion.div
@@ -518,9 +534,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   whileHover={{ y: -5 }}
                   className={`group relative min-h-[190px] overflow-hidden rounded-[1.5rem] border border-black/5 p-5 shadow-[0_18px_50px_rgba(11,43,69,.07)] sm:min-h-[240px] sm:rounded-[2rem] sm:p-8 lg:p-9 ${platform.className}`}
                 >
-                  {platform.showAccentGlow !== false && (
-                    <div className={`absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br opacity-20 blur-2xl ${platform.gradient}`} />
-                  )}
                   <div className="relative flex h-full flex-col">
                     <div className={`mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-lg sm:mb-12 sm:h-12 sm:w-12 sm:rounded-2xl ${platform.gradient}`}>
                       <platform.iconComponent size={23} />
@@ -536,8 +549,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="relative overflow-hidden bg-[#071a32] py-12 text-white sm:py-20 lg:py-28">
-        <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full bg-primary/20 blur-[120px]" />
+      <section id="how-it-works" className="relative overflow-hidden bg-[#04162f] py-12 text-white sm:py-20 lg:py-28">
+        <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full" />
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -550,7 +563,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <h2 className="text-2xl leading-[1.08] tracking-[-0.04em] sm:text-5xl sm:leading-[1.05]">From today’s sale<br />to tomorrow’s stock.</h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-white/60 sm:text-lg sm:leading-8 lg:justify-self-end">
-              One account connects what you receive, who you pay, and the important transactions you choose to protect.
+              One account connects everyday payments with the important deals you choose to document and protect.
             </p>
           </motion.div>
 
@@ -696,7 +709,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Protected deal room</p>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Deal Room</p>
               <h2 className="mb-4 text-2xl leading-tight tracking-[-0.04em] text-white sm:mb-5 sm:text-5xl">
                 Protect the orders your business cannot afford to get wrong.
               </h2>
@@ -912,7 +925,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="mb-12 grid gap-5 text-left md:grid-cols-[0.7fr_1fr] md:items-end"
           >
             <div><p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Questions, answered</p><h2 className="text-2xl tracking-[-0.04em] text-gray-900 sm:text-5xl dark:text-white">The important stuff.</h2></div>
-            <p className="text-sm leading-6 text-muted-foreground sm:text-lg md:justify-self-end">Clear answers about receiving money, paying suppliers, and protecting important transactions.</p>
+            <p className="text-sm leading-6 text-muted-foreground sm:text-lg md:justify-self-end">Clear answers about verification, everyday payments, Protected Deals, delivery evidence, and payment release.</p>
           </motion.div>
 
           <div className="overflow-hidden rounded-[1.5rem] border bg-background sm:rounded-[2rem]">

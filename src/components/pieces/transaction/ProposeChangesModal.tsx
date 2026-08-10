@@ -32,20 +32,29 @@ export function ProposeChangesModal({
   submitting,
   onSubmit,
 }: ProposeChangesModalProps) {
+  const allocatedRecipients = deal.parties.filter((party) => party.role === 'seller' && party.allocationMinor !== undefined);
+  const hasSplitAllocation = allocatedRecipients.length > 1;
+  const hasSplitPayment = Boolean(deal.initialPaymentMinor && deal.remainingPaymentMinor);
   const [message, setMessage] = useState('');
   const [amount, setAmount] = useState('');
+  const [initialPayment, setInitialPayment] = useState('');
+  const [remainingPayment, setRemainingPayment] = useState('');
   const [deliveryDueDate, setDeliveryDueDate] = useState('');
   const [releaseConditions, setReleaseConditions] = useState('');
   const [agreementNote, setAgreementNote] = useState('');
+  const [allocations, setAllocations] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (open) {
       setMessage('');
       setAmount(String(deal.amountMinor / 100));
+      setInitialPayment(String((deal.initialPaymentMinor ?? 0) / 100));
+      setRemainingPayment(String((deal.remainingPaymentMinor ?? 0) / 100));
       setDeliveryDueDate(deal.deliveryDueDate);
       setReleaseConditions(deal.releaseConditions);
       setAgreementNote('');
+      setAllocations(Object.fromEntries(allocatedRecipients.map((party) => [party.id, String((party.allocationMinor ?? 0) / 100)])));
       setError('');
     }
   }, [open, deal]);
@@ -58,10 +67,25 @@ export function ProposeChangesModal({
     const changes: ProposedChanges = {};
     const amountMinor = Math.round(Number(amount || 0) * 100);
     if (amountMinor > 0 && amountMinor !== deal.amountMinor) changes.amountMinor = amountMinor;
+    if (hasSplitPayment) {
+      const initialPaymentMinor = Math.round(Number(initialPayment || 0) * 100);
+      const remainingPaymentMinor = Math.round(Number(remainingPayment || 0) * 100);
+      if (initialPaymentMinor + remainingPaymentMinor !== amountMinor) {
+        setError('The first and remaining payment allocations must equal the proposed total amount.');
+        return;
+      }
+      if (initialPaymentMinor !== deal.initialPaymentMinor) changes.initialPaymentMinor = initialPaymentMinor;
+      if (remainingPaymentMinor !== deal.remainingPaymentMinor) changes.remainingPaymentMinor = remainingPaymentMinor;
+    }
     if (deliveryDueDate && deliveryDueDate !== deal.deliveryDueDate) changes.deliveryDueDate = deliveryDueDate;
     if (releaseConditions.trim() && releaseConditions.trim() !== deal.releaseConditions)
       changes.releaseConditions = releaseConditions.trim();
     if (agreementNote.trim()) changes.agreementNote = agreementNote.trim();
+    const participantAllocations = allocatedRecipients
+      .map((party) => ({ partyId: party.id, partyName: party.name, amountMinor: Math.round(Number(allocations[party.id] || 0) * 100), current: party.allocationMinor ?? 0 }))
+      .filter((allocation) => allocation.amountMinor !== allocation.current)
+      .map(({ partyId, partyName, amountMinor }) => ({ partyId, partyName, amountMinor }));
+    if (participantAllocations.length) changes.participantAllocations = participantAllocations;
 
     if (Object.keys(changes).length === 0) {
       setError('Change at least one term, or add an agreement change request.');
@@ -72,11 +96,11 @@ export function ProposeChangesModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Propose changes</DialogTitle>
           <DialogDescription>
-            Suggest new terms. The counterparty can accept, decline, or counter your proposal.
+            Suggest new terms. The other party can accept, decline, or counter your proposal.
           </DialogDescription>
         </DialogHeader>
 
@@ -134,13 +158,48 @@ export function ProposeChangesModal({
             />
           </div>
 
+          {(hasSplitPayment || hasSplitAllocation) && (
+            <div className="rounded-xl border bg-muted/20 p-4">
+              {hasSplitPayment && (
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Proposed payment allocation</p>
+                  <p className="mt-1 text-xs text-muted-foreground">This deal was split into two payments. Adjust either stage while keeping their combined value equal to the proposed total.</p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="np-initial-payment">First payment (NGN)</Label>
+                      <Input id="np-initial-payment" type="number" min="0" inputMode="decimal" className="mt-1.5" value={initialPayment} onChange={(event) => setInitialPayment(event.target.value)} />
+                    </div>
+                    <div>
+                      <Label htmlFor="np-remaining-payment">Remaining payment (NGN)</Label>
+                      <Input id="np-remaining-payment" type="number" min="0" inputMode="decimal" className="mt-1.5" value={remainingPayment} onChange={(event) => setRemainingPayment(event.target.value)} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              {hasSplitAllocation ? (
+                <div className={hasSplitPayment ? "mt-4 border-t pt-4" : undefined}>
+                  <p className="text-sm font-semibold text-foreground">Proposed receiving allocation</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Enter the new amount you propose for each seller or recipient.</p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {allocatedRecipients.map((party) => (
+                      <div key={party.id}>
+                        <Label htmlFor={`np-allocation-${party.id}`}>{party.name} (NGN)</Label>
+                        <Input id={`np-allocation-${party.id}`} type="number" min="0" inputMode="decimal" className="mt-1.5" value={allocations[party.id] ?? ''} onChange={(event) => setAllocations((current) => ({ ...current, [party.id]: event.target.value }))} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          )}
+
           <div>
-            <Label htmlFor="np-agreement">Requested agreement change (optional)</Label>
+            <Label htmlFor="np-agreement">Other requested changes (optional)</Label>
             <Textarea
               id="np-agreement"
               className="mt-1.5"
               rows={2}
-              placeholder="Ask for a specific clause to be reworded or added."
+              placeholder="Describe any other update, such as split allocations, payment stages, participant details, delivery terms, or an agreement clause."
               value={agreementNote}
               onChange={(e) => setAgreementNote(e.target.value)}
             />

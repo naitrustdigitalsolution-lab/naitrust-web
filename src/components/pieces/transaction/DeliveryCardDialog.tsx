@@ -7,6 +7,7 @@ import type { DealDeliveryCard } from '../../../libs/store/types';
 import { downloadDeliveryCardPdf } from '../../../libs/utils/deal-documents';
 import { Button } from '../../ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../../ui/dialog';
+import { NaitrustLogo } from '../../utility/NaitrustLogo';
 
 interface DeliveryCardDialogProps {
   open: boolean;
@@ -46,16 +47,13 @@ export function DeliveryCardDialog({
         <DialogHeader>
           <DialogTitle>Delivery card</DialogTitle>
           <DialogDescription>
-            Give this one-time card to the rider physically or digitally. Regenerating it invalidates this code.
+            Attach this one-time card to the parcel or give it to the delivery agent or person. The buyer verifies it only with the product physically present. Regenerating it invalidates this code.
           </DialogDescription>
         </DialogHeader>
 
         <div ref={cardRef} className="overflow-hidden rounded-[1.5rem] border bg-white text-[#071b31] shadow-sm">
           <div className="bg-[#071b31] px-6 py-5 text-white">
-            <div className="flex items-center gap-2 text-lg font-extrabold text-[#2492ff]">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2492ff] text-sm text-white">N</span>
-              Naitrust
-            </div>
+            <NaitrustLogo size="sm" textColor="text-white" />
             <p className="mt-4 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/60">Secure product handover</p>
             <h3 className="mt-1 text-xl font-bold leading-tight text-white">{title}</h3>
             <p className="mt-1 text-xs text-white/60">{reference}</p>
@@ -81,7 +79,7 @@ export function DeliveryCardDialog({
             </p>
             <ol className="mt-2 list-decimal space-y-1 pl-4 text-xs leading-5 text-emerald-950/75">
               <li>Inspect the package, seal, product model, and serial or IMEI with the rider present.</li>
-              <li>Scan the QR or enter the OTP in your Transaction Room.</li>
+              <li>Scan the QR or enter the OTP in your Deal Room.</li>
               <li>Confirm the correct product or report a problem during the handover review.</li>
             </ol>
             <p className="mt-3 border-t border-emerald-900/10 pt-3 text-[0.7rem] leading-5 text-emerald-950/70">

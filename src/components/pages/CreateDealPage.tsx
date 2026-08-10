@@ -1,7 +1,7 @@
 /**
  * CreateDealPage
  * Create Safe Deal wizard (`/app/deals/new`), contained but space-filling.
- * A liveness check gates entry (once every 30 days, for security). Steps:
+ * A fresh action-specific liveness check gates every deal creation. Steps:
  *  1) Basics: use case, then the deal type (structure) that use case allows
  *     (single / milestone tracking / recurring), party mode, and your role
  *     framed as sending vs receiving funds.
@@ -56,11 +56,13 @@ import { DraftSavedForPinModal } from '../pieces/transaction/DraftSavedForPinMod
 import { PaymentConditionsStep } from '../pieces/transaction/PaymentConditionsStep';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
-import { useCreateDeal } from '../../hooks/useTransactions';
+import { useCreateDeal, useUpdateDeal } from '../../hooks/useTransactions';
 import { useCounterparties } from '../../hooks/useCounterparties';
 import { useBeneficiaries } from '../../hooks/useBeneficiaries';
 import { useBusinessSearch } from '../../hooks/useBusinessDirectory';
@@ -80,16 +82,18 @@ import {
 } from '../../libs/protected-deals/create-deal-options';
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
 import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
-import { clearDealDraft, loadDealDraft, saveDealDraft } from '../../libs/utils/deal-draft';
+import { clearDealDraft, isDealDraftLivenessFresh, loadDealDraft, saveDealDraft, type DealDraftLiveness } from '../../libs/utils/deal-draft';
 import { downloadAgreementDraft } from '../../libs/utils/deal-documents';
 import {
   MAX_DEAL_OPEN_DAYS,
   type AgreementDraft,
+  type CreateSafeDealInput,
   type CounterpartyProfile,
   type DealRole,
   type DealType,
   type PartyMode,
 } from '../../libs/store/types';
+import { findMockCreatedDeal } from '../../libs/api/mock-protected-deal-store';
 import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
@@ -97,7 +101,7 @@ const STEPS: StepMeta[] = [
   { title: 'Money and recipients', description: 'Enter the total and decide how each recipient is paid.' },
   { title: 'Payment conditions', description: 'Set what must happen before each payment is available or released.' },
   { title: 'Agreement', description: 'Review the agreement prepared from your terms.' },
-  { title: 'Review & send', description: 'Confirm everything and invite the counterparty.' },
+  { title: 'Review & send', description: 'Confirm everything and invite the other party.' },
 ];
 
 const CREATE_DEAL_USE_CASES = splitCreateDealUseCases(useCases);
@@ -227,27 +231,36 @@ export function CreateDealPage() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const createDeal = useCreateDeal();
+  const editDealId = searchParams.get('edit') ?? undefined;
+  const updateDeal = useUpdateDeal(editDealId);
+  const editingDeal = useMemo(() => editDealId ? findMockCreatedDeal(editDealId) : undefined, [editDealId]);
   const security = useSecurity();
   const accountType = accountTypeOf(user);
   const { data: savedCounterparties = [], isLoading: savedCounterpartiesLoading } = useCounterparties(true);
   const { data: beneficiaries = [] } = useBeneficiaries();
   const { data: directoryBusinesses = [] } = useBusinessSearch('');
   const { savedBusinessIds } = useSavedBusinesses();
-  const businessContacts = useMemo<CounterpartyProfile[]>(() => directoryBusinesses.map((business) => ({ id: business.id, name: business.name, businessName: business.name, email: business.email, phone: business.phone, notes: business.ntId, avatarInitials: business.name.slice(0, 2).toUpperCase(), relation: 'supplier', identityVerified: business.verified, businessVerified: business.verified, memberSince: business.createdAt, completedDealsCount: business.completedProtectedTransactions ?? 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, ratingAverage: business.ratingAverage, isFavourite: savedBusinessIds.includes(business.id), isBlocked: false })), [directoryBusinesses, savedBusinessIds]);
+  const businessContacts = useMemo<CounterpartyProfile[]>(() => directoryBusinesses.filter((business) => business.ownerUserId !== user?.id).map((business) => ({ id: business.id, name: business.name, businessName: business.name, email: business.email, phone: business.phone, notes: business.ntId, avatarInitials: business.name.slice(0, 2).toUpperCase(), relation: 'supplier', identityVerified: business.verified, businessVerified: business.verified, memberSince: business.createdAt, completedDealsCount: business.completedProtectedTransactions ?? 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, ratingAverage: business.ratingAverage, isFavourite: savedBusinessIds.includes(business.id), isBlocked: false })), [directoryBusinesses, savedBusinessIds, user?.id]);
   const beneficiaryContacts = useMemo<CounterpartyProfile[]>(() => beneficiaries.map((beneficiary) => ({ id: beneficiary.id, name: beneficiary.name, businessName: beneficiary.naitrustId?.startsWith('NT-BIZ-') ? beneficiary.name : undefined, email: beneficiary.email, phone: beneficiary.phone, avatarInitials: beneficiary.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: beneficiary.type === 'naitrust_user', businessVerified: beneficiary.naitrustId?.startsWith('NT-BIZ-') ?? false, memberSince: beneficiary.createdAt, completedDealsCount: 0, hasPriorTransactionWithYou: true, resolvedDisputesCount: 0, isFavourite: beneficiary.isFavourite, isBlocked: false, notes: beneficiary.naitrustId ?? beneficiary.naitrustAccountNumber ?? beneficiary.accountNumber })), [beneficiaries]);
   const personalDirectoryContacts = useMemo<CounterpartyProfile[]>(() => mockAuthUsers.users.filter(({ user: account }) => account.role === 'customer' && account.id !== user?.id).map(({ user: account }) => ({ id: account.id, naitrustId: account.naitrustId, name: account.name, email: account.email, phone: account.phone, notes: account.naitrustId, avatarInitials: account.name.slice(0, 2).toUpperCase(), relation: 'customer', identityVerified: account.kycVerified, businessVerified: false, memberSince: new Date().toISOString(), completedDealsCount: 0, hasPriorTransactionWithYou: false, resolvedDisputesCount: 0, isFavourite: false, isBlocked: false })), [user?.id]);
   const customerSavedContacts = useMemo(() => [...businessContacts.filter((business) => savedBusinessIds.includes(business.id)), ...beneficiaryContacts], [beneficiaryContacts, businessContacts, savedBusinessIds]);
 
-  const requestedDraftId = searchParams.get('draft');
+  const requestedDraftId = editDealId ? null : searchParams.get('draft');
   const recoveredDraft = useMemo(
     () => loadDealDraft<FormState>(user?.id, requestedDraftId),
     [user?.id, requestedDraftId],
   );
   const draftId = useMemo(() => recoveredDraft?.id ?? crypto.randomUUID(), [recoveredDraft?.id]);
-  const [livenessOk, setLivenessOk] = useState(security.livenessFresh);
-  const [showLiveness, setShowLiveness] = useState(!security.livenessFresh);
+  const recoveredLiveness = recoveredDraft?.actionLiveness;
+  const [actionLiveness, setActionLiveness] = useState<DealDraftLiveness | undefined>(() =>
+    isDealDraftLivenessFresh(recoveredLiveness) ? recoveredLiveness : undefined,
+  );
+  const [showLiveness, setShowLiveness] = useState(() => !isDealDraftLivenessFresh(recoveredLiveness));
   const [showPin, setShowPin] = useState(false);
   const [showPinDraftSaved, setShowPinDraftSaved] = useState(false);
+  const profileBusinessName = searchParams.get('name')?.trim() ?? '';
+  const openedFromTrustProfile = searchParams.get('from') === 'trust-profile' && Boolean(searchParams.get('business'));
+  const [showProfileConfirmation, setShowProfileConfirmation] = useState(openedFromTrustProfile);
   const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
   const [form, setForm] = useState<FormState>(() => {
     if (recoveredDraft?.form) {
@@ -269,6 +282,45 @@ export function CreateDealPage() {
         })),
       };
     }
+    if (editingDeal) {
+      const input = editingDeal.input;
+      const firstPool = input.initialPaymentMinor ?? input.amountMinor;
+      const secondPool = input.remainingPaymentMinor ?? 0;
+      return {
+        useCase: input.useCase,
+        dealType: input.dealType,
+        partyMode: input.partyMode,
+        role: input.role,
+        title: input.title,
+        description: input.description,
+        amount: String(input.amountMinor / 100),
+        splitPayment: secondPool > 0,
+        initialPaymentMode: 'fixed',
+        initialPayment: String(firstPool / 100),
+        nextPaymentReleaseConditions: input.nextPaymentReleaseConditions ?? '',
+        deliveryDueDate: input.deliveryDueDate,
+        openUntil: format(addDays(new Date(), input.expiresInDays), 'yyyy-MM-dd'),
+        releaseConditions: input.releaseConditions,
+        extendedProductTestingDays: input.extendedProductTestingDays,
+        participants: input.participants.map((participant) => {
+          const stageOne = participant.paymentAllocations?.find((allocation) => allocation.stage === 1)?.amountMinor ?? participant.allocationMinor ?? 0;
+          const stageTwo = participant.paymentAllocations?.find((allocation) => allocation.stage === 2)?.amountMinor ?? 0;
+          return {
+            name: participant.name,
+            contact: participant.email ?? participant.phone ?? participant.identifier ?? '',
+            profileId: participant.profileId,
+            allocation: String(stageOne / 100),
+            allocationMode: 'fixed' as const,
+            secondAllocation: String(stageTwo / 100),
+            secondAllocationMode: 'fixed' as const,
+            paymentTargets: ([stageOne > 0 && 'first', stageTwo > 0 && 'second'].filter(Boolean) as Array<'first' | 'second'>).length
+              ? [stageOne > 0 && 'first', stageTwo > 0 && 'second'].filter(Boolean) as Array<'first' | 'second'>
+              : ['first', 'second'],
+            isManualSaved: true,
+          };
+        }),
+      };
+    }
     const businessName = searchParams.get('name') ?? '';
     const businessEmail = searchParams.get('email') ?? '';
     const businessId = searchParams.get('business') ?? undefined;
@@ -281,20 +333,20 @@ export function CreateDealPage() {
     };
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [agreement, setAgreement] = useState<AgreementDraft | null>(null);
-  const [agreementConfirmed, setAgreementConfirmed] = useState(false);
+  const [agreement, setAgreement] = useState<AgreementDraft | null>(() => editingDeal?.input.agreement ?? null);
+  const [agreementConfirmed, setAgreementConfirmed] = useState(Boolean(editingDeal));
   const [editingAgreement, setEditingAgreement] = useState(false);
   const [agreementPreviewOpen, setAgreementPreviewOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAllUseCases, setShowAllUseCases] = useState(() =>
     CREATE_DEAL_USE_CASES.more.some((useCase) => useCase.slug === recoveredDraft?.form?.useCase),
   );
-  const [showDealTypeOptions, setShowDealTypeOptions] = useState(false);
   const [showAdvancedTiming, setShowAdvancedTiming] = useState(false);
   const [createdInvitation, setCreatedInvitation] = useState<{ dealId: string; title: string; url: string } | null>(null);
 
   useEffect(() => {
-    if (recoveredDraft) toast.info('Deal draft opened.');
+    if (editingDeal) toast.info('Editing this deal. Saving will update the existing invitation.');
+    else if (recoveredDraft) toast.info('Deal draft opened.');
     // Only announce the recovery once when the wizard mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -304,9 +356,28 @@ export function CreateDealPage() {
       !!form.useCase || !!form.title.trim() || !!form.description.trim() || !!form.amount ||
       form.participants.some((participant) => !!participant.name.trim() || !!participant.contact.trim());
     if (!hasContent) return;
-    const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step), 400);
+    const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step, actionLiveness), 400);
     return () => window.clearTimeout(timer);
-  }, [draftId, form, step, user?.id]);
+  }, [actionLiveness, draftId, form, step, user?.id]);
+
+  useEffect(() => {
+    if (!actionLiveness) return;
+    const expiresAt = Date.parse(actionLiveness.verifiedAt) + 24 * 60 * 60 * 1000;
+    const expire = () => {
+      if (Date.now() < expiresAt) return;
+      setActionLiveness(undefined);
+      setShowLiveness(true);
+      toast.info('Your deal-specific liveness check expired. Take a new check to continue this draft.');
+    };
+    const timer = window.setTimeout(expire, Math.max(0, expiresAt - Date.now()));
+    window.addEventListener('focus', expire);
+    document.addEventListener('visibilitychange', expire);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('focus', expire);
+      document.removeEventListener('visibilitychange', expire);
+    };
+  }, [actionLiveness]);
 
   const invalidateAgreement = () => {
     setAgreement(null);
@@ -333,7 +404,6 @@ export function CreateDealPage() {
         : undefined,
     }));
     setErrors((prev) => ({ ...prev, useCase: '', dealType: '' }));
-    setShowDealTypeOptions(false);
     invalidateAgreement();
   };
 
@@ -451,7 +521,14 @@ export function CreateDealPage() {
   const minOpen = format(addDays(today, 1), 'yyyy-MM-dd');
   const maxOpen = format(addDays(today, MAX_DEAL_OPEN_DAYS), 'yyyy-MM-dd');
 
-  const participantNames = form.participants.map((p) => p.name.trim()).filter(Boolean);
+  const ownedBusinessIds = new Set(directoryBusinesses.filter((business) => business.ownerUserId === user?.id).map((business) => business.id));
+  const ownedBusinessNames = new Set(directoryBusinesses.filter((business) => business.ownerUserId === user?.id).map((business) => business.name.trim().toLowerCase()));
+  const participantNames = form.participants
+    .filter((participant) => participant.profileId !== user?.id)
+    .filter((participant) => !participant.profileId || !ownedBusinessIds.has(participant.profileId))
+    .map((participant) => participant.name.trim())
+    .filter((name) => Boolean(name) && !ownedBusinessNames.has(name.toLowerCase()))
+    .filter((name, index, names) => names.indexOf(name) === index);
   const buyerName = isReleaser ? myName : participantNames[0] || 'The buyer';
   const sellerName = isReleaser ? participantNames.join(', ') || 'The seller' : myName;
 
@@ -564,7 +641,7 @@ export function CreateDealPage() {
   };
 
   const persistCurrentDraft = () => {
-    saveDealDraft(user?.id, draftId, form, step);
+    saveDealDraft(user?.id, draftId, form, step, actionLiveness);
   };
 
   const handleSaveDraft = () => {
@@ -579,13 +656,18 @@ export function CreateDealPage() {
   };
 
   const doSubmit = async () => {
-    if (!agreement) return;
+    if (!agreement || !actionLiveness || !isDealDraftLivenessFresh(actionLiveness) || !user?.id) {
+      setActionLiveness(undefined);
+      setShowLiveness(true);
+      toast.error('Take a fresh liveness check for this deal before creating it.');
+      return;
+    }
     try {
       const expiresInDays = Math.min(
         MAX_DEAL_OPEN_DAYS,
         Math.max(1, differenceInCalendarDays(new Date(form.openUntil), today)),
       );
-      const created = await createDeal.mutateAsync({
+      const dealInput: CreateSafeDealInput = {
         useCase: form.useCase,
         dealType: form.dealType!,
         partyMode: form.partyMode!,
@@ -615,7 +697,16 @@ export function CreateDealPage() {
         extendedProductTestingDays: form.extendedProductTestingDays,
         expiresInDays,
         agreement,
-      });
+        actionLiveness: { actorUserId: user.id, verifiedAt: actionLiveness.verifiedAt, captureId: actionLiveness.captureId },
+      };
+      if (editDealId) {
+        await updateDeal.mutateAsync(dealInput);
+        clearDealDraft(user?.id, draftId);
+        toast.success('Deal updated. The revised invitation was sent for review.');
+        navigate(`/app/deals/${editDealId}`, { replace: true });
+        return;
+      }
+      const created = await createDeal.mutateAsync(dealInput);
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
       setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
@@ -662,8 +753,9 @@ export function CreateDealPage() {
     setShowPin(true);
   };
 
+  const submittingDeal = createDeal.isPending || updateDeal.isPending;
   const continueDisabled =
-    createDeal.isPending || !livenessOk || (step === 4 && (isGenerating || !agreement || !agreementConfirmed));
+    submittingDeal || !isDealDraftLivenessFresh(actionLiveness) || (step === 4 && (isGenerating || !agreement || !agreementConfirmed));
 
   // Hard gate: no deal starts until email + KYC are verified.
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
@@ -676,22 +768,45 @@ export function CreateDealPage() {
   }
 
   return (
-    <DashboardLayout title="New Protected Deal">
+    <DashboardLayout title={editDealId ? "Edit Protected Deal" : "New Protected Deal"}>
       <LivenessCheckModal
-        open={showLiveness}
+        open={showLiveness && !showProfileConfirmation}
         onOpenChange={setShowLiveness}
-        onVerified={() => {
-          setLivenessOk(true);
+        onVerified={(capture) => {
+          setActionLiveness({ captureId: capture.captureId, verifiedAt: capture.capturedAt, photoDataUrl: capture.photoDataUrl });
           setShowLiveness(false);
         }}
-        reason="Before creating a deal, confirm it is really you. This is required once every 30 days."
+        reason={`Before ${editDealId ? 'updating' : 'creating'} this deal, confirm who is actively authorizing it.`}
+        footerText="This photo is linked only to this deal draft and remains valid for 24 hours. If it expires before creation, you will take another check."
       />
+      <Dialog
+        open={showProfileConfirmation}
+        onOpenChange={(open) => {
+          if (!open && showProfileConfirmation) navigate(-1);
+        }}
+      >
+        <DialogContent className="sm:max-w-md" onEscapeKeyDown={(event) => event.preventDefault()} onPointerDownOutside={(event) => event.preventDefault()}>
+          <DialogHeader>
+            <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <ShieldCheck size={20} />
+            </div>
+            <DialogTitle>Start a Protected Deal?</DialogTitle>
+            <DialogDescription className="leading-6">
+              You are about to start a Protected Deal with <strong className="font-semibold text-foreground">{profileBusinessName || 'this business'}</strong>. Their verified profile has been added as the other party.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-2 gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
+            <Button type="button" onClick={() => setShowProfileConfirmation(false)}><ShieldCheck size={15} /> Start transaction</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <PinPromptModal
         open={showPin}
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description="Enter your 4-digit transaction PIN to create this Protected Deal."
+        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this Protected Deal'}.`}
       />
       <DraftSavedForPinModal
         open={showPinDraftSaved}
@@ -709,9 +824,9 @@ export function CreateDealPage() {
 
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
-          eyebrow="Protected payments"
-          title="Create a Protected Deal"
-          description="Turn an agreement into a clear, trackable payment journey for everyone involved."
+          eyebrow={editDealId ? "Editing existing invitation" : "Protected Deals"}
+          title={editDealId ? "Edit Protected Deal" : "Create a Protected Deal"}
+          description={editDealId ? "Update the original deal details. The same invitation will be returned to the other party for review." : "Turn an agreement into a clear, trackable payment journey for everyone involved."}
           icon={ShieldCheck}
           actions={
             <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
@@ -813,57 +928,22 @@ export function CreateDealPage() {
                     <FieldError message={errors.useCase} />
                   </div>
 
-                  {form.useCase && features.dealTypes.length > 1 && (
+                  {form.useCase && (
                     <div>
                       <Label className="mb-2 block">How should it run?</Label>
-                      {!showDealTypeOptions ? (
-                        <div className="flex flex-col gap-3 rounded-2xl border border-primary/15 bg-primary/[0.04] p-4 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">
-                              Recommended: {form.dealType ? dealTypeMeta(form.dealType).label : 'Standard setup'}
-                            </p>
-                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                              {form.dealType ? dealTypeMeta(form.dealType).description : 'We selected the simplest setup for this deal.'}
-                            </p>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="w-fit rounded-full"
-                            onClick={() => setShowDealTypeOptions(true)}
-                          >
-                            Change setup
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="grid gap-3 sm:grid-cols-3">
-                            {features.dealTypes.map((type) => {
-                              const meta = dealTypeMeta(type);
-                              const Icon = DEAL_TYPE_ICON[type];
-                              return (
-                                <ChoiceCard
-                                  key={type}
-                                  selected={form.dealType === type}
-                                  onClick={() => set('dealType', type)}
-                                  icon={Icon}
-                                  title={meta.label}
-                                  description={meta.description}
-                                />
-                              );
-                            })}
-                          </div>
-                          <button
-                            type="button"
-                            className="mt-3 text-sm font-semibold text-primary"
-                            onClick={() => setShowDealTypeOptions(false)}
-                          >
-                            Use selected setup
-                          </button>
-                        </>
-                      )}
-                      {features.note && showDealTypeOptions && (
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        {(['single', 'milestone', 'recurring'] as DealType[]).map((type) => {
+                          const meta = dealTypeMeta(type);
+                          const Icon = DEAL_TYPE_ICON[type];
+                          return (
+                            <div key={type} className="relative">
+                              {type === features.defaultDealType && <Badge variant="success" className="absolute right-2 top-2 z-10 text-[9px]">Recommended</Badge>}
+                              <ChoiceCard selected={form.dealType === type} onClick={() => set('dealType', type)} icon={Icon} title={meta.label} description={meta.description} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {features.note && (
                         <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">{features.note}</p>
                       )}
                       <FieldError message={errors.dealType} />
@@ -1044,7 +1124,7 @@ export function CreateDealPage() {
                       value={form.role ? `${roleLabel(form.role)} · ${isReleaser ? 'sending funds' : 'receiving funds'}` : 'Not available'}
                     />
                     <ReviewRow
-                      label={multiParty ? (isReleaser ? 'Recipients' : 'Payers') : 'Counterparty'}
+                      label={multiParty ? (isReleaser ? 'Recipients' : 'Payers') : 'Other party'}
                       value={form.participants
                         .map((p) => (multiParty && p.allocation ? `${p.name} (${p.allocationMode === 'percentage' ? `${p.allocation}% = ` : ''}${formatMinorAmount(p.allocationMode === 'percentage' ? Math.round(amountMinor * Number(p.allocation) / 100) : Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
                         .join(', ')}
@@ -1066,8 +1146,8 @@ export function CreateDealPage() {
                         label="Product testing"
                         value={
                           form.extendedProductTestingDays
-                            ? `${form.extendedProductTestingDays} days · replaces the standard 24-hour funding review`
-                            : 'Standard 24-hour funding review'
+                            ? `${form.extendedProductTestingDays} days · replaces the standard 24-hour delivery review period`
+                            : 'Standard 24-hour delivery review period'
                         }
                       />
                     )}
@@ -1115,20 +1195,20 @@ export function CreateDealPage() {
                         </span>
                         <div>
                           <p className="text-xs font-semibold text-foreground">3. Funding begins</p>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the deal from the Transaction Room.</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the deal from the Deal Room.</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Protected funds move through a partner-issued account with a regulated provider. Naitrust does not hold them directly.
+                    Money placed in a Protected Deal moves through a partner-issued account with a regulated provider. Naitrust does not hold it directly.
                   </p>
                 </div>
                 )
               )}
 
-              {!livenessOk && (
+              {!isDealDraftLivenessFresh(actionLiveness) && (
                 <button
                   type="button"
                   onClick={() => setShowLiveness(true)}
@@ -1143,13 +1223,13 @@ export function CreateDealPage() {
               )}
 
               <div className="mt-7 flex flex-col-reverse gap-3 border-t bg-muted/20 -mx-5 -mb-5 px-5 py-5 sm:-mx-7 sm:-mb-7 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-                <Button type="button" variant="ghost" onClick={handleBack} disabled={createDeal.isPending}>
+                <Button type="button" variant="ghost" onClick={handleBack} disabled={submittingDeal}>
                   <ArrowLeft size={16} className="mr-1" />
                   {step === 1 ? 'Cancel' : 'Back'}
                 </Button>
                 <div className="flex flex-wrap items-center justify-end gap-2">
-                  {step > 1 && (
-                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={createDeal.isPending} className="rounded-md">
+                  {step > 1 && !editDealId && (
+                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={submittingDeal} className="rounded-md">
                       <Save size={16} className="mr-1.5" />
                       Save to drafts
                     </Button>
@@ -1160,16 +1240,16 @@ export function CreateDealPage() {
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={createDeal.isPending || !livenessOk} className="rounded-md">
-                      {createDeal.isPending ? (
+                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || !isDealDraftLivenessFresh(actionLiveness)} className="rounded-md">
+                      {submittingDeal ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />
-                          Creating…
+                          {editDealId ? 'Updating…' : 'Creating…'}
                         </>
                       ) : (
                         <>
-                          <ShieldCheck size={16} className="mr-1.5" />
-                          Create Protected Deal
+                          {editDealId ? <Pencil size={16} className="mr-1.5" /> : <ShieldCheck size={16} className="mr-1.5" />}
+                          {editDealId ? 'Update invitation' : 'Create Protected Deal'}
                         </>
                       )}
                     </Button>

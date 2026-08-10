@@ -4,7 +4,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Building2,
-  ContactRound,
   Copy,
   Inbox,
   Landmark,
@@ -39,28 +38,28 @@ interface CustomerDashboardHomeProps {
 
 const CUSTOMER_SHORTCUTS = [
   {
-    title: 'Receive money',
-    description: 'Share your account or payment link.',
-    path: '/app/payments/receive',
-    icon: ArrowDownToLine,
+    title: 'Find a business',
+    description: 'Review its Trust Profile before paying.',
+    path: '/app/businesses',
+    icon: Building2,
   },
   {
-    title: 'Protect a purchase',
+    title: 'Protect a payment',
     description: 'Agree on terms before paying.',
     path: '/app/deals/new',
     icon: ShieldCheck,
   },
   {
-    title: 'Find a business',
-    description: 'Check a business before you pay.',
-    path: '/app/businesses',
-    icon: Building2,
+    title: 'Pay a business',
+    description: 'Pay after checking who you are dealing with.',
+    path: '/app/payments',
+    icon: Send,
   },
   {
-    title: 'Saved recipients',
-    description: 'Pay someone you have saved.',
-    path: '/app/payments/beneficiaries',
-    icon: ContactRound,
+    title: 'Receive money',
+    description: 'Share your account or payment link.',
+    path: '/app/payments/receive',
+    icon: ArrowDownToLine,
   },
 ] as const;
 
@@ -104,16 +103,15 @@ export function CustomerDashboardHome({
                 </Badge>
               )}
             </div>
-            <h1 className="mt-1 text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-3xl">Your money, at a glance.</h1>
+            <h1 className="mt-1 text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-3xl">Pay with more confidence.</h1>
           </div>
-          <Button className="rounded-full px-5" onClick={() => navigate('/app/payments')}>
-            <Send size={16} /> Send money
+          <Button className="rounded-full px-5" onClick={() => navigate('/app/businesses')}>
+            <Building2 size={16} /> Find a business
           </Button>
         </header>
 
         <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)]">
-          <Card className="relative overflow-hidden rounded-3xl border-0 bg-[#071b31] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)]">
-            <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
+          <Card className="relative overflow-hidden rounded-3xl border-0  bg-primary dark:bg-[#04162f] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)]">
             <div className="relative">
               <div className="flex items-start justify-between gap-3">
                 <div>

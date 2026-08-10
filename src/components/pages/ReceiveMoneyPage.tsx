@@ -278,32 +278,62 @@ export function ReceiveMoneyPage() {
           </div>
 
           <div className="mb-5 w-full">
-          <Card className={`${activeMethod !== 'account' ? 'hidden' : ''} overflow-hidden rounded-3xl border-primary/15 p-0 shadow-sm`}>
-            <div className="grid min-h-64 lg:grid-cols-[1.15fr_.85fr]">
-              <div className="flex flex-col justify-center bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white sm:p-8">
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-white/65">
-                  <Landmark size={15} /> Business account
+          <div className={`${activeMethod !== 'account' ? 'hidden' : ''} grid gap-5 md:grid-cols-[1.2fr_.8fr]`}>
+            <Card className="overflow-hidden border-primary/15 shadow-sm">
+              <div className="bg-primary p-6 text-white dark:bg-[#04162f]">
+                <p className="flex items-center gap-2 text-sm font-medium text-white/70">
+                  <Landmark size={16} /> Business Naitrust account
                 </p>
-                <p className="mt-5 font-mono text-3xl font-bold tracking-[0.14em] sm:text-4xl">
+                <p className="mt-5 font-mono text-2xl font-bold tracking-[0.12em]">
                   {account?.accountNumber ?? 'Account setup pending'}
                 </p>
-                <p className="mt-3 text-sm text-white/75">
-                  {account ? `${account.bankName} · ${account.accountName}` : 'Your regulated partner account will appear here'}
+                <p className="mt-2 text-sm text-white/80">
+                  {account
+                    ? `${account.bankName} · ${account.accountName}`
+                    : 'Your regulated partner account will appear here'}
                 </p>
-                <p className="mt-2 font-mono text-xs font-semibold text-white/65">
-                  {business?.ntId ?? user?.naitrustId}
+                <p className="mt-2 font-mono text-xs font-semibold text-white/60">
+                  {business?.ntId ?? user?.naitrustId ?? 'Naitrust ID setup pending'}
                 </p>
               </div>
-              <div className="flex flex-col justify-center gap-3 border-t bg-card p-6 lg:border-l lg:border-t-0 lg:p-8">
-                <p className="text-sm font-semibold">Receive a bank transfer</p>
-                <p className="text-xs leading-5 text-muted-foreground">Share these details with customers paying from any Nigerian bank.</p>
-                <Button className="mt-1 rounded-full" disabled={!account?.accountNumber} onClick={() => account?.accountNumber && void copy(account.accountNumber, 'account')}>
-                  {copied === 'account' ? <Check size={14} /> : <Copy size={14} />}
-                  {copied === 'account' ? 'Account number copied' : 'Copy account number'}
+              <div className="flex items-center justify-between gap-3 p-4">
+                <p className="text-xs text-muted-foreground">Receive a bank transfer from any Nigerian bank.</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!account?.accountNumber}
+                  onClick={() => account?.accountNumber && void copy(account.accountNumber, 'business-account')}
+                >
+                  {copied === 'business-account' ? <Check size={14} /> : <Copy size={14} />}
+                  {copied === 'business-account' ? 'Copied' : 'Copy number'}
                 </Button>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            <Card className="flex flex-col justify-center gap-3 p-6 shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <AtSign size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">Business Naitrust ID</p>
+                <p className="mt-1 text-xs text-muted-foreground">Share this ID when a customer wants to pay your business on Naitrust.</p>
+              </div>
+              <button
+                type="button"
+                disabled={!(business?.ntId ?? user?.naitrustId)}
+                onClick={() => {
+                  const businessNaitrustId = business?.ntId ?? user?.naitrustId;
+                  if (businessNaitrustId) void copy(businessNaitrustId, 'business-naitrust-id');
+                }}
+                className="flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <span className="min-w-0 truncate font-mono text-sm font-semibold">
+                  {business?.ntId ?? user?.naitrustId ?? 'ID setup pending'}
+                </span>
+                {(business?.ntId ?? user?.naitrustId) && (copied === 'business-naitrust-id' ? <Check size={14} /> : <Copy size={14} />)}
+              </button>
+            </Card>
+          </div>
 
           <Card className={`${activeMethod !== 'request' ? 'hidden' : ''} overflow-hidden rounded-3xl border-primary/15 shadow-sm`}>
             <div className="p-5 sm:p-7 lg:p-8">
@@ -437,7 +467,7 @@ export function ReceiveMoneyPage() {
         {!accountContentLoading && !isBusiness && (
           <div className="grid gap-5 md:grid-cols-[1.2fr_.8fr]">
             <Card className="overflow-hidden border-primary/15 shadow-sm ">
-              <div className="bg-gradient-to-br from-[#071b31] via-[#0a3158] to-[#071b31] p-6 text-white">
+              <div className="bg-primary dark:bg-[#04162f] p-6 text-white">
                 <p className="flex items-center gap-2 text-sm font-medium text-white/70"><Landmark size={16} /> Personal Naitrust account</p>
                 <p className="mt-5 font-mono text-2xl font-bold tracking-[0.12em]">7034567890</p>
                 <p className="mt-2 text-sm text-white/80">Anchor Bank · Naitrust / {user?.name}</p>

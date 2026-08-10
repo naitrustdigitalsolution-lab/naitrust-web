@@ -24,9 +24,17 @@ import { appConfig } from '../../../configs/env';
 interface LivenessCheckModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onVerified: () => void;
+  onVerified: (capture: LivenessCapture) => void;
   onCancel?: () => void;
   reason?: string;
+  footerText?: string;
+}
+
+export interface LivenessCapture {
+  captureId: string;
+  capturedAt: string;
+  /** Kept with a local draft in mock mode; production should store an opaque backend reference. */
+  photoDataUrl?: string;
 }
 
 type Phase = 'intro' | 'starting' | 'ready' | 'capturing' | 'done' | 'nocamera';
@@ -38,6 +46,7 @@ export function LivenessCheckModal({
   onVerified,
   onCancel,
   reason = 'For your security, confirm it is really you before continuing.',
+  footerText = 'General account liveness is refreshed every six months.',
 }: LivenessCheckModalProps) {
   const { patch, setLivenessPhoto } = useSecurity();
   const [phase, setPhase] = useState<Phase>('intro');
@@ -171,11 +180,16 @@ export function LivenessCheckModal({
   }, [phase]);
 
   const complete = (dataUrl?: string) => {
+    const capture: LivenessCapture = {
+      captureId: crypto.randomUUID(),
+      capturedAt: new Date().toISOString(),
+      photoDataUrl: dataUrl,
+    };
     if (dataUrl) setLivenessPhoto(dataUrl);
-    patch({ livenessAt: new Date().toISOString() });
+    patch({ livenessAt: capture.capturedAt });
     stopStream();
     setPhase('done');
-    timers.current.push(setTimeout(() => onVerified(), 900));
+    timers.current.push(setTimeout(() => onVerified(capture), 900));
   };
 
   const capture = () => {
@@ -380,7 +394,7 @@ export function LivenessCheckModal({
         )}
 
         <p className="text-center text-xs text-muted-foreground">
-          Required once every 30 days. Your check stays valid for other Protected Deals during that time.
+          {footerText}
         </p>
         </div>
       </SheetContent>

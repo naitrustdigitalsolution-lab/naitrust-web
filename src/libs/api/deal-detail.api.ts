@@ -45,6 +45,10 @@ import {
 } from './mock-protected-deal-store';
 import { useAuthStore } from '../store/auth.store';
 import { canMockUserAccessDeal } from './mock-deal-access';
+import { mockDealParticipantUserIds } from './mock-deal-access';
+import { mockCreatedDealParticipantIndex, mockCreatedDealRoleContext, mockParticipantUserId } from './mock-deal-participants';
+import { hasRequiredProductEvidence, supportsDeliveryReview } from '../protected-deals/delivery-review';
+import { activateDisputeWithEvidence } from './dispute.api';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -300,27 +304,44 @@ function partiesFor(summary: SafeDealSummary, youAreSeller: boolean): DealParty[
   return [you, counterparty];
 }
 
-function partiesForCreatedDeal(summary: SafeDealSummary, input: CreateSafeDealInput): DealParty[] {
-  const you: DealParty = {
-    id: 'party_you',
-    name: 'You',
-    role: input.role,
+function partiesForCreatedDeal(
+  summary: SafeDealSummary,
+  input: CreateSafeDealInput,
+  viewerIsCreator: boolean,
+  creatorName: string,
+  viewerParticipantIndex: number,
+  normalizedCreatorRole: DealRole,
+  selfParticipantIndex: number,
+): DealParty[] {
+  // Older mock records could accidentally include the creator's own business
+  // as an invited participant. That is never a valid counterparty: collapse
+  // it back into the creator and use its receiving allocation as evidence
+  // that the creator intended to be the seller.
+  const creatorRole = normalizedCreatorRole;
+  const invitationStatus = getMockDealRuntime(summary.id)?.invitationStatus;
+  const invitationIsOpen = summary.status === 'pending_counterparty' || invitationStatus === 'changes_requested';
+  const creator: DealParty = {
+    id: 'party_creator',
+    name: creatorName,
+    role: creatorRole,
     status: 'creator',
-    isYou: true,
-    allocationMinor: input.role === 'seller' ? summary.amountMinor : undefined,
+    isYou: viewerIsCreator,
+    allocationMinor: creatorRole === 'seller' ? summary.amountMinor : undefined,
   };
   return [
-    you,
-    ...input.participants.map((participant, index) => ({
+    creator,
+    ...input.participants.filter((_, index) => index !== selfParticipantIndex).map((participant, filteredIndex) => {
+      const index = selfParticipantIndex >= 0 && filteredIndex >= selfParticipantIndex ? filteredIndex + 1 : filteredIndex;
+      return ({
       id: `party_created_${index}`,
       name: participant.name,
       email: participant.email,
       phone: participant.phone,
-      role: input.role === 'seller' ? ('buyer' as const) : ('seller' as const),
-      status: summary.status === 'pending_counterparty' ? ('invited' as const) : ('accepted' as const),
-      isYou: false,
-      allocationMinor: input.role === 'buyer' ? participant.allocationMinor : undefined,
-    })),
+      role: creatorRole === 'seller' ? ('buyer' as const) : ('seller' as const),
+      status: invitationIsOpen ? ('invited' as const) : ('accepted' as const),
+      isYou: !viewerIsCreator && index === viewerParticipantIndex,
+      allocationMinor: creatorRole === 'buyer' ? participant.allocationMinor : undefined,
+    }); }),
   ];
 }
 
@@ -355,6 +376,7 @@ function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
         fileName: 'galaxy-s25-ultra-model.jpg',
         kind: 'Product model',
         uploadedByName: 'You',
+        uploadedByRole: 'seller',
         note: 'Galaxy S25 Ultra, Titanium Black, 512GB.',
         createdAt: new Date(base + 3.1 * 86400000).toISOString(),
       },
@@ -363,6 +385,7 @@ function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
         fileName: 'imei-label.jpg',
         kind: 'Serial / IMEI',
         uploadedByName: 'You',
+        uploadedByRole: 'seller',
         note: 'IMEI label recorded before sealing the package.',
         createdAt: new Date(base + 3.2 * 86400000).toISOString(),
       },
@@ -371,6 +394,7 @@ function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
         fileName: 'sealed-package.jpg',
         kind: 'Packaging condition',
         uploadedByName: 'You',
+        uploadedByRole: 'seller',
         note: 'Outer package photographed without visible damage.',
         createdAt: new Date(base + 3.3 * 86400000).toISOString(),
       },
@@ -379,6 +403,7 @@ function evidenceFor(summary: SafeDealSummary): DealEvidenceItem[] {
         fileName: 'tamper-seal.jpg',
         kind: 'Tamper seal',
         uploadedByName: 'You',
+        uploadedByRole: 'seller',
         note: 'Numbered tamper seal applied before rider collection.',
         createdAt: new Date(base + 3.4 * 86400000).toISOString(),
       },
@@ -560,6 +585,14 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   const created = new Date(summary.createdAt).getTime();
   const dealType: DealType = input?.dealType ?? overlay?.dealType ?? (summary.remainingPaymentMinor ? 'milestone' : 'single');
   const extendedProductTestingDays = input?.extendedProductTestingDays;
+  const splitRemainingMinor = summary.remainingPaymentMinor ?? input?.remainingPaymentMinor;
+  if (
+    splitRemainingMinor &&
+    !getMockDealRuntime(summary.id)?.activePaymentStage &&
+    !['paid_out', 'completed', 'refunded', 'cancelled'].includes(summary.status)
+  ) {
+    patchMockDealRuntime(summary.id, { activePaymentStage: 1, remainingPaymentMinor: splitRemainingMinor });
+  }
   reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays);
   if (['cancelled', 'refunded'].includes(summary.status)) invalidateDeliveryCard(summary.id);
   const runtime = getMockDealRuntime(summary.id);
@@ -575,6 +608,10 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     usr_mock_006: 'Tunde Balogun',
     usr_mock_007: 'Aisha Lawal',
   };
+  const viewerIsCreator = signedInUser?.id === seededOwnerId;
+  const creatorName = seededOwnerNames[seededOwnerId ?? ''] ?? 'Deal creator';
+  const viewerParticipantIndex = mockCreatedDealParticipantIndex(summary.id, signedInUser?.id);
+  const roleContext = mockCreatedDealRoleContext(summary.id);
   const viewingSeededDealAsParticipant = summary.id.startsWith('deal_') && signedInUser?.id !== seededOwnerId;
   const effectiveSummary: SafeDealSummary = {
     ...summary,
@@ -582,7 +619,11 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     remainingPaymentMinor: summary.remainingPaymentMinor ?? input?.remainingPaymentMinor,
     nextPaymentReleaseConditions: summary.nextPaymentReleaseConditions ?? input?.nextPaymentReleaseConditions,
     counterpartyName: productBuyerView ? 'Ayo Mobile Supplies Ltd' : viewingSeededDealAsParticipant ? (seededOwnerNames[seededOwnerId ?? ''] ?? summary.counterpartyName) : summary.counterpartyName,
-    status: runtime?.status ?? summary.status,
+    // Compatibility for invitations accepted before acceptance advanced the
+    // mock lifecycle to awaiting_funding.
+    status: runtime?.invitationStatus === 'accepted' && runtime.status === 'terms_agreed'
+      ? 'awaiting_funding'
+      : runtime?.status ?? summary.status,
   };
   // On tracked (milestone) deals you play the seller who delivers and updates
   // tracking; on other deals you're the buyer who funds and confirms.
@@ -616,13 +657,23 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     expiresAt: new Date(created + (input?.expiresInDays ?? 14) * 86400000).toISOString(),
     recurring: overlay?.recurring ?? dealType === 'recurring',
     previousReference: overlay?.previousReference,
-    parties: input ? partiesForCreatedDeal(effectiveSummary, input) : partiesFor(effectiveSummary, youAreSeller),
+    parties: input
+      ? partiesForCreatedDeal(effectiveSummary, input, viewerIsCreator, creatorName, viewerParticipantIndex, roleContext.creatorRole, roleContext.selfParticipantIndex)
+      : partiesFor(effectiveSummary, youAreSeller),
     agreement: input?.agreement ?? agreementFor(effectiveSummary, overlay, youAreSeller),
-    funding: fundingFor(effectiveSummary.status, effectiveSummary.initialPaymentMinor ?? effectiveSummary.amountMinor, effectiveSummary.currency),
+    funding: fundingFor(
+      effectiveSummary.status,
+      runtime?.activePaymentStage === 2
+        ? (effectiveSummary.remainingPaymentMinor ?? input?.remainingPaymentMinor ?? effectiveSummary.amountMinor)
+        : (effectiveSummary.initialPaymentMinor ?? effectiveSummary.amountMinor),
+      effectiveSummary.currency,
+    ),
     evidence,
     activity: [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
     milestones,
     delivery: runtime?.delivery ?? reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays),
+    activePaymentStage: runtime?.activePaymentStage,
+    firstPaymentReleasedAt: runtime?.firstPaymentReleasedAt,
   };
 }
 
@@ -638,6 +689,24 @@ function ensureTracking(id: string): DealMilestone[] {
 function deliveryContext(deal: SafeDealDetail): DeliveryDealContext {
   const actorRole = deal.parties.find((party) => party.isYou)?.role;
   if (!actorRole) throw new Error('Your role on this deal could not be verified.');
+  const actorUserId = useAuthStore.getState().user?.id;
+  const createdDeal = findMockCreatedDeal(deal.id);
+  const roleContext = mockCreatedDealRoleContext(deal.id);
+  const dynamicBuyerUserId = createdDeal
+    ? roleContext.creatorRole === 'buyer'
+      ? createdDeal.summary.createdByUserId
+      : createdDeal.input.participants
+          .filter((_, index) => index !== roleContext.selfParticipantIndex)
+          .map(mockParticipantUserId)
+          .find(Boolean)
+    : undefined;
+  const seededCreatorIsSeller = deal.id.startsWith('deal_adaeze_aisha_') || deal.id.startsWith('deal_emeka_customer_') || deal.id.startsWith('deal_tunde_');
+  const seededSummary = findSummary(deal.id);
+  const seededBuyerUserId = seededSummary
+    ? seededCreatorIsSeller
+      ? mockDealParticipantUserIds(deal.id)[0]
+      : seededSummary.createdByUserId
+    : undefined;
   return {
     id: deal.id,
     reference: deal.reference,
@@ -645,7 +714,11 @@ function deliveryContext(deal: SafeDealDetail): DeliveryDealContext {
     status: deal.status,
     fundingStatus: deal.funding.status,
     actorRole,
+    actorUserId,
+    buyerUserId: dynamicBuyerUserId ?? seededBuyerUserId,
     evidence: deal.evidence,
+    amountMinor: deal.amountMinor,
+    useCase: deal.useCase,
     extendedProductTestingDays: deal.extendedProductTestingDays,
   };
 }
@@ -664,7 +737,7 @@ export const dealDetailApi = {
     }
     await delay(400);
     const deal = getMockDetailOrThrow(id);
-    if (deal.funding.status !== 'awaiting_transfer') throw new Error('This deal is not waiting for funding.');
+    if (deal.funding.status !== 'awaiting_transfer') throw new Error('This deal is not ready for funding.');
     const current = getMockDealRuntime(id);
     patchMockDealRuntime(id, {
       status: 'funded',
@@ -762,6 +835,16 @@ export const dealDetailApi = {
       const list = ensureTracking(id);
       const currentIdx = list.findIndex((m) => m.status === 'current');
       const idx = currentIdx === -1 ? list.findIndex((m) => m.status === 'pending') : currentIdx;
+      const stepBeingCompleted = idx === -1 ? undefined : list[idx];
+      const currentDeal = getMockDetailOrThrow(id);
+      if (
+        stepBeingCompleted &&
+        /dispatch|ship|courier|pickup|collected/i.test(stepBeingCompleted.title) &&
+        supportsDeliveryReview(currentDeal.useCase) &&
+        !hasRequiredProductEvidence(currentDeal.evidence)
+      ) {
+        throw new Error('Complete each applicable seller evidence item, or mark it Not applicable with a reason, before dispatch.');
+      }
       if (idx !== -1) {
         list[idx] = { ...list[idx], status: 'done', updatedByName: 'You', at: new Date().toISOString() };
         const next = list.findIndex((m, i) => i > idx && m.status === 'pending');
@@ -888,8 +971,9 @@ export const dealDetailApi = {
   /** Add uploaded evidence (mock retains session object URLs for preview). */
   addEvidence: async (
     id: string,
-    items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string }[],
+    items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string; notApplicable?: boolean }[],
     uploadedByName: string,
+    uploadedByRole: DealRole,
   ): Promise<ApiSuccess<DealEvidenceItem[]>> => {
     if (appConfig.isMock) {
       await delay(300);
@@ -900,10 +984,13 @@ export const dealDetailApi = {
         fileUrl: it.fileUrl,
         mimeType: it.mimeType,
         uploadedByName,
+        uploadedByRole,
+        notApplicable: it.notApplicable,
         note: it.note,
         createdAt: new Date().toISOString(),
       }));
       evidenceExtra[id] = [...(evidenceExtra[id] ?? []), ...created];
+      if (uploadedByRole === 'buyer') activateDisputeWithEvidence(id);
       return { success: true, data: evidenceExtra[id] };
     }
     const res = await httpClient.post<DealEvidenceItem[]>(endpoints.upload.verificationDocument, {

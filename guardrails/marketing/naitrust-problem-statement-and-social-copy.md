@@ -1,4 +1,4 @@
-# Naitrust Problem Statement and Social Media Copy
+`# Naitrust Problem Statement and Social Media Copy
 
 Last updated: 10 August 2026
 
@@ -285,3 +285,4 @@ Naitrust’s voice should be:
 - specific about what the product does and does not cover.
 
 Avoid fear-based messaging that makes every seller, buyer, or online transaction sound fraudulent. Naitrust exists to make legitimate deals clearer and easier to trust.
+`

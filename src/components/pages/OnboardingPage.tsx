@@ -41,7 +41,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={smoothPageFade}
-          className="hidden lg:flex flex-col justify-between rounded-2xl bg-[#eef3f8] p-5 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:bg-transparent lg:p-10 lg:dark:bg-transparent"
+          className="hidden flex-col justify-between rounded-2xl bg-[#eef3f8] p-5 sm:p-8 lg:flex lg:self-start lg:rounded-none lg:bg-transparent lg:px-10 lg:pb-10 lg:pt-20"
         >
           <div>
             <button
@@ -50,7 +50,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
               className="mb-6 inline-flex items-center lg:mb-12"
               aria-label="Go to Naitrust home"
             >
-              <NaitrustLogo size="postMd" showText={true} textColor={isDarkMode ? "text-white" : "text-primary"} />
+              <NaitrustLogo size="postMd" showText={true} />
             </button>
 
             <div className="max-w-md">
@@ -95,7 +95,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
           </div>
         </motion.aside>
 
-        <main className="flex min-h-full items-center justify-center py-4 lg:py-10">
+        <main className="auth-balanced-form flex min-h-full items-center justify-center py-4 lg:py-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

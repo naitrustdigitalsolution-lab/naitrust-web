@@ -29,7 +29,7 @@ export function ResetPasswordForm({
   onSubmit,
 }: ResetPasswordFormProps) {
   return (
-    <Card className="mx-auto w-full max-w-md border-none sm:border-border/60 bg-card/95 p-5 sm:shadow-2xl backdrop-blur-sm md:p-8">
+    <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-2xl mb-4">
           <Lock size={32} className="text-blue-500" />

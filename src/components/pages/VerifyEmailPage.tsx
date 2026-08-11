@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Mail, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { Mail, ArrowLeft, CheckCircle, Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { authApi } from '../../libs/api';
 import { useAuthStore } from '../../libs/store/auth.store';
+import spiralBackground from '../../assets/spiral.svg';
+import { SEOHead } from '../utility/SEOHead';
 
 interface VerifyEmailPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -109,14 +111,41 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+      <SEOHead title="Verify your email" description="Verify your email address to continue setting up your Naitrust account." noindex />
+      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
+      <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8">
+        <img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-4 top-1/2 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8" />
+      </div>
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+        <aside className="auth-balanced-panel hidden flex-col justify-between p-5 sm:p-8 lg:flex lg:p-10">
+          <div>
+            <button type="button" onClick={() => onNavigate('home')} className="mb-12 inline-flex" aria-label="Go to Naitrust home">
+              <NaitrustLogo size="postMd" showText />
+            </button>
+            <div className="max-w-md">
+              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-primary">Confirm your account</p>
+              <h1 className="text-4xl font-bold leading-tight text-[#0b2b45] dark:text-white">One quick check before you continue.</h1>
+              <p className="mt-4 text-base leading-7 text-[#496274] dark:text-slate-300">Confirm the email connected to your account so important payment and Protected Deal updates reach the right person.</p>
+            </div>
+            <div className="mt-10 max-w-md space-y-4">
+              {['Confirm the email connected to your profile', 'Keep account and payment notifications reliable', 'Continue with your identity and business records'].map((item) => (
+                <div key={item} className="flex gap-3 rounded-xl border border-white/70 bg-white/70 p-4 text-sm leading-6 text-muted-foreground shadow-sm dark:border-white/10 dark:bg-card dark:text-slate-300">
+                  <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+        <main className="auth-balanced-form flex min-h-full items-center justify-center py-4 lg:py-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="shadow-2xl border-primary/20">
+        <Card className="rounded-2xl border-border/70 shadow-2xl">
           <CardHeader className="text-center space-y-4 pb-6">
             <div className="flex justify-center mb-4">
               <NaitrustLogo size="lg" showText={false} />
@@ -250,6 +279,8 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
           </CardContent>
         </Card>
       </motion.div>
+        </main>
+      </div>
     </div>
   );
 }

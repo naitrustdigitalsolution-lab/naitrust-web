@@ -36,12 +36,13 @@ export function LoginForm({
   onRegister,
 }: LoginFormProps) {
   return (
-    <Card className="mx-auto w-full max-w-md border-none sm:border-border/60 bg-card/95 sm:p-5 md:p-8 sm:shadow-2xl">
+    <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <div className="text-center mb-8">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl p-2">
           <img src={icon} alt="Naitrust logo" className="h-full w-full" />
         </div>
-        <h2 className="mb-2 text-2xl font-bold">Welcome back</h2>
+        <p className="mb-2 text-sm font-semibold text-primary">Secure sign in</p>
+        <h2 className="mb-2 text-2xl font-bold text-[#0b2b45] dark:text-white">Welcome back</h2>
         <p className="text-sm leading-6 text-muted-foreground">Use the email or phone number connected to your account.</p>
       </div>
 

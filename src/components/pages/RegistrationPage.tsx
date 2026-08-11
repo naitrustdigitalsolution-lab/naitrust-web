@@ -963,8 +963,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
           />
         </div>
-      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl xl:gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
-        <aside className="flex flex-col justify-between rounded-2xl bg-none lg:bg-[#eef3f8] p-0 dark:bg-[#0A0E1A] sm:p-8 lg:rounded-none lg:p-10">
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+        <aside className="auth-balanced-panel flex flex-col justify-between rounded-2xl p-0 sm:p-8 lg:rounded-none lg:p-10">
           <div>
             <button
               type="button"
@@ -972,19 +972,19 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               className="mb-6 hidden lg:inline-flex items-center lg:mb-12"
               aria-label="Go to Naitrust home"
             >
-              <NaitrustLogo size="postMd" showText={true} textColor="text-primary" />
+              <NaitrustLogo size="postMd" showText={true} />
             </button>
 
             <div className="max-w-md hidden lg:block">
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
                 Start with trust
               </p>
-              <h1 className="text-xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
+              <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
                 {registrationType === 'business'
                   ? 'Turn customer confidence into stronger business.'
                   : 'Pay with confidence, even when the seller is new.'}
               </h1>
-              <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base lg:text-md xl:text-lg sm:leading-7">
+              <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                 {registrationType === 'business'
                   ? 'Get paid, show customers who they are dealing with, and protect important orders in one place.'
                   : 'Verify who you are, check who you are paying, and protect important purchases when delivery still matters.'}
@@ -1013,7 +1013,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
           </div>
         </aside>
 
-        <main className="flex min-h-full flex-col items-center justify-center py-4 lg:py-10">
+        <main className="auth-balanced-form flex min-h-full flex-col items-center justify-center py-4 lg:py-10">
           <div className="w-full max-w-xl bg-card p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
             <button
               type="button"
@@ -1025,19 +1025,22 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             </button>
 
             <div className="mb-8">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center p-2">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent p-2 text-primary">
                 <NaitrustLogo size="postMd" showText={false} />
               </div>
               <p className="mb-2 text-sm font-semibold text-primary">
                 Step {currentStep} of {totalSteps}
               </p>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-[#0b2b45] dark:text-white">
                 {currentStepMeta?.title || (registrationType === 'business' ? 'Business Registration' : 'Create Your Account')}
               </h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {currentStepMeta?.description}
+              </p>
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">
                 {registrationType === 'business'
                   ? 'For registered companies, informal businesses, suppliers, sellers, contractors, and service providers.'
-                  : 'For customers who want to pay trusted people quickly and protect important purchases when trust is still new.'}
+                  : 'For customers paying trusted people or protecting important purchases when trust is still new.'}
               </p>
             </div>
 

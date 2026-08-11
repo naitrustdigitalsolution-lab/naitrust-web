@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Landmark, FileCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../libs/auth-context';
 import { useAuthStore } from '../../libs/store/auth.store';
 import { motion, AnimatePresence } from 'motion/react';
@@ -14,7 +14,6 @@ import { ResetPasswordForm } from '../pieces/auth/ResetPasswordForm';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { SEOHead } from '../utility/SEOHead';
 import spiralBackground from '../../assets/spiral.svg';
-import { useTheme } from '@/hooks/useTheme';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -41,7 +40,6 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [pending2FAUserId, setPending2FAUserId] = useState<string | null>(null);
   const [resetEmail, setResetEmail] = useState(initialEmail);
-  const { isDarkMode, toggleTheme } = useTheme();
   const fromPath = (location.state as any)?.from?.pathname as string | undefined;
   const fromSearch = (location.state as any)?.from?.search as string | undefined;
   const returnToParam = new URLSearchParams(location.search).get('returnTo');
@@ -60,42 +58,21 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const [view, setView] = useState<AuthView>(initialView);
 
   const trustHighlights = [
-    {
-      icon: ShieldCheck,
-      title: 'Know who is on the other side',
-      text: 'Review verified identity or business details before an important transaction moves forward.',
-    },
-    {
-      icon: Landmark,
-      title: 'Protect the transactions that matter',
-      text: 'Agree the terms, follow payment and delivery, and keep both sides in one shared record.',
-    },
-    {
-      icon: FileCheck,
-      title: 'Keep the full story',
-      text: 'Terms, receipts, milestones, approvals, and issue notes stay connected to the payment.',
-    },
+    'Return to payments and Protected Deals in progress',
+    'Keep identity, business, and evidence records together',
+    'Review your complete payment and deal activity',
   ];
 
   // Shared so the same trust points sit in the desktop side panel AND, on
   // mobile, in a card BELOW the form (split copy: intro up top, detail down low).
   const highlightsBlock = (
     <div className="grid gap-2.5 lg:gap-3">
-      {trustHighlights.map((item) => {
-        const Icon = item.icon;
-        return (
-          <div key={item.title} className="flex items-start gap-3 rounded-xl border border-border/70 bg-background/70 dark:bg-card dark:text-slate-300 p-3 shadow-sm backdrop-blur-sm lg:gap-4 lg:p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary lg:h-11 lg:w-11">
-              <Icon size={18} className="lg:hidden" />
-              <Icon size={22} className="hidden lg:block" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-foreground lg:text-base">{item.title}</h3>
-              <p className="mt-0.5 text-xs leading-5 text-muted-foreground lg:mt-1 lg:text-sm lg:leading-6">{item.text}</p>
-            </div>
+      {trustHighlights.map((item) => (
+          <div key={item} className="flex gap-3 rounded-xl border border-white/70 bg-white/70 p-4 text-sm leading-6 text-muted-foreground shadow-sm dark:border-white/10 dark:bg-card dark:text-slate-300">
+            <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
+            <span>{item}</span>
           </div>
-        );
-      })}
+      ))}
     </div>
   );
 
@@ -330,8 +307,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
             className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
           />
         </div>
-      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-0 px-4 py-8 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:gap-2 lg:px-8 xl:gap-3">
-        <aside className="flex-col hidden lg:flex justify-between rounded-2xl py-5 sm:p-8 lg:rounded-none lg:py-10">
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+        <aside className="auth-balanced-panel hidden flex-col justify-between rounded-2xl p-5 sm:p-8 lg:flex lg:rounded-none lg:p-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -346,22 +323,21 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               <NaitrustLogo size="postMd" textColor="text-primary" />
             </button>
 
-            <div className="max-w-md space-y-6 lg:space-y-8">
-              <div className="space-y-3 lg:space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
-                  <ShieldCheck size={15} />
-                  Trust for every side of the transaction
-                </div>
-                <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl xl:text-5xl">
+            <div className="max-w-md">
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
+                  Continue with confidence
+                </p>
+                <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
                   Welcome back. Pick up with confidence.
                 </h1>
-                <p className="text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:text-md xl:text-lg lg:leading-8">
+                <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                   Pay someone you trust, collect from a customer, or continue a Protected Deal with the full story still attached.
                 </p>
               </div>
 
               {/* Trust points: desktop side panel only; on mobile they appear below the form. */}
-              <div className="hidden lg:block">{highlightsBlock}</div>
+              <div className="mt-10 hidden lg:block">{highlightsBlock}</div>
             </div>
           </motion.div>
           <div className="mt-10 hidden text-sm leading-6 text-muted-foreground lg:block">
@@ -377,7 +353,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
         </aside>
 
           {/* Right side - Auth Forms */}
-        <main className="flex min-h-full items-center justify-center py-4 lg:justify-start lg:py-10">
+        <main className="auth-balanced-form flex min-h-full items-center justify-center py-4 lg:py-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

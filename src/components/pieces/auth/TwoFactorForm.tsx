@@ -21,7 +21,7 @@ interface TwoFactorFormProps {
 
 export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBack }: TwoFactorFormProps) {
   return (
-    <Card className="mx-auto w-full max-w-md sm:border-border/60 bg-card/95 sm:p-5 md:p-8 sm:shadow-2xl backdrop-blur-sm">
+    <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <button
         onClick={onBack}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6"

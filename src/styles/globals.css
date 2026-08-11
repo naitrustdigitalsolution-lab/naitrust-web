@@ -509,6 +509,32 @@ html:not(.dark) .naitrust-keep-white * {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* Keep both sides of split auth screens vertically balanced. Browser zooming
+   out increases the effective CSS viewport height; only very tall viewports
+   move both panels upward together. */
+@media (min-width: 1024px) {
+  .auth-balanced-panel {
+    align-self: center;
+  }
+
+  .auth-balanced-form {
+    align-self: center;
+    min-height: auto;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 1450px) {
+  .auth-balanced-panel {
+    align-self: start;
+  }
+
+  .auth-balanced-form {
+    align-self: start;
+  }
+}
 /* Shared public-page composition: stable in light and dark themes. */
 .bg-\[\#031335\] {
   background-image: url('/spiral.svg');

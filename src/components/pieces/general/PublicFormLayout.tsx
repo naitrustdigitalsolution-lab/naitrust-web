@@ -25,7 +25,7 @@ export function PublicFormLayout({
     <div className="relative min-h-screen overflow-hidden bg-white dark:bg-background">
       <div className="absolute inset-y-0 left-0 hidden w-[48%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[.92fr_1.08fr] lg:px-8">
-        <aside className="relative overflow-hidden rounded-3xl bg-[#eef3f8] dark:bg-[#0A0E1A] p-7 text-white sm:p-10 lg:rounded-none lg:bg-transparent">
+        <aside className="auth-balanced-panel relative overflow-hidden rounded-3xl bg-[#eef3f8] dark:bg-[#0A0E1A] p-7 text-white sm:p-10 lg:rounded-none lg:bg-transparent">
           <img
             src={spiralBackground}
             alt=""
@@ -58,7 +58,7 @@ export function PublicFormLayout({
             </div>
           </div>
         </aside>
-        <main className="flex items-center justify-center py-4 lg:py-10">
+        <main className="auth-balanced-form flex items-center justify-center py-4 lg:py-10">
           <div className="w-full max-w-xl rounded-3xl border bg-card p-6 shadow-2xl sm:p-9">
             {children}
           </div>

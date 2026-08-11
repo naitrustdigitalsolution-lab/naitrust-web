@@ -694,14 +694,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="relative overflow-hidden bg-[#071a32] py-12 sm:py-20 lg:py-28"
 
       >
-          <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
-          <img
-            src={spiralBackground}
-            alt=""
-            aria-hidden="true"
-            className="absolute right-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 opacity-100 sm:right-6 lg:right-8"
-          />
-        </div>
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid items-start gap-9 lg:grid-cols-2 lg:gap-12">
             <motion.div

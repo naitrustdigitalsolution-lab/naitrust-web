@@ -1,25 +1,106 @@
-# Naitrust — robots.txt
-# Public marketing pages are OPEN to all search engines and AI assistants so
-# the site can be found and cited. The authenticated app (/app) and the admin
-# console (/admin) are private and must never be indexed.
-#
-# NOTE: AI-crawler blocking (GPTBot, ClaudeBot, etc.) is NOT set here — if AI
-# assistants still can't read the site, disable "Block AI bots / AI Scrapers"
-# in the Cloudflare dashboard (Security → Bots), which appends its own rules.
+# Naitrust public pages may be discovered by search engines and AI services.
+# Authenticated, administrative, authentication, invitation, delivery, and
+# payment routes remain private. Access permission does not grant permission
+# to perform transactions or use private customer data.
 
 User-agent: *
 Allow: /
-# Private, authenticated areas — keep out of every index for security.
 Disallow: /app
 Disallow: /admin
-# Transient auth/verification flows — no SEO value.
+Disallow: /login
 Disallow: /verify-email
 Disallow: /verify-code
 Disallow: /forgot-password
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
 
-# AI assistants and answer engines inherit this public Allow rule and the
-# private-path exclusions above. Separate bot groups are intentionally avoided
-# because a more-specific group would stop inheriting the wildcard exclusions.
+# OpenAI search, training, and user initiated retrieval crawlers.
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /verify-email
+Disallow: /verify-code
+Disallow: /forgot-password
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /verify-email
+Disallow: /verify-code
+Disallow: /forgot-password
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /verify-email
+Disallow: /verify-code
+Disallow: /forgot-password
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+# Google's extended-use token covers Gemini model use; Googlebot covers Search.
+User-agent: Google-Extended
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /verify-email
+Disallow: /verify-code
+Disallow: /forgot-password
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+# Other major answer and assistant crawlers.
+User-agent: ClaudeBot
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /login
+Disallow: /invite/
+Disallow: /delivery/
+Disallow: /pay/
 
 Sitemap: https://naitrust.com/sitemap.xml
 Host: https://naitrust.com

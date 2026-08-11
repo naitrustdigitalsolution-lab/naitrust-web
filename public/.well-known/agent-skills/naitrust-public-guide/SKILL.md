@@ -1,12 +1,12 @@
 # Naitrust Public Guide
 
-Use this skill to help a person understand Naitrust's public information about safer transactions in Nigeria.
+Use this skill to help a person understand Naitrust's public information about payments, verified businesses, and Protected Deals in Nigeria.
 
 ## Allowed use
 
 - Read the homepage at https://naitrust.com/.
-- Explain the safe-deal workflow using https://naitrust.com/how-it-works.
-- Find an appropriate public use case through https://naitrust.com/use-cases.
+- Explain the Protected Deal workflow using https://naitrust.com/.
+- Explain how customers can find and review verified businesses using https://naitrust.com/customer.
 - Answer general product questions using https://naitrust.com/help and https://naitrust.com/faqs.
 - Refer users to https://naitrust.com/contact when they need assistance.
 

@@ -100,7 +100,19 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
   };
 
   return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10'}>
-    <SEOHead title={`${business.name} Trust Profile`} description={`Review verified business and transaction activity for ${business.name} on Naitrust.`} noindex />
+    <SEOHead
+      title={`${business.name} Trust Profile`}
+      description={`Review available verification information, completed deal activity, and customer feedback for ${business.name} on Naitrust.`}
+      canonicalPath={`/trust/${publicSlug}`}
+      structuredData={{
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: business.name,
+        url: `https://naitrust.com/trust/${publicSlug}`,
+        description: business.description,
+        address: business.address,
+      }}
+    />
     <div className="mx-auto max-w-5xl">
       <div className={`mb-5 flex items-center gap-3 ${embedded && !showBackToBusinesses ? 'justify-end' : 'justify-between'}`}>{embedded && showBackToBusinesses ? <Button size="sm" variant="ghost" className="rounded-full" onClick={() => navigate('/app/businesses')}><ArrowLeft size={14} /> Back to businesses</Button> : <span />} <div className="flex gap-2">{openedFromPayment && <Button size="sm" variant="ghost" className="rounded-full" onClick={returnToPayment}><ArrowLeft size={14} /> Back to payment</Button>}<Button size="sm" variant="outline" className="rounded-full bg-white" onClick={() => void copyProfile()}><Copy size={14} /> Share</Button></div></div>
       <Card className="overflow-hidden rounded-3xl border-0 shadow-[0_24px_70px_rgba(7,27,49,.12)]">

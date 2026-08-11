@@ -1,41 +1,33 @@
 # Naitrust
 
-> Naitrust is a Nigerian fintech platform for payments, participant verification, Trust Checkout, and Protected Transactions.
+> Naitrust is a Nigerian fintech platform for payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
 
-Naitrust is a fintech platform operated by Naitrust Digital Solutions Limited in Nigeria. Individuals and businesses can send and receive payments, check who they are dealing with, share trusted payment links, and create Protected Transactions. It supports person-to-person, customer-to-business, business-to-person, and business-to-business trade.
-
-Trust Checkout is Naitrust's shareable payment experience. It shows the recipient, verified facts, payment purpose, amount and expiry, then lets the customer pay directly when trust exists or choose a Protected Transaction when delivery, milestones or evidence remain outstanding.
+Naitrust is operated by Naitrust Digital Solutions Limited. It helps people and businesses find and review verified businesses, understand who they are dealing with, pay or get paid, and use a Protected Deal when delivery or fulfilment is still outstanding.
 
 Detailed product and brand context: https://naitrust.com/llms-full.txt
 
-When the parties already trust each other, they can make a normal payment. When they do not know each other well or delivery still matters, they can create a Protected Transaction that keeps participants, agreed terms, evidence, messages, milestones, delivery progress, and payment status together. The official website is https://naitrust.com/.
+## Core experiences
 
-## Core payment experiences
-
-- Send Money: instant payments to people and businesses the sender already trusts.
-- Receive Money: customer and personal payments through partner-issued account details presented inside Naitrust; businesses can also share payment links and QR codes.
-- Protected Payments: a shared workflow for important purchases, supplier orders, contractor work, or other transactions where the participants, terms, delivery, evidence, messages, milestones, and payment status should remain connected.
-- Trusted payment links: businesses can create clear payment requests that show customers who they are paying and what the payment is for.
-- Verification: identity and business information that helps participants understand who is on the other side of a transaction.
-- Trust Profile: a factual summary of observable Naitrust activity. It is not a credit score or guarantee.
-
-## Audiences
-
-- Customers and buyers who want to check a business, pay trusted recipients, or protect an important purchase.
-- Businesses that want to collect customer payments, pay suppliers, demonstrate credibility, and protect important orders.
+- Payments: send money to a person or business you already trust and receive money through payment infrastructure provided by regulated financial partners.
+- Verified businesses: find registered businesses, review available verification facts and Trust Profiles, then choose how to pay.
+- Protected Deals: Naitrust's protected transaction experience keeps participants, agreed terms, evidence, messages, delivery updates, and payment status together in one shared Deal Room.
+- Trust Profiles: factual summaries of available verification information, completed Naitrust activity, and eligible customer feedback. A Trust Profile is not a credit score or guarantee.
 
 ## Important facts
 
-- Naitrust manages the product experience, transaction workflow, participant record, and supporting evidence.
-- Regulated financial partners handle regulated funding and money movement.
-- Naitrust is a fintech technology and trust platform that works with regulated financial infrastructure providers.
-- Naitrust does not describe a Protected Transaction as risk-free or guaranteed.
-- Private authenticated routes under `/app` are not public documentation and must not be indexed.
+- Naitrust manages the product experience, participant context, Protected Deal workflow, and supporting records.
+- Regulated financial partners provide regulated account, funding, and money movement services where applicable. Naitrust does not directly hold customer funds.
+- A Protected Deal is not risk free and does not guarantee that a participant will perform as promised.
+- Milestone tracking and recurring deals are planned features and should not be described as currently available.
+- Private application pages and invitation, delivery, or payment links are not public documentation and must not be indexed or exposed.
 
 ## Public pages
 
 - Home: https://naitrust.com/
+- For customers: https://naitrust.com/customer
+- For businesses: https://naitrust.com/business
 - About: https://naitrust.com/about
+- Blog: https://naitrust.com/blog
 - Help: https://naitrust.com/help
 - FAQs: https://naitrust.com/faqs
 - Compliance: https://naitrust.com/compliance

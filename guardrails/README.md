@@ -4,5 +4,6 @@ These guardrails are the current product and implementation source of truth for 
 
 Read [product-guardrails.md](./product-guardrails.md) before changing authentication, Protected Deals, money movement, delivery, evidence, disputes, or payment-release behaviour.
 
-When code and this document disagree, stop and resolve the conflict deliberately. Do not silently weaken a financial or identity control to make a flow easier to complete.
+Read [seo/search-language-and-feature-claims.md](./seo/search-language-and-feature-claims.md) before adding SEO keywords, search landing pages, structured data, AI discovery content, or public feature claims.
 
+When code and this document disagree, stop and resolve the conflict deliberately. Do not silently weaken a financial or identity control to make a flow easier to complete.

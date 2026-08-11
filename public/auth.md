@@ -8,7 +8,7 @@ Agents may read and summarize Naitrust's public marketing, use-case, help, polic
 
 ## Authentication
 
-Naitrust's authenticated application is for human users. Agents must not attempt to create accounts, authenticate as users, initiate safe deals, submit verification information, or perform transaction actions programmatically.
+Naitrust's authenticated application is for human users. Agents must not attempt to create accounts, authenticate as users, initiate Protected Deals, submit verification information, or perform transaction actions programmatically.
 
 No OAuth authorization server, protected-resource metadata, dynamic client registration endpoint, or agent credential provisioning endpoint is currently available.
 

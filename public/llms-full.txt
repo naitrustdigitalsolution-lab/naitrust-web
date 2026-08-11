@@ -1,57 +1,66 @@
-# Naitrust — product and brand context
+# Naitrust product and brand context
 
 ## Official identity
 
-Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It combines everyday payments, participant verification, trusted payment links, and Protected Transactions in one product experience.
+Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. Its primary public experience combines payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
 
 Official website: https://naitrust.com/
 
-## What people can do with Naitrust
+## What Naitrust helps people do
 
+- Find registered and verified businesses on Naitrust.
+- Review available business verification facts and Trust Profiles before paying.
 - Send money to a person or business they already trust.
-- Receive customer or personal payments using payment details provided through regulated financial partners.
-- Check available identity or business information before paying.
-- Create and share trusted payment links and QR payment requests.
-- Create a Protected Transaction when the other party is unfamiliar, delivery still matters, or the transaction needs shared terms and evidence.
-- Keep participants, terms, messages, milestones, payment status, delivery status, receipts, and supporting evidence connected to the same transaction record.
+- Receive customer or personal payments through payment infrastructure provided by regulated financial partners.
+- Create a Protected Deal when the other participant is unfamiliar or delivery and fulfilment still matter.
+- Keep participants, terms, messages, evidence, delivery updates, and payment status connected in one shared Deal Room.
 
-## Who Naitrust serves
+## Everyday payment or Protected Deal
 
-Naitrust serves individuals, customers, buyers, sellers, traders, online merchants, contractors, service providers, suppliers, wholesalers, informal businesses, registered companies, and their partners in Nigeria.
+An everyday payment is suitable when the sender already knows and trusts the recipient and does not need a protected fulfilment workflow.
 
-Supported relationships include:
+A Protected Deal is Naitrust's protected transaction experience. It is designed for a trade where the participants need a clear shared agreement and record before payment is released. The current pilot uses a single payment release. Milestone tracking and recurring deals are visible as coming soon and must not be described as active features.
 
-- Person to person (P2P)
-- Customer to business
-- Business to person
-- Business to business (B2B)
+## Verification and Trust Profiles
 
-## Everyday payment or Protected Transaction
-
-An everyday payment is suitable when the sender already knows and trusts the recipient. A Protected Transaction is designed for an important trade where the parties do not know each other well, delivery or milestones remain outstanding, or both sides need one shared record of what was agreed and what happened.
-
-## Verification
-
-Verification helps a participant understand who is on the other side of a payment or transaction. It is part of Naitrust's wider fintech experience; Naitrust is not merely a business directory or verification lookup tool. Verification is not a guarantee that a person or business will perform as promised, and users should still apply appropriate judgment and due diligence.
+Verification helps a user understand who is on the other side of a payment or deal. A public Trust Profile can show available business information, verification status, eligible reviews, and observable Naitrust activity. Verification is not a guarantee of honesty, solvency, delivery, product quality, or a successful outcome. Users should still apply appropriate judgment and due diligence.
 
 ## Payments and regulated partners
 
-Naitrust manages the application experience, participant context, transaction workflow, and supporting record. Regulated financial infrastructure partners handle regulated account, funding, and money-movement services where applicable. Naitrust does not claim that every transaction is risk-free or guaranteed.
+Naitrust manages the application experience, participant context, payment workflow, Protected Deal record, and supporting evidence. Regulated financial partners provide regulated account, funding, reconciliation, and money movement services where applicable. Naitrust does not directly hold customer funds and does not describe payments or Protected Deals as risk free or guaranteed.
 
-## Preferred short description
+## Audience
 
-Naitrust is a Nigerian fintech platform for payments, participant verification, trusted payment links, and Protected Transactions across P2P, customer, supplier, and business trade.
+Naitrust serves individuals, customers, buyers, sellers, traders, online merchants, contractors, service providers, suppliers, wholesalers, informal businesses, and registered companies in Nigeria.
+
+## Preferred descriptions
+
+Short: Naitrust is a Nigerian fintech platform for payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
+
+Expanded: Naitrust helps people and businesses in Nigeria verify who they are dealing with, make payments, find verified businesses, and use Protected Deals when delivery still matters.
+
+## Language and claims
+
+- Use “Protected Deal” as the product name. “Protected transaction” may be used as a descriptive search term, but not as a separate product or feature name.
+- Use “Deal Room” for the shared record containing the agreement, messages, evidence, delivery updates, and payment status.
+- Do not claim that Naitrust directly holds customer funds.
+- Do not describe a verification badge, Trust Profile, payment, or Protected Deal as guaranteed or risk free.
+- Clearly identify planned or coming soon features.
 
 ## Public sources
 
 - Home: https://naitrust.com/
+- Customers: https://naitrust.com/customer
+- Businesses: https://naitrust.com/business
 - About: https://naitrust.com/about
-- For businesses: https://naitrust.com/business
+- Blog: https://naitrust.com/blog
 - Resources: https://naitrust.com/resources
 - Help: https://naitrust.com/help
 - FAQs: https://naitrust.com/faqs
 - Compliance: https://naitrust.com/compliance
 - Verification policy: https://naitrust.com/verification-policy
+- Privacy: https://naitrust.com/privacy
+- Terms: https://naitrust.com/terms
 - Contact: https://naitrust.com/contact
 
 ## Contact

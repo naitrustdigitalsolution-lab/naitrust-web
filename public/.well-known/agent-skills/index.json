@@ -4,9 +4,9 @@
     {
       "name": "naitrust-public-guide",
       "type": "skill-md",
-      "description": "Guidance for explaining Naitrust's public safe-deal information while respecting transaction and identity safety boundaries.",
+      "description": "Guidance for explaining Naitrust payments, verified businesses, and Protected Deals while respecting transaction and identity safety boundaries.",
       "url": "https://naitrust.com/.well-known/agent-skills/naitrust-public-guide/SKILL.md",
-      "digest": "sha256:8b0841c6a21c93851b6070e61576ff2c37e37fe5bcfb94fe0b8615759eaf7169"
+      "digest": "sha256:ff7c04617b76d196dcc4ddb65fe163ead4211e515490afa5f970cdf68bae7d24"
     }
   ]
 }

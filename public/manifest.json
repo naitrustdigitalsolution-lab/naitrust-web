@@ -1,7 +1,7 @@
 {
-  "name": "Naitrust — Payments and Protected Transactions",
+  "name": "Naitrust: Payments and Protected Deals",
   "short_name": "Naitrust",
-  "description": "A Nigerian fintech app for payments, participant verification, trusted payment links, and Protected Transactions.",
+  "description": "A Nigerian fintech app for payments, verified business discovery, participant verification, and Protected Deals for protected transactions.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -34,15 +34,6 @@
   "iarc_rating_id": "",
   "prefer_related_applications": false,
   "related_applications": [],
-  "screenshots": [
-    {
-      "src": "/screenshots/homepage.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "platform": "wide",
-      "label": "Naitrust Homepage"
-    }
-  ],
   "shortcuts": [
     {
       "name": "Dashboard",
@@ -52,9 +43,9 @@
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Create a Protected Transaction",
+      "name": "Create a Protected Deal",
       "short_name": "Protect",
-      "description": "Create a protected transaction with shared terms and payment status",
+      "description": "Create a Protected Deal with shared terms, evidence, delivery updates, and payment status",
       "url": "/app/deals/new",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },

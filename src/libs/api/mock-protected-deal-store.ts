@@ -153,6 +153,16 @@ export function saveMockCreatedDeal(deal: MockCreatedDeal): void {
   writeState(state);
 }
 
+export function deleteMockCreatedDeal(dealId: string): boolean {
+  const state = readState();
+  const nextDeals = state.createdDeals.filter((deal) => deal.summary.id !== dealId);
+  if (nextDeals.length === state.createdDeals.length) return false;
+  state.createdDeals = nextDeals;
+  delete state.deals[dealId];
+  writeState(state);
+  return true;
+}
+
 export function updateMockCreatedDeal(dealId: string, update: (deal: MockCreatedDeal) => MockCreatedDeal): MockCreatedDeal | undefined {
   const state = readState();
   const index = state.createdDeals.findIndex((deal) => deal.summary.id === dealId);

@@ -11,13 +11,36 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { DealDispute, DisputeMessage } from '../store/types';
-import { blockDeliveryRelease } from './delivery-review.mock';
+import { blockDeliveryRelease, reconcileDeliveryLifecycle } from './delivery-review.mock';
 import { addBusinessDays } from 'date-fns';
+import mockTransactions from '../../mocks/apis/transactions.json';
+import type { SafeDealStatus, SafeDealSummary } from '../store/types';
+import { findMockCreatedDeal, getMockDealRuntime } from './mock-protected-deal-store';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 const disputes: Record<string, DealDispute> = {};
+
+const FUNDED_STATUSES: SafeDealStatus[] = ['funded', 'in_progress', 'evidence_submitted', 'buyer_review', 'disputed'];
+const CLOSED_STATUSES: SafeDealStatus[] = ['release_approved', 'paid_out', 'completed', 'refunded', 'cancelled'];
+
+function assertMockDisputeEligible(dealId: string): void {
+  if (ensure(dealId)) throw new Error('A dispute already exists for this deal.');
+  const created = findMockCreatedDeal(dealId)?.summary;
+  const seeded = ((mockTransactions as ApiSuccess<SafeDealSummary[]>).data).find((deal) => deal.id === dealId);
+  const summary = created ?? seeded;
+  if (!summary) throw new Error('This deal could not be found.');
+  const runtime = getMockDealRuntime(dealId);
+  const status = runtime?.status ?? summary.status;
+  const fundingReview = reconcileDeliveryLifecycle(dealId).fundingReview.status;
+  if (CLOSED_STATUSES.includes(status) || fundingReview === 'release_approved' || fundingReview === 'paid_out') {
+    throw new Error('The Naitrust payment-dispute window is closed for this deal.');
+  }
+  if (!FUNDED_STATUSES.includes(status)) {
+    throw new Error('A dispute can be opened after the protected payment is received.');
+  }
+}
 
 export function activateDisputeWithEvidence(dealId: string): void {
   const dispute = disputes[dealId];
@@ -83,6 +106,11 @@ export const disputeApi = {
   ): Promise<ApiSuccess<DealDispute>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      assertMockDisputeEligible(dealId);
+      const delivery = reconcileDeliveryLifecycle(dealId);
+      if (delivery.fundingReview.status === 'release_approved' || delivery.fundingReview.status === 'paid_out') {
+        throw new Error('This payment has already been released. A Naitrust payment dispute can no longer be opened for it.');
+      }
       const openedAt = new Date();
       const dispute: DealDispute = {
         dealId,

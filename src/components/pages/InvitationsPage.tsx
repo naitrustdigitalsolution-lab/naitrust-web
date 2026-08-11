@@ -45,8 +45,8 @@ function LoadingRows() {
 
 function EmptyState() {
   return (
-    <Card className="flex flex-col items-center gap-3 border-[#071b31]/10 bg-[#c4e9fdb3] p-10 text-center text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/65 text-primary dark:bg-primary/10">
+    <Card className="flex flex-col items-center gap-3 border-0 bg-transparent p-10 text-center text-[#071b31] shadow-none dark:bg-transparent dark:text-foreground">
+      <div className="flex h-12 w-12 items-center justify-center text-primary">
         <Inbox size={24} />
       </div>
       <p className="font-semibold text-[#071b31] dark:text-foreground">No invitations right now</p>

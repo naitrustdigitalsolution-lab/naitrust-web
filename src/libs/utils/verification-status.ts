@@ -19,7 +19,7 @@ export function getVerificationBannerState(user: User | null): VerificationBanne
     return {
       kind: 'verify-email',
       title: 'Verify your email',
-      message: 'Confirm your email address to unlock safe deals and protected funding.',
+      message: 'Confirm your email address to unlock Protected Deals and protected funding.',
     };
   }
 

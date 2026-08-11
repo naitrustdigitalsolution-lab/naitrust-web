@@ -28,6 +28,7 @@ interface LivenessCheckModalProps {
   onCancel?: () => void;
   reason?: string;
   footerText?: string;
+  shareNotice?: string;
 }
 
 export interface LivenessCapture {
@@ -47,11 +48,13 @@ export function LivenessCheckModal({
   onCancel,
   reason = 'For your security, confirm it is really you before continuing.',
   footerText = 'General account liveness is refreshed every six months.',
+  shareNotice,
 }: LivenessCheckModalProps) {
   const { patch, setLivenessPhoto } = useSecurity();
   const [phase, setPhase] = useState<Phase>('intro');
   const [lighting, setLighting] = useState<Lighting>('good');
   const [faceDetected, setFaceDetected] = useState(false);
+  const [shareAcknowledged, setShareAcknowledged] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -72,6 +75,7 @@ export function LivenessCheckModal({
       setPhase('intro');
       setFaceDetected(false);
       setLighting('good');
+      setShareAcknowledged(false);
     }
     return cleanup;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -289,7 +293,13 @@ export function LivenessCheckModal({
                 hats or sunglasses. We'll tell you if the lighting or framing needs adjusting.
               </p>
             </div>
-            <Button className="w-full rounded-md" onClick={() => setPhase('starting')}>
+            {shareNotice && (
+              <label className="flex w-full cursor-pointer items-start gap-3 rounded-xl border border-primary/20 bg-primary/[0.05] p-3 text-xs leading-5 text-foreground">
+                <input type="checkbox" checked={shareAcknowledged} onChange={(event) => setShareAcknowledged(event.target.checked)} className="mt-0.5 h-4 w-4 accent-primary" />
+                <span>{shareNotice}</span>
+              </label>
+            )}
+            <Button className="w-full rounded-md" disabled={Boolean(shareNotice) && !shareAcknowledged} onClick={() => setPhase('starting')}>
               <Camera size={16} className="mr-1.5" />
               Open camera
             </Button>

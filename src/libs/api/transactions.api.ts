@@ -14,7 +14,7 @@ import { appConfig } from '../../configs/env';
 import type { CreateSafeDealInput, CreateSafeDealResult, SafeDealSummary } from '../store/types';
 import mockTransactions from '../../mocks/apis/transactions.json';
 import type { ApiSuccess } from './types';
-import { getMockDealRuntime, listMockCreatedDeals, patchMockDealRuntime, saveMockCreatedDeal, updateMockCreatedDeal } from './mock-protected-deal-store';
+import { deleteMockCreatedDeal, getMockDealRuntime, listMockCreatedDeals, patchMockDealRuntime, saveMockCreatedDeal, updateMockCreatedDeal } from './mock-protected-deal-store';
 import { notificationsApi } from './notifications.api';
 import { mockCreatedDealRoleContext, mockDealPartyLabel, mockParticipantUserId } from './mock-deal-participants';
 import { useAuthStore } from '../store/auth.store';
@@ -26,8 +26,31 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function assertSingleReleasePilot(input: CreateSafeDealInput): void {
+  if (input.dealType !== 'single') {
+    throw new Error('Milestone tracking and recurring deals are coming soon. Use Single release for this pilot.');
+  }
+  if (input.remainingPaymentMinor || input.nextPaymentReleaseConditions || input.extendedProductTestingDays) {
+    throw new Error('Split releases and extended testing periods are not available during the Single release pilot.');
+  }
+}
+
 export const transactionsApi = {
+  deleteUnacceptedTransaction: async (id: string): Promise<ApiSuccess<{ id: string }>> => {
+    if (appConfig.isMock) {
+      await delay(MOCK_LATENCY_MS);
+      const userId = useAuthStore.getState().user?.id;
+      const deal = listMockCreatedDeals().find((item) => item.summary.id === id);
+      const status = getMockDealRuntime(id)?.status ?? deal?.summary.status;
+      if (!deal || !userId || deal.summary.createdByUserId !== userId) throw new Error('Only the deal creator can delete this invitation.');
+      if (!['pending_counterparty', 'terms_negotiation'].includes(status ?? '')) throw new Error('This deal has already been accepted and must be terminated by agreement.');
+      deleteMockCreatedDeal(id);
+      return { success: true, data: { id }, message: 'Deal deleted' };
+    }
+    return await httpClient.delete<{ id: string }>(`/transactions/${id}`) as ApiSuccess<{ id: string }>;
+  },
   updateTransaction: async (id: string, input: CreateSafeDealInput): Promise<ApiSuccess<CreateSafeDealResult>> => {
+    assertSingleReleasePilot(input);
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
@@ -98,6 +121,7 @@ export const transactionsApi = {
    * In mock mode returns a freshly-created summary in `pending_counterparty`.
    */
   createTransaction: async (input: CreateSafeDealInput): Promise<ApiSuccess<CreateSafeDealResult>> => {
+    assertSingleReleasePilot(input);
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const now = new Date();
@@ -128,7 +152,7 @@ export const transactionsApi = {
         publicInvitePath: `/invite/${token}`,
       };
       saveMockCreatedDeal({ summary, input });
-      return { success: true, data: summary, message: 'Safe deal created' };
+      return { success: true, data: summary, message: 'Protected Deal created' };
     }
     const response = await httpClient.post<CreateSafeDealResult>(endpoints.transactions.create, input);
     return response as ApiSuccess<CreateSafeDealResult>;

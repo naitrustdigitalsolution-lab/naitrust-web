@@ -157,10 +157,12 @@ export function PublicBusinessPaymentPage() {
       <SEOHead title={`Pay ${businessName}`} description={`Make a verified bank transfer to ${businessName} with Naitrust.`} noindex />
       <img src={spiralBackground} alt="" aria-hidden="true" className="pointer-events-none absolute -right-48 -top-40 w-[42rem] opacity-[0.055] dark:opacity-[0.035]" />
       <div className="relative mx-auto max-w-xl">
-        <div className="mb-7 flex justify-center"><NaitrustLogo /></div>
-
         <Card className="overflow-hidden rounded-3xl border-0 shadow-xl shadow-slate-950/10">
           <div className="bg-[#071b31] px-6 py-7 text-center text-white">
+            <div className="mb-6 flex items-center justify-between gap-3 text-left">
+              <button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80"><NaitrustLogo size="sm" textColor="text-white" /></button>
+              <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Secure payment</Badge>
+            </div>
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-xl font-bold text-[#071b31] shadow-lg">
               {initials || <Store />}
             </div>

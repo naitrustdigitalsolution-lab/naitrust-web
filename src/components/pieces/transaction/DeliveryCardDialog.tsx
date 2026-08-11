@@ -47,7 +47,7 @@ export function DeliveryCardDialog({
         <DialogHeader>
           <DialogTitle>Delivery card</DialogTitle>
           <DialogDescription>
-            Attach this one-time card to the parcel or give it to the delivery agent or person. The buyer verifies it only with the product physically present. Regenerating it invalidates this code.
+            Attach this single use card to the parcel or give it to the delivery agent or person. The buyer verifies it only with the product physically present. Regenerating it invalidates this code.
           </DialogDescription>
         </DialogHeader>
 

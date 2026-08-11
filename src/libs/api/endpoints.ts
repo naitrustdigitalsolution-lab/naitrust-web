@@ -31,6 +31,8 @@ export const endpoints = {
     submitKyc: '/security/kyc',
     setPin: '/security/pin/set',
     verifyPin: '/security/pin/verify',
+    dealIdentityCapture: '/security/liveness/deal-captures',
+    dealIdentityCaptureView: (dealId: string, captureId: string) => `/transactions/${dealId}/identity-captures/${captureId}/view`,
   },
 
   businesses: {
@@ -78,6 +80,7 @@ export const endpoints = {
     getOne: (id: string) => `/invitations/${id}`,
     accept: (id: string) => `/invitations/${id}/accept`,
     decline: (id: string) => `/invitations/${id}/decline`,
+    resend: (id: string) => `/invitations/${id}/resend`,
     publicPreview: (token: string) => `/invitations/public/${token}`,
     claim: (token: string) => `/invitations/public/${token}/claim`,
   },

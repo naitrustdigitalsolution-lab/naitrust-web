@@ -57,6 +57,12 @@ Do not alternate between Protected Deal, Protected Purchase, Protected Transacti
 - When the 24-hour period expires, preserve the draft but require a new capture before creation.
 - Validate liveness freshness again on the backend at submission time. A frontend gate alone is insufficient.
 - Production images must be encrypted and access-controlled. The client should retain an opaque capture reference, not use browser storage as the system of record.
+- Before capture, tell the actor that the other verified deal participant can view the deal-specific photo and require acknowledgement.
+- Unauthenticated invitation previews may show only that liveness passed, the representative name, and capture time; they must never expose the image or a retrievable image URL.
+- Authenticated intended recipients may view the creator capture, and accepted participants may view the other party's capture in the Deal Room through short-lived authorised access.
+- Watermark every participant-visible image with the deal reference, representative name, and capture time, and log every view.
+- Participant photo access ends 90 days after deal closure unless a dispute, investigation, regulatory requirement, or legal hold applies. Preserve only required verification and audit metadata afterward.
+- Deal-specific captures are not profile photos and must never be reused across deals.
 
 ## 4. Authentication and Session Security
 
@@ -69,10 +75,10 @@ Do not alternate between Protected Deal, Protected Purchase, Protected Transacti
 
 ## 5. Deal Creation
 
-- Always show all supported “How should it run?” options; do not silently assume the recommended option.
-- Highlight **Recommended** only on the option appropriate to the selected use case.
-- Supported concepts include single release, milestone tracking, and recurring deal.
-- The creator may choose the standard 24-hour delivery review period or an available extended period.
+- Under **Payment release setup**, show Single release as selected and **Recommended**.
+- Keep milestone tracking and recurring deal visible but disabled and labelled **Coming soon** during the pilot.
+- Frontend and backend must reject new milestone, recurring, split-release, or extended-testing deal payloads during the pilot.
+- During the single-release pilot, the payment review is one hour and extended testing periods are unavailable.
 - The review period controls Naitrust’s release workflow; it does not remove statutory, warranty, return, or consumer rights.
 - Deal categories must be understandable and realistic. Default examples include product purchase, supplier stock, wholesale order, service or repair, contractor/project, vehicle, property payment, and something else.
 - Do not classify every ordinary product purchase as high-risk merely because it is a product.
@@ -92,7 +98,9 @@ Do not alternate between Protected Deal, Protected Purchase, Protected Transacti
 - The seller cannot generate a delivery card until the required seller-evidence checklist is complete.
 - Entering the delivery code means the item was physically received. It does not mean the item was accepted as fault-free.
 - The ten-minute handover check and delivery review period control payment release only.
-- The standard delivery review period is 24 hours unless both parties accepted an available extension.
+- The one-hour payment review starts when the buyer confirms the handover early or when the issue-free ten-minute handover check expires.
+- At the review deadline, the backend may authorize automatic release only when no evidence-backed issue, dispute freeze, or approved risk control blocks it.
+- After payment release, disable Naitrust payment-dispute creation for that payment while preserving statutory, warranty, fraud-reporting, and other legal rights.
 
 ## 8. Buyer Evidence and Issues
 

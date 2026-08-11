@@ -29,7 +29,7 @@ function seedThread(dealId: string, counterpartyName: string): DealMessage[] {
       senderId: 'party_cp',
       senderName: counterpartyName,
       isYou: false,
-      body: 'Hi: thanks for setting up the safe deal. I can start once funding is confirmed.',
+      body: 'Hi, thanks for setting up the Protected Deal. I can start once funding is confirmed.',
       createdAt: new Date(base).toISOString(),
     },
     {

@@ -11,11 +11,18 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { DealTermination } from '../store/types';
+import { patchMockDealRuntime } from './mock-protected-deal-store';
+import { useAuthStore } from '../store/auth.store';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 const terminations: Record<string, DealTermination> = {};
+const terminationRequesterIds: Record<string, string | undefined> = {};
+
+function forCurrentViewer(termination: DealTermination): DealTermination {
+  return { ...termination, requestedByYou: terminationRequesterIds[termination.dealId] === useAuthStore.getState().user?.id };
+}
 
 export const terminationApi = {
   /** GET the current termination request for a deal (or null). */
@@ -23,7 +30,7 @@ export const terminationApi = {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
       const t = terminations[dealId];
-      return { success: true, data: t ? structuredClone(t) : null };
+      return { success: true, data: t ? structuredClone(forCurrentViewer(t)) : null };
     }
     const res = await httpClient.get<DealTermination | null>(endpoints.transactions.termination(dealId));
     return res as ApiSuccess<DealTermination | null>;
@@ -42,7 +49,8 @@ export const terminationApi = {
         createdAt: new Date().toISOString(),
       };
       terminations[dealId] = t;
-      return { success: true, data: structuredClone(t) };
+      terminationRequesterIds[dealId] = useAuthStore.getState().user?.id;
+      return { success: true, data: structuredClone(forCurrentViewer(t)) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.termination(dealId), { reason });
     return res as ApiSuccess<DealTermination>;
@@ -68,7 +76,8 @@ export const terminationApi = {
         responseReason: input.accept ? undefined : input.reason,
       };
       terminations[dealId] = next;
-      return { success: true, data: structuredClone(next) };
+      if (input.accept) patchMockDealRuntime(dealId, { status: 'cancelled' });
+      return { success: true, data: structuredClone(forCurrentViewer(next)) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.respondToTermination(dealId), input);
     return res as ApiSuccess<DealTermination>;

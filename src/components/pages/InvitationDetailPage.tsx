@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, Check, Loader2, ScanFace, ShieldCheck, X } from 'lucide-react';
+import { ArrowLeft, Check, Eye, Loader2, ScanFace, ShieldCheck, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
@@ -26,6 +26,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from '../ui/textarea';
 import Spinner from '../ui/spinner';
 import { useInvitation, useRespondToInvitation } from '../../hooks/useInvitations';
+import { useAuth } from '../../libs/auth-context';
+import { bindMockDealIdentityCapture, registerMockDealIdentityCapture } from '../../libs/api/deal-identity-captures.mock';
+import { viewMockDealIdentityCapture, type DealIdentityCaptureView } from '../../libs/api/deal-identity-captures.mock';
 import {
   formatMinorAmount,
   partyModeLabel,
@@ -39,16 +42,19 @@ function CenteredCard({ children }: { children: React.ReactNode }) {
 export function InvitationDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: invitation, isLoading, isError } = useInvitation(id);
   const respond = useRespondToInvitation();
   const [agreementAccepted, setAgreementAccepted] = useState(false);
   const [livenessOk, setLivenessOk] = useState(false);
   const [livenessVerifiedAt, setLivenessVerifiedAt] = useState<string>();
+  const [livenessCaptureId, setLivenessCaptureId] = useState<string>();
   const [showLiveness, setShowLiveness] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [showDecline, setShowDecline] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
   const [declineMode, setDeclineMode] = useState<'choose' | 'changes' | 'decline'>('choose');
+  const [identityPhoto, setIdentityPhoto] = useState<DealIdentityCaptureView>();
 
   // Prompt a liveness check when the user opens a live invitation without a
   // fresh check: a photo of who is accepting, for the counterparty's records.
@@ -59,8 +65,9 @@ export function InvitationDetailPage() {
   const runResponse = async (action: 'accepted' | 'changes_requested' | 'declined', reason?: string) => {
     if (!id) return;
     try {
-      await respond.mutateAsync({ id, action, reason, livenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined });
+      await respond.mutateAsync({ id, action, reason, livenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined, livenessCaptureId: action === 'accepted' ? livenessCaptureId : undefined });
       if (action === 'accepted') {
+        if (livenessCaptureId) bindMockDealIdentityCapture(livenessCaptureId, id);
         toast.success('Invitation accepted. Opening the deal room.');
         navigate(`/app/deals/${id}`, { replace: true });
       } else if (action === 'changes_requested') {
@@ -94,12 +101,15 @@ export function InvitationDetailPage() {
       <LivenessCheckModal
         open={showLiveness}
         onOpenChange={setShowLiveness}
-        onVerified={() => {
-          setLivenessVerifiedAt(new Date().toISOString());
+        onVerified={(capture) => {
+          if (user?.id && id) registerMockDealIdentityCapture({ captureId: capture.captureId, scopeId: id, subjectUserId: user.id, representativeName: user.name ?? 'Deal representative', action: 'deal_accepted', capturedAt: capture.capturedAt, photoDataUrl: capture.photoDataUrl });
+          setLivenessVerifiedAt(capture.capturedAt);
+          setLivenessCaptureId(capture.captureId);
           setLivenessOk(true);
           setShowLiveness(false);
         }}
         reason="You have a new invitation. We'll take a live photo to confirm it is really you. It is linked to this deal for both parties' records."
+        shareNotice="I understand that the other verified participant can view this live photo for the deal after I accept."
         footerText="Every deal acceptance requires a new liveness check recorded with that action."
       />
       <PinPromptModal
@@ -204,6 +214,23 @@ export function InvitationDetailPage() {
               <p className="mt-1 text-xs text-muted-foreground">Reference {invitation.reference}</p>
             </div>
 
+            <div className="rounded-xl border p-4">
+              <div className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ScanFace size={19} /></span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2"><p className="text-sm font-semibold">Deal representative</p><Badge variant="success">Live identity confirmed</Badge></div>
+                  <p className="mt-1 text-sm font-medium">{invitation.creatorIdentityCapture?.representativeName ?? invitation.fromName}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Created this deal{invitation.creatorIdentityCapture?.capturedAt ? ` · ${new Date(invitation.creatorIdentityCapture.capturedAt).toLocaleString()}` : ''}</p>
+                  {invitation.creatorIdentityCapture?.photoAvailable ? (
+                    <Button type="button" variant="outline" size="sm" className="mt-3 rounded-full" onClick={() => {
+                      try { setIdentityPhoto(viewMockDealIdentityCapture(invitation.id, invitation.creatorIdentityCapture!.captureId)); }
+                      catch (error) { toast.error(error instanceof Error ? error.message : 'Photo unavailable.'); }
+                    }}><Eye size={14} /> View live identity photo</Button>
+                  ) : <p className="mt-2 text-xs text-muted-foreground">Photo for this deal is not available.</p>}
+                </div>
+              </div>
+            </div>
+
             {invitation.message && (
               <div>
                 <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -224,7 +251,7 @@ export function InvitationDetailPage() {
                     className="mt-0.5"
                   />
                   <span className="text-sm leading-6 text-foreground">
-                    I have read the Naitrust safe-deal agreement above and agree to its terms as
+                    I have read the Naitrust Protected Deal agreement above and agree to its terms as
                     the {roleLabel(invitation.yourRole)}.
                   </span>
                 </label>
@@ -286,6 +313,12 @@ export function InvitationDetailPage() {
           </Card>
         )}
       </CenteredCard>
+      <Dialog open={Boolean(identityPhoto)} onOpenChange={(open) => !open && setIdentityPhoto(undefined)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader><DialogTitle>Live identity for this deal</DialogTitle><DialogDescription>This photo was captured for this deal and is not a reusable profile photo.</DialogDescription></DialogHeader>
+          {identityPhoto && <div className="relative overflow-hidden rounded-2xl bg-muted"><img src={identityPhoto.photoDataUrl} alt={`${identityPhoto.representativeName} live identity capture for this deal`} className="aspect-[4/3] w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-black/65 px-3 py-2 text-[11px] text-white">{identityPhoto.watermark}</div></div>}
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

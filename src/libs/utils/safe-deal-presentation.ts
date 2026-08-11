@@ -112,6 +112,21 @@ export function formatMinorAmount(amountMinor: number, currency: string): string
 }
 
 /**
+ * Parse a user-entered major-unit amount without binary floating-point maths.
+ * `Number(value) * 100` can turn exact-looking values into a neighbouring
+ * integer once several calculations are combined. Money enters the ledger as
+ * an integer number of minor units, so build that integer from the text.
+ */
+export function parseMajorAmountToMinor(value: string | number): number {
+  const normalized = String(value).trim().replace(/[₦,\s]/g, '');
+  const match = normalized.match(/^(\d+)(?:\.(\d{0,2}))?$/);
+  if (!match) return 0;
+  const minor = (BigInt(match[1]) * 100n) + BigInt((match[2] ?? '').padEnd(2, '0'));
+  const result = Number(minor);
+  return Number.isSafeInteger(result) ? result : 0;
+}
+
+/**
  * Compact currency for dense UI (stat-tile subtext, chart axis ticks).
  * e.g. formatMinorAmountCompact(45000000, 'NGN') → "₦450K"
  */

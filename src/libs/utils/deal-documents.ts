@@ -215,6 +215,6 @@ export async function downloadDeliveryCardPdf(input: DeliveryCardDocumentInput):
   pdf.text('Confirming receipt starts product checks. It does not release payment or waive defect or consumer rights.', 58, 619, { maxWidth: 475 });
   pdf.setTextColor('#94a3b8');
   pdf.setFontSize(9);
-  pdf.text('This one-time card is valid only for the intended buyer account and becomes invalid after use, expiry or regeneration.', 48, 700, { maxWidth: 500 });
+  pdf.text('This single use card is valid only for the intended buyer account and becomes invalid after use, expiry or regeneration.', 48, 700, { maxWidth: 500 });
   pdf.save(`naitrust-delivery-${slug(input.reference)}.pdf`);
 }

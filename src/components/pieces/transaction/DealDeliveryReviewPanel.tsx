@@ -22,10 +22,8 @@ import {
 } from "../../../hooks/useDealDetail";
 import {
   fundingReviewLabel,
-  hasRequiredProductEvidence,
   isDeliveryCardStatusEligible,
   isPilotRestrictedDelivery,
-  requiredProductEvidence,
   supportsDeliveryReview,
 } from "../../../libs/protected-deals/delivery-review";
 import type { SafeDealDetail } from "../../../libs/store/types";
@@ -72,16 +70,19 @@ export function DealDeliveryReviewPanel({
   const delivery = deal.delivery;
   const card = delivery.card;
   const requiresInsurance = isPilotRestrictedDelivery(deal.amountMinor, deal.useCase);
-  const hasDeliveryInsurance = deal.evidence.some((item) => item.kind === 'Delivery insurance');
-  const evidenceChecklist = requiredProductEvidence(deal.evidence);
-  const evidenceReady = hasRequiredProductEvidence(deal.evidence);
   const confirmQr = useConfirmReceiptByToken(card?.token, deal.id);
   const canGenerate =
     isSeller &&
     deal.funding.status === "funded" &&
     isDeliveryCardStatusEligible(deal.status) &&
-    evidenceReady &&
     delivery.handover.status === "not_started";
+  const deliveryCardBlockedReason = deal.funding.status !== 'funded'
+    ? 'Available after the protected payment is received.'
+    : !isDeliveryCardStatusEligible(deal.status)
+      ? 'Delivery cards are unavailable at this stage of the deal.'
+      : delivery.handover.status !== 'not_started'
+        ? 'The delivery handover has already started.'
+        : '';
   const showFeature =
     supportsDeliveryReview(deal.useCase) ||
     delivery.handover.status !== "not_started" ||
@@ -196,40 +197,18 @@ export function DealDeliveryReviewPanel({
             </p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
               Attach the delivery card to the parcel or give it to the delivery agent or person.
-              The buyer must scan its QR code or enter its one-time PIN while the product is physically present.
+              The buyer must scan its QR code or enter its single use PIN while the product is physically present.
             </p>
             {!card && (
               <div className="mt-4 rounded-xl border bg-muted/30 p-3">
-                <p className="text-xs font-semibold">Seller proof required before dispatch and delivery-code creation</p>
+                <p className="text-xs font-semibold">Add seller proof (optional)</p>
                 <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
-                  Add a relevant photo, video, or document for each applicable item. If an item does not apply, mark it Not applicable and give a reason.
+                  One relevant photo, video, or document can help the buyer understand the item and its condition before dispatch. This does not affect delivery-card availability.
                 </p>
-                <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                  {evidenceChecklist.map((item) => (
-                    <button
-                      key={item.kind}
-                      type="button"
-                      disabled={item.complete}
-                      onClick={() => onUploadEvidence(item.kind)}
-                      className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 text-left text-xs disabled:cursor-default"
-                    >
-                      {item.complete ? (
-                        <CheckCircle2 size={14} className="shrink-0 text-emerald-600" />
-                      ) : (
-                        <Upload size={14} className="shrink-0 text-amber-600" />
-                      )}
-                      <span>{item.kind}</span>
-                    </button>
-                  ))}
-                </div>
+                <Button type="button" size="sm" variant="outline" className="mt-2 h-8 rounded-full text-xs" onClick={() => onUploadEvidence('Photo')}><Upload size={13} />Upload proof</Button>
                 {requiresInsurance && (
                   <div className="mt-3 rounded-lg bg-amber-500/10 p-3 text-[11px] leading-4 text-amber-800 dark:text-amber-200">
-                    <p>High-value or fragile delivery: appropriate courier insurance is recommended but does not block this deal. Without it, parcel loss or damage may not be recoverable beyond the protected payment.</p>
-                    {!hasDeliveryInsurance && (
-                      <Button type="button" size="sm" variant="outline" className="mt-2 h-7 rounded-full text-[11px]" onClick={() => onUploadEvidence('Delivery insurance')}>
-                        <Upload size={12} /> Add insurance evidence (optional)
-                      </Button>
-                    )}
+                    <p>Expensive or fragile delivery: appropriate courier insurance is recommended but does not block this deal. Without it, parcel loss or damage may not be recoverable beyond the protected payment.</p>
                   </div>
                 )}
               </div>
@@ -261,6 +240,7 @@ export function DealDeliveryReviewPanel({
                   : "Create delivery code"}
               </Button>
             </div>
+            {!canGenerate && deliveryCardBlockedReason && <p className="mt-2 text-[11px] leading-4 text-muted-foreground">{deliveryCardBlockedReason}</p>}
             {card?.status === "active" && (
               <p className="mt-3 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
                 Waiting for the buyer to verify the card. You’ll receive a
@@ -412,6 +392,12 @@ export function DealDeliveryReviewPanel({
                   seller may request an earlier release, but only the buyer can
                   approve it or report a problem. This deadline controls payment release only; statutory, manufacturer, and seller-warranty rights continue afterward.
                 </p>
+                {isBuyer && (
+                  <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/[0.08] p-3 text-xs leading-5 text-foreground">
+                    <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+                    <p><strong>Check your purchase carefully.</strong> Make sure it is complete, correct, and in the agreed condition. Once payment is released, you can no longer open a Naitrust payment dispute for this deal.</p>
+                  </div>
+                )}
                 {isBuyer && !hasDispute ? (
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Button
@@ -478,7 +464,7 @@ export function DealDeliveryReviewPanel({
         {delivery.fundingReview.status === "paid_out" && (
           <StatusNotice
             title="Payment completed"
-            text="The seller has been paid and the delivery record remains with this deal."
+            text={`The seller has been paid ${delivery.fundingReview.releaseMethod === 'buyer_approved' ? 'after buyer approval' : 'automatically when the review ended'}. Released ${delivery.fundingReview.paidOutAt ? new Date(delivery.fundingReview.paidOutAt).toLocaleString() : 'successfully'}${delivery.fundingReview.paymentReference ? ` · Reference ${delivery.fundingReview.paymentReference}` : ''}. The Deal Room record remains available, but a Naitrust payment dispute can no longer be opened. Statutory, warranty, fraud-reporting, and other legal rights are not removed.`}
           />
         )}
       </div>
@@ -503,8 +489,8 @@ export function DealDeliveryReviewPanel({
         open={showPin}
         onOpenChange={setShowPin}
         title="Release protected payment now?"
-        description="Confirm that you have finished checking the item and want Naitrust to proceed without waiting for the review period to end."
-        warning={`Warning: this bypasses the remaining ${fundingReviewLabel(delivery.fundingReview.extendedProductTestingDays)}. Once approved, this payment release cannot be reversed from the Deal Room.`}
+        description="You are releasing this payment early. Confirm that you have checked the purchase and are satisfied."
+        warning="Once released, Naitrust cannot freeze or reverse this payment from the Deal Room, and you can no longer open a Naitrust payment dispute for it. Statutory and warranty rights are not removed."
         onVerified={() =>
           release.mutate(undefined, {
             onSuccess: () => toast.success("Payment release approved."),

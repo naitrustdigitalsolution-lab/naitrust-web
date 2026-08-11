@@ -111,12 +111,12 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-2',
       category: 'payments',
       question: 'Does Naitrust hold customer funds?',
-      answer: 'No. Naitrust coordinates the workflow and shows payment status. When protected funding is used, money is handled by regulated payment or banking partners through partner-issued virtual accounts.'
+      answer: 'No. Naitrust coordinates the workflow and shows payment status. When protected funding is used, money is handled by regulated payment or banking partners through virtual accounts issued by those partners.'
     },
     {
       id: 'p-3',
       category: 'payments',
-      question: 'What is a partner-issued virtual account?',
+      question: 'What is a virtual account issued by a payment partner?',
       answer: 'It is an account issued by a regulated partner for a specific transaction. The buyer funds it for that deal, and both parties can track funding status and release conditions from the deal room.'
     },
     {

@@ -15,7 +15,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
 
   const categories = [
     { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
-    { id: 'payments', name: 'Protected Funding', icon: CreditCard, description: 'Partner-issued virtual accounts, payment status, release, and refunds' },
+    { id: 'payments', name: 'Protected Funding', icon: CreditCard, description: 'Virtual accounts from payment partners, payment status, release, and refunds' },
     { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
     { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
@@ -54,12 +54,12 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p1',
         question: 'Does Naitrust hold my money?',
-        answer: 'No. Naitrust coordinates the payment workflow, participant records, verification, evidence, payment status, and agreed actions. When Protected Payment is used, funds are handled by regulated payment or banking partners through partner-issued virtual accounts.'
+        answer: 'No. Naitrust coordinates the payment workflow, participant records, verification, evidence, payment status, and agreed actions. When Protected Payment is used, funds are handled by regulated payment or banking partners through virtual accounts issued by those partners.'
       },
       {
         id: 'p2',
         question: 'What is protected funding?',
-        answer: 'Protected funding is the flow where a buyer funds a partner-issued virtual account for a specific deal. Both parties can see payment status, evidence requirements, confirmation steps, and release conditions in the deal room.'
+        answer: 'Protected funding is the flow where a buyer funds a virtual account issued by a payment partner for a specific deal. Both parties can see payment status, evidence requirements, confirmation steps, and release conditions in the deal room.'
       },
       {
         id: 'p3',

@@ -32,13 +32,16 @@ import {
   Plus,
   ScrollText,
   ShieldAlert,
+  ScanFace,
   Truck,
+  Trash2,
   Undo2,
   Upload,
   Users,
   WalletCards,
   Gift,
   Sparkles,
+  Send,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -71,6 +74,7 @@ import {
   useAddEvidence,
   useFundDealFromWallet,
 } from '../../hooks/useDealDetail';
+import { useDeleteUnacceptedDeal } from '../../hooks/useTransactions';
 import { useWallet } from '../../hooks/useWallet';
 import { useNegotiation, useProposeNegotiation } from '../../hooks/useNegotiation';
 import { useDispute, useOpenDispute } from '../../hooks/useDispute';
@@ -80,6 +84,7 @@ import {
   formatMinorAmount,
   getFundingPresentation,
   getPartyStatusPresentation,
+  partyModeLabel,
   roleLabel,
 } from '../../libs/utils/safe-deal-presentation';
 import { downloadAgreementDocument, downloadDealSummaryCard } from '../../libs/utils/deal-documents';
@@ -88,6 +93,8 @@ import type { DealNegotiation } from '../../libs/store/types';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 import { useAuth } from '../../libs/auth-context';
 import { accountTypeOf } from '../../libs/utils/account';
+import { listMockDealIdentityCaptures, viewMockDealIdentityCapture, type DealIdentityCaptureView } from '../../libs/api/deal-identity-captures.mock';
+import { invitationsApi } from '../../libs/api/invitations.api';
 
 const CELEBRATION_EMOJIS = ['🎉', '✨', '🎊', '⭐', '🥳', '💙', '✅', '🎉', '✨', '🎊', '⭐', '🥳'];
 
@@ -101,6 +108,9 @@ function SectionHeading({ icon: Icon, children }: { icon: typeof Users; children
 }
 
 function PartiesPanel({ deal }: { deal: SafeDealDetail }) {
+  const { user } = useAuth();
+  const [identityPhoto, setIdentityPhoto] = useState<DealIdentityCaptureView>();
+  const otherCaptures = listMockDealIdentityCaptures(deal.id).filter((capture) => capture.subjectUserId !== user?.id);
   return (
     <Card className="gap-0 p-0 shadow-sm">
       <SectionHeading icon={Users}>Parties</SectionHeading>
@@ -125,6 +135,21 @@ function PartiesPanel({ deal }: { deal: SafeDealDetail }) {
           );
         })}
       </ul>
+      <div className="border-t bg-muted/20 px-4 py-3">
+        <p className="flex items-center gap-1.5 text-xs font-semibold"><ScanFace size={14} className="text-primary" /> Live identity for this deal</p>
+        {otherCaptures.length ? otherCaptures.map((capture) => (
+          <div key={capture.captureId} className="mt-2 rounded-xl border bg-background p-3">
+            <div className="flex items-start justify-between gap-2"><div><p className="text-xs font-semibold">{capture.representativeName}</p>{capture.businessName && <p className="text-[11px] text-muted-foreground">{capture.businessName}</p>}<p className="mt-1 text-[11px] text-muted-foreground">{capture.action === 'deal_created' ? 'Created this deal' : 'Accepted this deal'} · {new Date(capture.capturedAt).toLocaleString()}</p></div><Badge variant="success" className="text-[9px]">Confirmed</Badge></div>
+            {capture.photoAvailable ? <Button type="button" variant="outline" size="sm" className="mt-2 h-8 rounded-full text-xs" onClick={() => {
+              try { setIdentityPhoto(viewMockDealIdentityCapture(deal.id, capture.captureId)); }
+              catch (error) { toast.error(error instanceof Error ? error.message : 'Photo unavailable.'); }
+            }}><Eye size={13} /> View live photo</Button> : <p className="mt-2 text-[11px] text-muted-foreground">Photo for this deal is not available.</p>}
+          </div>
+        )) : <p className="mt-2 text-[11px] leading-4 text-muted-foreground">The other participant’s photo for this deal is not available yet.</p>}
+      </div>
+      <Dialog open={Boolean(identityPhoto)} onOpenChange={(open) => !open && setIdentityPhoto(undefined)}>
+        <DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>Live identity for this deal</DialogTitle><DialogDescription>Captured for this Protected Deal. It is not a reusable profile photo.</DialogDescription></DialogHeader>{identityPhoto && <div className="relative overflow-hidden rounded-2xl bg-muted"><img src={identityPhoto.photoDataUrl} alt={`${identityPhoto.representativeName} live identity capture for this deal`} className="aspect-[4/3] w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-black/65 px-3 py-2 text-[11px] text-white">{identityPhoto.watermark}</div></div>}</DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -257,18 +282,6 @@ function EvidenceTab({ deal }: { deal: SafeDealDetail }) {
           Invoices, property documents, photos, and inspection reports attached to this transaction.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full"
-            onClick={() => toast.promise(downloadDealSummaryCard(deal), {
-              loading: 'Preparing deal summary…',
-              success: 'Deal summary downloaded.',
-              error: 'Could not generate the deal summary.',
-            })}
-          >
-            <Download size={14} className="mr-1.5" /> Download deal summary
-          </Button>
           <Button variant="outline" size="sm" className="rounded-full" onClick={() => setShowUpload(true)}>
             <Upload size={14} className="mr-1.5" /> Upload document
           </Button>
@@ -360,8 +373,37 @@ function ActivityTab({ events }: { events: DealActivityEvent[] }) {
 
 function OverviewTab({ deal }: { deal: SafeDealDetail }) {
   const hasSplitPayment = Boolean(deal.initialPaymentMinor && deal.remainingPaymentMinor);
+  const useCase = useCases.find((item) => item.slug === deal.useCase);
+  const buyer = deal.parties.find((party) => party.role === 'buyer');
+  const sellers = deal.parties.filter((party) => party.role === 'seller');
   return (
     <div className="space-y-5">
+      <div className="overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-background to-background">
+        <div className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Deal at a glance</p>
+              <p className="mt-1 max-w-md text-sm leading-6 text-muted-foreground">The agreed structure, participants, delivery timing, and release controls in one view.</p>
+            </div>
+            <div className="sm:text-right">
+              <p className="text-xs text-muted-foreground">Protected amount</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">{formatMinorAmount(deal.amountMinor, deal.currency)}</p>
+            </div>
+          </div>
+        </div>
+        <dl className="grid border-t bg-background/70 sm:grid-cols-2 lg:grid-cols-3">
+          <OverviewFact label="What you're protecting" value={useCase?.title ?? deal.useCase} />
+          <OverviewFact label="Payment release setup" value="Single release" />
+          <OverviewFact label="Who's involved" value={partyModeLabel(deal.partyMode)} />
+          <OverviewFact label="Buyer" value={buyer?.name ?? 'Not available'} />
+          <OverviewFact label={sellers.length > 1 ? 'Sellers' : 'Seller'} value={sellers.map((party) => party.name).join(', ') || 'Not available'} />
+          <OverviewFact label="Delivery or completion" value={deal.deliveryDueDate} />
+          <OverviewFact label="Handover check" value="10 minutes" />
+          <OverviewFact label="Payment review" value="1 hour after handover" />
+          <OverviewFact label="Agreement" value={`v${deal.agreement.version} · ${deal.agreement.sections.length} clauses`} />
+        </dl>
+      </div>
+
       {deal.description && (
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -387,12 +429,8 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
           </div>
         )}
         <div className="flex gap-4 px-4 py-3">
-          <dt className="w-40 shrink-0 text-sm text-muted-foreground">Next milestone</dt>
-          <dd className="text-sm font-medium text-foreground">{deal.deliveryDueDate}</dd>
-        </div>
-        <div className="flex gap-4 px-4 py-3">
           <dt className="w-40 shrink-0 text-sm text-muted-foreground">{hasSplitPayment ? 'First payment release' : 'Release conditions'}</dt>
-          <dd className="min-w-0 flex-1 text-sm font-medium text-foreground">{deal.releaseConditions}</dd>
+          <dd className="min-w-0 flex-1 text-sm font-medium text-foreground text-justify">{deal.releaseConditions}</dd>
         </div>
         {hasSplitPayment && deal.nextPaymentReleaseConditions && (
           <div className="flex gap-4 px-4 py-3">
@@ -429,6 +467,15 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
   );
 }
 
+function OverviewFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 border-b px-4 py-3 last:border-b-0 sm:border-r lg:[&:nth-child(3n)]:border-r-0">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="mt-1 text-sm font-semibold leading-5 text-foreground">{value}</dd>
+    </div>
+  );
+}
+
 function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdate: boolean }) {
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<{ id: string; title: string; description?: string } | null>(null);
@@ -447,8 +494,8 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
         {canUpdate
-          ? "You're updating this Protected Deal: keep the buyer informed as milestones are completed."
-          : 'Progress is recorded in stages so participants can follow milestones and supporting evidence.'}
+          ? "Keep the buyer informed by adding only the delivery or work updates that apply to this deal."
+          : 'Updates added by the seller will appear here with their supporting evidence.'}
       </p>
 
       {canUpdate && (
@@ -532,7 +579,15 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
         }}
       />
 
-      <ol className="relative space-y-6 pl-7">
+      {deal.milestones.length === 0 ? (
+        <div className="rounded-2xl border border-dashed bg-muted/20 px-5 py-8 text-center">
+          <Truck size={22} className="mx-auto text-muted-foreground" />
+          <p className="mt-3 text-sm font-semibold text-foreground">No tracking updates yet</p>
+          <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-muted-foreground">
+            {canUpdate ? 'Add an update when there is relevant delivery or work progress to share.' : 'The seller has not posted a delivery or work update for this deal.'}
+          </p>
+        </div>
+      ) : <ol className="relative space-y-6 pl-7">
         <span className="absolute left-[9px] top-2 bottom-2 w-px bg-border" aria-hidden />
         {deal.milestones.map((ms) => {
           const done = ms.status === 'done';
@@ -579,7 +634,7 @@ function MilestoneTracking({ deal, canUpdate }: { deal: SafeDealDetail; canUpdat
             </li>
           );
         })}
-      </ol>
+      </ol>}
     </div>
   );
 }
@@ -592,6 +647,8 @@ function ActionsPanel({
   disputeBlocksRelease,
   canTerminate,
   terminationLocked,
+  terminated,
+  deleteUnaccepted,
   onRequestChanges,
   onRaiseDispute,
   onTerminate,
@@ -603,6 +660,8 @@ function ActionsPanel({
   disputeBlocksRelease: boolean;
   canTerminate: boolean;
   terminationLocked: boolean;
+  terminated: boolean;
+  deleteUnaccepted: boolean;
   onRequestChanges: () => void;
   onRaiseDispute: () => void;
   onTerminate: () => void;
@@ -613,10 +672,20 @@ function ActionsPanel({
     !disputeBlocksRelease &&
     !supportsDeliveryReview(deal.useCase) &&
     ['funded', 'in_progress', 'evidence_submitted', 'buyer_review'].includes(deal.status);
-  const canDispute =
-    !hasDispute && !['paid_out', 'completed', 'refunded', 'cancelled', 'draft'].includes(deal.status);
+  const releaseClosed =
+    deal.funding.status === 'released' ||
+    ['release_approved', 'paid_out', 'completed', 'refunded', 'cancelled'].includes(deal.status) ||
+    ['release_approved', 'paid_out'].includes(deal.delivery.fundingReview.status);
+  const canDispute = !hasDispute && !terminated && !releaseClosed && deal.funding.status === 'funded';
+  const disputeUnavailableReason = deal.funding.status === 'unfunded' || deal.funding.status === 'awaiting_transfer'
+    ? 'Available after the protected payment is received.'
+    : terminated
+      ? 'This deal has been terminated.'
+      : releaseClosed
+        ? 'The Naitrust payment-dispute window closed when payment was released.'
+        : undefined;
 
-  if (!canConfirm && !canDispute && !canNegotiate && !canTerminate) return null;
+  if (!canConfirm && hasDispute && !canNegotiate && !canTerminate) return null;
 
   return (
     <Card className="gap-3 p-4 shadow-sm">
@@ -633,15 +702,19 @@ function ActionsPanel({
           Confirm milestone and payment instruction
         </Button>
       )}
-      {canDispute && (
+      {!hasDispute && (
         <Button
           variant="outline"
           className="w-full rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
           onClick={onRaiseDispute}
+          disabled={!canDispute}
         >
           <ShieldAlert size={16} className="mr-1.5" />
           Raise a dispute
         </Button>
+      )}
+      {!hasDispute && !canDispute && disputeUnavailableReason && (
+        <p className="text-xs leading-5 text-muted-foreground">{disputeUnavailableReason}</p>
       )}
       {hasDispute && (
         <p className="text-xs leading-5 text-muted-foreground">
@@ -657,8 +730,8 @@ function ActionsPanel({
           disabled={terminationLocked}
           onClick={onTerminate}
         >
-          <Ban size={16} className="mr-1.5" />
-          Terminate deal
+          {deleteUnaccepted ? <Trash2 size={16} className="mr-1.5" /> : <Ban size={16} className="mr-1.5" />}
+          {deleteUnaccepted ? 'Delete deal' : 'Terminate deal'}
         </Button>
       )}
       {canTerminate && terminationLocked && (
@@ -686,14 +759,17 @@ export function TransactionRoomPage() {
   const openDispute = useOpenDispute(id);
   const addDeliveryEvidence = useAddEvidence(id);
   const requestTermination = useRequestTermination(id);
+  const deleteUnacceptedDeal = useDeleteUnacceptedDeal(id);
   const respondTermination = useRespondTermination(id);
   const [showPropose, setShowPropose] = useState(false);
   const [showDispute, setShowDispute] = useState(false);
   const [showTerminate, setShowTerminate] = useState(false);
+  const [showDeleteDeal, setShowDeleteDeal] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [showDeliveryEvidence, setShowDeliveryEvidence] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [resendingInvite, setResendingInvite] = useState(false);
   const [deliveryEvidenceKind, setDeliveryEvidenceKind] = useState('Invoice');
   const requestedTab = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(requestedTab === 'chat' ? 'chat' : 'overview');
@@ -748,13 +824,36 @@ export function TransactionRoomPage() {
   const counterparty = deal?.parties.find((p) => !p.isYou);
   const youParty = deal?.parties.find((p) => p.isYou);
   const viewerIsCreator = youParty?.status === 'creator';
+  const canDeleteUnaccepted = Boolean(viewerIsCreator && deal && ['pending_counterparty', 'terms_negotiation'].includes(deal.status));
   const youIsReleaser = youParty?.role === 'buyer';
   const youIsSeller = youParty?.role === 'seller';
   const completionRewardPoints = youIsSeller ? 100 : 300;
   const viewerIsBusiness = accountTypeOf(user) === 'business';
   const useCaseTitle = useCases.find((u) => u.slug === deal?.useCase)?.title;
   const expired = deal ? new Date(deal.expiresAt).getTime() < Date.now() : false;
-  const hasTracking = (deal?.milestones.length ?? 0) > 0;
+  const canResendInvite = Boolean(viewerIsCreator && deal?.publicInvitePath && ['pending_counterparty', 'terms_negotiation'].includes(deal.status));
+  const invitationUrl = deal?.publicInvitePath ? `${window.location.origin}${deal.publicInvitePath}` : '';
+  const copyInvitationLink = async () => {
+    if (!invitationUrl) return;
+    await navigator.clipboard.writeText(invitationUrl);
+    toast.success('Invitation link copied.');
+  };
+  const resendInvitation = async () => {
+    if (!deal || resendingInvite) return;
+    setResendingInvite(true);
+    try {
+      await invitationsApi.resend(deal.id);
+      toast.success('Invitation resent successfully.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not resend the invitation.');
+    } finally {
+      setResendingInvite(false);
+    }
+  };
+  // Tracking describes delivery/work progress and is independent of how the
+  // protected payment releases. Single-release deals still need seller
+  // updates for the buyer.
+  const hasTracking = Boolean(deal);
 
   const hasNegotiation = (negotiation?.proposals.length ?? 0) > 0;
   const negotiationOpen = negotiation?.status === 'open';
@@ -962,6 +1061,10 @@ export function TransactionRoomPage() {
                       : `Open until ${format(new Date(deal.expiresAt), 'MMM d')} · ${formatDistanceToNow(new Date(deal.expiresAt))} left`}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2 md:justify-end">
+                  {canResendInvite && <>
+                    <Button size="sm" variant="outline" className="rounded-full" disabled={resendingInvite} onClick={() => void resendInvitation()}><Send size={14} />{resendingInvite ? 'Resending…' : 'Resend invite'}</Button>
+                    <Button size="icon" variant="outline" className="h-8 w-8 rounded-full" onClick={() => void copyInvitationLink()} aria-label="Copy invitation link" title="Copy invitation link"><Copy size={14} /></Button>
+                  </>}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -1164,9 +1267,11 @@ export function TransactionRoomPage() {
                   disputeBlocksRelease={disputeBlocksRelease}
                   canTerminate={canTerminate}
                   terminationLocked={terminationLocked}
+                  terminated={terminated}
+                  deleteUnaccepted={canDeleteUnaccepted}
                   onRequestChanges={() => setShowPropose(true)}
                   onRaiseDispute={() => setShowDispute(true)}
-                  onTerminate={() => setShowTerminate(true)}
+                  onTerminate={() => canDeleteUnaccepted ? setShowDeleteDeal(true) : setShowTerminate(true)}
                 />
                 <PartiesPanel deal={deal} />
                 <FundingPanel deal={deal} />
@@ -1183,6 +1288,18 @@ export function TransactionRoomPage() {
               submitting={requestTermination.isPending}
               onSubmit={submitTermination}
             />
+            <Dialog open={showDeleteDeal} onOpenChange={setShowDeleteDeal}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Delete this deal?</DialogTitle>
+                  <DialogDescription>No participant has accepted this invitation. Are you sure you want to delete it? This removes the invitation for everyone.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowDeleteDeal(false)}>Keep deal</Button>
+                  <Button variant="destructive" disabled={deleteUnacceptedDeal.isPending} onClick={() => deleteUnacceptedDeal.mutate(undefined, { onSuccess: () => { toast.success('Deal deleted.'); navigate('/app/deals', { replace: true }); }, onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not delete this deal.') })}><Trash2 size={15} /> Delete deal</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <TerminationReasonModal
               open={showReject}
               onOpenChange={setShowReject}
@@ -1219,13 +1336,13 @@ export function TransactionRoomPage() {
                   await addDeliveryEvidence.mutateAsync({
                     items: evidence,
                     uploadedByName: youParty?.name ?? 'You',
-                    uploadedByRole: 'buyer',
+                    uploadedByRole: youParty?.role ?? 'buyer',
                   });
                   await openDispute.mutateAsync({ ...input, hasEvidence: evidence.length > 0 });
                   setShowDispute(false);
                   toast.success(evidence.length > 0
                     ? 'Evidence submitted. Payment is now paused while the dispute is reviewed.'
-                    : 'Report opened. Payment will freeze after buyer evidence is uploaded.');
+                    : 'Report opened. Payment will freeze after relevant evidence is uploaded.');
                 } catch (error) {
                   toast.error(error instanceof Error ? error.message : 'The dispute could not be submitted.');
                 }

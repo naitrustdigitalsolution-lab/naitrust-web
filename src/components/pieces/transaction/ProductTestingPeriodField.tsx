@@ -25,7 +25,7 @@ export function ProductTestingPeriodField({ value, onChange }: ProductTestingPer
             Add an extended product testing period
           </span>
           <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-            Optional and agreed by both parties. It replaces the standard 24-hour delivery review period.
+            Extended testing is paused during the Single release pilot. The standard payment review is one hour after handover.
           </span>
         </span>
       </label>

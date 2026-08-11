@@ -29,17 +29,10 @@ import type { TransactionMethod, TransactionRecord, TransactionType } from '../.
 
 const TYPE_OPTIONS: TransactionType[] = [
   'instant_transfer',
+  'incoming_transfer',
+  'bill_payment',
   'wallet_funding',
   'withdrawal',
-  'protected_funding',
-  'milestone_release',
-  'final_release',
-  'refund',
-  'reversal',
-  'fee',
-];
-
-const CUSTOMER_TYPE_OPTIONS: TransactionType[] = [
   'protected_funding',
   'milestone_release',
   'final_release',
@@ -63,8 +56,7 @@ export function TransactionsPage() {
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
-    const visibleRecords = isCustomer ? records.filter((record) => record.method === 'protected') : records;
-    return visibleRecords.filter((r) => {
+    return records.filter((r) => {
       if (method !== 'all' && r.method !== method) return false;
       if (type !== 'all' && r.type !== type) return false;
       if (search && !r.counterpartyName.toLowerCase().includes(search.toLowerCase()) && !r.reference.toLowerCase().includes(search.toLowerCase())) {
@@ -72,11 +64,11 @@ export function TransactionsPage() {
       }
       return true;
     });
-  }, [records, method, type, search, isCustomer]);
+  }, [records, method, type, search]);
 
   useEffect(() => {
     setPage(1);
-  }, [search, method, type, isCustomer]);
+  }, [search, method, type]);
 
   const total = filtered.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -93,8 +85,8 @@ export function TransactionsPage() {
           eyebrow="Money"
           title="Money activity"
           description={isCustomer
-            ? 'Payment activity connected only to your Protected Deals.'
-            : 'Every Instant Payment, Protected Deal, and business account movement in one place.'}
+            ? 'Every payment you make or receive, including business payments and Protected Deals, in one place.'
+            : 'Every payment received or sent, Protected Deal, and business account movement in one place.'}
           icon={Receipt}
         />
 
@@ -111,7 +103,7 @@ export function TransactionsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All types</SelectItem>
-              {(isCustomer ? CUSTOMER_TYPE_OPTIONS : TYPE_OPTIONS).map((t) => (
+              {TYPE_OPTIONS.map((t) => (
                 <SelectItem key={t} value={t}>
                   {TRANSACTION_TYPE_LABEL[t]}
                 </SelectItem>
@@ -120,15 +112,13 @@ export function TransactionsPage() {
           </Select>
         </div>
 
-        {!isCustomer && (
-          <Tabs value={method} onValueChange={(v) => setMethod(v as typeof method)} className="mb-4">
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="instant">Instant</TabsTrigger>
-              <TabsTrigger value="protected">Protected</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
+        <Tabs value={method} onValueChange={(v) => setMethod(v as typeof method)} className="mb-4">
+          <TabsList>
+            <TabsTrigger value="all">All activity</TabsTrigger>
+            <TabsTrigger value="instant">Payments</TabsTrigger>
+            <TabsTrigger value="protected">Protected Deals</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {isLoading ? (
           <div className="space-y-2">
@@ -142,7 +132,7 @@ export function TransactionsPage() {
               <Receipt size={22} />
             </div>
             <p className="font-semibold text-foreground">
-              {isCustomer ? 'No Protected Deal payment activity yet' : 'No transactions match this filter'}
+              No money activity matches this filter
             </p>
           </Card>
         ) : (

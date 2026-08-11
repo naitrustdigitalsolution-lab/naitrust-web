@@ -1,7 +1,7 @@
 /**
  * AgreementDocument
  * Renders a deal agreement as a numbered-clause document panel with an
- * AI-drafted (advisory) badge. Shared by the create-deal wizard's agreement
+ * Drafted with AI (advisory) badge. Shared by the create deal wizard's agreement
  * step and the invitation accept flow.
  *
  * With `editable` + `onChange`, each clause body becomes editable so the
@@ -21,7 +21,7 @@ interface AgreementDocumentProps {
   scrollable?: boolean;
   /** When true, clause bodies are editable via `onChange`. */
   editable?: boolean;
-  /** Hide the AI-drafted note (e.g. on an already-agreed deal being viewed). */
+  /** Hide the AI drafting note, such as on an agreement already accepted. */
   hideAiNote?: boolean;
   /** Show a short preview first, with a control to reveal every clause. */
   collapsible?: boolean;
@@ -56,7 +56,7 @@ export function AgreementDocument({
         <div className="flex items-center gap-2">{agreement.generatedByAi && !hideAiNote && (
           <Badge variant="outline" className="gap-1 text-xs">
             <Sparkles size={12} className="text-primary" />
-            {editable ? 'AI-drafted · editable' : 'AI-drafted · review before accepting'}
+            {editable ? 'Drafted with AI · Editable' : 'Drafted with AI · Review before accepting'}
           </Badge>
         )}{collapsible && <button type="button" onClick={() => setExpanded((current) => !current)} className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-primary/10">{expanded ? 'Show less' : 'View full agreement'}<ChevronDown size={14} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} /></button>}</div>
       </div>

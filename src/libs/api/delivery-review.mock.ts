@@ -152,6 +152,7 @@ export function reconcileDeliveryLifecycle(
         ...delivery.fundingReview,
         status: 'release_approved',
         releaseApprovedAt: approvedAt,
+        releaseMethod: 'automatic',
       },
     };
     status = 'release_approved';
@@ -188,6 +189,7 @@ export function reconcileDeliveryLifecycle(
         ...delivery.fundingReview,
         status: 'paid_out',
         paidOutAt: now.toISOString(),
+        paymentReference: delivery.fundingReview.paymentReference ?? `NTR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
       },
     };
     status = 'paid_out';
@@ -202,9 +204,6 @@ export function generateDeliveryCard(context: DeliveryDealContext): DealDelivery
   if (context.actorRole !== 'seller') throw new Error('Only the seller can generate a delivery card.');
   if (context.fundingStatus !== 'funded' || !isDeliveryCardStatusEligible(context.status)) {
     throw new Error('The deal must be funded and active before a delivery card can be generated.');
-  }
-  if (!hasRequiredProductEvidence(context.evidence)) {
-    throw new Error('Complete each applicable seller evidence item, or mark it Not applicable with a reason, before creating a delivery code.');
   }
   const now = new Date();
   const current = reconcileDeliveryLifecycle(context.id, context.extendedProductTestingDays, now);
@@ -367,6 +366,7 @@ export function approveEarlyRelease(context: DeliveryDealContext): DealDeliveryL
       ...current.fundingReview,
       status: 'release_approved',
       releaseApprovedAt: now.toISOString(),
+      releaseMethod: 'buyer_approved',
     },
   };
   notify('Buyer approved payment release', 'The buyer completed product checks. Partner payout is processing.', context.id);

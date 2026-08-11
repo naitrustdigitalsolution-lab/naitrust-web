@@ -3,7 +3,6 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { appConfig } from "./configs/env";
-import { AuthProvider } from './libs/auth-context';
 import { useAuth } from './libs/auth-context';
 import BeBackPage from "./pages/BeBackPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
@@ -359,9 +358,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <AuthProvider>
-            <PublicAppContent />
-          </AuthProvider>
+          <PublicAppContent />
         </BrowserRouter>
       </HelmetProvider>
     </QueryClientProvider>

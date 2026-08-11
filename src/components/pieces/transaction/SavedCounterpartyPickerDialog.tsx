@@ -25,6 +25,7 @@ interface SavedCounterpartyPickerDialogProps {
   customerMode?: boolean;
   directoryMode?: boolean;
   showPaymentTarget?: boolean;
+  disabled?: boolean;
 }
 
 type RelationshipFilter = 'all' | CreateCounterpartyInput['relation'];
@@ -40,6 +41,7 @@ export function SavedCounterpartyPickerDialog({
   customerMode = false,
   directoryMode = false,
   showPaymentTarget = false,
+  disabled = false,
 }: SavedCounterpartyPickerDialogProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -143,7 +145,7 @@ export function SavedCounterpartyPickerDialog({
   return (
     <Sheet open={open} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className="h-8 rounded-full">
+        <Button type="button" variant="outline" size="sm" className="h-8 rounded-full" disabled={disabled}>
           {directoryMode ? <Search size={14} /> : <UsersRound size={14} />} {directoryMode ? 'Find on Naitrust' : 'Choose saved contact'}
         </Button>
       </SheetTrigger>

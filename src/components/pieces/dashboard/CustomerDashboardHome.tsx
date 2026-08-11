@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import {
+  AlertTriangle,
   ArrowDownToLine,
   ArrowRight,
   BadgeCheck,
@@ -79,6 +80,7 @@ export function CustomerDashboardHome({
   const { data: beneficiaries, isLoading: beneficiariesLoading } = useBeneficiaries();
   const account = wallet?.virtualAccount;
   const pendingInvitations = invitations?.filter((invitation) => invitation.status === 'pending') ?? [];
+  const pendingReleaseDeal = deals?.find((deal) => deal.status === 'buyer_review');
 
   const copyAccount = async () => {
     if (!account?.accountNumber) {
@@ -109,6 +111,14 @@ export function CustomerDashboardHome({
             <Building2 size={16} /> Find a business
           </Button>
         </header>
+
+        {pendingReleaseDeal && (
+          <button type="button" onClick={() => navigate(`/app/deals/${pendingReleaseDeal.id}`)} className="flex w-full items-start gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/[0.08] px-4 py-3 text-left transition hover:bg-amber-500/[0.12]">
+            <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-600" />
+            <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">Check your purchase before payment releases</span><span className="mt-0.5 block text-xs leading-5 text-muted-foreground">Make sure {pendingReleaseDeal.title} is complete, correct, and in the agreed condition. After release, you cannot open a Naitrust payment dispute for this deal.</span></span>
+            <ArrowRight size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
+          </button>
+        )}
 
         <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)]">
           <Card className="relative overflow-hidden rounded-3xl border-0  bg-primary dark:bg-[#04162f] p-5 text-white shadow-[0_18px_48px_rgba(7,49,88,.18)]">

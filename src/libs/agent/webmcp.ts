@@ -36,7 +36,7 @@ export function registerWebMcpTools(): void {
     {
       name: 'naitrust.list_public_resources',
       title: 'List Naitrust public resources',
-      description: 'Returns the safe, public Naitrust pages available for product and safe-deal information.',
+      description: 'Returns the safe, public Naitrust pages available for product and Protected Deal information.',
       inputSchema: { type: 'object', properties: {}, additionalProperties: false },
       annotations: { readOnlyHint: true },
       execute: async () => ({

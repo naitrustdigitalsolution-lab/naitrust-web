@@ -6,7 +6,7 @@ import type {
 } from '../store/types';
 
 export const HANDOVER_REVIEW_MS = 10 * 60 * 1000;
-export const DEFAULT_FUNDING_REVIEW_MS = 24 * 60 * 60 * 1000;
+export const DEFAULT_FUNDING_REVIEW_MS = 60 * 60 * 1000;
 export const DELIVERY_CARD_VALIDITY_MS = 48 * 60 * 60 * 1000;
 export const EXTENDED_TESTING_OPTIONS: ExtendedProductTestingDays[] = [3, 7, 14];
 
@@ -38,6 +38,10 @@ const PHYSICAL_PRODUCT_USE_CASES = new Set([
 ]);
 
 const CARD_ELIGIBLE_STATUSES: SafeDealStatus[] = [
+  // Funding confirmation is checked separately. These two states are kept
+  // here so a delayed status-sync cannot block a genuinely funded deal.
+  'terms_agreed',
+  'awaiting_funding',
   'funded',
   'in_progress',
   'evidence_submitted',
@@ -93,7 +97,7 @@ export function fundingReviewDurationMs(days?: ExtendedProductTestingDays): numb
 }
 
 export function fundingReviewLabel(days?: ExtendedProductTestingDays): string {
-  return days ? `${days}-day extended product testing period` : '24-hour funding review';
+  return days ? `${days}-day extended product testing period` : '1-hour payment review';
 }
 
 export function createOpaqueToken(): string {

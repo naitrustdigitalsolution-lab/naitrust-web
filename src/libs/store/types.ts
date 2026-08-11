@@ -211,6 +211,22 @@ export interface DealParty {
   allocationMinor?: number;
 }
 
+export type DealIdentityCaptureAction = 'deal_created' | 'deal_accepted';
+
+export interface DealIdentityCapture {
+  captureId: string;
+  subjectUserId: string;
+  representativeName: string;
+  businessName?: string;
+  action: DealIdentityCaptureAction;
+  capturedAt: string;
+  verificationStatus: 'passed';
+  encryptedEvidenceRef: string;
+  photoAvailable: boolean;
+  retentionExpiresAt?: string;
+  legalHold: boolean;
+}
+
 export type FundingStatus = 'unfunded' | 'awaiting_transfer' | 'funded' | 'released';
 
 export interface DealFunding {
@@ -315,6 +331,8 @@ export interface DealFundingReview {
   extendedProductTestingDays?: ExtendedProductTestingDays;
   releaseApprovedAt?: string;
   paidOutAt?: string;
+  releaseMethod?: 'automatic' | 'buyer_approved';
+  paymentReference?: string;
 }
 
 export interface DealDeliveryLifecycle {
@@ -335,6 +353,8 @@ export interface DeliveryHandoverPreview {
 }
 
 export interface SafeDealDetail extends SafeDealSummary {
+  /** Opaque public invitation path, returned only to an authorized creator. */
+  publicInvitePath?: string;
   /** Current release/funding stage for split-payment deals. */
   activePaymentStage?: 1 | 2;
   firstPaymentReleasedAt?: string;
@@ -470,6 +490,7 @@ export interface DealInvitation {
   status: InvitationStatus;
   /** Optional explanation supplied when the invitee declines. */
   responseReason?: string;
+  creatorIdentityCapture?: DealIdentityCapture;
 }
 
 /** Safe subset returned before authentication for a tokenised invitation. */
@@ -488,6 +509,9 @@ export interface PublicInvitationPreview {
   expiresAt: string;
   status: InvitationStatus | 'invalid';
   maskedContact?: string;
+  inviterRepresentativeName?: string;
+  inviterLivenessConfirmed: boolean;
+  inviterLivenessCapturedAt?: string;
 }
 
 /* ------------------------------------------------------------------ *
@@ -905,6 +929,7 @@ export interface CreateTrustCheckoutInput {
 export type TransactionType =
   | 'instant_transfer'
   | 'incoming_transfer'
+  | 'bill_payment'
   | 'wallet_funding'
   | 'withdrawal'
   | 'protected_funding'

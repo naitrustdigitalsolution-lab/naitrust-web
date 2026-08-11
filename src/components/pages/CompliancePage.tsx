@@ -25,7 +25,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
     <div className="min-h-screen bg-background py-12">
       <SEOHead
         title="Compliance and Trust"
-        description="How Naitrust approaches privacy, verification, safe-deal records, regulated payment partners, security, and user protection in Nigeria."
+        description="How Naitrust approaches privacy, verification, Protected Deal records, regulated payment partners, security, and user protection in Nigeria."
         canonicalPath="/compliance"
       />
 
@@ -35,7 +35,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Compliance and trust</p>
           <h1 className="text-3xl font-bold sm:text-4xl">How Naitrust supports safer transactions</h1>
           <p className="mx-auto mt-4 max-w-3xl leading-7 text-blue-100">
-            Naitrust brings identity and business checks, accepted terms, payment status, evidence, and issue records into one safe-deal workflow. This page explains the controls that apply to the product as it is currently designed.
+            Naitrust brings identity and business checks, accepted terms, payment status, evidence, and issue records into one Protected Deal workflow. This page explains the controls that apply to the product as it is currently designed.
           </p>
           <p className="mt-5 text-sm text-blue-200">Last updated: 11 July 2026</p>
         </header>

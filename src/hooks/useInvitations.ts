@@ -38,12 +38,14 @@ export function useRespondToInvitation() {
       action,
       reason,
       livenessVerifiedAt,
+      livenessCaptureId,
     }: {
       id: string;
       action: Extract<InvitationStatus, 'accepted' | 'changes_requested' | 'declined'>;
       reason?: string;
       livenessVerifiedAt?: string;
-    }) => invitationsApi.respond(id, action, reason, livenessVerifiedAt),
+      livenessCaptureId?: string;
+    }) => invitationsApi.respond(id, action, reason, livenessVerifiedAt, livenessCaptureId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: INVITATIONS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });

@@ -1,9 +1,9 @@
-import { Check, ChevronDown, Clock3, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Check, ChevronDown, Clock3, Loader2, Pencil, Plus, RefreshCw, Sparkles, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { counterpartyRelationLabel } from '../../../libs/counterparties/counterparty-options';
 import type { CounterpartyProfile, CounterpartyRelation, ExtendedProductTestingDays } from '../../../libs/store/types';
 import { supportsDeliveryReview } from '../../../libs/protected-deals/delivery-review';
-import { formatMinorAmount } from '../../../libs/utils/safe-deal-presentation';
+import { formatMinorAmount, parseMajorAmountToMinor } from '../../../libs/utils/safe-deal-presentation';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Checkbox } from '../../ui/checkbox';
@@ -14,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from '../../ui/textarea';
 import { ProductTestingPeriodField } from './ProductTestingPeriodField';
 import { SavedCounterpartyPickerDialog } from './SavedCounterpartyPickerDialog';
+import { agreementsApi } from '../../../libs/api/agreements.api';
+import { useCases } from '../../../libs/use-cases';
 
 export interface DealParticipantForm {
   name: string;
@@ -84,6 +86,24 @@ function FieldError({ message }: { message?: string }) {
   return <p className="mt-1 text-xs text-destructive">{message}</p>;
 }
 
+function formatAiDetailTemplate(template: string) {
+  const sections = template
+    .trim()
+    .split(/\.\s+(?=[A-Z])/)
+    .map((section) => section.replace(/\.$/, '').trim())
+    .filter(Boolean);
+
+  if (sections.length < 2) return template;
+
+  return sections.map((section, index) => {
+    const separator = section.indexOf(':');
+    if (separator < 0) return `${index + 1}. ${section}`;
+    const heading = section.slice(0, separator).trim();
+    const detail = section.slice(separator + 1).trim();
+    return `${index + 1}. ${heading}\n${detail}`;
+  }).join('\n\n');
+}
+
 export function CreateDealDetailsStep({
   form,
   errors,
@@ -112,10 +132,62 @@ export function CreateDealDetailsStep({
   const [openAllocation, setOpenAllocation] = useState<'first' | 'second' | null>('first');
   const [confirmedAllocations, setConfirmedAllocations] = useState<Set<string>>(() => new Set());
   const [allocationErrors, setAllocationErrors] = useState<Record<string, string>>({});
-  const amountMinor = Math.round(Number(form.amount || 0) * 100);
+  const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
+  const [detailSuggestion, setDetailSuggestion] = useState('');
+  const [suggestingDetails, setSuggestingDetails] = useState(false);
+  const [suggestionRequest, setSuggestionRequest] = useState(0);
+  const [detailRequest, setDetailRequest] = useState(0);
+  const [refreshingDetail, setRefreshingDetail] = useState(false);
+  const [aiDetailError, setAiDetailError] = useState('');
+  const [aiDetailSource, setAiDetailSource] = useState('');
+  const selectedUseCase = useCases.find((useCase) => useCase.slug === form.useCase);
+
+  useEffect(() => {
+    if (!form.useCase || !selectedUseCase) return;
+    let active = true;
+    setSuggestingDetails(true);
+    void agreementsApi.suggestDealDetails({ useCase: form.useCase, useCaseTitle: selectedUseCase.title, requestIndex: suggestionRequest })
+      .then((response) => {
+        if (!active) return;
+        setTitleSuggestions(response.data.titles);
+        setDetailSuggestion(response.data.detailDraft);
+      })
+      .catch(() => {
+        if (!active) return;
+        setTitleSuggestions([]);
+        setDetailSuggestion('');
+      })
+      .finally(() => active && setSuggestingDetails(false));
+    return () => { active = false; };
+  }, [form.useCase, selectedUseCase, suggestionRequest]);
+  const amountMinor = parseMajorAmountToMinor(form.amount);
+  const refreshDescription = async () => {
+    if (!selectedUseCase) return;
+    const normalizedTitle = form.title.trim().toLowerCase();
+    const titleIsGeneric = !normalizedTitle || titleSuggestions.some((suggestion) => suggestion.trim().toLowerCase() === normalizedTitle);
+    if (!form.description.trim() && titleIsGeneric) {
+      setAiDetailError('Add a few rough facts first, such as the exact item or service, quantity, specification, and location, then AI can organise them for you.');
+      return;
+    }
+    setAiDetailError('');
+    const sourceDetails = detailRequest > 0 ? aiDetailSource : form.description.trim();
+    const nextRequest = detailRequest + 1;
+    setRefreshingDetail(true);
+    try {
+      const response = await agreementsApi.suggestDealDetails({ useCase: form.useCase, useCaseTitle: selectedUseCase.title, currentTitle: form.title, currentDescription: sourceDetails, requestIndex: nextRequest });
+      setDetailRequest(nextRequest);
+      setAiDetailSource(sourceDetails);
+      setDetailSuggestion(response.data.detailDraft);
+      onFieldChange('description', formatAiDetailTemplate(response.data.detailDraft));
+    } catch {
+      // Keep the user's current description when suggestion generation fails.
+    } finally {
+      setRefreshingDetail(false);
+    }
+  };
   const initialPaymentMinor = form.initialPaymentMode === 'percentage'
     ? Math.round(amountMinor * Number(form.initialPayment || 0) / 100)
-    : Math.round(Number(form.initialPayment || 0) * 100);
+    : parseMajorAmountToMinor(form.initialPayment);
   const remainingPaymentMinor = Math.max(0, amountMinor - initialPaymentMinor);
   const firstPaymentPoolMinor = form.splitPayment ? initialPaymentMinor : amountMinor;
   const hasRecipientIdentity = (participant: DealParticipantForm) => Boolean(participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved));
@@ -124,16 +196,17 @@ export function CreateDealDetailsStep({
   const allocatedMinor = firstStageRecipients.length === 1 ? firstPaymentPoolMinor : firstStageRecipients.reduce(
     (sum, participant) => sum + (form.initialPaymentMode === 'percentage'
       ? Math.round(firstPaymentPoolMinor * Number(participant.allocation || 0) / 100)
-      : Math.round(Number(participant.allocation || 0) * 100)),
+      : parseMajorAmountToMinor(participant.allocation)),
     0,
   );
   const secondAllocatedMinor = secondStageRecipients.length === 1 ? remainingPaymentMinor : secondStageRecipients.reduce(
     (sum, participant) => sum + (form.initialPaymentMode === 'percentage'
       ? Math.round(remainingPaymentMinor * Number(participant.secondAllocation || 0) / 100)
-      : Math.round(Number(participant.secondAllocation || 0) * 100)), 0);
+      : parseMajorAmountToMinor(participant.secondAllocation)), 0);
   const remainderMinor = firstPaymentPoolMinor - allocatedMinor;
   const secondRemainderMinor = remainingPaymentMinor - secondAllocatedMinor;
   const allocationReady = !form.splitPayment || (initialPaymentMinor > 0 && remainingPaymentMinor > 0);
+  const recipientSelectionReady = amountMinor > 0 && Boolean(form.deliveryDueDate);
   const participantLabel = isReleaser ? 'Recipient' : 'Payer';
   const splitPercentageError = form.initialPaymentMode === 'percentage' && form.initialPayment !== '' && (Number(form.initialPayment) < 0 || Number(form.initialPayment) > 100)
     ? 'Percentage must be between 0% and 100%.'
@@ -159,6 +232,13 @@ export function CreateDealDetailsStep({
               value={form.title}
               onChange={(event) => onFieldChange('title', event.target.value)}
             />
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary"><Sparkles size={12} />AI suggestions</span>
+              {suggestingDetails ? <Loader2 size={13} className="animate-spin text-muted-foreground" /> : titleSuggestions.map((suggestion) => (
+                <button key={suggestion} type="button" onClick={() => onFieldChange('title', suggestion)} className="rounded-full border bg-background px-2.5 py-1 text-xs text-muted-foreground transition hover:border-primary/30 hover:text-primary">{suggestion}</button>
+              ))}
+              <button type="button" disabled={suggestingDetails} onClick={() => setSuggestionRequest((current) => current + 1)} className="inline-flex h-7 w-7 items-center justify-center rounded-full border text-muted-foreground transition hover:border-primary/30 hover:text-primary disabled:opacity-50" aria-label="Get more AI title suggestions"><RefreshCw size={12} /></button>
+            </div>
             <FieldError message={errors.title} />
           </div>
 
@@ -167,28 +247,42 @@ export function CreateDealDetailsStep({
             <Textarea
               id="description"
               className="mt-1.5"
-              rows={2}
+              rows={form.description.includes('\n') ? 12 : 3}
               placeholder="Quantity, model, colour, size, or the exact work agreed."
               value={form.description}
-              onChange={(event) => onFieldChange('description', event.target.value)}
+              onChange={(event) => {
+                setAiDetailError('');
+                onFieldChange('description', event.target.value);
+              }}
             />
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[11px] leading-4 text-muted-foreground">{detailRequest > 0 ? 'AI turned your rough details into a short deal summary. Review and update anything incomplete or inaccurate.' : 'Add rough deal facts and AI can turn them into a concise summary.'}</p>
+              <Button type="button" variant="outline" size="sm" className="h-8 rounded-full" disabled={!detailSuggestion || suggestingDetails || refreshingDetail} onClick={() => void refreshDescription()}>{refreshingDetail ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}{form.description.trim() ? 'Get another summary' : 'Get AI summary'}</Button>
+            </div>
+            <FieldError message={aiDetailError} />
+            <FieldError message={errors.description} />
           </div>
         </div>
       </section>
 
       <section className="flex flex-col border-t pt-6">
         <div className="relative order-3 mt-5 rounded-2xl border bg-muted/15 p-4 sm:p-5">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <Label className="text-sm">Payment allocation</Label>
-              <p className="mt-1 text-xs text-muted-foreground">Choose recipients, then assign each payment by fixed amount or percentage.</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                They can receive it by email, SMS, or WhatsApp and join this deal on Naitrust.
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <Label className="text-sm">Payment recipient</Label>
+                {expectedCounterpartyKind !== 'any' && (
+                  <Badge variant="outline" className="rounded-full px-2 py-0 text-[10px] font-medium">
+                    {expectedCounterpartyKind === 'business' ? 'Business accounts only' : 'Individuals only'}
+                  </Badge>
+                )}
+              </div>
+              <p className={`mt-1 text-xs ${recipientSelectionReady ? 'text-muted-foreground' : 'font-medium text-amber-700 dark:text-amber-400'}`}>
+                {recipientSelectionReady ? 'Choose who will receive this protected payment.' : 'Enter the total amount and expected date first.'}
               </p>
-              {expectedCounterpartyKind !== 'any' && <p className="mt-1 text-xs font-medium text-primary">Showing {expectedCounterpartyKind === 'business' ? 'business accounts only' : 'individuals only'} for this deal setup.</p>}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <SavedCounterpartyPickerDialog counterparties={directoryCounterparties} isLoading={savedCounterpartiesLoading} selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])} selectedIdentifiers={form.participants.flatMap((participant) => [participant.contact, participant.name])} onSelect={onSelectCounterparty} onDeselect={onDeselectCounterparty} customerMode={customerMode} directoryMode showPaymentTarget={form.splitPayment} />
+              <SavedCounterpartyPickerDialog counterparties={directoryCounterparties} isLoading={savedCounterpartiesLoading} selectedProfileIds={form.participants.flatMap((participant) => participant.profileId ? [participant.profileId] : [])} selectedIdentifiers={form.participants.flatMap((participant) => [participant.contact, participant.name])} onSelect={onSelectCounterparty} onDeselect={onDeselectCounterparty} customerMode={customerMode} directoryMode showPaymentTarget={form.splitPayment} disabled={!recipientSelectionReady} />
               {canUseSavedContacts && (
                 <SavedCounterpartyPickerDialog
                   counterparties={savedCounterparties}
@@ -199,6 +293,7 @@ export function CreateDealDetailsStep({
                   onDeselect={onDeselectCounterparty}
                   customerMode={customerMode}
                   showPaymentTarget={form.splitPayment}
+                  disabled={!recipientSelectionReady}
                 />
               )}
             </div>
@@ -279,7 +374,7 @@ export function CreateDealDetailsStep({
                         ? stage.pool
                         : mode === 'percentage'
                           ? Math.round(stage.pool * Number(value || 0) / 100)
-                          : Math.round(Number(value || 0) * 100);
+                          : parseMajorAmountToMinor(value);
                       const canConfirm = Boolean(participant.name.trim() && participant.contact.trim() && (stage.recipientCount === 1 || Number(value) > 0));
                       return <div key={`${stage.key}-${index}`} className="grid grid-cols-[minmax(0,1fr)_140px_72px] items-center gap-3 border-b px-4 py-3 transition last:border-b-0 hover:bg-muted/15">
                         <div className="min-w-0">
@@ -338,13 +433,16 @@ export function CreateDealDetailsStep({
             <Label htmlFor="amount">Total amount (NGN)</Label>
             <Input
               id="amount"
-              type="number"
-              min="0"
+              type="text"
               inputMode="decimal"
               className="mt-1.5"
               placeholder="450000"
               value={form.amount}
-              onChange={(event) => onFieldChange('amount', event.target.value)}
+              onChange={(event) => {
+                const cleaned = event.target.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+                const [whole = '', ...fractions] = cleaned.split('.');
+                onFieldChange('amount', fractions.length ? `${whole}.${fractions.join('').slice(0, 2)}` : whole);
+              }}
             />
             {amountMinor > 0 && !errors.amount && (
               <p className="mt-1 text-xs text-muted-foreground">{formatMinorAmount(amountMinor, 'NGN')}</p>
@@ -364,6 +462,7 @@ export function CreateDealDetailsStep({
           </div>
         </div>
 
+        {/* Split-payment setup is intentionally hidden during the pilot.
         <div className="order-2 mt-4 rounded-2xl border bg-muted/15 p-4">
           <p className="text-xs font-semibold text-foreground">Payment release setup</p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -402,6 +501,7 @@ export function CreateDealDetailsStep({
             </div>
           )}
         </div>
+        */}
       </section>
 
       <section className="hidden">

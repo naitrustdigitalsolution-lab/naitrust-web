@@ -4,11 +4,14 @@ import type { DealParticipantInput, SafeDealSummary } from '../store/types';
 import { findMockCreatedDeal } from './mock-protected-deal-store';
 
 type AuthFixture = { user: { id: string; name?: string; email: string; phone?: string; naitrustId?: string } };
-type BusinessFixture = { id: string; ownerUserId: string; name: string; email?: string; phone?: string; ntId?: string };
+type BusinessFixture = { id: string; ownerUserId: string; name: string; email?: string; phone?: string; ntId?: string; paymentAccount?: { accountNumber?: string } };
 
 const users = authFixtures.users as AuthFixture[];
 const businesses = businessFixtures.data as BusinessFixture[];
 const normalize = (value: string | undefined) => value?.trim().toLowerCase().replace(/\s/g, '');
+const normalizeBusinessName = (value: string | undefined) => normalize(value)
+  ?.replace(/[^a-z0-9]/g, '')
+  .replace(/(limited|ltd|incorporated|inc|plc)$/g, '');
 
 export function mockParticipantUserId(participant: DealParticipantInput): string | undefined {
   const profileId = participant.profileId;
@@ -21,19 +24,35 @@ export function mockParticipantUserId(participant: DealParticipantInput): string
   const user = users.find(({ user }) => [user.email, user.phone, user.naitrustId].map(normalize).some((value) => value && identities.includes(value)));
   if (user) return user.user.id;
   return businesses.find((item) =>
-    normalize(item.name) === normalize(participant.name)
-    || [item.email, item.phone, item.ntId].map(normalize).some((value) => value && identities.includes(value)),
+    normalizeBusinessName(item.name) === normalizeBusinessName(participant.name)
+    || [item.email, item.phone, item.ntId, item.paymentAccount?.accountNumber].map(normalize).some((value) => value && identities.includes(value)),
   )?.ownerUserId;
 }
 
-export function mockCreatedDealParticipantIndex(dealId: string, userId: string | undefined): number {
+export function mockCreatedDealParticipantIndex(dealId: string, userId: string | undefined, signedInIdentities: Array<string | undefined> = []): number {
   if (!userId) return -1;
   const deal = findMockCreatedDeal(dealId);
   const context = mockCreatedDealRoleContext(dealId);
   if (!deal || deal.summary.createdByUserId === userId) return -1;
-  return deal.input.participants.findIndex((participant, index) =>
-    index !== context.selfParticipantIndex && mockParticipantUserId(participant) === userId,
+  const viewerIdentities = signedInIdentities.map(normalize).filter(Boolean);
+  const participantIndex = deal.input.participants.findIndex((participant, index) =>
+    index !== context.selfParticipantIndex && (
+      participant.profileId === userId
+      || mockParticipantUserId(participant) === userId
+      || [participant.email, participant.phone, participant.identifier].map(normalize).some((value) => value && viewerIdentities.includes(value))
+    ),
   );
+  if (participantIndex >= 0) return participantIndex;
+
+  // Compatibility for older locally-created mock deals whose selected
+  // business contact did not persist a resolvable profile ID. The summary
+  // still carries the intended business name.
+  const viewerBusinesses = businesses.filter((business) => business.ownerUserId === userId);
+  const summaryMatchesViewer = viewerBusinesses.some((business) =>
+    normalizeBusinessName(business.name) === normalizeBusinessName(deal.summary.counterpartyName),
+  );
+  if (!summaryMatchesViewer) return -1;
+  return deal.input.participants.findIndex((_, index) => index !== context.selfParticipantIndex);
 }
 
 export function mockCreatedDealRoleContext(dealId: string): {

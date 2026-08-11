@@ -69,7 +69,8 @@ import { useBusinessSearch } from '../../hooks/useBusinessDirectory';
 import { useSavedBusinesses } from '../../hooks/useSavedBusinesses';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useAuth } from '../../libs/auth-context';
-import { agreementsApi } from '../../libs/api/agreements.api';
+import { agreementsApi, containsAiDealDetailPlaceholder } from '../../libs/api/agreements.api';
+import { bindMockDealIdentityCapture, registerMockDealIdentityCapture } from '../../libs/api/deal-identity-captures.mock';
 import { useCases } from '../../libs/use-cases';
 import { dealTypeMeta, featuresForUseCase } from '../../libs/features/use-case-features';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
@@ -81,7 +82,7 @@ import {
   suggestedReleaseConditions,
 } from '../../libs/protected-deals/create-deal-options';
 import { accountTypeOf, partyModeOptionsFor } from '../../libs/utils/account';
-import { formatMinorAmount, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
+import { formatMinorAmount, parseMajorAmountToMinor, partyModeLabel, roleLabel } from '../../libs/utils/safe-deal-presentation';
 import { clearDealDraft, isDealDraftLivenessFresh, loadDealDraft, saveDealDraft, type DealDraftLiveness } from '../../libs/utils/deal-draft';
 import { downloadAgreementDraft } from '../../libs/utils/deal-documents';
 import {
@@ -168,20 +169,23 @@ function ChoiceCard({
   icon: Icon,
   title,
   description,
+  disabled = false,
 }: {
   selected: boolean;
   onClick: () => void;
   icon: typeof Building2;
   title: string;
   description: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-pressed={selected}
       className={
-        'group flex flex-1 items-start gap-3 rounded-2xl border p-4 text-left transition-all duration-200 ' +
+        'group flex flex-1 items-start gap-3 rounded-2xl border p-4 text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-55 ' +
         (selected
           ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30'
           : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')
@@ -266,6 +270,12 @@ export function CreateDealPage() {
     if (recoveredDraft?.form) {
       return {
         ...recoveredDraft.form,
+        dealType: 'single',
+        // Split payments are paused for the pilot. Recovered drafts resume as
+        // the supported single-release flow.
+        splitPayment: false,
+        initialPayment: '',
+        nextPaymentReleaseConditions: '',
         openUntil:
           recoveredDraft.form.openUntil ||
           format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
@@ -288,16 +298,16 @@ export function CreateDealPage() {
       const secondPool = input.remainingPaymentMinor ?? 0;
       return {
         useCase: input.useCase,
-        dealType: input.dealType,
+        dealType: 'single',
         partyMode: input.partyMode,
         role: input.role,
         title: input.title,
         description: input.description,
         amount: String(input.amountMinor / 100),
-        splitPayment: secondPool > 0,
+        splitPayment: false,
         initialPaymentMode: 'fixed',
-        initialPayment: String(firstPool / 100),
-        nextPaymentReleaseConditions: input.nextPaymentReleaseConditions ?? '',
+        initialPayment: '',
+        nextPaymentReleaseConditions: '',
         deliveryDueDate: input.deliveryDueDate,
         openUntil: format(addDays(new Date(), input.expiresInDays), 'yyyy-MM-dd'),
         releaseConditions: input.releaseConditions,
@@ -337,11 +347,15 @@ export function CreateDealPage() {
   const [agreementConfirmed, setAgreementConfirmed] = useState(Boolean(editingDeal));
   const [editingAgreement, setEditingAgreement] = useState(false);
   const [agreementPreviewOpen, setAgreementPreviewOpen] = useState(false);
+  const [dealTermsPreviewOpen, setDealTermsPreviewOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingPaymentConditions, setIsGeneratingPaymentConditions] = useState(false);
+  const [paymentConditionsGeneratedByAi, setPaymentConditionsGeneratedByAi] = useState(false);
+  const [paymentConditionsRequest, setPaymentConditionsRequest] = useState(0);
   const [showAllUseCases, setShowAllUseCases] = useState(() =>
     CREATE_DEAL_USE_CASES.more.some((useCase) => useCase.slug === recoveredDraft?.form?.useCase),
   );
-  const [showAdvancedTiming, setShowAdvancedTiming] = useState(false);
+  const [showAdvancedTiming, setShowAdvancedTiming] = useState(true);
   const [createdInvitation, setCreatedInvitation] = useState<{ dealId: string; title: string; url: string } | null>(null);
 
   useEffect(() => {
@@ -367,7 +381,7 @@ export function CreateDealPage() {
       if (Date.now() < expiresAt) return;
       setActionLiveness(undefined);
       setShowLiveness(true);
-      toast.info('Your deal-specific liveness check expired. Take a new check to continue this draft.');
+      toast.info('Your liveness check for this deal expired. Take a new check to continue this draft.');
     };
     const timer = window.setTimeout(expire, Math.max(0, expiresAt - Date.now()));
     window.addEventListener('focus', expire);
@@ -395,7 +409,7 @@ export function CreateDealPage() {
     setForm((prev) => ({
       ...prev,
       useCase: slug,
-      dealType: features.defaultDealType,
+      dealType: 'single',
       releaseConditions: canReplaceWithSuggestedReleaseConditions(prev.releaseConditions)
         ? suggestedReleaseConditions(slug)
         : prev.releaseConditions,
@@ -491,11 +505,11 @@ export function CreateDealPage() {
 
   const selectedUseCase = useCases.find((u) => u.slug === form.useCase);
   const features = featuresForUseCase(form.useCase);
-  const amountMinor = Math.round(Number(form.amount || 0) * 100);
+  const amountMinor = parseMajorAmountToMinor(form.amount);
   const initialPaymentMinor = form.splitPayment
     ? form.initialPaymentMode === 'percentage'
       ? Math.round(amountMinor * Number(form.initialPayment || 0) / 100)
-      : Math.round(Number(form.initialPayment || 0) * 100)
+      : parseMajorAmountToMinor(form.initialPayment)
     : amountMinor;
   const remainingPaymentMinor = form.splitPayment ? Math.max(0, amountMinor - initialPaymentMinor) : 0;
   const firstPaymentPoolMinor = form.splitPayment ? initialPaymentMinor : amountMinor;
@@ -512,10 +526,39 @@ export function CreateDealPage() {
   const allocatedMinor = useMemo(
     () => firstStageParticipants.length === 1 ? firstPaymentPoolMinor : firstStageParticipants.reduce((sum, p) => sum + (form.initialPaymentMode === 'percentage'
       ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100)
-      : Math.round(Number(p.allocation || 0) * 100)), 0),
+      : parseMajorAmountToMinor(p.allocation)), 0),
     [firstPaymentPoolMinor, firstStageParticipants, form.initialPaymentMode],
   );
-  const secondAllocatedMinor = useMemo(() => secondStageParticipants.length === 1 ? remainingPaymentMinor : secondStageParticipants.reduce((sum, participant) => sum + (form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(participant.secondAllocation || 0) / 100) : Math.round(Number(participant.secondAllocation || 0) * 100)), 0), [form.initialPaymentMode, remainingPaymentMinor, secondStageParticipants]);
+  const secondAllocatedMinor = useMemo(() => secondStageParticipants.length === 1 ? remainingPaymentMinor : secondStageParticipants.reduce((sum, participant) => sum + (form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(participant.secondAllocation || 0) / 100) : parseMajorAmountToMinor(participant.secondAllocation)), 0), [form.initialPaymentMode, remainingPaymentMinor, secondStageParticipants]);
+
+  const generatePaymentConditions = async () => {
+    if (!form.title.trim() || !form.deliveryDueDate) {
+      toast.error('Add the deal title and delivery date before generating payment conditions.');
+      return;
+    }
+    setIsGeneratingPaymentConditions(true);
+    try {
+      const nextRequest = paymentConditionsGeneratedByAi ? paymentConditionsRequest + 1 : paymentConditionsRequest;
+      const response = await agreementsApi.draftPaymentConditions({
+        useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
+        title: form.title,
+        description: form.description,
+        deliveryDueDate: form.deliveryDueDate,
+        buyerName,
+        sellerName,
+        requestIndex: nextRequest,
+      });
+      setForm((current) => ({ ...current, releaseConditions: response.data.text }));
+      setPaymentConditionsRequest(nextRequest);
+      setPaymentConditionsGeneratedByAi(true);
+      setAgreement(null);
+      setAgreementConfirmed(false);
+    } catch {
+      toast.error('Could not generate payment conditions. You can still write or edit them yourself.');
+    } finally {
+      setIsGeneratingPaymentConditions(false);
+    }
+  };
 
   const today = useMemo(() => new Date(), []);
   const minOpen = format(addDays(today, 1), 'yyyy-MM-dd');
@@ -586,6 +629,8 @@ export function CreateDealPage() {
     }
     if (step === 2) {
       if (!form.title.trim()) next.title = 'Give the deal a short title.';
+      if (containsAiDealDetailPlaceholder(form.description))
+        next.description = 'Clear the AI template, or replace each remaining AI placeholder with your deal details before continuing.';
       const amount = Number(form.amount);
       if (!form.amount || Number.isNaN(amount) || amount <= 0)
         next.amount = 'Enter an amount greater than zero.';
@@ -669,18 +714,18 @@ export function CreateDealPage() {
       );
       const dealInput: CreateSafeDealInput = {
         useCase: form.useCase,
-        dealType: form.dealType!,
+        dealType: 'single',
         partyMode: form.partyMode!,
         role: form.role!,
         participants: form.participants.map((p) => ({
           name: p.name.trim(),
           ...participantContact(p.contact),
           profileId: p.profileId,
-          allocationMinor: (p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : Math.round(Number(p.allocation || 0) * 100)) : 0)
-            + (form.splitPayment && p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : Math.round(Number(p.secondAllocation || 0) * 100)) : 0),
+          allocationMinor: (p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : parseMajorAmountToMinor(p.allocation)) : 0)
+            + (form.splitPayment && p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : parseMajorAmountToMinor(p.secondAllocation)) : 0),
           paymentAllocations: form.splitPayment ? [
-            { stage: 1 as const, amountMinor: p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : Math.round(Number(p.allocation || 0) * 100)) : 0 },
-            { stage: 2 as const, amountMinor: p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : Math.round(Number(p.secondAllocation || 0) * 100)) : 0 },
+            { stage: 1 as const, amountMinor: p.paymentTargets.includes('first') ? (firstStageParticipants.length === 1 ? firstPaymentPoolMinor : form.initialPaymentMode === 'percentage' ? Math.round(firstPaymentPoolMinor * Number(p.allocation || 0) / 100) : parseMajorAmountToMinor(p.allocation)) : 0 },
+            { stage: 2 as const, amountMinor: p.paymentTargets.includes('second') ? (secondStageParticipants.length === 1 ? remainingPaymentMinor : form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(p.secondAllocation || 0) / 100) : parseMajorAmountToMinor(p.secondAllocation)) : 0 },
           ] : undefined,
         })),
         title: form.title.trim(),
@@ -694,7 +739,7 @@ export function CreateDealPage() {
         currency: 'NGN',
         deliveryDueDate: form.deliveryDueDate,
         releaseConditions: form.releaseConditions.trim(),
-        extendedProductTestingDays: form.extendedProductTestingDays,
+        extendedProductTestingDays: undefined,
         expiresInDays,
         agreement,
         actionLiveness: { actorUserId: user.id, verifiedAt: actionLiveness.verifiedAt, captureId: actionLiveness.captureId },
@@ -707,6 +752,7 @@ export function CreateDealPage() {
         return;
       }
       const created = await createDeal.mutateAsync(dealInput);
+      bindMockDealIdentityCapture(actionLiveness.captureId, created.data.id);
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
       setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
@@ -773,11 +819,21 @@ export function CreateDealPage() {
         open={showLiveness && !showProfileConfirmation}
         onOpenChange={setShowLiveness}
         onVerified={(capture) => {
+          if (user?.id) registerMockDealIdentityCapture({
+            captureId: capture.captureId,
+            scopeId: draftId,
+            subjectUserId: user.id,
+            representativeName: user.name ?? 'Deal representative',
+            action: 'deal_created',
+            capturedAt: capture.capturedAt,
+            photoDataUrl: capture.photoDataUrl,
+          });
           setActionLiveness({ captureId: capture.captureId, verifiedAt: capture.capturedAt, photoDataUrl: capture.photoDataUrl });
           setShowLiveness(false);
         }}
-        reason={`Before ${editDealId ? 'updating' : 'creating'} this deal, confirm who is actively authorizing it.`}
-        footerText="This photo is linked only to this deal draft and remains valid for 24 hours. If it expires before creation, you will take another check."
+        reason="This live photo will be linked only to this Protected Deal. The other verified participant can view it to confirm who actively created the deal."
+        shareNotice="I understand that the other verified participant can view this live photo for the deal."
+        footerText="Continuing confirms this photo for the deal may be viewed by the other verified participant. It remains valid for this draft for 24 hours."
       />
       <Dialog
         open={showProfileConfirmation}
@@ -856,7 +912,7 @@ export function CreateDealPage() {
             <div className="mt-7 hidden gap-3 rounded-2xl bg-gradient-to-br from-[#071b31] to-[#0b4d91] p-4 text-white xl:flex">
               <ShieldCheck size={18} className="mt-0.5 shrink-0 text-sky-300" />
               <p className="text-xs leading-5 text-muted-foreground">
-                <span className="text-white/80">Funds move through a partner-issued account with a regulated provider. Naitrust never holds them directly.</span>
+                <span className="text-white/80">Funds move through an account issued by a regulated payment partner. Naitrust never holds them directly.</span>
               </p>
             </div>
           </aside>
@@ -930,22 +986,24 @@ export function CreateDealPage() {
 
                   {form.useCase && (
                     <div>
-                      <Label className="mb-2 block">How should it run?</Label>
+                      <Label className="mb-2 block">Payment release setup</Label>
                       <div className="grid gap-2 sm:grid-cols-3">
                         {(['single', 'milestone', 'recurring'] as DealType[]).map((type) => {
                           const meta = dealTypeMeta(type);
                           const Icon = DEAL_TYPE_ICON[type];
                           return (
                             <div key={type} className="relative">
-                              {type === features.defaultDealType && <Badge variant="success" className="absolute right-2 top-2 z-10 text-[9px]">Recommended</Badge>}
-                              <ChoiceCard selected={form.dealType === type} onClick={() => set('dealType', type)} icon={Icon} title={meta.label} description={meta.description} />
+                              {type === 'single' ? (
+                                <Badge variant="success" className="absolute right-2 top-2 z-10 text-[9px]">Recommended</Badge>
+                              ) : (
+                                <Badge variant="outline" className="absolute right-2 top-2 z-10 bg-background text-[9px]">Coming soon</Badge>
+                              )}
+                              <ChoiceCard selected={form.dealType === type} disabled={type !== 'single'} onClick={() => type === 'single' && set('dealType', type)} icon={Icon} title={meta.label} description={meta.description} />
                             </div>
                           );
                         })}
                       </div>
-                      {features.note && (
-                        <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">{features.note}</p>
-                      )}
+                      <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">Single release is the supported setup during the pilot. Milestone tracking and recurring deals will be enabled after their release controls are ready.</p>
                       <FieldError message={errors.dealType} />
                     </div>
                   )}
@@ -1026,7 +1084,7 @@ export function CreateDealPage() {
               )}
 
               {step === 3 && (
-                <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
+                <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={() => void generatePaymentConditions()} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
               )}
 
               {step === 4 && (
@@ -1038,7 +1096,7 @@ export function CreateDealPage() {
                       <div className="rounded-xl border border-primary/15 bg-primary/[0.04] p-4">
                         <p className="text-sm font-semibold text-foreground">Check the important details</p>
                         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                          Check the amount, delivery terms, and payment-release condition. The other party must also accept before funding begins.
+                          This agreement was generated by AI from your deal details. Read and edit it to make sure it meets your expectations. The other party must review and accept it before funding begins.
                         </p>
                       </div>
                       <AgreementDocument
@@ -1126,10 +1184,18 @@ export function CreateDealPage() {
                     <ReviewRow
                       label={multiParty ? (isReleaser ? 'Recipients' : 'Payers') : 'Other party'}
                       value={form.participants
-                        .map((p) => (multiParty && p.allocation ? `${p.name} (${p.allocationMode === 'percentage' ? `${p.allocation}% = ` : ''}${formatMinorAmount(p.allocationMode === 'percentage' ? Math.round(amountMinor * Number(p.allocation) / 100) : Math.round(Number(p.allocation) * 100), 'NGN')})` : p.name))
+                        .map((p) => (multiParty && p.allocation ? `${p.name} (${p.allocationMode === 'percentage' ? `${p.allocation}% = ` : ''}${formatMinorAmount(p.allocationMode === 'percentage' ? Math.round(amountMinor * Number(p.allocation) / 100) : parseMajorAmountToMinor(p.allocation), 'NGN')})` : p.name))
                         .join(', ')}
                     />
                     <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || 'Not available'} />
+                    {form.description.trim() && <ReviewRow label="Deal description" value={form.description} />}
+                    <div className="flex items-center gap-4 px-4 py-3">
+                      <dt className="w-40 shrink-0 text-sm text-muted-foreground">Payment release condition</dt>
+                      <dd className="flex min-w-0 flex-1 items-center justify-between gap-3 text-sm font-medium text-foreground">
+                        <span className="line-clamp-2">{form.releaseConditions || 'Not available'}</span>
+                        <Button type="button" variant="ghost" size="sm" className="h-8 shrink-0 rounded-full text-primary" onClick={() => setDealTermsPreviewOpen(true)}><Eye size={14} />Preview</Button>
+                      </dd>
+                    </div>
                     {form.splitPayment && (
                       <>
                         <ReviewRow label="First payment" value={`${formatMinorAmount(initialPaymentMinor, 'NGN')}${form.initialPaymentMode === 'percentage' ? ` (${form.initialPayment}% of total)` : ''}`} />
@@ -1141,16 +1207,7 @@ export function CreateDealPage() {
                       label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
                     />
-                    {supportsDeliveryReview(form.useCase) && (
-                      <ReviewRow
-                        label="Product testing"
-                        value={
-                          form.extendedProductTestingDays
-                            ? `${form.extendedProductTestingDays} days · replaces the standard 24-hour delivery review period`
-                            : 'Standard 24-hour delivery review period'
-                        }
-                      />
-                    )}
+                    {supportsDeliveryReview(form.useCase) && <ReviewRow label="Payment review" value="1 hour after the handover check" />}
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
                       <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
@@ -1202,7 +1259,7 @@ export function CreateDealPage() {
                   </div>
 
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Money placed in a Protected Deal moves through a partner-issued account with a regulated provider. Naitrust does not hold it directly.
+                    Money placed in a Protected Deal moves through an account issued by a regulated payment partner. Naitrust does not hold it directly.
                   </p>
                 </div>
                 )
@@ -1271,6 +1328,18 @@ export function CreateDealPage() {
           </SheetHeader>
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
             {agreement && <AgreementDocument agreement={agreement} hideAiNote />}
+          </div>
+        </SheetContent>
+      </Sheet>
+      <Sheet open={dealTermsPreviewOpen} onOpenChange={setDealTermsPreviewOpen}>
+        <SheetContent className="w-[96vw] gap-0 overflow-hidden p-0 sm:max-w-xl">
+          <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
+            <SheetTitle>Deal description and payment conditions</SheetTitle>
+            <SheetDescription>Review the deal summary and the condition that controls payment release.</SheetDescription>
+          </SheetHeader>
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+            {form.description.trim() && <section><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Deal description</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-foreground">{form.description}</p></section>}
+            <section><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Payment release condition</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-foreground">{form.releaseConditions || 'Not provided'}</p></section>
           </div>
         </SheetContent>
       </Sheet>

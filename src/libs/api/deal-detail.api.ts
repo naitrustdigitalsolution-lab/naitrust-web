@@ -268,7 +268,7 @@ function fundingFor(status: SafeDealStatus, amountMinor: number, currency: strin
   return {
     partner: 'Anchor',
     accountNumber: '7' + String(Math.abs(hash(status + amountMinor)) % 1000000000).padStart(9, '0'),
-    accountName: 'NAITRUST / SAFE DEAL',
+    accountName: 'NAITRUST / PROTECTED DEAL',
     bankName: 'Anchor (partner bank)',
     amountExpectedMinor: amountMinor,
     amountReceivedMinor: received,
@@ -433,7 +433,7 @@ function activityFor(summary: SafeDealSummary): DealActivityEvent[] {
   let step = 0;
   const at = () => new Date(base + step++ * 43200000).toISOString();
 
-  events.push({ id: 'a0', kind: 'created', message: 'Safe deal created and counterparty invited.', createdAt: at() });
+  events.push({ id: 'a0', kind: 'created', message: 'Protected Deal created and the other party invited.', createdAt: at() });
 
   const idx = STATUS_ORDER.indexOf(summary.status);
   const reached = (s: SafeDealStatus) => idx >= STATUS_ORDER.indexOf(s) && STATUS_ORDER.indexOf(s) !== -1;
@@ -537,22 +537,22 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
     {
       heading: 'Protected payment',
       body: firstPayment
-        ? `The total deal value is ${amount}. The first protected payment is ${firstPayment}, and Naitrust tracks the remaining ${remainingPayment}. Funds move through a partner-issued account operated by a regulated payment provider. Naitrust does not hold customer funds directly.`
-        : `The Buyer funds ${amount} through a partner-issued account operated by a regulated payment provider. Naitrust does not hold customer funds directly, and the payment remains protected until the agreed release process is completed.`,
+        ? `The total deal value is ${amount}. The first protected payment is ${firstPayment}, and Naitrust tracks the remaining ${remainingPayment}. Funds move through an account issued by a regulated payment provider. Naitrust does not hold customer funds directly.`
+        : `The Buyer funds ${amount} through an account issued by a regulated payment provider. Naitrust does not hold customer funds directly, and the payment remains protected until the agreed release process is completed.`,
     },
     {
       heading: firstPayment ? 'First payment release' : 'Release conditions',
-      body: `${releaseCondition} Once the condition is confirmed, the standard 24-hour funding review begins. The Seller may request release, but that request cannot move money by itself.`,
+      body: `${releaseCondition} Once the condition is confirmed, the standard 1-hour payment review begins. The Seller may request release, but that request cannot move money by itself.`,
     },
   ];
   if (firstPayment) sections.push({
     heading: 'Second payment and stage lock',
-    body: `The remaining ${remainingPayment} stays locked until the first payment is released successfully. It becomes eligible only after this condition is completed: ${summary.nextPaymentReleaseConditions ?? 'the next agreed delivery stage is completed and accepted'}. The second payment then receives its own 24-hour review period.`,
+    body: `The remaining ${remainingPayment} stays locked until the first payment is released successfully. It becomes eligible only after this condition is completed: ${summary.nextPaymentReleaseConditions ?? 'the next agreed delivery stage is completed and accepted'}. The second payment then receives its own 1-hour review period.`,
   });
   sections.push(
     {
       heading: 'Review period and early release',
-      body: 'Every payment release has a 24-hour review period. The Buyer may approve release earlier with a transaction PIN after reviewing a warning that the remaining delay will be bypassed. Early approval applies only to the payment stage currently eligible for release.',
+      body: 'Every payment release has a 1-hour review period after handover. The Buyer may approve release earlier with a transaction PIN after reviewing a warning that the remaining delay will be bypassed. Early approval applies only to the payment currently eligible for release.',
     },
     {
       heading: 'Evidence, issues, and disputes',
@@ -639,13 +639,17 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     : summary.id.includes('_business_') || summary.id.startsWith('deal_adaeze_emeka_') || summary.id.startsWith('deal_tunde_')
       ? 'b2b'
       : 'b2c';
+  // The Tracking tab is available to every Protected Deal, but single-release
+  // deals begin empty. Their seller adds only the delivery/work updates that
+  // fit the deal; preset stages belong to explicit milestone-tracking deals.
   const milestones = trackingOverrides[summary.id] ?? (dealType === 'milestone'
     ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName)
     : []);
   const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
   return {
     ...effectiveSummary,
-    title: summary.title ?? `Safe deal with ${summary.counterpartyName}`,
+    publicInvitePath: viewerIsCreator ? createdDeal?.summary.publicInvitePath : undefined,
+    title: summary.title ?? `Protected Deal with ${summary.counterpartyName}`,
     description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
     useCase: input?.useCase ?? overlay?.useCase ?? 'supplier-orders',
     dealType,
@@ -837,14 +841,6 @@ export const dealDetailApi = {
       const idx = currentIdx === -1 ? list.findIndex((m) => m.status === 'pending') : currentIdx;
       const stepBeingCompleted = idx === -1 ? undefined : list[idx];
       const currentDeal = getMockDetailOrThrow(id);
-      if (
-        stepBeingCompleted &&
-        /dispatch|ship|courier|pickup|collected/i.test(stepBeingCompleted.title) &&
-        supportsDeliveryReview(currentDeal.useCase) &&
-        !hasRequiredProductEvidence(currentDeal.evidence)
-      ) {
-        throw new Error('Complete each applicable seller evidence item, or mark it Not applicable with a reason, before dispatch.');
-      }
       if (idx !== -1) {
         list[idx] = { ...list[idx], status: 'done', updatedByName: 'You', at: new Date().toISOString() };
         const next = list.findIndex((m, i) => i > idx && m.status === 'pending');

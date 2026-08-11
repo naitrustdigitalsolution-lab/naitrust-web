@@ -6,6 +6,7 @@ import {
   Clock3,
   Loader2,
   LockKeyhole,
+  ScanFace,
   ShieldCheck,
   UserRound,
 } from 'lucide-react';
@@ -54,13 +55,9 @@ export function PublicInvitationPreviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10">
+    <div className="min-h-screen bg-[#f4f7f9] px-4 pb-10 pt-12 dark:bg-background sm:pb-16 sm:pt-20 lg:pt-24">
       <SEOHead title="Protected Deal invitation" description="Review a Naitrust Protected Deal invitation." noindex />
       <div className="mx-auto max-w-xl">
-        <button type="button" onClick={() => navigate('/')} className="mx-auto mb-7 block">
-          <NaitrustLogo />
-        </button>
-
         {isLoading ? (
           <Card className="flex min-h-72 items-center justify-center rounded-3xl border-0 shadow-xl">
             <Loader2 className="animate-spin text-primary" />
@@ -81,7 +78,12 @@ export function PublicInvitationPreviewPage() {
         ) : (
           <Card className="overflow-hidden rounded-3xl border-0 p-0 shadow-xl">
             <div className="bg-[#071b31] p-7 text-white">
-              <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Protected Deal invitation</Badge>
+              <div className="flex items-center justify-between gap-3">
+                <button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80">
+                  <NaitrustLogo size="sm" textColor="text-white" />
+                </button>
+                <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Protected Deal invitation</Badge>
+              </div>
               <div className="mt-5 flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10">
                   {preview.inviterAccountType === 'business' ? <Building2 /> : <UserRound />}
@@ -110,6 +112,16 @@ export function PublicInvitationPreviewPage() {
                   <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><Clock3 size={13} /> Invitation expiry</p>
                   <p className="mt-1 font-semibold">{new Date(preview.expiresAt).toLocaleString()}</p>
                 </div>
+              </div>
+
+              <div className="flex items-start gap-3 rounded-2xl border border-primary/15 bg-primary/[0.04] p-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ScanFace size={19} /></span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2"><p className="text-sm font-semibold">Deal representative</p>{preview.inviterLivenessConfirmed && <Badge variant="success">Live identity captured</Badge>}</div>
+                  <p className="mt-1 text-sm font-medium">{preview.inviterRepresentativeName ?? preview.inviterName}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{preview.inviterLivenessCapturedAt ? `Captured ${new Date(preview.inviterLivenessCapturedAt).toLocaleString()}. ` : ''}The full photo is private. Sign in as the intended recipient to view it.</p>
+                </div>
+                <LockKeyhole size={16} className="shrink-0 text-muted-foreground" />
               </div>
 
               <div className="rounded-xl border border-primary/15 bg-primary/[0.04] p-4 text-sm leading-6">

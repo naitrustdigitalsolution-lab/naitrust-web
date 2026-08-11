@@ -69,12 +69,15 @@ export function transfersToTransactionRecords(transfers: InstantTransfer[]): Tra
 const WALLET_KIND_TO_TYPE: Partial<Record<WalletActivityEvent['kind'], TransactionRecord['type']>> = {
   funding: 'wallet_funding',
   withdrawal: 'withdrawal',
+  instant_transfer_in: 'incoming_transfer',
+  bill_payment: 'bill_payment',
   fee: 'fee',
 };
 
 /**
- * Only funding/withdrawal/fee wallet events become their own transaction
- * record: instant-transfer and protected-deal wallet events are already
+ * Wallet movements that are not already represented elsewhere become their
+ * own transaction record. Outgoing instant transfers and protected-deal
+ * movements are already
  * represented via `transfersToTransactionRecords`/`dealsToTransactionRecords`
  * and would otherwise appear twice.
  */
@@ -100,7 +103,8 @@ export function walletActivityToTransactionRecords(events: WalletActivityEvent[]
 
 export const TRANSACTION_TYPE_LABEL: Record<TransactionRecord['type'], string> = {
   instant_transfer: 'Instant Transfer',
-  incoming_transfer: 'Instant Transfer',
+  incoming_transfer: 'Money Received',
+  bill_payment: 'Bill Payment',
   wallet_funding: 'Wallet Funding',
   withdrawal: 'Withdrawal',
   protected_funding: 'Protected Payment',

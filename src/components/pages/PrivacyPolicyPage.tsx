@@ -400,6 +400,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Technical/usage data:</strong> Twenty-four (24) months from the date of collection</li>
                 <li><strong>Fraud reports and investigation records:</strong> Seven (7) years or such longer period as required by ongoing legal proceedings</li>
                 <li><strong>Selfie and ID photos (manual verification):</strong> Deleted from ImageKit within thirty (30) days of verification approval or rejection. Selfie-with-ID photos are deleted immediately after administrative review is complete to minimise biometric data retention</li>
+                <li><strong>Live identity photos for a deal:</strong> Viewable only by authorised deal participants until ninety (90) days after the Protected Deal closes. Participant access then ends and only verification and audit metadata is retained, unless a dispute, fraud investigation, regulatory requirement, or legal hold requires continued restricted retention</li>
                 <li><strong>Verification documents (CAC certificates, ID documents):</strong> Retained for up to five (5) years from the date of verification for regulatory compliance purposes</li>
               </ul>
               <p className="text-muted-foreground mt-4">

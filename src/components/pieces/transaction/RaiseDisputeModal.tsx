@@ -79,8 +79,8 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
             Raise a dispute
           </DialogTitle>
           <DialogDescription>
-            Opening a dispute pauses the release while our team reviews the evidence from both
-            parties. Payment will not release automatically while the outcome is unclear.
+            A report with relevant evidence pauses automatic release while our team reviews the
+            information from both parties. A report without evidence does not freeze payment yet.
           </DialogDescription>
         </DialogHeader>
 
@@ -110,7 +110,7 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
           </div>
 
           <div>
-            <Label>Buyer evidence (recommended)</Label>
+            <Label>Dispute evidence (recommended)</Label>
             <input
               ref={fileRef}
               type="file"

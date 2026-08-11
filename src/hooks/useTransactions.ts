@@ -42,3 +42,15 @@ export function useUpdateDeal(id: string | undefined) {
     },
   });
 }
+
+export function useDeleteUnacceptedDeal(id: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => transactionsApi.deleteUnacceptedTransaction(id!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['invitations'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}

@@ -26,7 +26,6 @@ import {
   Loader2,
   Pencil,
   RefreshCw,
-  Repeat,
   ScanFace,
   ShieldCheck,
   Save,
@@ -49,7 +48,6 @@ import { DraftSavedForPinModal } from '../pieces/transaction/DraftSavedForPinMod
 import { PaymentConditionsStep } from '../pieces/transaction/PaymentConditionsStep';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
@@ -1018,26 +1016,13 @@ export function CreateDealPage() {
                   form={form}
                   errors={errors}
                   isReleaser={isReleaser}
-                  minOpen={minOpen}
-                  maxOpen={maxOpen}
-                  maxOpenDays={MAX_DEAL_OPEN_DAYS}
-                  showAdvancedTiming={showAdvancedTiming}
                   canUseSavedContacts
                   savedCounterparties={eligibleSavedCounterparties}
                   savedCounterpartiesLoading={savedCounterpartiesLoading}
                   directoryCounterparties={eligibleDirectoryCounterparties}
                   expectedCounterpartyKind={expectedCounterpartyKind}
                   customerMode={accountType === 'customer'}
-                  onAdvancedTimingChange={setShowAdvancedTiming}
                   onFieldChange={(field, value) => set(field, value)}
-                  onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)}
-                  onSplitPaymentChange={(value) => setForm((current) => ({
-                    ...current,
-                    splitPayment: value,
-                    initialPayment: value ? current.initialPayment : '',
-                    nextPaymentReleaseConditions: value ? current.nextPaymentReleaseConditions : '',
-                  }))}
-                  onInitialPaymentModeChange={(value) => setForm((current) => ({ ...current, initialPaymentMode: value, initialPayment: '' }))}
                   onParticipantChange={updateParticipant}
                   onAddParticipant={addParticipant}
                   onSelectCounterparty={selectSavedCounterparty}
@@ -1124,7 +1109,7 @@ export function CreateDealPage() {
 
               {step === 3 && (
                 !agreement || isGenerating ? (
-                  <AgreementPreparationState />
+                  null
                 ) : (
                 <div className="flex flex-col gap-4">
                   <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
@@ -1172,19 +1157,11 @@ export function CreateDealPage() {
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
                       <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
-                        <span>{`v${agreement.version} · ${agreement.sections.length} clauses · confirmed by you`}</span>
+                        <span>{`v${agreement.version} · ${agreement.sections.length} clauses · ${agreementConfirmed ? 'confirmed by you' : 'awaiting your confirmation'}`}</span>
                         <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full text-primary" onClick={() => setAgreementPreviewOpen(true)}><Eye size={14} />Preview agreement</Button>
                       </dd>
                     </div>
                   </dl>
-
-                  {form.dealType === 'recurring' && (
-                    <div className="flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs leading-5 text-muted-foreground">
-                      <Repeat size={14} className="mt-0.5 shrink-0 text-primary" />
-                      This is a recurring deal: when it completes, a new linked deal is created
-                      automatically, carrying this deal's history forward.
-                    </div>
-                  )}
 
                   <div className="rounded-2xl border bg-muted/20 p-4 sm:p-5">
                     <p className="text-sm font-bold text-foreground">What happens next</p>

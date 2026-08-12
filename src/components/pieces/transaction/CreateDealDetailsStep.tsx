@@ -1,18 +1,14 @@
-import { Check, ChevronDown, Clock3, Loader2, Pencil, Plus, RefreshCw, Sparkles, Trash2 } from 'lucide-react';
+import { Check, ChevronDown, Loader2, Pencil, Plus, RefreshCw, Sparkles, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { counterpartyRelationLabel } from '../../../libs/counterparties/counterparty-options';
 import type { CounterpartyProfile, CounterpartyRelation, ExtendedProductTestingDays } from '../../../libs/store/types';
-import { supportsDeliveryReview } from '../../../libs/protected-deals/delivery-review';
 import { formatMinorAmount, parseMajorAmountToMinor } from '../../../libs/utils/safe-deal-presentation';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Checkbox } from '../../ui/checkbox';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../ui/collapsible';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { Textarea } from '../../ui/textarea';
-import { ProductTestingPeriodField } from './ProductTestingPeriodField';
 import { SavedCounterpartyPickerDialog } from './SavedCounterpartyPickerDialog';
 import { agreementsApi } from '../../../libs/api/agreements.api';
 import { useCases } from '../../../libs/use-cases';
@@ -59,21 +55,13 @@ interface CreateDealDetailsStepProps {
   form: DealDetailsValues & { useCase: string };
   errors: Record<string, string>;
   isReleaser: boolean;
-  minOpen: string;
-  maxOpen: string;
-  maxOpenDays: number;
-  showAdvancedTiming: boolean;
   canUseSavedContacts: boolean;
   savedCounterparties: CounterpartyProfile[];
   savedCounterpartiesLoading: boolean;
   directoryCounterparties: CounterpartyProfile[];
   customerMode: boolean;
   expectedCounterpartyKind: 'business' | 'individual' | 'any';
-  onAdvancedTimingChange: (open: boolean) => void;
   onFieldChange: (field: TextDetailField, value: string) => void;
-  onTestingPeriodChange: (value?: ExtendedProductTestingDays) => void;
-  onSplitPaymentChange: (value: boolean) => void;
-  onInitialPaymentModeChange: (value: 'fixed' | 'percentage') => void;
   onParticipantChange: (index: number, field: keyof DealParticipantForm, value: string | boolean) => void;
   onAddParticipant: (paymentTarget?: 'first' | 'second') => void;
   onSelectCounterparty: (counterparty: CounterpartyProfile, paymentTarget?: 'first' | 'second' | 'both') => void;
@@ -108,21 +96,13 @@ export function CreateDealDetailsStep({
   form,
   errors,
   isReleaser,
-  minOpen,
-  maxOpen,
-  maxOpenDays,
-  showAdvancedTiming,
   canUseSavedContacts,
   savedCounterparties,
   savedCounterpartiesLoading,
   directoryCounterparties,
   customerMode,
   expectedCounterpartyKind,
-  onAdvancedTimingChange,
   onFieldChange,
-  onTestingPeriodChange,
-  onSplitPaymentChange,
-  onInitialPaymentModeChange,
   onParticipantChange,
   onAddParticipant,
   onSelectCounterparty,
@@ -208,9 +188,6 @@ export function CreateDealDetailsStep({
   const allocationReady = !form.splitPayment || (initialPaymentMinor > 0 && remainingPaymentMinor > 0);
   const recipientSelectionReady = amountMinor > 0 && Boolean(form.deliveryDueDate);
   const participantLabel = isReleaser ? 'Recipient' : 'Payer';
-  const splitPercentageError = form.initialPaymentMode === 'percentage' && form.initialPayment !== '' && (Number(form.initialPayment) < 0 || Number(form.initialPayment) > 100)
-    ? 'Percentage must be between 0% and 100%.'
-    : '';
 
   return (
     <div className="flex flex-col gap-7">

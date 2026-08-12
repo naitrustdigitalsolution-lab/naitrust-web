@@ -50,30 +50,30 @@ export function HomePage({ onNavigate }: HomePageProps) {
     return () => window.removeEventListener('resize', updateHeroHeight);
   }, []);
 
-  const howItWorks = [
+  const accountCapabilities = [
     {
       step: '1',
-      title: 'Request Payment from Any Conversation',
-      description: 'Share your account through WhatsApp, a payment link or a QR code so anyone can pay you.',
+      title: 'Request and Receive Payments',
+      description: 'Share your account through WhatsApp, a payment link, or a QR code so customers can pay you easily.',
       icon: ArrowDownToLine,
     },
     {
       step: '2',
-      title: 'Pay Regular Suppliers',
-      description: 'Send instantly to people, suppliers, and businesses you already know and trust.',
+      title: 'Pay People and Businesses',
+      description: 'Send money directly when you already know and trust the person, supplier, or business.',
       icon: Send,
     },
     {
       step: '3',
-      title: 'Protect Important Orders',
-      description: 'For an important deal, record the terms and protect the payment until both sides complete what they agreed.',
+      title: 'Protect Important Transactions',
+      description: 'Use a Protected Deal when you need shared terms, delivery evidence, and payment protection.',
       icon: Shield,
     },
     {
       step: '4',
-      title: 'Build a Trusted History',
-      description: 'Completed payments and Protected Deals strengthen the business record you carry into the next transaction.',
-      icon: CheckCircle2,
+      title: 'Build a Trusted Record',
+      description: 'Carry verified details and completed transaction history into every new payment or deal.',
+      icon: Fingerprint,
     },
   ];
 
@@ -100,8 +100,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
     <div className="home-page relative min-h-screen">
       <SEOHead
         title="Verify, Agree and Protect Important Payments"
-        description="Naitrust helps Nigerian buyers and businesses verify participants, agree on clear terms, protect important payments, track delivery, and keep evidence in one Deal Room."
-        keywords="Naitrust, Nigerian fintech app, payments Nigeria, Protected Deals Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
+        description="Naitrust provides trust infrastructure for financial transactions and commerce, helping Nigerian buyers and businesses verify participants, agree on clear terms, protect important payments, and keep payment, delivery, and evidence records in one Deal Room."
+        keywords="Naitrust, trust infrastructure for financial transactions and commerce, Nigerian fintech app, payments Nigeria, Protected Deals Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
         canonicalPath="/"
       />
       
@@ -136,7 +136,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button>
               <button
                 type="button"
-                onClick={() => document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.querySelector('#customer-journey')?.scrollIntoView({ behavior: 'smooth' })}
                 className="inline-flex h-10 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-6 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-12 sm:gap-2 sm:px-7 sm:text-sm"
               >
                 See how it works
@@ -147,13 +147,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div className="mx-auto mt-7 grid w-full max-w-[22rem] grid-cols-2 items-center gap-2 text-[9px] font-medium leading-tight text-white/75 sm:hidden">
               <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Verify the participant</span>
               <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Record clear terms</span>
-              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Protect the payment and proof</span>
+              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Track payment, delivery and evidence</span>
             </div>
 
             <div className="mt-7 hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-white/65 sm:flex xl:justify-start">
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Verify the participant</span>
               <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Record clear terms</span>
-              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Protect the payment and proof</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Track payment, delivery and evidence</span>
             </div>
           </motion.div>
 
@@ -405,7 +405,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Customer journey */}
-      <section className="bg-[#c4e9fdb3] px-4 py-12 text-[#071b31] sm:px-6 sm:py-24 lg:px-8">
+      <section id="customer-journey" className="bg-[#c4e9fdb3] px-4 py-12 text-[#071b31] sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-[90rem]">
           <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
             <div>
@@ -548,8 +548,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </motion.div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="relative overflow-hidden bg-[#04162f] py-12 text-white sm:py-20 lg:py-28">
+      {/* Account capabilities */}
+      <section className="relative overflow-hidden bg-[#04162f] py-12 text-white sm:py-20 lg:py-28">
         <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full" />
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -559,11 +559,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative mb-10 grid items-end gap-4 sm:mb-14 sm:gap-6 lg:grid-cols-2 lg:text-left"
           >
             <div>
-              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">Simple by design</p>
-              <h2 className="text-2xl leading-[1.08] tracking-[-0.04em] sm:text-5xl sm:leading-[1.05]">From today’s sale<br />to tomorrow’s stock.</h2>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">One connected account</p>
+              <h2 className="text-2xl leading-[1.08] tracking-[-0.04em] sm:text-5xl sm:leading-[1.05]">Everyday payments<br />and protected deals.</h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-white/60 sm:text-lg sm:leading-8 lg:justify-self-end">
-              One account connects everyday payments with the important deals you choose to document and protect.
+              Move money simply when trust already exists, or add structure and protection when the transaction carries more risk.
             </p>
           </motion.div>
 
@@ -578,7 +578,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </motion.div>
 
           <div className="relative grid gap-0 overflow-hidden rounded-[1.5rem] border border-white/10 sm:rounded-[2rem] md:grid-cols-2 lg:grid-cols-4">
-            {howItWorks.map((item, index) => {
+            {accountCapabilities.map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.div

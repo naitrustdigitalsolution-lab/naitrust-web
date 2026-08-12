@@ -2,14 +2,9 @@
  * CreateDealPage
  * Create Safe Deal wizard (`/app/deals/new`), contained but space-filling.
  * A fresh action-specific liveness check gates every deal creation. Steps:
- *  1) Basics: use case, then the deal type (structure) that use case allows
- *     (single / milestone tracking / recurring), party mode, and your role
- *     framed as sending vs receiving funds.
- *  2) Terms & parties: the amount and terms first, then the counterparties at
- *     the bottom, each with the amount they pay/receive when there's more than
- *     one. The deal-open window is capped at 30 days.
- *  3) Agreement: prepared from the terms and confirmed by you.
- *  4) Review & send.
+ *  1) Deal setup: use case, party mode, and the creator's role.
+ *  2) Deal terms: money, recipients, release condition, and invitation timing.
+ *  3) Review agreement and send.
  */
 
 import { useEffect, useMemo, useState } from 'react';
@@ -25,7 +20,6 @@ import {
   Copy,
   ChevronDown,
   Clock3,
-  Coins,
   Download,
   Eye,
   FileCheck2,
@@ -37,7 +31,6 @@ import {
   ShieldCheck,
   Save,
   Send,
-  Truck,
   User,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -72,7 +65,7 @@ import { useAuth } from '../../libs/auth-context';
 import { agreementsApi, containsAiDealDetailPlaceholder } from '../../libs/api/agreements.api';
 import { bindMockDealIdentityCapture, registerMockDealIdentityCapture } from '../../libs/api/deal-identity-captures.mock';
 import { useCases } from '../../libs/use-cases';
-import { dealTypeMeta, featuresForUseCase } from '../../libs/features/use-case-features';
+import { featuresForUseCase } from '../../libs/features/use-case-features';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 import {
   canReplaceWithSuggestedReleaseConditions,
@@ -98,20 +91,12 @@ import { findMockCreatedDeal } from '../../libs/api/mock-protected-deal-store';
 import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
-  { title: 'Start the deal', description: 'Choose what you are protecting and how money moves.' },
-  { title: 'Money and recipients', description: 'Enter the total and decide how each recipient is paid.' },
-  { title: 'Payment conditions', description: 'Set what must happen before each payment is available or released.' },
-  { title: 'Agreement', description: 'Review the agreement prepared from your terms.' },
-  { title: 'Review & send', description: 'Confirm everything and invite the other party.' },
+  { title: 'Deal setup', description: 'Choose what you are protecting and who is involved.' },
+  { title: 'Deal terms', description: 'Enter the money, recipients, timing, and release condition.' },
+  { title: 'Review agreement & send', description: 'Check the agreement and invite the other party.' },
 ];
 
 const CREATE_DEAL_USE_CASES = splitCreateDealUseCases(useCases);
-
-const DEAL_TYPE_ICON: Record<DealType, typeof Coins> = {
-  single: Coins,
-  milestone: Truck,
-  recurring: Repeat,
-};
 
 interface FormState extends DealDetailsValues {
   useCase: string;
@@ -124,7 +109,7 @@ const emptyParticipant = (paymentTargets: Array<'first' | 'second'> = ['first', 
 
 const INITIAL: FormState = {
   useCase: '',
-  dealType: null,
+  dealType: 'single',
   partyMode: null,
   role: null,
   participants: [emptyParticipant()],
@@ -265,7 +250,13 @@ export function CreateDealPage() {
   const profileBusinessName = searchParams.get('name')?.trim() ?? '';
   const openedFromTrustProfile = searchParams.get('from') === 'trust-profile' && Boolean(searchParams.get('business'));
   const [showProfileConfirmation, setShowProfileConfirmation] = useState(openedFromTrustProfile);
-  const [step, setStep] = useState(() => Math.min(Math.max(recoveredDraft?.step ?? 1, 1), STEPS.length));
+  const [step, setStep] = useState(() => {
+    const legacyStep = recoveredDraft?.step ?? 1;
+    if (recoveredDraft?.wizardVersion === 2) return Math.min(Math.max(legacyStep, 1), STEPS.length);
+    if (legacyStep <= 1) return 1;
+    if (legacyStep <= 3) return 2;
+    return 3;
+  });
   const [form, setForm] = useState<FormState>(() => {
     if (recoveredDraft?.form) {
       return {
@@ -370,7 +361,7 @@ export function CreateDealPage() {
       !!form.useCase || !!form.title.trim() || !!form.description.trim() || !!form.amount ||
       form.participants.some((participant) => !!participant.name.trim() || !!participant.contact.trim());
     if (!hasContent) return;
-    const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step, actionLiveness), 400);
+    const timer = window.setTimeout(() => saveDealDraft(user?.id, draftId, form, step, actionLiveness, 2), 400);
     return () => window.clearTimeout(timer);
   }, [actionLiveness, draftId, form, step, user?.id]);
 
@@ -405,7 +396,6 @@ export function CreateDealPage() {
   };
 
   const selectUseCase = (slug: string) => {
-    const features = featuresForUseCase(slug);
     setForm((prev) => ({
       ...prev,
       useCase: slug,
@@ -615,7 +605,7 @@ export function CreateDealPage() {
   };
 
   useEffect(() => {
-    if (step >= 4 && !agreement && !isGenerating) void generateAgreement(1);
+    if (step >= 3 && !agreement && !isGenerating) void generateAgreement(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, agreement]);
 
@@ -623,7 +613,6 @@ export function CreateDealPage() {
     const next: Record<string, string> = {};
     if (step === 1) {
       if (!form.useCase) next.useCase = 'Pick the use case that fits this deal.';
-      if (!form.dealType) next.dealType = 'Choose a deal type.';
       if (!form.partyMode) next.partyMode = 'Choose the parties.';
       if (!form.role) next.role = 'Select your role.';
     }
@@ -652,8 +641,6 @@ export function CreateDealPage() {
         next.allocation = `First payment allocations must add up to ${formatMinorAmount(firstPaymentPoolMinor, 'NGN')}.`;
       else if (form.splitPayment && secondAllocatedMinor !== remainingPaymentMinor)
         next.allocation = `Second payment allocations must add up to ${formatMinorAmount(remainingPaymentMinor, 'NGN')}.`;
-    }
-    if (step === 3) {
       if (!form.openUntil) {
         next.openUntil = 'Set how long the deal stays open.';
       } else {
@@ -673,7 +660,6 @@ export function CreateDealPage() {
 
   const handleNext = () => {
     if (!validateStep()) return;
-    if (step === 4 && (!agreement || !agreementConfirmed)) return;
     setStep((s) => Math.min(s + 1, STEPS.length));
   };
 
@@ -686,7 +672,7 @@ export function CreateDealPage() {
   };
 
   const persistCurrentDraft = () => {
-    saveDealDraft(user?.id, draftId, form, step, actionLiveness);
+    saveDealDraft(user?.id, draftId, form, step, actionLiveness, 2);
   };
 
   const handleSaveDraft = () => {
@@ -801,7 +787,7 @@ export function CreateDealPage() {
 
   const submittingDeal = createDeal.isPending || updateDeal.isPending;
   const continueDisabled =
-    submittingDeal || !isDealDraftLivenessFresh(actionLiveness) || (step === 4 && (isGenerating || !agreement || !agreementConfirmed));
+    submittingDeal || !isDealDraftLivenessFresh(actionLiveness);
 
   // Hard gate: no deal starts until email + KYC are verified.
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
@@ -984,30 +970,6 @@ export function CreateDealPage() {
                     <FieldError message={errors.useCase} />
                   </div>
 
-                  {form.useCase && (
-                    <div>
-                      <Label className="mb-2 block">Payment release setup</Label>
-                      <div className="grid gap-2 sm:grid-cols-3">
-                        {(['single', 'milestone', 'recurring'] as DealType[]).map((type) => {
-                          const meta = dealTypeMeta(type);
-                          const Icon = DEAL_TYPE_ICON[type];
-                          return (
-                            <div key={type} className="relative">
-                              {type === 'single' ? (
-                                <Badge variant="success" className="absolute right-2 top-2 z-10 text-[9px]">Recommended</Badge>
-                              ) : (
-                                <Badge variant="outline" className="absolute right-2 top-2 z-10 bg-background text-[9px]">Coming soon</Badge>
-                              )}
-                              <ChoiceCard selected={form.dealType === type} disabled={type !== 'single'} onClick={() => type === 'single' && set('dealType', type)} icon={Icon} title={meta.label} description={meta.description} />
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground">Single release is the supported setup during the pilot. Milestone tracking and recurring deals will be enabled after their release controls are ready.</p>
-                      <FieldError message={errors.dealType} />
-                    </div>
-                  )}
-
                   <div className="grid gap-6 lg:grid-cols-2">
                     <div>
                       <Label className="mb-2 block">Who are you dealing with?</Label>
@@ -1051,7 +1013,8 @@ export function CreateDealPage() {
               )}
 
               {step === 2 && (
-                <CreateDealDetailsStep
+                <div className="flex flex-col gap-6">
+                  <CreateDealDetailsStep
                   form={form}
                   errors={errors}
                   isReleaser={isReleaser}
@@ -1080,14 +1043,12 @@ export function CreateDealPage() {
                   onSelectCounterparty={selectSavedCounterparty}
                   onDeselectCounterparty={removeSelectedCounterparty}
                   onRemoveParticipant={removeParticipant}
-                />
+                  />
+                  <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={() => void generatePaymentConditions()} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
+                </div>
               )}
 
               {step === 3 && (
-                <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={() => void generatePaymentConditions()} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
-              )}
-
-              {step === 4 && (
                 <div className="flex flex-col gap-4">
                   {isGenerating || !agreement ? (
                     <AgreementPreparationState />
@@ -1161,7 +1122,7 @@ export function CreateDealPage() {
                 </div>
               )}
 
-              {step === 5 && (
+              {step === 3 && (
                 !agreement || isGenerating ? (
                   <AgreementPreparationState />
                 ) : (
@@ -1175,7 +1136,7 @@ export function CreateDealPage() {
 
                   <dl className="divide-y divide-border rounded-xl border">
                     <ReviewRow label="What you're protecting" value={selectedUseCase?.title ?? 'Not available'} />
-                    <ReviewRow label="Deal setup" value={form.dealType ? dealTypeMeta(form.dealType).label : 'Not available'} />
+                    <ReviewRow label="Payment release" value="Single release" />
                     <ReviewRow label="Who's involved" value={form.partyMode ? partyModeLabel(form.partyMode) : 'Not available'} />
                     <ReviewRow
                       label="Your role"
@@ -1297,7 +1258,7 @@ export function CreateDealPage() {
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || !isDealDraftLivenessFresh(actionLiveness)} className="rounded-md">
+                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || isGenerating || !agreement || !agreementConfirmed || !isDealDraftLivenessFresh(actionLiveness)} className="rounded-md">
                       {submittingDeal ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />

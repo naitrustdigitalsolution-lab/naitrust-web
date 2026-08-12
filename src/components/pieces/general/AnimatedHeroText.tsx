@@ -15,23 +15,21 @@ export function AnimatedHeroText() {
           className="mt-2 flex h-auto min-w-0 w-full flex-col items-center sm:mt-4 xl:items-start"
         >
           <h1 className="naitrust-satoshi-bold w-full max-w-3xl py-2 text-center text-[clamp(1.5rem,7.6vw,3.75rem)] leading-[1.02] tracking-[-0.045em] text-white xl:hidden">
-            <span className="block">Paying someone new</span>
-            <span className="block text-[#50adff]">shouldn’t feel like</span>
-            <span className="block text-[#50adff]">a gamble.</span>
+            <span className="block">Trust infrastructure</span>
+            <span className="block text-[#50adff]">for Nigerian commerce.</span>
           </h1>
           <h1 className="naitrust-satoshi-bold hidden w-full max-w-3xl text-left text-7xl leading-[0.94] tracking-[-0.055em] text-white xl:block">
-            <span className="block">Paying</span>
-            <span className="block">someone new</span>
-            <span className="block text-[#50adff]">shouldn’t feel like</span>
-            <span className="block text-[#50adff]">a gamble.</span>
+            <span className="block">Trust infrastructure</span>
+            <span className="block text-[#50adff]">for Nigerian</span>
+            <span className="block text-[#50adff]">commerce.</span>
           </h1>
           <p className="mt-6 max-w-[29rem] text-center text-[clamp(0.625rem,2.8vw,0.75rem)] font-medium leading-5 text-white/68 sm:hidden">
-            <span className="block">Verify who you are dealing with and agree clearly.</span>
-            <span className="block">Protect the payment and keep the proof</span>
-            <span className="block">in one shared Deal Room.</span>
+            <span className="block">Fintech built to help people and businesses verify,</span>
+            <span className="block">transact safely, and keep every agreement, payment,</span>
+            <span className="block">and proof in one shared Deal Room.</span>
           </p>
           <p className="mt-6 hidden max-w-[34rem] text-center text-lg font-medium leading-8 text-white/68 sm:block xl:text-left">
-            Verify who you are dealing with, agree clearly, protect the payment, and keep the agreement, delivery updates, and evidence in one shared Deal Room.
+            Fintech built to help people and businesses verify who they are dealing with, transact safely, and keep every agreement, payment, and proof in one shared Deal Room.
           </p>
         </motion.div>
       </div>

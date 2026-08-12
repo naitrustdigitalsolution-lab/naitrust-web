@@ -307,7 +307,7 @@ export async function getPWAStatus(): Promise<PWAStatus> {
     canInstall: canInstallApp(),
     hasServiceWorker: isServiceWorkerSupported(),
     hasPushNotifications: isPushNotificationSupported(),
-    notificationPermission: Notification?.permission || 'denied',
+    notificationPermission: 'Notification' in window ? Notification.permission : 'denied',
     isOnline: isOnline(),
   };
 }

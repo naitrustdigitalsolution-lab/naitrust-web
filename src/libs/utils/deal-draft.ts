@@ -14,6 +14,8 @@ export interface StoredDealDraft<T = unknown> {
   id: string;
   form: T;
   step: number;
+  /** Wizard layout version. Missing means the legacy five-step flow. */
+  wizardVersion?: number;
   createdAt: string;
   updatedAt: string;
   /** Liveness proof is scoped to this draft and expires independently of draft edits. */
@@ -107,6 +109,7 @@ export function saveDealDraft<T>(
   form: T,
   step: number,
   actionLiveness?: DealDraftLiveness,
+  wizardVersion?: number,
 ): void {
   if (!userId || typeof window === 'undefined') return;
   const drafts = read<T>(userId);
@@ -116,6 +119,7 @@ export function saveDealDraft<T>(
     id: draftId,
     form,
     step,
+    wizardVersion,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
     actionLiveness,

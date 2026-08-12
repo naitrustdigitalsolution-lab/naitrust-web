@@ -15,6 +15,8 @@ import { Toaster } from "./components/ui/sonner";
 import { AuthPageLoader, DashboardPageLoader } from "./components/pieces/auth/AuthPageLoader";
 import { RequireAuth } from './components/utility/RequireAuth';
 import { RequireBusinessAccount } from './components/utility/RequireBusinessAccount';
+import { PWAInstallPrompt } from './components/utility/PWAInstallPrompt';
+import { PWAUpdatePrompt } from './components/utility/PWAUpdatePrompt';
 
 /**
  * Minimum time the branded AuthPageLoader stays on screen before a lazy route
@@ -340,6 +342,8 @@ function PublicAppContent() {
 
       {!usesStandaloneHome && <Footer onNavigate={handleNavigate} />}
       <CookieConsent />
+      <PWAInstallPrompt />
+      <PWAUpdatePrompt />
       <Toaster />
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Download, X } from 'lucide-react';
+import { Download, Share, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 
@@ -12,6 +12,7 @@ export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 
   useEffect(() => {
     // Check if already installed
@@ -32,27 +33,35 @@ export function PWAInstallPrompt() {
       }
     }
 
+    let promptTimer: number | undefined;
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
-      // Show prompt after 30 seconds on the site
-      setTimeout(() => {
+
+      promptTimer = window.setTimeout(() => {
         setShowPrompt(true);
-      }, 30000);
+      }, 8000);
+    };
+
+    const installedHandler = () => {
+      setIsInstalled(true);
+      setShowPrompt(false);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', installedHandler);
 
-    // Listen for successful installation
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setShowPrompt(false);
-      console.log('PWA was installed successfully');
-    });
+    // Safari does not expose beforeinstallprompt. Give iPhone and iPad users
+    // the native Add to Home Screen instructions instead.
+    if (/iphone|ipad|ipod/i.test(window.navigator.userAgent)) {
+      promptTimer = window.setTimeout(() => setShowPrompt(true), 8000);
+    }
 
     return () => {
+      if (promptTimer) window.clearTimeout(promptTimer);
       window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('appinstalled', installedHandler);
     };
   }, []);
 
@@ -86,7 +95,7 @@ export function PWAInstallPrompt() {
     localStorage.setItem('pwa-prompt-dismissed', new Date().toISOString());
   };
 
-  if (isInstalled || !showPrompt || !deferredPrompt) {
+  if (isInstalled || !showPrompt || (!deferredPrompt && !isIOS)) {
     return null;
   }
 
@@ -97,23 +106,27 @@ export function PWAInstallPrompt() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-10 h-10 bg-gradient-to-br from-[#1E90FF] to-[#0066CC] rounded-lg flex items-center justify-center">
-                <Download className="w-6 h-6 text-white" />
+                {isIOS ? <Share className="w-6 h-6 text-white" /> : <Download className="w-6 h-6 text-white" />}
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Install Naitrust</h3>
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-3">
-              Install our app for quick access to verify businesses and make secure payments - even offline!
+              {isIOS
+                ? 'For app-like access, tap Share in Safari, then choose Add to Home Screen.'
+                : 'Install Naitrust for quick access and a smooth, full-screen mobile experience.'}
             </p>
             <div className="flex gap-2">
-              <Button 
-                onClick={handleInstallClick}
-                className="bg-[#1E90FF] hover:bg-[#0066CC] text-white"
-                size="sm"
-              >
-                Install App
-              </Button>
+              {!isIOS && (
+                <Button
+                  onClick={handleInstallClick}
+                  className="bg-[#1E90FF] hover:bg-[#0066CC] text-white"
+                  size="sm"
+                >
+                  Install App
+                </Button>
+              )}
               <Button 
                 onClick={handleDismiss}
                 variant="ghost"

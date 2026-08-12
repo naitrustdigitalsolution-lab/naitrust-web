@@ -24,6 +24,7 @@ import type { ApiSuccess } from './types';
 
 const MOCK_LATENCY_MS = 400;
 let mockAvailableMinor: number | undefined;
+let mockBillsMinor: number | undefined;
 const mockBillActivity: WalletActivityEvent[] = [];
 
 function delay(ms: number): Promise<void> {
@@ -35,10 +36,10 @@ export const walletApi = {
     if (!appConfig.isMock) throw new Error('Bill payment is handled by the bills API.');
     await delay(MOCK_LATENCY_MS);
     const current = mockWallet as ApiSuccess<WalletAccount>;
-    const available = mockAvailableMinor ?? current.data.balance.availableMinor;
+    const bills = mockBillsMinor ?? current.data.balance.billsMinor ?? 0;
     if (amountMinor <= 0) throw new Error('Enter a valid amount.');
-    if (amountMinor > available) throw new Error('Your available NaiTrust balance is not enough for this payment.');
-    mockAvailableMinor = available - amountMinor;
+    if (amountMinor > bills) throw new Error('Your Bills Account balance is not enough for this payment.');
+    mockBillsMinor = bills - amountMinor;
     mockBillActivity.unshift({
       id: `wact_bill_${crypto.randomUUID()}`,
       kind: 'bill_payment',
@@ -50,7 +51,7 @@ export const walletApi = {
     return {
       success: true,
       message: 'Bill paid from NaiTrust balance',
-      data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor }, totalOutflowMinor: current.data.totalOutflowMinor + amountMinor },
+      data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor ?? current.data.balance.availableMinor, billsMinor: mockBillsMinor }, totalOutflowMinor: current.data.totalOutflowMinor + amountMinor },
     };
   },
   /**
@@ -63,9 +64,17 @@ export const walletApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const current = mockWallet as ApiSuccess<WalletAccount>;
-      return mockAvailableMinor === undefined
-        ? current
-        : { ...current, data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor } } };
+      return {
+        ...current,
+        data: {
+          ...current.data,
+          balance: {
+            ...current.data.balance,
+            availableMinor: mockAvailableMinor ?? current.data.balance.availableMinor,
+            billsMinor: mockBillsMinor ?? current.data.balance.billsMinor ?? 0,
+          },
+        },
+      };
     }
     const response = await httpClient.get<WalletAccount>(endpoints.wallet.getMine);
     return response as ApiSuccess<WalletAccount>;
@@ -83,6 +92,34 @@ export const walletApi = {
       message: 'Protected deal funded from wallet',
       data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor, protectedMinor: current.data.balance.protectedMinor + amountMinor } },
     };
+  },
+
+  fundBillsAccount: async (amountMinor: number): Promise<ApiSuccess<WalletAccount>> => {
+    if (amountMinor <= 0) throw new Error('Enter a valid amount.');
+    if (appConfig.isMock) {
+      await delay(MOCK_LATENCY_MS);
+      const current = mockWallet as ApiSuccess<WalletAccount>;
+      const available = mockAvailableMinor ?? current.data.balance.availableMinor;
+      const bills = mockBillsMinor ?? current.data.balance.billsMinor ?? 0;
+      if (amountMinor > available) throw new Error('Your available Naitrust balance is not enough.');
+      mockAvailableMinor = available - amountMinor;
+      mockBillsMinor = bills + amountMinor;
+      mockBillActivity.unshift({
+        id: `wact_bill_fund_${crypto.randomUUID()}`,
+        kind: 'bill_funding',
+        amountMinor,
+        currency: current.data.balance.currency,
+        description: 'Moved to Bills Account',
+        createdAt: new Date().toISOString(),
+      });
+      return {
+        success: true,
+        message: 'Bills Account funded',
+        data: { ...current.data, balance: { ...current.data.balance, availableMinor: mockAvailableMinor, billsMinor: mockBillsMinor } },
+      };
+    }
+    const response = await httpClient.post<WalletAccount>(endpoints.wallet.fundBills, { amountMinor });
+    return response as ApiSuccess<WalletAccount>;
   },
 
   /**

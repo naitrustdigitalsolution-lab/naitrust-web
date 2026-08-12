@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarRange, ChevronLeft, ChevronRight, Plus, Search, ShieldCheck, X } from 'lucide-react';
+import { CalendarRange, ChevronLeft, ChevronRight, FileClock, Plus, Search, ShieldCheck, X } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
@@ -107,13 +107,17 @@ export function DealsPage() {
       <div className="mx-auto w-full max-w-9xl">
         <PageHero
           eyebrow="Protected Deals"
-          title="Active Deals"
-          description="Review every protected transaction, track progress, and respond when a deal needs your attention."
+          title="Your Protected Deals"
+          description="View active, completed, and disputed deals in one place."
           icon={ShieldCheck}
-          actions={<Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-            <Plus size={16} className="mr-1" />
-            New Protected Deal
-          </Button>}
+          actions={<div className="flex flex-wrap gap-2">
+            <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/drafts')}>
+              <FileClock size={16} className="mr-1" /> Drafts
+            </Button>
+            <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
+              <Plus size={16} className="mr-1" /> New Protected Deal
+            </Button>
+          </div>}
         />
 
         {/* Toolbar */}

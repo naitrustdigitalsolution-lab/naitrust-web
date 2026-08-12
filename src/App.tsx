@@ -57,7 +57,6 @@ const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
 const SupportChatPage = lazyWithMinDelay(() => import("./pages/SupportChatPage"));
 const SupportRequestPage = lazyWithMinDelay(() => import("./pages/SupportRequestPage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
-const SecurityCenterPage = lazyWithMinDelay(() => import("./pages/SecurityCenterPage"));
 const PaymentsHubPage = lazyWithMinDelay(() => import("./pages/PaymentsHubPage"));
 const SendInstantlyPage = lazyWithMinDelay(() => import("./pages/SendInstantlyPage"));
 const ReceiveMoneyPage = lazyWithMinDelay(() => import("./pages/ReceiveMoneyPage"));
@@ -318,7 +317,7 @@ function PublicAppContent() {
             <Route path="/app/support/new" element={<DashboardRouteSuspense><SupportRequestPage /></DashboardRouteSuspense>} />
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/security" element={<DashboardRouteSuspense><SecurityCenterPage /></DashboardRouteSuspense>} />
+            <Route path="/app/security" element={<Navigate to="/app/settings?tab=security" replace />} />
             <Route path="/app/rewards" element={<DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense>} />
             <Route path="/app/wallet" element={<Navigate to="/app/payments/send" replace />} />
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />

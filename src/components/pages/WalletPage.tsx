@@ -44,6 +44,7 @@ const ACTIVITY_META: Record<WalletActivityKind, { label: string; positive: boole
   instant_transfer_in: { label: 'Instant transfer received', positive: true },
   protected_allocation: { label: 'Allocated to protected deal', positive: false },
   protected_release: { label: 'Protected deal released', positive: true },
+  bill_funding: { label: 'Moved to Bills Account', positive: false },
   bill_payment: { label: 'Bill payment', positive: false },
   fee: { label: 'Fee', positive: false },
 };

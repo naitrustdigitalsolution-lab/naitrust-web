@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronLeft, ChevronRight, FileClock, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, FileClock, Plus, Trash2 } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { CounterpartyAvatar } from '../pieces/dashboard/CounterpartyAvatar';
 import { Badge } from '../ui/badge';
@@ -10,7 +10,7 @@ import { Card } from '../ui/card';
 import { useAuth } from '../../libs/auth-context';
 import { clearDealDraft, listDealDrafts } from '../../libs/utils/deal-draft';
 
-const DRAFT_STEP_LABELS = ['Start the deal', 'Add the details', 'Agreement', 'Review & send'] as const;
+const DRAFT_STEP_LABELS = ['Deal setup', 'Deal terms', 'Review agreement & send'] as const;
 const PAGE_SIZE = 10;
 
 export function DealDraftsPage() {
@@ -37,6 +37,9 @@ export function DealDraftsPage() {
   return (
     <DashboardLayout title="Deal drafts">
       <div className="mx-auto w-full max-w-9xl">
+        <Button variant="ghost" size="sm" className="mb-3 -ml-2 rounded-full" onClick={() => navigate('/app/deals')}>
+          <ArrowLeft size={15} className="mr-1.5" /> Back to Your Deals
+        </Button>
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Deal drafts</h1>

@@ -145,15 +145,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
 
             <div className="mx-auto mt-7 grid w-full max-w-[22rem] grid-cols-2 items-center gap-2 text-[9px] font-medium leading-tight text-white/75 sm:hidden">
-              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Verify the participant</span>
-              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Record clear terms</span>
-              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Track payment, delivery and evidence</span>
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Verify who you pay</span>
+              <span className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg bg-white/[0.06] px-2 py-1.5 text-center"><CheckCircle2 size={14} className="shrink-0 text-emerald-400" /> Agree on clear terms</span>
+              <span className="col-span-2 inline-flex min-h-9 items-center justify-center gap-1.5 justify-self-center rounded-lg bg-[#53b0ff]/10 px-3 py-1.5 text-center font-semibold text-white"><Shield size={14} className="shrink-0 text-[#53b0ff]" /> Keep proof in one place</span>
             </div>
 
             <div className="mt-7 hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-white/65 sm:flex xl:justify-start">
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Verify the participant</span>
-              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Record clear terms</span>
-              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Track payment, delivery and evidence</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Verify who you pay</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={15} className="text-emerald-400" /> Agree on clear terms</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold text-white"><Shield size={15} className="text-[#53b0ff]" /> Keep proof in one place</span>
             </div>
           </motion.div>
 
@@ -840,9 +840,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mb-12"
           >
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Infrastructure partners</p>
-            <h2 className="mb-4 text-2xl tracking-tight text-gray-900 sm:text-4xl dark:text-white">Trust in front. Regulated rails underneath.</h2>
+            <h2 className="mb-4 text-2xl tracking-tight text-gray-900 sm:text-4xl dark:text-white">Trust in front. Regulated infrastructure underneath.</h2>
             <p className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Naitrust is being built on regulated banking infrastructure from Anchor for account, collection, transfer, and verification services. Naitrust provides the customer experience and trust workflow while regulated infrastructure handles fund movement.
+              Payments and account services are provided through regulated banking infrastructure from Anchor. Naitrust provides the customer experience and trust workflow but does not hold customer funds.
             </p>
           </motion.div>
 

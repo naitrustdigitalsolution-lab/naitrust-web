@@ -685,7 +685,7 @@ function SetPinModal({
 
 /* --------------------------------------------------------- Page */
 
-export function SecurityCenterPage() {
+export function SecurityCenterPage({ embedded = false }: { embedded?: boolean }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const security = useSecurity();
@@ -700,34 +700,53 @@ export function SecurityCenterPage() {
   const requiredComplete = requiredChecks.filter(Boolean).length;
   const progress = Math.round((requiredComplete / requiredChecks.length) * 100);
 
-  return (
-    <DashboardLayout title="Security Center">
+  const content = (
+    <>
       <div className="mx-auto w-full max-w-9xl">
-        <button
-          type="button"
-          onClick={() => navigate('/app')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={16} />
-          Back to dashboard
-        </button>
+        {!embedded && (
+          <button
+            type="button"
+            onClick={() => navigate('/app')}
+            className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft size={16} />
+            Back to dashboard
+          </button>
+        )}
 
-        <Card className="mb-8 overflow-hidden border-[#071b31]/10 bg-[#c4e9fdb3] p-0 text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground">
-          <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_320px] lg:items-center">
+        <div className={embedded ? 'mb-7 border-b pb-6' : 'mb-8 overflow-hidden rounded-xl border border-[#071b31]/10 bg-[#c4e9fdb3] text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground'}>
+          <div className={embedded ? '' : 'grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_320px] lg:items-center'}>
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
-                <ShieldCheck size={25} />
-              </div>
-              <div>
-                <Badge className="mb-3 bg-primary/10 text-primary hover:bg-primary/10">Account protection</Badge>
-                <h1 className="text-2xl font-bold tracking-tight text-[#071b31] dark:text-foreground sm:text-3xl">Security Center</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground sm:text-base">
+              {!embedded && (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
+                  <ShieldCheck size={25} />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                {!embedded && <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">Account protection</p>}
+                <div className={embedded ? 'flex flex-wrap items-center justify-between gap-3' : ''}>
+                <h1 className={embedded ? 'text-xl font-bold tracking-tight text-foreground' : 'text-2xl font-bold tracking-tight text-[#071b31] dark:text-foreground sm:text-3xl'}>Security Center</h1>
+                  {embedded && (
+                    <Badge variant={progress === 100 ? 'success' : 'outline'} className="rounded-full px-3 py-1">
+                      {requiredComplete} of {requiredChecks.length} required complete
+                    </Badge>
+                  )}
+                </div>
+                <p className={embedded ? 'mt-1 max-w-2xl text-sm leading-6 text-muted-foreground' : 'mt-2 max-w-2xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground sm:text-base'}>
                   Verify who you are and protect sensitive Protected Deal actions. Identity,
                   email, and a transaction PIN are required before creating a transaction.
                 </p>
+                {embedded && (
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${progress}%` }} />
+                    </div>
+                    <span className="text-sm font-semibold tabular-nums text-foreground">{progress}%</span>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="rounded-2xl border border-[#071b31]/10 bg-white/65 p-5 backdrop-blur-sm dark:border-border dark:bg-background/80">
+            {!embedded && <div className="rounded-2xl border border-[#071b31]/10 bg-white/65 p-5 backdrop-blur-sm dark:border-border dark:bg-background/80">
               <div className="flex items-end justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Required setup</p>
@@ -741,13 +760,13 @@ export function SecurityCenterPage() {
               <p className="mt-3 text-xs leading-5 text-muted-foreground">
                 Phone verification, liveness, and authenticator protection add stronger recovery and sign-in security.
               </p>
-            </div>
+            </div>}
           </div>
-        </Card>
+        </div>
 
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-foreground">Verification and security checks</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Complete required checks first, then add recommended protection.</p>
+          <h2 className="text-base font-semibold text-foreground">Security checks</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Manage the checks and protections linked to your account.</p>
         </div>
 
         <div className="mb-2">
@@ -908,6 +927,8 @@ export function SecurityCenterPage() {
           close();
         }}
       />
-    </DashboardLayout>
+    </>
   );
+
+  return embedded ? content : <DashboardLayout title="Security Center">{content}</DashboardLayout>;
 }

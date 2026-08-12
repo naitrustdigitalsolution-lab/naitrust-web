@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, Building2, CheckCircle2, Fingerprint, PackageCheck, QrCode, Search, Send, Shield, Store, Users } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Building2, CheckCircle2, Fingerprint, PackageCheck, QrCode, ReceiptText, Search, Send, Shield, Store, Users, WalletCards } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Button } from '../ui/button';
 import { SEOHead } from '../utility/SEOHead';
@@ -21,6 +21,7 @@ const content = {
     heroAlt: 'Nigerian traders reviewing a transaction at their local shop',
     primary: 'Open a business account',
     register: 'register-business',
+    sectionLabel: 'Who it is for',
     whoTitle: 'Built around real business days, not just checkout screens.',
     whoCopy: 'From receiving today’s sales to restocking tomorrow, Naitrust keeps everyday payments and higher-trust transactions connected.',
     useCases: [
@@ -45,13 +46,14 @@ const content = {
     heroAlt: 'A customer paying a Nigerian local business digitally',
     primary: 'Open a customer account',
     register: 'register-customer',
-    whoTitle: 'A clearer path from finding a seller to receiving what you paid for.',
-    whoCopy: 'Naitrust helps customers search registered businesses, review available verification details, choose the right payment path, and preserve a useful record when delivery matters.',
+    sectionLabel: 'More ways to use Naitrust',
+    whoTitle: 'One account for everyday money and important purchases.',
+    whoCopy: 'Naitrust is useful beyond Protected Deals. Send and receive money, set funds aside for bills, check businesses, and keep your payment activity organised in one place.',
     useCases: [
-      { icon: Search, title: 'Find and check businesses', text: 'Search by business name, category, or Naitrust details and review the Trust Profile before paying.' },
-      { icon: Send, title: 'Pay people you know', text: 'Send normal payments quickly when trust already exists.' },
-      { icon: Shield, title: 'Protect important purchases', text: 'Use shared terms and protected funding for unfamiliar or higher-value deals.' },
-      { icon: PackageCheck, title: 'Inspect before release', text: 'Confirm handover, review what arrived, and report a problem before release.' },
+      { icon: Send, title: 'Send and receive money', text: 'Make normal payments to people and businesses you trust, or share your details to receive money.' },
+      { icon: WalletCards, title: 'Pay bills and airtime', text: 'Set money aside in your Bills Account for electricity, internet, TV subscriptions, data, and airtime.' },
+      { icon: Search, title: 'Discover businesses', text: 'Search by name or category and review available Trust Profile details before deciding to pay.' },
+      { icon: ReceiptText, title: 'Keep payment records', text: 'See money activity, bill payments, receipts, and Protected Deal history from the same account.' },
     ],
     steps: [
       { icon: Fingerprint, title: 'Create and verify your account', text: 'Start with an identity-backed customer profile.' },
@@ -108,7 +110,7 @@ export function AudiencePage({ audience, onNavigate }: AudiencePageProps) {
 
     <section className="px-4 py-14 sm:px-6 sm:py-24 lg:px-8">
       <div className="mx-auto max-w-[90rem]">
-        <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">Who it is for</p><h2 className="mt-4 text-3xl font-bold tracking-[-.04em] sm:text-5xl">{page.whoTitle}</h2></div><p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg lg:justify-self-end">{page.whoCopy}</p></div>
+        <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">{page.sectionLabel}</p><h2 className="mt-4 text-3xl font-bold tracking-[-.04em] sm:text-5xl">{page.whoTitle}</h2></div><p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg lg:justify-self-end">{page.whoCopy}</p></div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{page.useCases.map((item,index)=><motion.article key={item.title} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:index*.06}} className="rounded-3xl border bg-card p-6 shadow-sm"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><item.icon size={22}/></span><h3 className="mt-6 text-lg font-bold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{item.text}</p></motion.article>)}</div>
       </div>
     </section>

@@ -43,7 +43,7 @@ function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-type CollectionActionKind = 'whatsapp' | 'qr' | 'copy';
+type CollectionActionKind = 'request' | 'qr';
 
 const COLLECTION_ACTIONS: {
   title: string;
@@ -53,11 +53,11 @@ const COLLECTION_ACTIONS: {
   kind: CollectionActionKind;
 }[] = [
   {
-    title: 'WhatsApp request',
-    description: 'Create and share a payment request.',
+    title: 'Request a payment',
+    description: 'Set the payment details, then share the link.',
     icon: MessageCircle,
     accent: 'bg-[#eaf8f1] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400',
-    kind: 'whatsapp',
+    kind: 'request',
   },
   {
     title: 'Show payment QR',
@@ -65,13 +65,6 @@ const COLLECTION_ACTIONS: {
     icon: QrCode,
     accent: 'bg-[#edf4ff] text-primary',
     kind: 'qr',
-  },
-  {
-    title: 'Copy account number',
-    description: 'Copy your business account details.',
-    icon: Landmark,
-    accent: 'bg-[#f5efff] text-violet-700 dark:bg-violet-500/10 dark:text-violet-300',
-    kind: 'copy',
   },
 ];
 
@@ -99,12 +92,10 @@ export function DashboardPage() {
   };
 
   const handleCollectionAction = (kind: CollectionActionKind) => {
-    if (kind === 'whatsapp') {
-      navigate('/app/payments/receive?share=whatsapp');
+    if (kind === 'request') {
+      navigate('/app/payments/receive?share=request');
     } else if (kind === 'qr') {
       setQrDialogOpen(true);
-    } else {
-      void copyAccount();
     }
   };
 
@@ -191,32 +182,25 @@ export function DashboardPage() {
               <h1 className="mt-1 text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-3xl">{businessName}</h1>
             )}
           </div>
-          <Button className="rounded-full px-5" onClick={() => navigate('/app/deals/new')}>
-            <ShieldCheck size={15} /> Protect a payment
-          </Button>
         </header>
 
-        <section className="grid gap-3 sm:grid-cols-3 max-xl:!order-1">
-          {[
-            { title: 'Your Trust Profile', detail: 'Show customers the checks you have completed.', path: '/app/trust-profile', icon: BadgeCheck },
-            { title: 'Find a business', detail: 'Check a supplier or business before paying.', path: '/app/businesses', icon: Search },
-            { title: 'Protect a payment', detail: 'Agree on terms and keep the proof together.', path: '/app/deals/new', icon: ShieldCheck },
-          ].map((action) => (
-            <button key={action.title} type="button" onClick={() => navigate(action.path)} className="group flex items-center gap-3 rounded-2xl border bg-card p-4 text-left shadow-sm transition hover:border-primary/30 hover:shadow-md">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><action.icon size={18} /></span>
-              <span className="min-w-0 flex-1"><span className="flex items-center gap-1 text-sm font-semibold">{action.title}<ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></span><span className="mt-0.5 block text-xs leading-4 text-muted-foreground">{action.detail}</span></span>
-            </button>
-          ))}
-        </section>
-
-        <section className="max-xl:!order-2">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold tracking-tight">How would you like to get paid?</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Start where the customer already is, WhatsApp, your counter, or a bank transfer.
-            </p>
+        <section className="max-xl:!order-1">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold">Quick actions</h2>
+            <p className="text-xs text-muted-foreground">Payments and trust tools</p>
           </div>
-          <div className="grid gap-3 md:grid-cols-3">
+
+          <div className="grid grid-cols-2 gap-2 rounded-2xl border bg-card p-2 shadow-sm sm:grid-cols-3 lg:grid-cols-5">
+            {[
+              { title: 'Trust profile', path: '/app/trust-profile', icon: BadgeCheck },
+              { title: 'Find business', path: '/app/businesses', icon: Search },
+              { title: 'Protect payment', path: '/app/deals/new', icon: ShieldCheck },
+            ].map((action) => (
+              <button key={action.title} type="button" onClick={() => navigate(action.path)} className="group flex min-h-16 items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-primary/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><action.icon size={16} /></span>
+                <span className="text-xs font-semibold leading-4 text-foreground">{action.title}</span>
+              </button>
+            ))}
             {COLLECTION_ACTIONS.map((action, index) => (
               <motion.button
                 key={action.title}
@@ -225,18 +209,12 @@ export function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => handleCollectionAction(action.kind)}
-                className="group flex items-center gap-3 rounded-2xl border bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                className="group flex min-h-16 items-center gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-primary/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               >
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${action.accent}`}>
-                  <action.icon size={17} />
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${action.accent}`}>
+                  <action.icon size={16} />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1 text-sm font-semibold">
-                    {action.title}
-                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                  </span>
-                  <span className="mt-0.5 block truncate text-xs text-muted-foreground">{action.description}</span>
-                </span>
+                <span className="text-xs font-semibold leading-4 text-foreground">{action.title}</span>
               </motion.button>
             ))}
           </div>
@@ -260,7 +238,7 @@ export function DashboardPage() {
               <Button
                 size="sm"
                 className="rounded-full bg-white text-[#075cb5] hover:bg-white/90"
-                onClick={() => navigate('/app/payments/receive?share=whatsapp')}
+                onClick={() => navigate('/app/payments/receive?share=request')}
               >
                 <ArrowDownToLine size={14} /> Request payment
               </Button>

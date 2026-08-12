@@ -42,6 +42,17 @@ export function useFundWallet() {
   });
 }
 
+export function useFundBillsAccount() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (amountMinor: number) => walletApi.fundBillsAccount(amountMinor),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: WALLET_ACTIVITY_QUERY_KEY });
+    },
+  });
+}
+
 export function useWithdrawFromWallet() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -22,7 +22,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '../ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { PageHero } from '../pieces/dashboard/PageHero';
-import { AccountProfileOverview } from './ProfilePage';
+import { SecurityCenterPage } from './SecurityCenterPage';
 import { useAuth } from '../../libs/auth-context';
 import { useTheme } from '../../hooks/useTheme';
 import { useLinkedBankAccounts } from '../../hooks/useWallet';
@@ -129,8 +129,7 @@ export function SettingsPage() {
           </div>
 
           <TabsContent value="profile">
-            <AccountProfileOverview
-              profileEditor={
+              <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.6fr)]">
                 <ProfileInfoSettings
                   firstName={firstName}
                   lastName={lastName}
@@ -143,21 +142,21 @@ export function SettingsPage() {
                   onSave={handleSaveProfile}
                   isSaving={isSavingProfile}
                 />
-              }
-            />
+                <PasswordSettings
+                  currentPassword={currentPassword}
+                  newPassword={newPassword}
+                  confirmPassword={confirmPassword}
+                  onCurrentPasswordChange={setCurrentPassword}
+                  onNewPasswordChange={setNewPassword}
+                  onConfirmPasswordChange={setConfirmPassword}
+                  onSubmit={handleChangePassword}
+                  isChanging={isChangingPassword}
+                />
+              </div>
           </TabsContent>
 
-          <TabsContent value="security" className="max-w-3xl">
-            <PasswordSettings
-              currentPassword={currentPassword}
-              newPassword={newPassword}
-              confirmPassword={confirmPassword}
-              onCurrentPasswordChange={setCurrentPassword}
-              onNewPasswordChange={setNewPassword}
-              onConfirmPasswordChange={setConfirmPassword}
-              onSubmit={handleChangePassword}
-              isChanging={isChangingPassword}
-            />
+          <TabsContent value="security">
+            <SecurityCenterPage embedded />
           </TabsContent>
 
           <TabsContent value="notifications" className="max-w-3xl">

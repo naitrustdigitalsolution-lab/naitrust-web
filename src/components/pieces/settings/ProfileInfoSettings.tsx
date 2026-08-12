@@ -8,7 +8,7 @@ import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { PhoneField } from '../general/PhoneField';
 import { Label } from '../../ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
+import { Card, CardContent } from '../../ui/card';
 
 interface ProfileInfoSettingsProps {
   firstName: string;
@@ -36,18 +36,18 @@ export function ProfileInfoSettings({
   isSaving,
 }: ProfileInfoSettingsProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <User size={24} />
-          Profile Information
-        </CardTitle>
-        <CardDescription>
-          Update your personal account information
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
+    <Card className="h-full shadow-sm">
+      <CardContent className="flex h-full flex-col px-5 py-4">
+        <div className="flex items-center gap-3 border-b pb-4">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <User size={17} />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-foreground">Profile information</h2>
+            <p className="text-xs text-muted-foreground">Your personal account details</p>
+          </div>
+        </div>
+        <div className="mt-4 grid gap-x-4 gap-y-3 sm:grid-cols-2">
           <div>
             <Label htmlFor="firstname">First Name</Label>
             <Input
@@ -96,19 +96,21 @@ export function ProfileInfoSettings({
             />
           </div>
         </div>
-        <Button onClick={onSave} disabled={isSaving}>
-          {isSaving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save size={16} className="mr-2" />
-              Save Changes
-            </>
-          )}
-        </Button>
+        <div className="mt-auto flex justify-end border-t pt-4">
+          <Button className="w-full rounded-md sm:w-44" onClick={onSave} disabled={isSaving}>
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save size={16} className="mr-2" />
+                Save Changes
+              </>
+            )}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

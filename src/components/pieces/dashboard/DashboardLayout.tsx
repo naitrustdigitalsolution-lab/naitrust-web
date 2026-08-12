@@ -17,8 +17,6 @@ import {
   PlusCircle,
   Settings,
   ShieldCheck,
-  Lock,
-  FileClock,
   Send,
   ArrowDownToLine,
   Users,
@@ -81,7 +79,6 @@ const SHARED_ACCOUNT_GROUP: NavGroup = {
   label: 'Account',
   items: [
     { label: 'Rewards', path: '/app/rewards', icon: Gift, matchPrefix: true },
-    { label: 'Security', path: '/app/security', icon: Lock, matchPrefix: true },
     { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
   ],
 };
@@ -108,9 +105,8 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Protected Deals',
     items: [
-      { label: 'All Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Your Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
       { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
-      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },
@@ -144,7 +140,7 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Money',
     items: [
-      { label: 'Pay a Business', path: '/app/payments', icon: Send },
+      { label: 'Send Money', path: '/app/payments', icon: Send },
       { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
       { label: 'Money Activity', path: '/app/transactions', icon: Receipt },
     ],
@@ -153,9 +149,8 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
   {
     label: 'Protected Deals',
     items: [
-      { label: 'All Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
+      { label: 'Your Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
       { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
-      { label: 'Drafts', path: '/app/drafts', icon: FileClock },
       { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
     ],
   },

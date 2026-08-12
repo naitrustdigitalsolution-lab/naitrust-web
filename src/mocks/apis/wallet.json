@@ -8,6 +8,7 @@
       "availableMinor": 884250000,
       "pendingMinor": 6300000,
       "protectedMinor": 312000000,
+      "billsMinor": 0,
       "currency": "NGN"
     },
     "totalInflowMinor": 1312400000,

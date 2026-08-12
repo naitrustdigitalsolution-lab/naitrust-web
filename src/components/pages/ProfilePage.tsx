@@ -64,10 +64,11 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
   const isBusiness = accountTypeOf(user) === 'business';
 
   return (
-        <div className="grid gap-6 lg:grid-cols-[minmax(280px,1fr)_1.4fr]">
-          <div className="lg:sticky lg:top-20 lg:self-start">{profileEditor}</div>
+    <div className="space-y-6">
+      {profileEditor}
 
-          <div className="flex flex-col gap-6">
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-6">
             {/* Business profile (business accounts only) */}
             {isBusiness && <BusinessProfileCard />}
 
@@ -82,7 +83,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                   variant="ghost"
                   size="sm"
                   className="h-7 rounded-full text-xs"
-                  onClick={() => navigate('/app/security')}
+                  onClick={() => navigate('/app/settings?tab=security')}
                 >
                   Manage
                 </Button>
@@ -129,14 +130,16 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
               />
             </Card>
 
-            {/* Reputation summary */}
-            <Card className="gap-0 p-0 shadow-sm">
+        </div>
+
+        {/* Reputation summary */}
+        <Card className="gap-0 p-0 shadow-sm">
               <div className="flex items-center gap-2 border-b bg-muted/60 px-4 py-3">
                 <Star size={16} className="text-primary" />
                 <h2 className="text-sm font-semibold text-foreground">Reputation</h2>
               </div>
               {statsLoading ? (
-                <div className="grid grid-cols-3 divide-x divide-border">
+                <div className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                   {[0, 1, 2].map((i) => (
                     <div key={i} className="space-y-2 px-4 py-5">
                       <Skeleton className="h-7 w-12" />
@@ -145,7 +148,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-3 divide-x divide-border">
+                <div className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                   <div className="px-4 py-5">
                     <p className="text-2xl font-bold text-foreground tabular-nums">
                       {counts?.completed ?? 0}
@@ -172,9 +175,9 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                 Reputation is built from completed Protected Deals and verified activity on the platform , 
                 it cannot be bought or edited.
               </p>
-            </Card>
-          </div>
-        </div>
+        </Card>
+      </div>
+    </div>
   );
 }
 

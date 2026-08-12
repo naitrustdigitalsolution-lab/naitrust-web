@@ -7,7 +7,7 @@ import { Lock, Loader2 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { PasswordInput } from '../../ui/input';
 import { Label } from '../../ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
+import { Card, CardContent } from '../../ui/card';
 
 interface PasswordSettingsProps {
   currentPassword: string;
@@ -31,18 +31,18 @@ export function PasswordSettings({
   isChanging,
 }: PasswordSettingsProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lock size={24} />
-          Change Password
-        </CardTitle>
-        <CardDescription>
-          Update your account password for better security
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+    <Card className="h-full shadow-sm">
+      <CardContent className="flex h-full flex-col px-5 py-4">
+        <div className="mb-4 flex items-center gap-3 border-b pb-4">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Lock size={17} />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold text-foreground">Change password</h2>
+            <p className="text-xs text-muted-foreground">Keep your sign-in secure</p>
+          </div>
+        </div>
+        <form onSubmit={onSubmit} className="flex flex-1 flex-col gap-3">
           <div>
             <Label htmlFor="current-password">Current Password</Label>
             <PasswordInput
@@ -79,7 +79,7 @@ export function PasswordSettings({
             />
           </div>
 
-          <Button type="submit" disabled={isChanging}>
+          <Button type="submit" className="mt-auto w-full self-end rounded-full sm:w-44" disabled={isChanging}>
             {isChanging ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -97,4 +97,3 @@ export function PasswordSettings({
     </Card>
   );
 }
-

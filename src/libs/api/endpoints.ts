@@ -105,6 +105,7 @@ export const endpoints = {
   wallet: {
     getMine: '/wallet/me',
     fund: '/wallet/fund',
+    fundBills: '/wallet/bills/fund',
     withdraw: '/wallet/withdraw',
     linkedBankAccounts: '/wallet/bank-accounts',
     activity: '/wallet/activity',

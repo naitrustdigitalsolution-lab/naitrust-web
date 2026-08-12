@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle2, History, Loader2, Radio, Smartphone, Tv, WalletCards, Zap } from 'lucide-react';
+import { CheckCircle2, History, Loader2, Plus, Radio, Smartphone, Tv, WalletCards, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBillPayments, useBillProviders, usePayBill } from '../../hooks/useBills';
-import { useWallet } from '../../hooks/useWallet';
+import { useFundBillsAccount, useWallet } from '../../hooks/useWallet';
 import type { BillPayment, BillProvider, BillServiceCategory } from '../../libs/store/types';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -11,10 +11,12 @@ import { PageHero } from '../pieces/dashboard/PageHero';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Skeleton } from '../ui/skeleton';
+import { PinPromptModal } from '../pieces/security/PinPromptModal';
 
 const CATEGORIES: Array<{ value: BillServiceCategory; label: string; description: string; icon: typeof Zap }> = [
   { value: 'electricity', label: 'Electricity', description: 'Prepaid and postpaid meters', icon: Zap },
@@ -33,16 +35,23 @@ export function BusinessBillsPage() {
   const [identifier, setIdentifier] = useState('');
   const [amount, setAmount] = useState('');
   const [receipt, setReceipt] = useState<BillPayment | null>(null);
+  const [fundOpen, setFundOpen] = useState(false);
+  const [fundPinOpen, setFundPinOpen] = useState(false);
+  const [fundAmount, setFundAmount] = useState('');
   const { data: wallet, isLoading: walletLoading } = useWallet();
   const { data: providers = [], isLoading: providersLoading } = useBillProviders();
   const { data: payments = [], isLoading: paymentsLoading } = useBillPayments();
   const payBill = usePayBill();
+  const fundBills = useFundBillsAccount();
 
   const categoryProviders = useMemo(() => providers.filter((provider) => provider.category === category), [category, providers]);
   const provider = providers.find((item) => item.id === providerId);
   const amountMinor = Math.round(Number(amount || 0) * 100);
   const availableMinor = wallet?.balance.availableMinor ?? 0;
-  const canPay = Boolean(provider && identifier.trim().length >= 7 && amountMinor >= provider.minimumAmountMinor && amountMinor <= provider.maximumAmountMinor && amountMinor <= availableMinor);
+  const billsMinor = wallet?.balance.billsMinor ?? 0;
+  const fundAmountMinor = Math.round(Number(fundAmount || 0) * 100);
+  const canFund = fundAmountMinor > 0 && fundAmountMinor <= availableMinor;
+  const canPay = Boolean(provider && identifier.trim().length >= 7 && amountMinor >= provider.minimumAmountMinor && amountMinor <= provider.maximumAmountMinor && amountMinor <= billsMinor);
 
   const chooseCategory = (next: BillServiceCategory) => {
     setCategory(next);
@@ -65,10 +74,20 @@ export function BusinessBillsPage() {
     }
   };
 
+  const confirmBillsFunding = () => {
+    fundBills.mutate(fundAmountMinor, {
+      onSuccess: () => {
+        toast.success(`${formatMinorAmount(fundAmountMinor, 'NGN')} moved to your Bills Account.`);
+        setFundAmount('');
+      },
+      onError: (error) => toast.error(paymentError(error)),
+    });
+  };
+
   return (
     <DashboardLayout title="Bills & airtime">
       <div className="mx-auto w-full max-w-6xl">
-        <PageHero eyebrow="Everyday payments" title="Pay bills without moving your money out." description="Use your available NaiTrust balance for electricity, internet, TV subscriptions, and airtime." icon={WalletCards} />
+        <PageHero eyebrow="Everyday payments" title="Pay bills from one dedicated balance." description="Set money aside for electricity, internet, TV subscriptions, and airtime." icon={WalletCards} />
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="space-y-4">
@@ -85,7 +104,7 @@ export function BusinessBillsPage() {
             <Card className="gap-5 rounded-2xl p-5 shadow-sm sm:p-6">
               <div>
                 <h2 className="text-lg font-semibold">{CATEGORIES.find((item) => item.value === category)?.label} payment</h2>
-                <p className="text-sm text-muted-foreground">Payment comes directly from your available balance.</p>
+                <p className="text-sm text-muted-foreground">Payment comes directly from your Bills Account.</p>
               </div>
               {providersLoading ? <Skeleton className="h-10 w-full" /> : (
                 <div>
@@ -107,13 +126,13 @@ export function BusinessBillsPage() {
                     <Input id="bill-amount" className="mt-1.5" type="number" min={provider.minimumAmountMinor / 100} max={provider.maximumAmountMinor / 100} value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0.00" inputMode="decimal" />
                     {provider.presetAmountsMinor && <div className="mt-2 flex flex-wrap gap-2">{provider.presetAmountsMinor.map((preset) => <Button key={preset} type="button" size="sm" variant="outline" className="rounded-full" onClick={() => setAmount(String(preset / 100))}>{formatMinorAmount(preset, 'NGN')}</Button>)}</div>}
                   </div>
-                  {amountMinor > availableMinor && <p className="text-sm text-destructive">Your available balance is not enough. Add money to NaiTrust before paying.</p>}
+                  {amountMinor > billsMinor && <p className="text-sm text-destructive">Your Bills Account balance is not enough. Fund it before paying.</p>}
                   <div className="rounded-xl border bg-muted/40 p-4">
                     <div className="flex justify-between text-sm"><span className="text-muted-foreground">You pay</span><strong>{formatMinorAmount(amountMinor, 'NGN')}</strong></div>
                     <div className="mt-2 flex justify-between text-sm"><span className="text-muted-foreground">Fee</span><strong>{formatMinorAmount(0, 'NGN')}</strong></div>
                   </div>
                   <Button className="w-full rounded-full" disabled={!canPay || payBill.isPending} onClick={() => void submit()}>
-                    {payBill.isPending ? <Loader2 size={16} className="mr-2 animate-spin" /> : <WalletCards size={16} className="mr-2" />}Pay from NaiTrust balance
+                    {payBill.isPending ? <Loader2 size={16} className="mr-2 animate-spin" /> : <WalletCards size={16} className="mr-2" />}Pay from Bills Account
                   </Button>
                 </>
               )}
@@ -123,9 +142,12 @@ export function BusinessBillsPage() {
 
           <div className="space-y-4">
             <Card className="rounded-2xl bg-primary p-5 text-primary-foreground shadow-sm">
-              <p className="text-sm text-primary-foreground/75">Available to spend</p>
-              {walletLoading ? <Skeleton className="mt-2 h-9 w-40" /> : <p className="mt-1 text-3xl font-bold">{formatMinorAmount(availableMinor, wallet?.balance.currency ?? 'NGN')}</p>}
-              <p className="mt-3 text-xs leading-5 text-primary-foreground/70">Pending and Protected Deal funds are kept separate and cannot be used for bills.</p>
+              <p className="text-sm text-primary-foreground/75">Bills Account</p>
+              {walletLoading ? <Skeleton className="mt-2 h-9 w-40" /> : <p className="mt-1 text-3xl font-bold">{formatMinorAmount(billsMinor, wallet?.balance.currency ?? 'NGN')}</p>}
+              <p className="mt-3 text-xs leading-5 text-primary-foreground/70">Money set aside here can only be used for bills and airtime.</p>
+              <Button variant="secondary" className="mt-4 w-full rounded-full" onClick={() => setFundOpen(true)}>
+                <Plus size={15} className="mr-1.5" /> Fund Bills Account
+              </Button>
             </Card>
             <Card className="gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
               <div className="flex items-center gap-2 border-b p-4"><History size={17} /><h2 className="font-semibold">Recent bill payments</h2></div>
@@ -134,6 +156,37 @@ export function BusinessBillsPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={fundOpen} onOpenChange={setFundOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Fund Bills Account</DialogTitle>
+            <DialogDescription>Move money from your available Naitrust balance into your dedicated bills balance.</DialogDescription>
+          </DialogHeader>
+          <div>
+            <Label htmlFor="fund-bills-amount">Amount (NGN)</Label>
+            <Input id="fund-bills-amount" className="mt-1.5" type="number" min="1" inputMode="decimal" value={fundAmount} onChange={(event) => setFundAmount(event.target.value)} placeholder="0.00" autoFocus />
+          </div>
+          <div className="rounded-xl border bg-muted/30 px-4 py-3 text-sm">
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Available balance</span><span className="font-semibold tabular-nums">{formatMinorAmount(availableMinor, 'NGN')}</span></div>
+            <div className="mt-2 flex justify-between gap-4"><span className="text-muted-foreground">Balance after funding</span><span className="font-semibold tabular-nums">{formatMinorAmount(Math.max(0, availableMinor - fundAmountMinor), 'NGN')}</span></div>
+            <div className="mt-2 flex justify-between gap-4"><span className="text-muted-foreground">New Bills Account balance</span><span className="font-semibold tabular-nums">{formatMinorAmount(billsMinor + Math.max(0, fundAmountMinor), 'NGN')}</span></div>
+          </div>
+          {fundAmountMinor > availableMinor && <p className="text-sm text-destructive">Your available balance is not enough for this transfer.</p>}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFundOpen(false)}>Cancel</Button>
+            <Button disabled={!canFund} onClick={() => { setFundOpen(false); setFundPinOpen(true); }}>Accept and continue</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <PinPromptModal
+        open={fundPinOpen}
+        onOpenChange={setFundPinOpen}
+        onVerified={confirmBillsFunding}
+        title="Confirm Bills Account funding"
+        description={`Enter your transaction PIN to move ${formatMinorAmount(fundAmountMinor, 'NGN')} to your Bills Account.`}
+      />
     </DashboardLayout>
   );
 }

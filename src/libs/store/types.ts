@@ -651,6 +651,8 @@ export interface WalletBalance {
   availableMinor: number;
   pendingMinor: number;
   protectedMinor: number;
+  /** Money deliberately set aside for electricity, data, TV and airtime. */
+  billsMinor: number;
   currency: string;
 }
 
@@ -687,6 +689,7 @@ export type WalletActivityKind =
   | 'instant_transfer_in'
   | 'protected_allocation'
   | 'protected_release'
+  | 'bill_funding'
   | 'bill_payment'
   | 'fee';
 

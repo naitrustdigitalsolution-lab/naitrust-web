@@ -99,8 +99,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="home-page relative min-h-screen">
       <SEOHead
-        title="Verify, Agree and Protect Important Payments"
-        description="Naitrust provides trust infrastructure for financial transactions and commerce, helping Nigerian buyers and businesses verify participants, agree on clear terms, protect important payments, and keep payment, delivery, and evidence records in one Deal Room."
+        title="Send, Receive and Protect Payments with Confidence"
+        description="Naitrust is a Nigerian payment platform for people and businesses to send and receive money, verify participants, and create Protected Deals with clear terms, delivery updates, payment status, and evidence."
         keywords="Naitrust, trust infrastructure for financial transactions and commerce, Nigerian fintech app, payments Nigeria, Protected Deals Nigeria, verify business before paying, P2P payments, customer payments, business payments, B2B payments"
         canonicalPath="/"
       />
@@ -125,7 +125,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="relative z-20 mx-auto min-w-0 max-w-2xl text-center xl:mx-0 xl:text-left"
           >
             <Badge className="mb-1 inline-flex max-w-full whitespace-nowrap rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1.5 text-center text-[7px] font-semibold uppercase leading-4 tracking-[0.04em] text-white shadow-sm backdrop-blur hover:bg-white/[0.08] min-[360px]:text-[8px] sm:mb-3 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.12em]">
-              Know who you are dealing with
+              Payments, verification and Protected Deals
             </Badge>
             <AnimatedHeroText />
 

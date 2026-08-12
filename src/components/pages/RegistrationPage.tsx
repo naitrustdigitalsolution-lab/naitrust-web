@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ArrowRight, Check, Upload, Shield, Building, User as UserIcon, Phone, Mail, Instagram, MessageCircle, Image as ImageIcon, X, Plus, Facebook, Twitter, Globe, Linkedin, HelpCircle, Sparkles, AlertTriangle, ExternalLink, FileText, ShieldCheck, Scale } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Upload, Shield, Building, User as UserIcon, Phone, Mail, Instagram, MessageCircle, Image as ImageIcon, Facebook, Twitter, Globe, Linkedin, AlertTriangle, ExternalLink, FileText, ShieldCheck, Scale } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input, PasswordInput } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { toast } from 'sonner';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { SEOHead } from '../utility/SEOHead';
@@ -19,7 +17,6 @@ import { PhoneField } from '../pieces/general/PhoneField';
 import { RegistrationStepper } from '../pieces/registration/RegistrationStepper';
 import { BeforeYouStartCard } from '../pieces/registration/BeforeYouStartCard';
 import { openWaitlistModal } from '../modals/waitlist-events';
-import type { SocialHandleInterface } from '../../interfaces/SocialHandleInterface';
 import type { TeamMemberInterface } from '../../interfaces/TeamMemberInterface';
 import { useLocation } from 'react-router-dom';
 import icon from '../../assets/naitrust-logo/naitrust-icon-3.png';
@@ -46,12 +43,11 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<any>({
-    socialHandles: [] as SocialHandleInterface[],
+    socialHandles: [],
     teamMembers: [] as TeamMemberInterface[],
     verificationType: 'unverified', // Default to unverified
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [categorySearch, setCategorySearch] = useState('');
 
   // Auto-populate owner information for logged-in users
@@ -67,7 +63,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
     }
   }, [isAuthenticated, user, registrationType]);
 
-  const totalSteps = registrationType === 'business' ? 4 : 2; // 4 steps for business (Personal, Business Info, Business Details, Review)
+  const totalSteps = registrationType === 'business' ? 3 : 2;
 
   const validateBusinessStep = (step: number): string | null => {
     switch (step) {
@@ -85,11 +81,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
       case 2: {
         if (!formData.businessName?.trim()) return 'Business name is required';
         if (!formData.category) return 'Business category is required';
-        if (!formData.description?.trim()) return 'Business description is required';
         if (!formData.businessEmail?.trim()) return 'Business email is required';
-        return null;
-      }
-      case 3: {
         if (!formData.address?.trim()) return 'Business address is required';
         if (!formData.city?.trim()) return 'City is required';
         if (!formData.state) return 'State is required';
@@ -294,45 +286,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
     }
   };
 
-  const handleGenerateDescription = async () => {
-    if (!formData.businessName || !formData.category) {
-      toast.error('Please provide business name and category first');
-      return;
-    }
-    
-    setIsGeneratingDescription(true);
-    try {
-      // TODO: Implement AI description generation API
-      // For now, generate a simple placeholder
-      const generatedDescription = `Welcome to ${formData.businessName}! We are a ${formData.category} business dedicated to providing quality products and services. Our team is committed to excellence and customer satisfaction.`;
-      
-      updateFormData('description', generatedDescription);
-      toast.success('Business description generated! You can edit it to fit your needs.');
-    } catch (error: any) {
-      toast.error('Failed to generate description. Please write it manually.');
-    } finally {
-      setIsGeneratingDescription(false);
-    }
-  };
-
   const updateFormData = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value });
-  };
-
-  const addSocialHandle = () => {
-    updateFormData('socialHandles', [...(formData.socialHandles || []), { platform: '', value: '' }]);
-  };
-
-  const removeSocialHandle = (index: number) => {
-    const handles = [...formData.socialHandles];
-    handles.splice(index, 1);
-    updateFormData('socialHandles', handles);
-  };
-
-  const updateSocialHandle = (index: number, field: 'platform' | 'value', value: string) => {
-    const handles = [...formData.socialHandles];
-    handles[index][field] = value;
-    updateFormData('socialHandles', handles);
   };
 
   // Customer Registration Steps (Simplified - 2 steps only)
@@ -519,10 +474,10 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
     }
   };
 
-  // Business Registration Steps - 5 steps: Personal Info, Business Info, Business Details, Verification, Review
+  // Business registration: owner, essential business details, then policy review.
   const renderBusinessStep = () => {
     switch (currentStep) {
-      // Step 1: Personal Information (Owner details + Business email/phone/website)
+      // Step 1: Account owner information
       case 1:
         return (
           <motion.div
@@ -604,7 +559,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
           </motion.div>
         );
 
-      // Step 2: Business Information (Business name, category, description)
+      // Step 2: Essential business profile and location information
       case 2:
         return (
           <motion.div
@@ -659,42 +614,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 </Select>
               </div>
 
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Label htmlFor="description">Business Description *</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle size={16} className="text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="max-w-xs">Describe what your business does, your products or services, and what makes you unique.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleGenerateDescription}
-                    disabled={isGeneratingDescription || !formData.businessName || !formData.category}
-                    className="ml-auto"
-                  >
-                    <Sparkles size={14} className="mr-2" />
-                    {isGeneratingDescription ? 'Generating...' : 'AI Generate'}
-                  </Button>
-                </div>
-                <Textarea
-                  id="description"
-                  placeholder="Briefly describe what your business does..."
-                  className="min-h-[100px]"
-                  value={formData.description || ''}
-                  onChange={(e) => updateFormData('description', e.target.value)}
-                />
-              </div>
-
               <div className="border-t pt-4 mt-4">
-                <h3 className="font-medium mb-4">Business Contact Information</h3>
+                <h3 className="font-medium mb-4">Business contact</h3>
                 
                 <div>
                   <Label htmlFor="businessEmail">Business Email *</Label>
@@ -705,56 +626,11 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                     value={formData.businessEmail || ''}
                     onChange={(e) => updateFormData('businessEmail', e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Please use the email associated with your CAC business registration
-                  </p>
-                </div>
-
-                <div className="mt-4">
-                  <Label htmlFor="businessPhone">Business Phone Number (Optional)</Label>
-                  <PhoneField
-                    id="businessPhone"
-                    className="mt-1.5"
-                    value={formData.businessPhone || ''}
-                    onChange={(v) => updateFormData('businessPhone', v)}
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <Label htmlFor="website">Business Website (Optional)</Label>
-                  <Input
-                    id="website"
-                    type="url"
-                    placeholder="https://www.example.com"
-                    value={formData.website || ''}
-                    onChange={(e) => updateFormData('website', e.target.value)}
-                  />
+                  <p className="text-xs text-muted-foreground mt-1">Use the email customers can associate with this business.</p>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        );
-
-      // Step 3: Business Details (Address, State, Country, Social Handles)
-      case 3:
-        return (
-          <motion.div
-            key="business-step3"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={smoothViewFade}
-            className="space-y-6"
-          >
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Building size={32} className="text-primary" />
-              </div>
-              <h2>Business Details</h2>
-              <p className="text-muted-foreground">Location and contact information</p>
-            </div>
-
-            <div className="space-y-4">
+              <div className="border-t pt-4 mt-4">
+                <h3 className="font-medium mb-4">Business location</h3>
               <div>
                 <Label htmlFor="address">Business Address *</Label>
                 <Input
@@ -801,66 +677,19 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                   className="bg-muted"
                 />
               </div>
-
-              <div>
-                <Label>Social Media Handles (Optional)</Label>
-                <div className="space-y-3 mt-2">
-                  {formData.socialHandles?.map((handle: SocialHandleInterface, index: number) => (
-                    <div key={index} className="flex gap-2">
-                      <Select
-                        value={handle.platform}
-                        onValueChange={(value) => updateSocialHandle(index, 'platform', value)}
-                      >
-                        <SelectTrigger className="w-[150px]">
-                          <SelectValue placeholder="Platform" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="instagram">Instagram</SelectItem>
-                          <SelectItem value="facebook">Facebook</SelectItem>
-                          <SelectItem value="twitter">Twitter</SelectItem>
-                          <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                          <SelectItem value="linkedin">LinkedIn</SelectItem>
-                          <SelectItem value="tiktok">TikTok</SelectItem>
-                          <SelectItem value="threads">Threads</SelectItem>
-                          <SelectItem value="website">Website</SelectItem>
-                          <SelectItem value="email">Email</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="@username or link"
-                        value={handle.value}
-                        onChange={(e) => updateSocialHandle(index, 'value', e.target.value)}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeSocialHandle(index)}
-                      >
-                        <X size={16} />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addSocialHandle}
-                  >
-                    <Plus size={16} className="mr-2" />
-                    Add Social Handle
-                  </Button>
-                </div>
               </div>
+              <p className="rounded-lg bg-primary/5 px-3 py-2 text-xs leading-5 text-muted-foreground">
+                After you sign in, you can complete your Trust Profile with a description, phone number, and website.
+              </p>
             </div>
           </motion.div>
         );
 
-      // Step 4: Review & Submit
-      case 4:
+      // Step 3: Review & Submit
+      case 3:
         return (
           <motion.div
-            key="business-step4"
+            key="business-step3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -938,8 +767,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   ];
   const businessSteps = [
     { title: 'Owner Information', description: 'Tell us who owns the account.' },
-    { title: 'Business Information', description: 'Add your business profile basics.' },
-    { title: 'Business Details', description: 'Add location and contact channels.' },
+    { title: 'Business Information', description: 'Add the essential business and location details.' },
     { title: 'Review & Submit', description: 'Confirm policies and submit.' },
   ];
   const steps = registrationType === 'business' ? businessSteps : customerSteps;

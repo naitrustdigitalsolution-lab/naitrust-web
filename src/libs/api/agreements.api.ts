@@ -84,7 +84,7 @@ export const agreementsApi = {
   draft: async (input: DraftAgreementInput, version = 1): Promise<ApiSuccess<AgreementDraft>> => {
     if (appConfig.isMock) {
       await delay(MOCK_GENERATION_MS);
-      return { success: true, data: buildMockDraft(input, version) };
+      return { isSuccessful: true, data: buildMockDraft(input, version) };
     }
     const response = await httpClient.post<AgreementDraft>(endpoints.agreements.draft, {
       ...input,

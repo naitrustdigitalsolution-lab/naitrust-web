@@ -35,7 +35,7 @@ export const securityApi = {
   sendEmailOtp: async (email: string): Promise<ApiSuccess<null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
-      return { success: true, data: null, message: `OTP sent to ${email}` };
+      return { isSuccessful: true, data: null, message: `OTP sent to ${email}` };
     }
     return (await httpClient.post(endpoints.security.sendEmailOtp, { email })) as ApiSuccess<null>;
   },
@@ -44,7 +44,7 @@ export const securityApi = {
   verifyEmail: async (code: string): Promise<ApiSuccess<{ verified: boolean }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
-      return { success: true, data: { verified: code === MOCK_OTP } };
+      return { isSuccessful: true, data: { verified: code === MOCK_OTP } };
     }
     return (await httpClient.post(endpoints.security.verifyEmail, { code })) as ApiSuccess<{ verified: boolean }>;
   },
@@ -52,7 +52,7 @@ export const securityApi = {
   sendPhoneOtp: async (phone: string): Promise<ApiSuccess<null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
-      return { success: true, data: null, message: `OTP sent to ${phone}` };
+      return { isSuccessful: true, data: null, message: `OTP sent to ${phone}` };
     }
     return (await httpClient.post(endpoints.security.sendPhoneOtp, { phone })) as ApiSuccess<null>;
   },
@@ -60,7 +60,7 @@ export const securityApi = {
   verifyPhone: async (code: string): Promise<ApiSuccess<{ verified: boolean }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
-      return { success: true, data: { verified: code === MOCK_OTP } };
+      return { isSuccessful: true, data: { verified: code === MOCK_OTP } };
     }
     return (await httpClient.post(endpoints.security.verifyPhone, { code })) as ApiSuccess<{ verified: boolean }>;
   },
@@ -71,7 +71,7 @@ export const securityApi = {
       await delay(MOCK_MS);
       const secret = mockTotpSecret();
       const otpauthUri = `otpauth://totp/Naitrust:${encodeURIComponent(email)}?secret=${secret}&issuer=Naitrust`;
-      return { success: true, data: { secret, otpauthUri } };
+      return { isSuccessful: true, data: { secret, otpauthUri } };
     }
     return (await httpClient.post(endpoints.security.start2FA, { email })) as ApiSuccess<TwoFactorEnrolment>;
   },
@@ -81,7 +81,7 @@ export const securityApi = {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
       // Mock accepts any 6-digit code; production validates the TOTP window.
-      return { success: true, data: { enabled: /^\d{6}$/.test(code) } };
+      return { isSuccessful: true, data: { enabled: /^\d{6}$/.test(code) } };
     }
     return (await httpClient.post(endpoints.security.verify2FA, { code })) as ApiSuccess<{ enabled: boolean }>;
   },
@@ -93,7 +93,7 @@ export const securityApi = {
   ): Promise<ApiSuccess<{ status: 'verified' }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS + 400);
-      return { success: true, data: { status: 'verified' } };
+      return { isSuccessful: true, data: { status: 'verified' } };
     }
     return (await httpClient.post(endpoints.security.submitKyc, { kind, ...payload })) as ApiSuccess<{ status: 'verified' }>;
   },
@@ -102,7 +102,7 @@ export const securityApi = {
   setPin: async (pin: string): Promise<ApiSuccess<{ set: boolean }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
-      return { success: true, data: { set: /^\d{4}$/.test(pin) } };
+      return { isSuccessful: true, data: { set: /^\d{4}$/.test(pin) } };
     }
     return (await httpClient.post(endpoints.security.setPin, { pin })) as ApiSuccess<{ set: boolean }>;
   },
@@ -111,7 +111,7 @@ export const securityApi = {
   verifyPin: async (pin: string): Promise<ApiSuccess<{ valid: boolean }>> => {
     if (appConfig.isMock) {
       await delay(300);
-      return { success: true, data: { valid: /^\d{4}$/.test(pin) } };
+      return { isSuccessful: true, data: { valid: /^\d{4}$/.test(pin) } };
     }
     return (await httpClient.post(endpoints.security.verifyPin, { pin })) as ApiSuccess<{ valid: boolean }>;
   },

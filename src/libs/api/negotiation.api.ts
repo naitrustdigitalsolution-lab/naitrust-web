@@ -71,7 +71,7 @@ export const negotiationApi = {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
       const n = ensure(dealId);
-      return { success: true, data: n ? structuredClone(n) : null };
+      return { isSuccessful: true, data: n ? structuredClone(n) : null };
     }
     const res = await httpClient.get<DealNegotiation | null>(endpoints.negotiations.get(dealId));
     return res as ApiSuccess<DealNegotiation | null>;
@@ -107,7 +107,7 @@ export const negotiationApi = {
           }
         : { dealId, status: 'open', proposals: [proposal] };
       negotiations[dealId] = next;
-      return { success: true, data: structuredClone(next) };
+      return { isSuccessful: true, data: structuredClone(next) };
     }
     const res = await httpClient.post<DealNegotiation>(endpoints.negotiations.propose(dealId), input);
     return res as ApiSuccess<DealNegotiation>;
@@ -132,7 +132,7 @@ export const negotiationApi = {
         status: action === 'accepted' ? 'accepted' : 'open',
       };
       negotiations[dealId] = next;
-      return { success: true, data: structuredClone(next) };
+      return { isSuccessful: true, data: structuredClone(next) };
     }
     const res = await httpClient.post<DealNegotiation>(
       endpoints.negotiations.respond(dealId, proposalId),
@@ -148,9 +148,9 @@ export const negotiationApi = {
       const n = ensure(dealId);
       if (n) {
         negotiations[dealId] = { ...n, status: 'withdrawn' };
-        return { success: true, data: structuredClone(negotiations[dealId]) };
+        return { isSuccessful: true, data: structuredClone(negotiations[dealId]) };
       }
-      return { success: true, data: null };
+      return { isSuccessful: true, data: null };
     }
     const res = await httpClient.post<DealNegotiation | null>(endpoints.negotiations.withdraw(dealId));
     return res as ApiSuccess<DealNegotiation | null>;

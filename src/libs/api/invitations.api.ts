@@ -98,7 +98,7 @@ export const invitationsApi = {
   getPublicPreview: async (token: string): Promise<ApiSuccess<PublicInvitationPreview | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: publicPreview(token) };
+      return { isSuccessful: true, data: publicPreview(token) };
     }
     const response = await httpClient.get<PublicInvitationPreview>(
       endpoints.invitations.publicPreview(token),
@@ -133,7 +133,7 @@ export const invitationsApi = {
         throw new Error('This invitation requires a verified business account.');
       }
       return {
-        success: true,
+        isSuccessful: true,
         data: {
           invitationId: preview.invitationId,
           destination: `/app/invitations/${preview.invitationId}`,
@@ -162,9 +162,9 @@ export const invitationsApi = {
       await delay(MOCK_LATENCY_MS);
       const found = mockList.find((inv) => inv.id === id);
       if (!found) {
-        return { success: true, data: undefined as unknown as DealInvitation };
+        return { isSuccessful: true, data: undefined as unknown as DealInvitation };
       }
-      return { success: true, data: found };
+      return { isSuccessful: true, data: found };
     }
     const response = await httpClient.get<DealInvitation>(endpoints.invitations.getOne(id));
     return response as ApiSuccess<DealInvitation>;
@@ -177,7 +177,7 @@ export const invitationsApi = {
   ): Promise<ApiSuccess<{ id: string; status: InvitationStatus }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: { id, status: action } };
+      return { isSuccessful: true, data: { id, status: action } };
     }
     const endpoint =
       action === 'accepted' ? endpoints.invitations.accept(id) : endpoints.invitations.decline(id);

@@ -57,7 +57,7 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
     try {
       const response = await authApi.verifyEmail(email, otp);
       
-      if (response.success && response.data?.token) {
+      if (response.isSuccessful && response.data?.token) {
         toast.success('Email verified successfully! Welcome to Naitrust!');
         
         // Token and user are already set by authApi.verifyEmail
@@ -95,7 +95,7 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
     try {
       const response = await authApi.resendVerificationOTP(email);
       
-      if (response.success) {
+      if (response.isSuccessful) {
         toast.success('A new verification code has been sent to your email');
       } else {
         setError(response.message || 'Failed to resend code. Please try again.');

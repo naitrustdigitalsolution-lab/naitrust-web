@@ -1,5 +1,5 @@
 {
-  "success": true,
+  "isSuccessful": true,
   "data": [
     {
       "id": "txn_mock_001",

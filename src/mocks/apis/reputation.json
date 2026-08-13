@@ -1,5 +1,5 @@
 {
-  "success": true,
+  "isSuccessful": true,
   "data": {
     "userId": "usr_mock_004",
     "businessId": "biz_mock_002",

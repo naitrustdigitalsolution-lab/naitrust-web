@@ -7,7 +7,7 @@
  * - Responses use the same `ApiResponse`-shaped envelope the real backend
  *   returns, so the auth store and screens run identical code paths.
  * - The user list is module-level and mutable: `register()` adds users for
- *   the current browser session only (resets on reload: the logged-in
+ *   the current browser session only (resets on reload — the logged-in
  *   session itself still survives reload via the persisted auth store).
  * - Profile lookup is derived from the token (like a real backend), not from
  *   localStorage, keeping this module pure and unit-testable.
@@ -20,7 +20,6 @@ import fixtures from '../../mocks/apis/auth-users.json';
 import { appConfig } from '../../configs/env';
 import type { RegisterData } from './auth.api';
 import type { User } from '../store/types';
-import { generateNaitrustId, naitrustIdKindForRole, normalizeNaitrustId } from '../identity/naitrust-id';
 
 export const MOCK_2FA_CODE = appConfig.mock2faCode;
 
@@ -34,7 +33,7 @@ interface MockUserRecord {
 }
 
 export interface MockAuthResponse {
-  success: boolean;
+  isSuccessful: boolean;
   data?: {
     user: User;
     token?: string;
@@ -60,36 +59,13 @@ function findByEmail(email: string): MockUserRecord | undefined {
   return records.find((record) => record.user.email.toLowerCase() === normalized);
 }
 
-function normalizePhone(value: string): string {
-  const digits = value.replace(/\D/g, '');
-  return digits.startsWith('234') ? digits.slice(3) : digits.startsWith('0') ? digits.slice(1) : digits;
-}
-
-function findByLoginIdentifier(identifier: string): MockUserRecord | undefined {
-  const normalized = identifier.trim().toLowerCase();
-  const emailMatch = findByEmail(normalized);
-  if (emailMatch) return emailMatch;
-  const usernameMatch = records.find((record) => {
-    const emailUsername = record.user.email.split('@')[0].toLowerCase();
-    const nameUsername = record.user.name.toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
-    return normalized === emailUsername
-      || normalized === nameUsername
-      || normalized === record.user.id.toLowerCase()
-      || normalizeNaitrustId(identifier) === record.user.naitrustId;
-  });
-  if (usernameMatch) return usernameMatch;
-  const phone = normalizePhone(identifier);
-  if (!phone) return undefined;
-  return records.find((record) => normalizePhone(record.user.phone ?? '') === phone);
-}
-
 function findByIdOrEmail(userIdOrEmail: string): MockUserRecord | undefined {
   return (
     records.find((record) => record.user.id === userIdOrEmail) ?? findByEmail(userIdOrEmail)
   );
 }
 
-/** Token format: `mock-token.<userId>.<random>`: lets getProfile resolve the user. */
+/** Token format: `mock-token.<userId>.<random>` — lets getProfile resolve the user. */
 function issueToken(userId: string): string {
   return `${TOKEN_PREFIX}.${userId}.${crypto.randomUUID()}`;
 }
@@ -106,18 +82,18 @@ export async function mockLogin(
 ): Promise<MockAuthResponse> {
   await delay(latencyMs);
 
-  const record = findByLoginIdentifier(email);
+  const record = findByEmail(email);
   if (!record || record.password !== password) {
-    return { success: false, error: 'Invalid email, Naitrust ID, phone number, or password' };
+    return { isSuccessful: false, error: 'Invalid email or password' };
   }
 
   if (record.twoFactorEnabled) {
     // Matches the real flow: no token yet, complete login via verify2FALogin.
-    return { success: true, data: { user: { ...record.user }, requires2FA: true } };
+    return { isSuccessful: true, data: { user: { ...record.user }, requires2FA: true } };
   }
 
   return {
-    success: true,
+    isSuccessful: true,
     data: { user: { ...record.user }, token: issueToken(record.user.id) },
   };
 }
@@ -131,14 +107,14 @@ export async function mockVerify2FALogin(
 
   const record = findByIdOrEmail(userIdOrEmail);
   if (!record) {
-    return { success: false, error: 'User not found' };
+    return { isSuccessful: false, error: 'User not found' };
   }
   if (code !== MOCK_2FA_CODE) {
-    return { success: false, error: 'Invalid code. Please try again.' };
+    return { isSuccessful: false, error: 'Invalid code. Please try again.' };
   }
 
   return {
-    success: true,
+    isSuccessful: true,
     data: { user: { ...record.user }, token: issueToken(record.user.id) },
   };
 }
@@ -150,15 +126,11 @@ export async function mockRegister(
   await delay(latencyMs);
 
   if (findByEmail(data.email)) {
-    return { success: false, error: 'An account with this email already exists' };
+    return { isSuccessful: false, error: 'An account with this email already exists' };
   }
 
   const user: User = {
     id: `usr_mock_${crypto.randomUUID()}`,
-    naitrustId: generateNaitrustId(
-      naitrustIdKindForRole(data.role),
-      records.map((record) => record.user.naitrustId),
-    ),
     email: data.email.trim().toLowerCase(),
     firstName: data.firstName,
     lastName: data.lastName,
@@ -173,7 +145,7 @@ export async function mockRegister(
 
   records.push({ password: data.password, twoFactorEnabled: false, user });
 
-  return { success: true, data: { user: { ...user }, token: issueToken(user.id) } };
+  return { isSuccessful: true, data: { user: { ...user }, token: issueToken(user.id) } };
 }
 
 export async function mockGetProfile(
@@ -185,10 +157,10 @@ export async function mockGetProfile(
   const userId = userIdFromToken(token);
   const record = userId ? records.find((r) => r.user.id === userId) : undefined;
   if (!record) {
-    return { success: false, error: 'Unauthorized - Please login again' };
+    return { isSuccessful: false, error: 'Unauthorized - Please login again' };
   }
 
-  return { success: true, data: { user: { ...record.user } } };
+  return { isSuccessful: true, data: { user: { ...record.user } } };
 }
 
 /** Test-only helper: number of registered mock users (seeded + session-registered). */

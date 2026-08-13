@@ -229,7 +229,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setIsSendingOtp(true);
     try {
       const response = await authApi.forgotPassword(resetEmail);
-      if (response.success) {
+      if (response.isSuccessful) {
         toast.success('OTP has been sent to your email');
         setView('verify-otp');
       } else {
@@ -255,7 +255,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setIsVerifyingOtp(true);
     try {
       const response = await authApi.verifyOtp(resetEmail, otp);
-      if (response.success && response.data?.resetToken) {
+      if (response.isSuccessful && response.data?.resetToken) {
         setResetToken(response.data.resetToken);
         toast.success('OTP verified successfully');
         setView('reset-password');
@@ -294,7 +294,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setIsResettingPassword(true);
     try {
       const response = await authApi.resetPassword(resetEmail, resetToken, newPassword);
-      if (response.success) {
+      if (response.isSuccessful) {
         toast.success('Password reset successfully! Please login with your new password.');
         setView('login');
         setError('');

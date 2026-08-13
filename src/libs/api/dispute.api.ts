@@ -11,7 +11,6 @@ import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
 import type { DealDispute, DisputeMessage } from '../store/types';
-import { blockDeliveryRelease } from './delivery-review.mock';
 
 const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -52,13 +51,13 @@ export const disputeApi = {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
       const d = ensure(dealId);
-      return { success: true, data: d ? structuredClone(d) : null };
+      return { isSuccessful: true, data: d ? structuredClone(d) : null };
     }
     const res = await httpClient.get<DealDispute | null>(endpoints.disputes.get(dealId));
     return res as ApiSuccess<DealDispute | null>;
   },
 
-  /** Open a dispute: pauses release, starts admin review. */
+  /** Open a dispute — pauses release, starts admin review. */
   open: async (
     dealId: string,
     input: { reason: string; description: string },
@@ -83,8 +82,7 @@ export const disputeApi = {
         ],
       };
       disputes[dealId] = dispute;
-      blockDeliveryRelease(dealId);
-      return { success: true, data: structuredClone(dispute) };
+      return { isSuccessful: true, data: structuredClone(dispute) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.open(dealId), input);
     return res as ApiSuccess<DealDispute>;
@@ -104,7 +102,7 @@ export const disputeApi = {
         createdAt: new Date().toISOString(),
       };
       disputes[dealId] = { ...d, messages: [...d.messages, msg] };
-      return { success: true, data: structuredClone(disputes[dealId]) };
+      return { isSuccessful: true, data: structuredClone(disputes[dealId]) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.message(dealId), { body });
     return res as ApiSuccess<DealDispute>;

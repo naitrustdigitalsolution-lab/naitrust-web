@@ -10,7 +10,7 @@ let isRedirecting = false;
 let redirectTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 export interface ApiResponse<T = any> {
-  success: boolean;
+  isSuccessful: boolean;
   data?: T;
   message?: string;
   error?: string;

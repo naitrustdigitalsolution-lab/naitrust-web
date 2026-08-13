@@ -42,7 +42,7 @@ export const notificationsApi = {
   list: async (): Promise<ApiSuccess<AppNotification[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: mockList.map((n) => ({ ...n })) };
+      return { isSuccessful: true, data: mockList.map((n) => ({ ...n })) };
     }
     const response = await httpClient.get<AppNotification[]>(endpoints.notifications.list);
     return response as ApiSuccess<AppNotification[]>;
@@ -53,7 +53,7 @@ export const notificationsApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       mockList = mockList.map((n) => (n.id === id ? { ...n, read: true } : n));
-      return { success: true, data: { id } };
+      return { isSuccessful: true, data: { id } };
     }
     const response = await httpClient.patch<{ id: string }>(endpoints.notifications.markAsRead(id));
     return response as ApiSuccess<{ id: string }>;
@@ -64,7 +64,7 @@ export const notificationsApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       mockList = mockList.map((n) => ({ ...n, read: true }));
-      return { success: true, data: null };
+      return { isSuccessful: true, data: null };
     }
     const response = await httpClient.patch<null>(endpoints.notifications.markAllAsRead);
     return response as ApiSuccess<null>;

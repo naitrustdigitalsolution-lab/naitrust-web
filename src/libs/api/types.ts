@@ -1,5 +1,5 @@
 export interface ApiSuccess<T> {
-  success: true;
+  isSuccessful: true;
   data: T;
   message?: string;
 }

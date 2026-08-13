@@ -75,7 +75,7 @@ export const walletApi = {
       await delay(MOCK_LATENCY_MS);
       const current = mockWallet as ApiSuccess<WalletAccount>;
       return {
-        success: true,
+        isSuccessful: true,
         message: 'Sandbox funding recorded',
         data: {
           ...current.data,
@@ -106,7 +106,7 @@ export const walletApi = {
       await delay(MOCK_LATENCY_MS);
       const current = mockWallet as ApiSuccess<WalletAccount>;
       return {
-        success: true,
+        isSuccessful: true,
         message: 'Sandbox withdrawal recorded',
         data: {
           ...current.data,

@@ -23,7 +23,7 @@ export const terminationApi = {
     if (appConfig.isMock) {
       await delay(MOCK_MS);
       const t = terminations[dealId];
-      return { success: true, data: t ? structuredClone(t) : null };
+      return { isSuccessful: true, data: t ? structuredClone(t) : null };
     }
     const res = await httpClient.get<DealTermination | null>(endpoints.transactions.termination(dealId));
     return res as ApiSuccess<DealTermination | null>;
@@ -42,7 +42,7 @@ export const terminationApi = {
         createdAt: new Date().toISOString(),
       };
       terminations[dealId] = t;
-      return { success: true, data: structuredClone(t) };
+      return { isSuccessful: true, data: structuredClone(t) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.termination(dealId), { reason });
     return res as ApiSuccess<DealTermination>;
@@ -68,7 +68,7 @@ export const terminationApi = {
         responseReason: input.accept ? undefined : input.reason,
       };
       terminations[dealId] = next;
-      return { success: true, data: structuredClone(next) };
+      return { isSuccessful: true, data: structuredClone(next) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.respondToTermination(dealId), input);
     return res as ApiSuccess<DealTermination>;

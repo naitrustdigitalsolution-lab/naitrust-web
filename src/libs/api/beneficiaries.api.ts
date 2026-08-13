@@ -2,7 +2,7 @@
  * Beneficiaries API
  * Typed access to saved instant-payment recipients.
  *
- * No backend endpoint exists for this yet (see endpoints.ts): every method
+ * No backend endpoint exists for this yet (see endpoints.ts) — every method
  * is mock-only for this phase.
  */
 
@@ -10,13 +10,8 @@ import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { Beneficiary } from '../store/types';
+import mockBeneficiaries from '../../mocks/apis/beneficiaries.json';
 import type { ApiSuccess } from './types';
-import {
-  createMockBeneficiary,
-  listMockBeneficiaries,
-  removeMockBeneficiary,
-} from '../beneficiaries/beneficiary-store';
-import type { CreateBeneficiaryInput } from '../beneficiaries/recipient-beneficiary';
 
 const MOCK_LATENCY_MS = 350;
 
@@ -29,7 +24,7 @@ export const beneficiariesApi = {
   list: async (): Promise<ApiSuccess<Beneficiary[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: listMockBeneficiaries() };
+      return mockBeneficiaries as ApiSuccess<Beneficiary[]>;
     }
     const response = await httpClient.get<Beneficiary[]>(endpoints.beneficiaries.list);
     return response as ApiSuccess<Beneficiary[]>;
@@ -37,12 +32,17 @@ export const beneficiariesApi = {
 
   /** Real endpoint (not yet implemented): POST /beneficiaries */
   create: async (
-    input: CreateBeneficiaryInput,
+    input: Omit<Beneficiary, 'id' | 'createdAt' | 'isFavourite'>,
   ): Promise<ApiSuccess<Beneficiary>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      const beneficiary = createMockBeneficiary(input);
-      return { success: true, data: beneficiary, message: 'Beneficiary saved' };
+      const beneficiary: Beneficiary = {
+        ...input,
+        id: `ben_mock_${crypto.randomUUID()}`,
+        isFavourite: false,
+        createdAt: new Date().toISOString(),
+      };
+      return { isSuccessful: true, data: beneficiary, message: 'Beneficiary saved' };
     }
     const response = await httpClient.post<Beneficiary>(endpoints.beneficiaries.create, input);
     return response as ApiSuccess<Beneficiary>;
@@ -52,8 +52,7 @@ export const beneficiariesApi = {
   remove: async (id: string): Promise<ApiSuccess<null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      removeMockBeneficiary(id);
-      return { success: true, data: null, message: 'Beneficiary removed' };
+      return { isSuccessful: true, data: null, message: 'Beneficiary removed' };
     }
     const response = await httpClient.delete<null>(endpoints.beneficiaries.remove(id));
     return response as ApiSuccess<null>;

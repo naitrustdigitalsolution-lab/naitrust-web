@@ -136,7 +136,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
         role: 'customer',
       });
 
-      if (response.success) {
+      if (response.isSuccessful) {
         toast.success(response.data?.message || 'Registration successful! Please check your email to verify your account.');
         // Redirect to verify email page
         setTimeout(() => {
@@ -199,7 +199,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
 
         const response = await businessApi.create(businessData);
 
-        if (response.success && response.data) {
+        if (response.isSuccessful && response.data) {
           toast.success('Business created successfully!');
           
           // Refresh businesses list and set the new business as current
@@ -243,7 +243,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
           },
         });
 
-        if (response.success) {
+        if (response.isSuccessful) {
           toast.success('Registration successful! Please check your email to verify your account.');
           setTimeout(() => onNavigate('verify-email', { email: formData.ownerEmail }), 1500);
         } else {

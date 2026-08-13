@@ -50,7 +50,7 @@ export const dealMessagesApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       if (!threads[dealId]) threads[dealId] = seedThread(dealId, counterpartyName);
-      return { success: true, data: threads[dealId].map((m) => ({ ...m })) };
+      return { isSuccessful: true, data: threads[dealId].map((m) => ({ ...m })) };
     }
     const response = await httpClient.get<DealMessage[]>(endpoints.transactions.messages(dealId));
     return response as ApiSuccess<DealMessage[]>;
@@ -71,7 +71,7 @@ export const dealMessagesApi = {
       };
       if (!threads[dealId]) threads[dealId] = [];
       threads[dealId].push(message);
-      return { success: true, data: message };
+      return { isSuccessful: true, data: message };
     }
     const response = await httpClient.post<DealMessage>(endpoints.transactions.sendMessage(dealId), {
       body,

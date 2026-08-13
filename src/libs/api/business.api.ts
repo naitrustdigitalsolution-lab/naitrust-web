@@ -113,7 +113,7 @@ export const businessApi = {
               .filter(Boolean)
               .some((value) => value!.toLowerCase().includes(term)),
           );
-      return { success: true, data };
+      return { isSuccessful: true, data };
     }
     const response = await httpClient.get<BusinessProfile[]>(
       `${endpoints.businesses.search}?q=${encodeURIComponent(query)}`,
@@ -136,7 +136,7 @@ export const businessApi = {
             canonicalBusinessSlug(business.name) === canonical ||
             business.ntId?.toLowerCase() === normalized),
       );
-      return { success: true, data: found ?? null };
+      return { isSuccessful: true, data: found ?? null };
     }
     const response = await httpClient.get<BusinessProfile>(
       endpoints.businesses.publicProfile(slugOrId),
@@ -151,11 +151,11 @@ export const businessApi = {
   getMine: async (userId: string): Promise<ApiSuccess<BusinessProfile | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: resolveBusiness(userId) };
+      return { isSuccessful: true, data: resolveBusiness(userId) };
     }
     const response = await httpClient.get<BusinessProfile[]>(endpoints.businesses.myBusinesses);
     const list = (response as ApiSuccess<BusinessProfile[]>).data ?? [];
-    return { success: true, data: list[0] ?? null };
+    return { isSuccessful: true, data: list[0] ?? null };
   },
 
   /**
@@ -169,7 +169,7 @@ export const businessApi = {
       // The verification-critical fields (name, CAC/RC number) are locked once
       // verified, so editing contact/profile details doesn't change verification.
       overrides[userId] = { ...overrides[userId], ...patch };
-      return { success: true, data: resolveBusiness(userId) };
+      return { isSuccessful: true, data: resolveBusiness(userId) };
     }
     const current = resolveBusiness(userId);
     const response = await httpClient.put(

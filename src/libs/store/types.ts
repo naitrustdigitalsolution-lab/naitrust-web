@@ -474,7 +474,7 @@ export interface DealInvitation {
   postAuthDestination?: string;
   reference: string; // the deal's reference
   /** Who sent the invitation (the counterparty). */
-  fromName: string;
+  inviterName: string;
   fromRole: DealRole;
   /** The role you would take if you accept. */
   yourRole: DealRole;

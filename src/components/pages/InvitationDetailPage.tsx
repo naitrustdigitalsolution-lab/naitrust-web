@@ -193,9 +193,9 @@ export function InvitationDetailPage() {
           <Card className="gap-5 p-6 shadow-sm" aria-label="Invitation details">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <CounterpartyAvatar name={invitation.fromName} className="h-11 w-11 text-sm" />
+                <CounterpartyAvatar name={invitation.inviterName} className="h-11 w-11 text-sm" />
                 <div>
-                  <p className="font-semibold text-foreground">{invitation.fromName}</p>
+                  <p className="font-semibold text-foreground">{invitation.inviterName}</p>
                   <p className="text-sm text-muted-foreground">invited you to a Protected Deal</p>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export function InvitationDetailPage() {
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ScanFace size={19} /></span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2"><p className="text-sm font-semibold">Deal representative</p><Badge variant="success">Live identity confirmed</Badge></div>
-                  <p className="mt-1 text-sm font-medium">{invitation.creatorIdentityCapture?.representativeName ?? invitation.fromName}</p>
+                  <p className="mt-1 text-sm font-medium">{invitation.creatorIdentityCapture?.representativeName ?? invitation.inviterName}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">Created this deal{invitation.creatorIdentityCapture?.capturedAt ? ` · ${new Date(invitation.creatorIdentityCapture.capturedAt).toLocaleString()}` : ''}</p>
                   {invitation.creatorIdentityCapture?.photoAvailable ? (
                     <Button type="button" variant="outline" size="sm" className="mt-3 rounded-full" onClick={() => {

@@ -75,7 +75,7 @@ function createdInvitationFor(deal: ReturnType<typeof listMockCreatedDeals>[numb
     publicToken: deal.summary.publicInvitePath?.split('/').pop(),
     recipientUserId: userId,
     reference: deal.summary.reference,
-    fromName: ownerBusiness?.name ?? owner?.name ?? 'Naitrust member',
+    inviterName: ownerBusiness?.name ?? owner?.name ?? 'Naitrust member',
     fromRole: creatorRole,
     yourRole: creatorRole === 'seller' ? 'buyer' : 'seller',
     partyMode: deal.input.partyMode,
@@ -148,7 +148,7 @@ function publicPreview(token: string): PublicInvitationPreview | null {
     token,
     invitationId: invitation.id,
     reference: invitation.reference,
-    inviterName: invitation.fromName,
+    inviterName: invitation.inviterName,
     inviterVerified: true,
     inviterAccountType: invitation.fromRole === 'seller' ? 'business' : 'customer',
     intendedAccountType,
@@ -162,7 +162,7 @@ function publicPreview(token: string): PublicInvitationPreview | null {
         : invitation.expiresAt,
     status: scenario.status ?? invitation.status,
     maskedContact: maskContact(scenario.intendedContact),
-    inviterRepresentativeName: invitation.fromName,
+    inviterRepresentativeName: invitation.inviterName,
     inviterLivenessConfirmed: false,
   };
 }

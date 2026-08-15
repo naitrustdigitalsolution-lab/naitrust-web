@@ -73,10 +73,10 @@ function InvitationRow({ invitation, onOpen }: { invitation: DealInvitation; onO
       className="flex cursor-pointer flex-col items-stretch gap-3 border-b px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:flex-row sm:items-center sm:px-5"
     >
       <div className="flex min-w-0 flex-1 items-start gap-3">
-        <CounterpartyAvatar name={invitation.fromName} />
+        <CounterpartyAvatar name={invitation.inviterName} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate font-semibold text-foreground">{invitation.fromName}</p>
+            <p className="truncate font-semibold text-foreground">{invitation.inviterName}</p>
             <Badge variant="outline" className="shrink-0">{partyModeShort(invitation.partyMode)}</Badge>
           </div>
           <p className="mt-0.5 truncate text-sm text-muted-foreground">{invitation.title}</p>

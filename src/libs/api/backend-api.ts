@@ -815,7 +815,7 @@
  *     {
  *       "id": "inv_5c81f0",
  *       "reference": "NT-2026-004900",
- *       "fromName": "Bright Homes Realty Ltd",
+ *       "inviterName": "Bright Homes Realty Ltd",
  *       "fromRole": "seller",
  *       "yourRole": "buyer",
  *       "title": "Magodo duplex sale",

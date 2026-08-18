@@ -151,6 +151,9 @@ export interface AgreementDraft {
   sections: AgreementSection[];
 }
 
+export type DealWorkflowMode = 'delivery' | 'service' | 'milestone';
+export type DealDeliveryMode = 'domestic' | 'international';
+
 /**
  * Payload for creating a domestic single-release safe deal. Mirrors the
  * Phase 1 create-transaction contract: amount is major-unit naira on the
@@ -158,6 +161,13 @@ export interface AgreementDraft {
  */
 export interface CreateSafeDealInput {
   useCase: string; // use-case slug from libs/use-cases.ts
+  /** Completion experience selected for the Deal Room. Optional for legacy deals. */
+  workflowMode?: DealWorkflowMode;
+  /** Commerce orders derive this from the supplier's source country. */
+  deliveryMode?: DealDeliveryMode;
+  /** Buyer-paid logistics/service fee collected separately from protected product funds. */
+  logisticsFeeMinor?: number;
+  logisticsPaidBy?: 'buyer' | 'seller';
   dealType: DealType;
   partyMode: PartyMode;
   role: DealRole;
@@ -179,8 +189,11 @@ export interface CreateSafeDealInput {
   /** Days the invitation stays open (1..MAX_DEAL_OPEN_DAYS). */
   expiresInDays: number;
   agreement: AgreementDraft;
-  /** Fresh action-specific liveness proof recorded for this deal creation. */
-  actionLiveness: { actorUserId: string; verifiedAt: string; captureId: string };
+  /**
+   * Fresh action-specific liveness proof recorded for this deal creation.
+   * Omitted for light-protection deals, which skip the identity photo.
+   */
+  actionLiveness?: { actorUserId: string; verifiedAt: string; captureId: string };
 }
 
 export interface CreateSafeDealResult extends SafeDealSummary {
@@ -341,6 +354,23 @@ export interface DealDeliveryLifecycle {
   fundingReview: DealFundingReview;
 }
 
+export type DealCompletionStatus =
+  | 'in_progress'
+  | 'release_requested'
+  | 'changes_requested'
+  | 'release_approved'
+  | 'paid_out';
+
+export interface DealCompletionLifecycle {
+  status: DealCompletionStatus;
+  requestedAt?: string;
+  requestedByName?: string;
+  changesRequestedAt?: string;
+  changesReason?: string;
+  approvedAt?: string;
+  paidOutAt?: string;
+}
+
 /** Minimum non-financial data shown by the opaque delivery-card route. */
 export interface DeliveryHandoverPreview {
   dealId: string;
@@ -360,6 +390,7 @@ export interface SafeDealDetail extends SafeDealSummary {
   firstPaymentReleasedAt?: string;
   description: string;
   useCase: string;
+  workflowMode: DealWorkflowMode;
   dealType: DealType;
   partyMode: PartyMode;
   deliveryDueDate: string;
@@ -379,6 +410,8 @@ export interface SafeDealDetail extends SafeDealSummary {
   milestones: DealMilestone[];
   /** Delivery-card, handover, and partner-funding review state. */
   delivery: DealDeliveryLifecycle;
+  /** Work-completion state used by service and non-delivery milestone rooms. */
+  completion: DealCompletionLifecycle;
 }
 
 /* ------------------------------------------------------------------ *
@@ -600,6 +633,12 @@ export interface BusinessProfile {
   ntId: string;
   rcNumber: string; // CAC registration number
   category: string;
+  marketplaceRole?: 'domestic_supplier' | 'international_supplier' | 'sourcing_agent';
+  operatingCountries?: string[];
+  fulfilmentRegions?: string[];
+  publicLanguages?: string[];
+  showcaseStatus?: 'draft' | 'published' | 'paused';
+  supplierVerificationSummary?: string;
   /** Everything below is captured at registration and shown on the profile. */
   description?: string;
   ownerName?: string;
@@ -656,11 +695,25 @@ export interface WalletBalance {
   currency: string;
 }
 
+export interface WalletCurrencyAccount {
+  currency: 'NGN' | 'USD';
+  availableMinor: number;
+  fundingAccount?: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+    swiftCode?: string;
+    routingNumber?: string;
+  };
+}
+
 export interface WalletAccount {
   id: string;
   ownerUserId: string;
   businessId?: string;
   balance: WalletBalance;
+  /** Separate spendable balances. Currencies are never silently combined. */
+  currencyAccounts?: WalletCurrencyAccount[];
   totalInflowMinor: number;
   totalOutflowMinor: number;
   /** Maximum a single funding/withdrawal action may move, minor units. */
@@ -684,6 +737,7 @@ export interface LinkedBankAccount {
 
 export type WalletActivityKind =
   | 'funding'
+  | 'currency_exchange'
   | 'withdrawal'
   | 'instant_transfer_out'
   | 'instant_transfer_in'
@@ -934,6 +988,7 @@ export type TransactionType =
   | 'incoming_transfer'
   | 'bill_payment'
   | 'wallet_funding'
+  | 'currency_exchange'
   | 'withdrawal'
   | 'protected_funding'
   | 'milestone_release'

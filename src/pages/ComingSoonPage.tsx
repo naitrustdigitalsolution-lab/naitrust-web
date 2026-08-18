@@ -116,7 +116,7 @@ function ComingSoonPage() {
             <h1 id="hero-title">Receive sales. Pay suppliers. Protect important orders.</h1>
             <p className="lede">
               Naitrust gives traders, shops, wholesalers, online sellers, service businesses and
-              their customers one account for everyday payments and protected business orders.
+              their customers one account for marketplace quotes, protected orders, delivery updates, and earnings.
             </p>
 
             <div className="hero-actions">

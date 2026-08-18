@@ -1,6 +1,6 @@
 # Naitrust SEO Search Language and Feature Claims
 
-Last updated: 11 August 2026
+Last updated: 16 August 2026
 
 ## Purpose
 
@@ -78,16 +78,30 @@ Do not describe Naitrust as a bank or imply that Naitrust directly provides a re
 
 Do not call Naitrust a full CRM, accounting, invoicing, payroll, tax, or enterprise resource planning platform unless those capabilities are implemented to that standard.
 
+## Marketplace and sourcing search language
+
+- Source products from China to Nigeria
+- Verified China suppliers for Nigerian businesses
+- China wholesale products in English
+- Landed-cost quote Nigeria
+- Product inspection in China
+- China sourcing agents for Nigerian buyers
+- Track import orders to Nigeria
+- Protected supplier payments
+- Nigerian supplier marketplace
+
+These terms describe the target staged experience, not proof of live international fulfilment. Public pages must identify curated fixtures, pilots, coming-soon operations, or partner dependencies accurately.
+
 ## Product hierarchy
 
 Even when a secondary feature is available, Naitrust's public hierarchy remains:
 
-1. Find and review a registered or verified business.
-2. Understand who you are dealing with before paying.
-3. Pay normally or create a Protected Deal when delivery still matters.
-4. Keep the agreement, evidence, messages, delivery updates, and payment status in the Deal Room.
+1. Discover a product, service, supplier, or sourcing agent in China or Nigeria.
+2. Review translated listings, supplier verification, showcases, and Trust Profiles.
+3. Request and approve a confirmed landed-cost quote.
+4. Pay through a protected order and track inspection, logistics, customs, delivery, evidence, and release.
 
-Bill payment, business bill tracking, airtime, rewards, and similar utilities remain secondary. They must not replace the primary homepage, waitlist, onboarding, dashboard, or navigation story without an approved positioning change.
+Legacy transfers, bill payment, airtime, rewards, virtual cards, and similar utilities remain secondary and outside the primary navigation story.
 
 ## SEO integrity rules
 

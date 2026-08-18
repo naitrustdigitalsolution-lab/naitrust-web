@@ -22,6 +22,7 @@ import { useLocation } from 'react-router-dom';
 import icon from '../../assets/naitrust-logo/naitrust-icon-3.png';
 import spiralBackground from '../../assets/spiral.svg';
 import { useTheme } from '@/hooks/useTheme';
+import { pageImages } from '../../libs/images/image-manifest';
 
 interface RegistrationPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -776,10 +777,10 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
-        title={registrationType === 'business' ? 'Open a Naitrust Business Payment Account' : 'Open a Naitrust Customer Payment Account'}
+        title={registrationType === 'business' ? 'Sell on Naitrust Market' : 'Start Sourcing with Naitrust'}
         description={registrationType === 'business'
-          ? 'Create a Naitrust business account to receive customer payments, pay suppliers, build credibility, and protect important transactions.'
-          : 'Create a Naitrust customer account to pay trusted recipients, verify businesses, and protect important purchases.'}
+          ? 'Create a Naitrust business account to publish a verified showcase, quote customers, fulfil protected orders, and withdraw available earnings.'
+          : 'Create a Naitrust customer account to discover verified suppliers, request landed-cost quotes, pay through protected orders, and track delivery.'}
         canonicalPath={registrationType === 'business' ? '/register-business' : '/register-customer'}
       />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
@@ -822,6 +823,12 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             <div className="mt-6 max-w-md lg:mt-10">
               <RegistrationStepper steps={steps} currentStep={currentStep} />
             </div>
+            <img
+              src={registrationType === 'business' ? pageImages.registerBusiness.src : pageImages.registerCustomer.src}
+              alt={registrationType === 'business' ? pageImages.registerBusiness.alt : pageImages.registerCustomer.alt}
+              loading="lazy"
+              className="mt-6 hidden aspect-[3/2] w-full max-w-md rounded-2xl object-cover shadow-sm lg:block"
+            />
           </div>
 
           {/* Desktop: requirements + login link live in the side panel. On mobile

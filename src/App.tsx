@@ -69,6 +69,16 @@ const CounterpartyDetailPage = lazyWithMinDelay(() => import("./pages/Counterpar
 const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
 const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
 const RewardsPage = lazyWithMinDelay(() => import("./pages/RewardsPage"));
+const MarketPage = lazyWithMinDelay(() => import("./pages/MarketPage"));
+const CommerceWorkspacePage = lazyWithMinDelay(() => import("./pages/CommerceWorkspacePage"));
+const CommerceWalletPage = lazyWithMinDelay(() => import("./pages/CommerceWalletPage"));
+const BusinessCommercePage = lazyWithMinDelay(() => import("./pages/BusinessCommercePage"));
+const ProductionWorkflowPage = lazyWithMinDelay(() => import("./pages/ProductionWorkflowPage"));
+const FindProductPage = lazyWithMinDelay(() => import("./pages/FindProductPage"));
+const AgentDirectoryPage = lazyWithMinDelay(() => import("./pages/AgentDirectoryPage"));
+const AgentAssignmentPage = lazyWithMinDelay(() => import("./pages/AgentAssignmentPage"));
+const LogisticsPage = lazyWithMinDelay(() => import("./pages/LogisticsPage"));
+const AdminPortalPage = lazyWithMinDelay(() => import("./pages/AdminPortalPage"));
 
 // Public pages outside the landing-page critical path load only when visited.
 // This keeps their forms, article data and policy content out of the mobile
@@ -93,6 +103,8 @@ const PublicTrustProfilePage = lazy(() => import("./components/pages/PublicTrust
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 const AudiencePage = lazy(() => import("./components/pages/AudiencePage").then((module) => ({ default: module.AudiencePage })));
+const PartnerNetworkPage = lazy(() => import("./pages/PartnerNetworkPage"));
+const PartnerApplicationPage = lazy(() => import("./pages/PartnerApplicationPage"));
 
 const queryClient = new QueryClient();
 
@@ -132,10 +144,10 @@ const simplePages: Record<
 > = {
   "/resources": {
     eyebrow: "Resources",
-    title: "Practical guides for confident Nigerian payments.",
+    title: "Practical guides for sourcing and protected commerce.",
     description:
-      "Learn how to check who you are dealing with, make everyday payments, use trusted payment links, and protect important transactions on Naitrust.",
-    points: ["How Protected Transactions work", "Buyer and seller checklists", "Payment and delivery evidence", "Verification guide"],
+      "Learn how to compare suppliers, understand landed costs, use optional inspection support, and track protected orders to Nigeria.",
+    points: ["How landed-cost quotes work", "Supplier and product checklists", "Inspection and delivery evidence", "Protected order guide"],
   },
 };
 
@@ -240,7 +252,9 @@ function PublicAppContent() {
     location.pathname.startsWith('/pay/') ||
     location.pathname.startsWith('/invite/') ||
     location.pathname.startsWith('/trust/') ||
-    location.pathname.startsWith('/delivery/');
+    location.pathname.startsWith('/delivery/') ||
+    location.pathname === '/partners' ||
+    location.pathname.startsWith('/partners/');
 
   if (isAuthenticated && !location.pathname.startsWith('/app') && !isShareableTransactionRoute) {
     return <Navigate to="/app" replace />;
@@ -253,6 +267,8 @@ function PublicAppContent() {
     location.pathname.startsWith("/trust/") ||
     location.pathname.startsWith("/invite/") ||
     location.pathname.startsWith("/delivery/") ||
+    location.pathname === "/partners" ||
+    location.pathname.startsWith("/partners/") ||
     (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
   const handleNavigate = (page: string) => {
@@ -301,6 +317,14 @@ function PublicAppContent() {
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
+          <Route path="/market" element={<MarketPage />} />
+          <Route path="/market/products/:productId" element={<MarketPage />} />
+          <Route path="/market/suppliers" element={<MarketPage />} />
+          <Route path="/market/suppliers/:supplierId" element={<MarketPage />} />
+          <Route path="/partners" element={<PartnerNetworkPage />} />
+          <Route path="/partners/:kind/apply" element={<PartnerApplicationPage />} />
+          <Route path="/partners/login" element={<PartnerNetworkPage />} />
+          <Route path="/partners/portal" element={<PartnerNetworkPage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
           <Route path="/delivery/:token" element={<DeliveryHandoverPage />} />
           <Route element={<RequireAuth />}>
@@ -319,7 +343,7 @@ function PublicAppContent() {
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<Navigate to="/app/settings?tab=security" replace />} />
             <Route path="/app/rewards" element={<DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/wallet" element={<Navigate to="/app/payments/send" replace />} />
+            <Route path="/app/wallet" element={<DashboardRouteSuspense><CommerceWalletPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
@@ -332,6 +356,25 @@ function PublicAppContent() {
             <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
+            <Route path="/app/market" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
+            <Route path="/app/market/products/:productId" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
+            <Route path="/app/market/suppliers" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
+            <Route path="/app/market/suppliers/:supplierId" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
+            <Route path="/app/cart" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
+            <Route path="/app/source" element={<DashboardRouteSuspense><FindProductPage /></DashboardRouteSuspense>} />
+            <Route path="/app/quotes" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
+            <Route path="/app/orders" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
+            <Route path="/app/orders/:orderId" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
+            <Route path="/app/agents" element={<DashboardRouteSuspense><AgentDirectoryPage /></DashboardRouteSuspense>} />
+            <Route path="/app/agent-assignments" element={<DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense>} />
+            <Route path="/app/agent-assignments/:assignmentId" element={<DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense>} />
+            <Route path="/app/logistics" element={<DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/shipments" element={<DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/production" element={<RequireBusinessAccount><DashboardRouteSuspense><ProductionWorkflowPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/admin/:section?" element={<DashboardRouteSuspense><AdminPortalPage /></DashboardRouteSuspense>} />
+            <Route path="/app/partner-admin" element={<Navigate to="/app/admin/applications" replace />} />
+            <Route path="/app/showcase" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/products" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
           </Route>
           <Route path="/resources" element={<SimpleRoutePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

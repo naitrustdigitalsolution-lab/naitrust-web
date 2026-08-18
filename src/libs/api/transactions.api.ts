@@ -30,8 +30,8 @@ function assertSingleReleasePilot(input: CreateSafeDealInput): void {
   if (input.dealType !== 'single') {
     throw new Error('Milestone tracking and recurring deals are coming soon. Use Single release for this pilot.');
   }
-  if (input.remainingPaymentMinor || input.nextPaymentReleaseConditions || input.extendedProductTestingDays) {
-    throw new Error('Split releases and extended testing periods are not available during the Single release pilot.');
+  if (input.extendedProductTestingDays) {
+    throw new Error('Extended testing periods are not available during the current pilot.');
   }
 }
 

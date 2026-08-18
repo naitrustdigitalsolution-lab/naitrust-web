@@ -119,6 +119,24 @@
         "isPhoneVerified": true,
         "hasTransactionPin": true
       }
+    },
+    {
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_008",
+        "naitrustId": "NT-BIZ-044208",
+        "email": "sade.importer@naitrust.test",
+        "firstName": "Sade",
+        "lastName": "Adebayo",
+        "name": "Sade Adebayo",
+        "role": "business",
+        "phone": "+2348011110008",
+        "kycLevel": 2,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true,
+        "hasTransactionPin": true
+      }
     }
   ]
 }

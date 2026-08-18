@@ -67,16 +67,16 @@ const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
   { value: 'supplier_vendor', label: 'Wholesaler, supplier or distributor' },
   { value: 'marketplace_social_seller', label: 'Online or social seller' },
   { value: 'contractor_service_provider', label: 'Service business or contractor' },
-  { value: 'individual_customer', label: 'Individual buying or paying a business' },
+  { value: 'individual_customer', label: 'Individual sourcing products or services' },
   { value: 'other', label: 'Another kind of Nigerian business' },
 ];
 
 const paymentNeeds = [
-  { slug: 'conversation-payments', title: 'Receive customer transfers from WhatsApp or social conversations' },
-  { slug: 'payment-links-qr', title: 'Share payment links and shop QR codes' },
-  { slug: 'supplier-payments', title: 'Pay suppliers and saved business contacts' },
-  { slug: 'protected-transactions', title: 'Protect an important order or business transaction' },
-  { slug: 'payment-reconciliation', title: 'Confirm and reconcile incoming transfers automatically' },
+  { slug: 'china-products', title: 'Find products and verified suppliers in China' },
+  { slug: 'landed-cost', title: 'Receive a complete landed-cost quote before paying' },
+  { slug: 'protected-orders', title: 'Fund and track a protected supplier order' },
+  { slug: 'sourcing-agents', title: 'Hire sourcing or inspection help in China' },
+  { slug: 'nigeria-selling', title: 'Publish products and fulfil orders in Nigeria' },
 ] as const;
 
 export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
@@ -240,20 +240,20 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           <div className="mb-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             Naitrust early access
           </div>
-          <DialogTitle className="text-xl leading-tight tracking-tight sm:text-3xl">Payments built around trust, not guesswork.</DialogTitle>
+          <DialogTitle className="text-xl leading-tight tracking-tight sm:text-3xl">Build and buy wholesale with better visibility.</DialogTitle>
           <DialogDescription className="text-xs leading-5 sm:text-sm">
-            Join Naitrust to receive customer payments, pay businesses and protect important transactions with verified participants, clear terms and one shared record.
+            Join early access to discover China and Nigeria suppliers, request complete quotes, work with vetted local agents, and follow each order to delivery.
           </DialogDescription>
         </DialogHeader>
 
         <div className="my-4 grid gap-1.5 rounded-xl border border-primary/15 bg-primary/5 p-3 text-xs text-muted-foreground sm:my-6 sm:grid-cols-2 sm:gap-2 sm:rounded-2xl sm:text-sm">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
-            Modern business payments
+            China and Nigeria wholesale
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-primary" />
-            Protected transaction tools
+            Agents, quotes and delivery tracking
           </div>
         </div>
 

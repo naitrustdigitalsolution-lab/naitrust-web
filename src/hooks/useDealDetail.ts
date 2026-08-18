@@ -139,6 +139,21 @@ export function useApproveEarlyRelease(id: string | undefined) {
   });
 }
 
+export function useRequestServiceRelease(id: string | undefined) {
+  const invalidate = useLifecycleInvalidator(id);
+  return useMutation({ mutationFn: () => dealDetailApi.requestServiceRelease(id!), onSuccess: invalidate });
+}
+
+export function useRequestServiceChanges(id: string | undefined) {
+  const invalidate = useLifecycleInvalidator(id);
+  return useMutation({ mutationFn: (reason: string) => dealDetailApi.requestServiceChanges(id!, reason), onSuccess: invalidate });
+}
+
+export function useApproveServiceRelease(id: string | undefined) {
+  const invalidate = useLifecycleInvalidator(id);
+  return useMutation({ mutationFn: () => dealDetailApi.approveServiceRelease(id!), onSuccess: invalidate });
+}
+
 export function useAdvanceTracking(id: string | undefined) {
   const invalidate = useDealDetailInvalidator(id);
   return useMutation({

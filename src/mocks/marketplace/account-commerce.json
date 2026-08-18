@@ -1,0 +1,95 @@
+{
+  "usr_mock_003": {
+    "orders": [
+      {
+        "id": "order_fatima_packaging",
+        "reference": "NTM-8302147",
+        "quoteId": "quote_fatima_packaging",
+        "supplierId": "sup_cn_pack",
+        "deliveryMode": "international",
+        "status": "preparing",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 486500000,
+        "settlementCurrency": "CNY",
+        "settlementAmountMinor": 1680000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 360000000,
+        "logistics": { "paidMinor": 126500000, "committedMinor": 25000000, "refundableMinor": 101500000, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-08-12T09:30:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Quote accepted", "detail": "Your supplier order and service allocation were recorded.", "complete": true, "at": "2026-08-12T09:30:00.000Z" },
+          { "status": "preparing", "label": "Custom cartons in production", "detail": "Artwork is approved and the supplier is preparing the first production batch.", "complete": true, "at": "2026-08-15T07:10:00.000Z" },
+          { "status": "inspection", "label": "Agent quality review", "detail": "A Nigerian sourcing agent in Guangzhou checks print, dimensions and quantity.", "complete": false },
+          { "status": "export_pickup", "label": "Export pickup", "detail": "Approved cartons move to the consolidation warehouse.", "complete": false },
+          { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
+          { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
+          { "status": "local_delivery", "label": "Delivery", "detail": "The cleared shipment moves to the business address.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the order against the accepted quote.", "complete": false },
+          { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      }
+    ]
+  },
+  "usr_mock_007": {
+    "orders": [
+      {
+        "id": "order_aisha_solar",
+        "reference": "NTM-4418206",
+        "quoteId": "quote_aisha_solar",
+        "supplierId": "sup_cn_solar",
+        "deliveryMode": "international",
+        "status": "inspection",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 194800000,
+        "settlementCurrency": "CNY",
+        "settlementAmountMinor": 640000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 144500000,
+        "logistics": { "paidMinor": 50300000, "committedMinor": 18000000, "refundableMinor": 32300000, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-08-10T10:00:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Quote accepted", "detail": "The portable solar-kit order was confirmed.", "complete": true, "at": "2026-08-10T10:00:00.000Z" },
+          { "status": "preparing", "label": "Supplier prepared batch", "detail": "The supplier completed the agreed quantity.", "complete": true, "at": "2026-08-14T06:00:00.000Z" },
+          { "status": "inspection", "label": "Inspection underway", "detail": "A Nigerian agent in Shenzhen is checking output, accessories and cartons.", "complete": true, "at": "2026-08-17T08:20:00.000Z" },
+          { "status": "export_pickup", "label": "Export pickup", "detail": "Pickup begins after buyer review of the inspection evidence.", "complete": false },
+          { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
+          { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
+          { "status": "local_delivery", "label": "Delivery", "detail": "The cleared shipment moves to the delivery address.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the products against the accepted quote.", "complete": false },
+          { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      }
+    ]
+  },
+  "usr_mock_008": {
+    "orders": [
+      {
+        "id": "order_sade_sneakers",
+        "reference": "NTM-9724018",
+        "quoteId": "quote_sade_sneakers",
+        "supplierId": "sup_cn_footwear",
+        "deliveryMode": "international",
+        "status": "preparing",
+        "paymentCurrency": "USD",
+        "paymentAmountMinor": 735000,
+        "settlementCurrency": "CNY",
+        "settlementAmountMinor": 4140000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 930000000,
+        "logistics": { "paidMinor": 246000000, "committedMinor": 32000000, "refundableMinor": 214000000, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-08-11T12:00:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Quote accepted", "detail": "The private-label sneaker order was confirmed.", "complete": true, "at": "2026-08-11T12:00:00.000Z" },
+          { "status": "preparing", "label": "Production underway", "detail": "Size run, colors and branded box specifications are in production.", "complete": true, "at": "2026-08-13T09:00:00.000Z" },
+          { "status": "inspection", "label": "Agent inspection", "detail": "Kelechi Eze will upload size, finishing, branding and quantity evidence.", "complete": false },
+          { "status": "export_pickup", "label": "Export pickup", "detail": "Approved products move to consolidation.", "complete": false },
+          { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
+          { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
+          { "status": "local_delivery", "label": "Delivery", "detail": "The cleared shipment moves to Lagos.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the order against the accepted quote.", "complete": false },
+          { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      }
+    ]
+  }
+}

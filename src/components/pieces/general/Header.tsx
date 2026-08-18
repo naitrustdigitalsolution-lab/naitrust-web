@@ -60,8 +60,9 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
   // Nav items for unauthenticated users (public pages)
   const publicNavItems = [
     { label: 'Home', page: 'home' },
-    { label: 'Personal', page: 'customer' },
-    { label: 'Business', page: 'business' },
+    { label: 'Market', page: '/market' },
+    { label: 'For Buyers', page: 'customer' },
+    { label: 'For Sellers', page: 'business' },
     { label: 'About', page: 'about' },
     { label: 'Contact', page: 'contact' },
   ];
@@ -89,10 +90,10 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
           <button
             type="button"
             onClick={openWaitlistModal}
-            className="hidden w-full min-h-14 bg-[#c4e9fdb3] px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition hover:bg-primary/15 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
+            className="hidden w-full min-h-14 bg-primary/15 hover:bg-[#c4e9fdb3] px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
           >
             <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-              <span className='text-sm text-black dark:text-white md:text-base'>Built for everyday Nigerian business payments.</span>
+              <span className='text-sm text-black dark:text-white md:text-base'>Find verified suppliers in China and receive your order in Nigeria.</span>
               <span className="inline-flex items-center gap-1 text-primary text-xs sm:text-sm md:text-lg font-semibold">
                 Join the waiting list
                 <ArrowRight size={15} />

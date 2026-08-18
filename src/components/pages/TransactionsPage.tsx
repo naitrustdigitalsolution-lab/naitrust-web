@@ -1,14 +1,14 @@
 /**
  * TransactionsPage
- * `/app/transactions`: unified history across Instant Payments, Protected
- * Deals and wallet funding/withdrawal/fees, with filters and a detail view.
+ * `/app/transactions`: unified account history across order payments,
+ * protected releases, wallet funding, refunds, earnings and withdrawals.
  * Aggregates existing sources only (see useTransactionHistory): introduces
  * no new transaction data of its own.
  */
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowDownLeft, ArrowUpRight, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ChevronLeft, ChevronRight, Receipt, Search, SlidersHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
@@ -32,6 +32,7 @@ const TYPE_OPTIONS: TransactionType[] = [
   'incoming_transfer',
   'bill_payment',
   'wallet_funding',
+  'currency_exchange',
   'withdrawal',
   'protected_funding',
   'milestone_release',
@@ -54,6 +55,8 @@ export function TransactionsPage() {
   const [type, setType] = useState<'all' | TransactionType>('all');
   const [selected, setSelected] = useState<TransactionRecord | null>(null);
   const [page, setPage] = useState(1);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const filtered = useMemo(() => {
     return records.filter((r) => {
@@ -81,42 +84,52 @@ export function TransactionsPage() {
   return (
     <DashboardLayout title="Transactions">
       <div className="mx-auto w-full max-w-9xl">
-        <PageHero
-          eyebrow="Money"
-          title="Money activity"
+        <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-primary">Wallet and orders</p>
+            <h1 className="mt-0.5 text-lg font-bold tracking-tight">Account activity</h1>
+          </div>
+          <div className="flex gap-1">
+            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" aria-label="Search account activity" onClick={() => setShowMobileSearch((value) => !value)}><Search size={14} /></Button>
+            <Button variant={method !== 'all' || type !== 'all' ? 'default' : 'outline'} size="icon" className="h-8 w-8 rounded-full" aria-label="Filter account activity" onClick={() => setShowMobileFilters((value) => !value)}><SlidersHorizontal size={14} /></Button>
+          </div>
+        </div>
+        <div className="hidden sm:block"><PageHero
+          eyebrow="Wallet and orders"
+          title="Account activity"
           description={isCustomer
-            ? 'Every payment you make or receive, including business payments and Protected Deals, in one place.'
-            : 'Every payment received or sent, Protected Deal, and business account movement in one place.'}
+            ? 'Track order funding, refunds, earnings and withdrawals from your Naira balance.'
+            : 'Track order funding, supplier releases, customer earnings, refunds and withdrawals in one place.'}
           icon={Receipt}
-        />
+        /></div>
 
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className={`${showMobileSearch || showMobileFilters ? 'flex' : 'hidden'} mb-4 flex-col gap-3 sm:flex sm:flex-row sm:items-center`}>
           <Input
-            placeholder="Search by person, business, or reference"
+            placeholder="Search supplier, order, or reference"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="sm:max-w-xs"
+            className={`${showMobileSearch ? 'block' : 'hidden'} h-11 rounded-xl sm:block sm:h-10 sm:max-w-xs`}
           />
-          <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
+          <div className={`${showMobileFilters ? 'block' : 'hidden'} sm:block`}><Select value={type} onValueChange={(v) => setType(v as typeof type)}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Transaction type" />
+              <SelectValue placeholder="Activity type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All types</SelectItem>
+              <SelectItem value="all">All activity types</SelectItem>
               {TYPE_OPTIONS.map((t) => (
                 <SelectItem key={t} value={t}>
                   {TRANSACTION_TYPE_LABEL[t]}
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select></div>
         </div>
 
-        <Tabs value={method} onValueChange={(v) => setMethod(v as typeof method)} className="mb-4">
-          <TabsList>
+        <Tabs value={method} onValueChange={(v) => setMethod(v as typeof method)} className={`${showMobileFilters ? 'block' : 'hidden'} mb-4 sm:block`}>
+          <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="all">All activity</TabsTrigger>
-            <TabsTrigger value="instant">Payments</TabsTrigger>
-            <TabsTrigger value="protected">Protected Deals</TabsTrigger>
+            <TabsTrigger value="instant">Wallet</TabsTrigger>
+            <TabsTrigger value="protected">Protected orders</TabsTrigger>
           </TabsList>
         </Tabs>
 
@@ -132,50 +145,58 @@ export function TransactionsPage() {
               <Receipt size={22} />
             </div>
             <p className="font-semibold text-foreground">
-              No money activity matches this filter
+              No account activity matches this filter
             </p>
           </Card>
         ) : (
           <>
-          <Card className="gap-0 overflow-hidden p-0 shadow-sm">
-            {paged.map((r) => (
+          <Card className="gap-0 overflow-hidden rounded-none border-x-0 p-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm">
+            {paged.map((r, index) => {
+              const dayLabel = format(new Date(r.createdAt), 'd MMM yyyy');
+              const previousDayLabel = index > 0 ? format(new Date(paged[index - 1].createdAt), 'd MMM yyyy') : null;
+              return (
+              <div key={r.id} className="sm:contents">
+              {dayLabel !== previousDayLabel && <p className="border-b bg-muted/35 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:hidden">{dayLabel}</p>}
               <button
-                key={r.id}
                 type="button"
                 onClick={() => setSelected(r)}
-                className="flex w-full items-center gap-3 border-b px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-accent/40 sm:py-5"
+                className="flex w-full items-center gap-4 border-b px-3 py-4 text-left transition-colors hover:bg-accent/40 sm:gap-3 sm:px-5 sm:py-4"
               >
-                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isCredit(r) ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-9 sm:w-9 sm:rounded-lg ${isCredit(r) ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
                   {isCredit(r) ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">{r.counterpartyName}</p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="truncate text-sm font-semibold text-foreground">{r.counterpartyName}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground sm:hidden">
+                    {TRANSACTION_TYPE_LABEL[r.type]} · {format(new Date(r.createdAt), 'HH:mm')}
+                  </p>
+                  <p className="hidden truncate text-xs text-muted-foreground sm:block">
                     {TRANSACTION_TYPE_LABEL[r.type]} · {format(new Date(r.createdAt), 'd MMM yyyy, HH:mm')}
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className={`text-sm font-semibold ${isCredit(r) ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
+                <div className="shrink-0 text-right">
+                  <p className={`text-xs font-semibold sm:text-sm ${isCredit(r) ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
                     {isCredit(r) ? '+' : '-'}
                     {formatMinorAmount(r.amountMinor, r.currency)}
                   </p>
-                  <Badge variant={r.method === 'protected' ? 'default' : 'outline'} className="mt-1 text-[10px]">
+                  <Badge variant={r.method === 'protected' ? 'default' : 'outline'} className="mt-1 px-2 py-0.5 text-[10px] leading-4">
                     {r.statusLabel}
                   </Badge>
                 </div>
               </button>
-            ))}
+              </div>
+            );})}
           </Card>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-[10px] text-muted-foreground sm:text-sm">
               Showing {(current - 1) * PAGE_SIZE + 1}–{Math.min(current * PAGE_SIZE, total)} of {total} · Page {current} of {pageCount}
             </span>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="rounded-full" disabled={current <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>
-                <ChevronLeft size={15} /> Previous
+                <ChevronLeft size={15} /> <span className="hidden sm:inline">Previous</span>
               </Button>
               <Button variant="outline" size="sm" className="rounded-full" disabled={current >= pageCount} onClick={() => setPage((value) => Math.min(pageCount, value + 1))}>
-                Next <ChevronRight size={15} />
+                <span className="hidden sm:inline">Next</span> <ChevronRight size={15} />
               </Button>
             </div>
           </div>
@@ -209,8 +230,8 @@ export function TransactionsPage() {
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Payment method</span>
-                <span className="font-medium capitalize text-foreground">{selected.method}</span>
+                <span className="text-muted-foreground">Activity group</span>
+                <span className="font-medium text-foreground">{selected.method === 'protected' ? 'Protected order' : 'Wallet'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Status</span>
@@ -233,7 +254,7 @@ export function TransactionsPage() {
                   className="w-full rounded-full"
                   onClick={() => navigate(`/app/deals/${selected.relatedDealId}`)}
                 >
-                  View Protected Deal
+                  View order details
                 </Button>
               )}
             </div>

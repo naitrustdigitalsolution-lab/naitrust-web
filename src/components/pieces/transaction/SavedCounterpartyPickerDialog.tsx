@@ -26,6 +26,8 @@ interface SavedCounterpartyPickerDialogProps {
   directoryMode?: boolean;
   showPaymentTarget?: boolean;
   disabled?: boolean;
+  triggerClassName?: string;
+  triggerLabel?: string;
 }
 
 type RelationshipFilter = 'all' | CreateCounterpartyInput['relation'];
@@ -42,6 +44,8 @@ export function SavedCounterpartyPickerDialog({
   directoryMode = false,
   showPaymentTarget = false,
   disabled = false,
+  triggerClassName = '',
+  triggerLabel,
 }: SavedCounterpartyPickerDialogProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -81,7 +85,13 @@ export function SavedCounterpartyPickerDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [counterparties, normalizedSelectedIdentifiers, selectedIds],
   );
-  const displayedContacts = directoryMode && !search.trim() ? selectedContacts : availableContacts;
+  const chosenContacts = useMemo(
+    () => counterparties.filter((counterparty) => isSelected(counterparty) || pendingIds.includes(counterparty.id)),
+    // Include allocation choices that have not been committed to the parent form yet.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [counterparties, normalizedSelectedIdentifiers, pendingIds, selectedIds],
+  );
+  const displayedContacts = directoryMode && !search.trim() ? chosenContacts : availableContacts;
 
   const selectContact = (counterparty: CounterpartyProfile) => {
     if (showPaymentTarget && !isSelected(counterparty)) {
@@ -145,14 +155,14 @@ export function SavedCounterpartyPickerDialog({
   return (
     <Sheet open={open} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className="h-8 rounded-full" disabled={disabled}>
-          {directoryMode ? <Search size={14} /> : <UsersRound size={14} />} {directoryMode ? 'Find on Naitrust' : 'Choose saved contact'}
+        <Button type="button" variant="outline" size="sm" className={`h-8 rounded-full ${triggerClassName}`} disabled={disabled}>
+          {directoryMode ? <Search size={14} /> : <UsersRound size={14} />} {triggerLabel ?? (directoryMode ? 'Find on Naitrust' : 'Choose saved contact')}
         </Button>
       </SheetTrigger>
       <SheetContent className="w-[94vw] gap-0 overflow-hidden p-0 sm:max-w-xl lg:max-w-2xl">
         <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
           <SheetTitle>{directoryMode ? 'Find on Naitrust' : 'Choose a saved contact'}</SheetTitle>
-          <SheetDescription>{directoryMode ? 'Quickly search verified Naitrust accounts and add the right person or business directly to this deal.' : 'Search saved beneficiaries and businesses, then add one to this deal.'}</SheetDescription>
+          <SheetDescription>{directoryMode ? 'Search verified Naitrust accounts and add a recipient.' : 'Search saved recipients and add one to this deal.'}</SheetDescription>
         </SheetHeader>
 
         <div className={`grid gap-3 px-5 pt-4 sm:px-6 ${directoryMode ? 'grid-cols-1' : 'sm:grid-cols-[minmax(0,1fr)_190px]'}`}>
@@ -178,8 +188,8 @@ export function SavedCounterpartyPickerDialog({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 pt-3 sm:px-6">
-          {directoryMode && !search.trim() && selectedContacts.length > 0 && (
-            <p className="mb-2 text-xs font-semibold text-muted-foreground">{selectedContacts.length} selected</p>
+          {directoryMode && !search.trim() && chosenContacts.length > 0 && (
+            <p className="mb-2 text-xs font-semibold text-muted-foreground">{chosenContacts.length} selected</p>
           )}
           {isLoading ? (
             <div className="space-y-2">
@@ -222,21 +232,21 @@ export function SavedCounterpartyPickerDialog({
           )}
         </div>
         <div className="mt-auto border-t bg-background px-5 py-4 sm:px-6">
-          {selectedContacts.length > 0 && (!directoryMode || Boolean(search.trim())) && (
+          {chosenContacts.length > 0 && (
             <div className="mb-3 overflow-hidden rounded-2xl border border-sky-200/80 bg-[#eaf7ff] text-[#071b31] shadow-sm dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-foreground">
               <div className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex shrink-0 -space-x-2">
-                    {selectedContacts.slice(0, 4).map((contact) => (
+                    {chosenContacts.slice(0, 4).map((contact) => (
                       <span key={contact.id} className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#eaf7ff] bg-white text-[10px] font-bold text-[#071b31] shadow-sm dark:border-[#10243a]">
                         {(contact.businessName ?? contact.name).split(' ').slice(0, 2).map((word) => word[0]).join('')}
                       </span>
                     ))}
-                    {selectedContacts.length > 4 && <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#eaf7ff] bg-sky-100 text-[10px] font-bold text-[#071b31] dark:border-[#10243a] dark:bg-sky-400/20 dark:text-foreground">+{selectedContacts.length - 4}</span>}
+                    {chosenContacts.length > 4 && <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#eaf7ff] bg-sky-100 text-[10px] font-bold text-[#071b31] dark:border-[#10243a] dark:bg-sky-400/20 dark:text-foreground">+{chosenContacts.length - 4}</span>}
                   </div>
                   <div className="min-w-0">
-                    <p className="flex items-center gap-1.5 text-xs font-semibold"><Check size={13} className="text-emerald-400" /> {selectedContacts.length} selected</p>
-                    <p className="mt-0.5 truncate text-[11px] text-[#527086] dark:text-muted-foreground">{selectedContacts.map((contact) => contact.businessName ?? contact.name).join(', ')}</p>
+                    <p className="flex items-center gap-1.5 text-xs font-semibold"><Check size={13} className="text-emerald-400" /> {chosenContacts.length} selected</p>
+                    <p className="mt-0.5 truncate text-[11px] text-[#527086] dark:text-muted-foreground">{chosenContacts.map((contact) => contact.businessName ?? contact.name).join(', ')}</p>
                   </div>
                 </div>
                 <span className="shrink-0 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">Ready</span>
@@ -244,7 +254,7 @@ export function SavedCounterpartyPickerDialog({
             </div>
           )}
           <Button type="button" className="w-full rounded-full" onClick={finishSelecting}>
-            Done selecting{selectedProfileIds.length > 0 ? ` (${selectedProfileIds.length})` : ''}
+            Done selecting{chosenContacts.length > 0 ? ` (${chosenContacts.length})` : ''}
           </Button>
         </div>
       </SheetContent>

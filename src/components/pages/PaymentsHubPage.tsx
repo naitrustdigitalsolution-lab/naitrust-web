@@ -43,17 +43,17 @@ export function PaymentsHubPage() {
   return (
     <DashboardLayout title="Payments">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-7 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-6 shadow-sm sm:px-7 lg:px-9 lg:py-8">
+        <div className="mb-5 sm:mb-7 sm:overflow-hidden sm:rounded-3xl sm:border sm:border-primary/15 sm:bg-gradient-to-br sm:from-primary/[0.09] sm:via-background sm:to-background sm:px-7 sm:py-6 sm:shadow-sm lg:px-9 lg:py-8">
           <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">
+            <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15 sm:flex">
               <Send size={21} />
             </span>
             <div>
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary">
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary sm:block">
                 {isBusiness ? 'Your business payments' : 'Your payments'}
               </p>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Move money the way the moment requires.</h1>
-              <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+              <h1 className="hidden text-2xl font-bold tracking-tight text-foreground sm:block sm:text-3xl">Move money the way the moment requires.</h1>
+              <p className="mt-1.5 hidden max-w-2xl text-sm leading-6 text-muted-foreground sm:block">
                 {isBusiness
                   ? 'Receive sales, pay regular suppliers instantly, or protect an important order when the relationship or delivery is still new.'
                   : 'Send money to people and businesses you trust, receive money from anyone, or protect an important purchase when the seller is still new to you.'}
@@ -68,15 +68,15 @@ export function PaymentsHubPage() {
             tabIndex={0}
             onClick={() => navigate('/app/payments/send')}
             onKeyDown={(e) => e.key === 'Enter' && navigate('/app/payments/send')}
-            className="group cursor-pointer gap-3 rounded-3xl p-7 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
+            className="group cursor-pointer gap-2 rounded-2xl p-4 shadow-sm transition-all hover:border-primary/40 sm:gap-3 sm:rounded-3xl sm:p-7 sm:hover:-translate-y-1 sm:hover:shadow-xl"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary sm:flex">
               <Send size={20} />
             </div>
-            <p className="text-xl font-semibold text-foreground">
+            <p className="text-base font-semibold text-foreground sm:text-xl">
               {isBusiness ? 'Pay a trusted supplier' : 'Pay someone you trust'}
             </p>
-            <p className="text-sm leading-6 text-muted-foreground">
+            <p className="hidden text-sm leading-6 text-muted-foreground sm:block">
               Send instantly when you already know the person or business and do not need delivery conditions.
             </p>
             <span className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary">
@@ -89,15 +89,15 @@ export function PaymentsHubPage() {
             tabIndex={0}
             onClick={() => navigate('/app/deals/new')}
             onKeyDown={(e) => e.key === 'Enter' && navigate('/app/deals/new')}
-            className="group cursor-pointer gap-3 rounded-3xl border-emerald-500/20 p-7 shadow-sm transition-all hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl"
+            className="group cursor-pointer gap-2 rounded-2xl border-emerald-500/20 p-4 shadow-sm transition-all hover:border-emerald-500/50 sm:gap-3 sm:rounded-3xl sm:p-7 sm:hover:-translate-y-1 sm:hover:shadow-xl"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 sm:flex">
               <ShieldCheck size={20} />
             </div>
-            <p className="text-xl font-semibold text-foreground">
+            <p className="text-base font-semibold text-foreground sm:text-xl">
               {isBusiness ? 'Protect an important order' : 'Protect an important purchase'}
             </p>
-            <p className="text-sm leading-6 text-muted-foreground">
+            <p className="hidden text-sm leading-6 text-muted-foreground sm:block">
               {isBusiness
                 ? 'Record the order, supplier, terms, evidence, and payment when delivery needs to be confirmed.'
                 : 'Record the order, seller, terms, evidence, and payment when delivery needs to be confirmed.'}
@@ -114,7 +114,7 @@ export function PaymentsHubPage() {
               key={link.path}
               variant="outline"
               className="h-auto flex-col gap-2 rounded-xl py-4"
-              onClick={() => navigate(link.path)}
+              onClick={() => navigate(link.path, link.path === '/app/bills' ? { state: { fromPayments: true } } : undefined)}
             >
               <link.icon size={18} />
               <span className="text-xs font-medium">{link.label}</span>
@@ -134,7 +134,7 @@ export function PaymentsHubPage() {
               No instant transfers yet. Pay a trusted supplier or business contact when you are ready.
             </Card>
           ) : (
-            <Card className="gap-0 overflow-hidden p-0 shadow-sm">
+            <Card className="gap-0 overflow-hidden rounded-none border-x-0 p-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm">
               {recent.map((t) => (
                 <div key={t.id} className="flex items-center gap-3 border-b px-4 py-3 last:border-b-0">
                   <CounterpartyAvatar name={t.recipient.resolvedName ?? t.recipient.identifier} />

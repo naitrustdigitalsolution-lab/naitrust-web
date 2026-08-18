@@ -11,6 +11,27 @@
       "billsMinor": 0,
       "currency": "NGN"
     },
+    "currencyAccounts": [
+      {
+        "currency": "NGN",
+        "availableMinor": 884250000,
+        "fundingAccount": {
+          "bankName": "Anchor Bank",
+          "accountNumber": "7012345678",
+          "accountName": "Naitrust / Emeka Trade & Logistics"
+        }
+      },
+      {
+        "currency": "USD",
+        "availableMinor": 245000,
+        "fundingAccount": {
+          "bankName": "Naitrust USD collection partner",
+          "accountNumber": "•••• 1048",
+          "accountName": "Emeka Trade & Logistics",
+          "swiftCode": "Available after verification"
+        }
+      }
+    ],
     "totalInflowMinor": 1312400000,
     "totalOutflowMinor": 428150000,
     "accountLimitMinor": 500000000,

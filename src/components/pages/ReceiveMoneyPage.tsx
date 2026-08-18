@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import { toPng } from 'html-to-image';
@@ -20,6 +20,8 @@ import {
   Loader2,
   ArrowRight,
   BadgeCheck,
+  ChevronDown,
+  Eye,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -38,6 +40,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Skeleton } from '../ui/skeleton';
 import { useCreateTrustCheckout } from '../../hooks/useTrustCheckouts';
 import type { TrustCheckout, TrustCheckoutCategory } from '../../libs/store/types';
+import { LIGHT_PROTECTION_MAX_AMOUNT_MINOR } from '../../libs/protected-deals/create-deal-options';
 
 function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -60,6 +63,7 @@ export function ReceiveMoneyPage() {
   const [checkoutCategory, setCheckoutCategory] = useState<TrustCheckoutCategory>('product');
   const [amountMode, setAmountMode] = useState<'fixed' | 'customer'>('fixed');
   const [createdCheckout, setCreatedCheckout] = useState<TrustCheckout | null>(null);
+  const [showRequestOptions, setShowRequestOptions] = useState(false);
   const createTrustCheckout = useCreateTrustCheckout();
   const isBusiness = accountTypeOf(user) !== 'customer';
   const accountContentLoading = isWalletLoading || (isBusiness && isBusinessLoading);
@@ -81,7 +85,7 @@ export function ReceiveMoneyPage() {
     const origin = typeof window === 'undefined' ? '' : window.location.origin;
     const slug = business?.slug || slugify(business?.name || user?.name || 'business');
     return createdCheckout
-      ? `${origin}/pay/${slug}?request=${encodeURIComponent(createdCheckout.publicId)}`
+      ? `${origin}/pay/${slug}?request=${encodeURIComponent(createdCheckout.publicId)}&source=qr`
       : `${origin}/pay/${slug}`;
   }, [business?.name, business?.slug, createdCheckout, user?.name]);
 
@@ -133,6 +137,41 @@ export function ReceiveMoneyPage() {
       toast.error(error instanceof Error ? error.message : 'Could not create the Trust Checkout.');
     }
   };
+
+  const ensureSmartQr = async () => {
+    if (createdCheckout || createTrustCheckout.isPending || !business) return;
+    try {
+      const response = await createTrustCheckout.mutateAsync({
+        businessId: business.id,
+        businessSlug: business.slug || slugify(business.name),
+        recipientName: business.name,
+        recipientType: 'business',
+        recipientNtId: business.ntId,
+        businessCategory: business.category,
+        phone: business.phone,
+        supportEmail: business.email,
+        account: business.paymentAccount ?? { bankName: 'Anchor MFB', accountNumber: '7012345678', accountName: business.name },
+        verification: { identityVerified: Boolean(business.identityVerifiedAt || business.verified), businessVerified: Boolean(business.businessVerifiedAt || business.verified), ownershipVerified: Boolean(business.ownershipVerifiedAt || business.verified), verifiedAt: business.businessVerifiedAt || business.identityVerifiedAt, expiresAt: business.verificationExpiresAt },
+        requestedFromName: 'Walk-in customer',
+        category: 'custom',
+        title: 'Customer payment',
+        purpose: 'Customer payment',
+        customerEntersAmount: true,
+        currency: 'NGN',
+        paymentMode: 'direct',
+        expiresInMinutes: 1440,
+        evidenceRequirements: [],
+        milestones: [],
+      });
+      setCreatedCheckout(response.data);
+    } catch { toast.error('Could not create the secure payment QR.'); }
+  };
+
+  useEffect(() => {
+    if (activeMethod === 'qr' && business && !createdCheckout) void ensureSmartQr();
+    // The QR is created once per mounted receive screen.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeMethod, business?.id, createdCheckout]);
 
   const copy = async (value: string, key: string) => {
     try {
@@ -237,19 +276,19 @@ export function ReceiveMoneyPage() {
   return (
     <DashboardLayout title="Receive Money">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-5 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-r from-primary/[0.09] via-background to-background px-5 py-5 shadow-sm sm:px-7">
+        <div className="mb-5 sm:overflow-hidden sm:rounded-3xl sm:border sm:border-primary/15 sm:bg-gradient-to-r sm:from-primary/[0.09] sm:via-background sm:to-background sm:px-7 sm:py-5 sm:shadow-sm">
           <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">
+            <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15 sm:flex">
               <ArrowDownToLine size={21} />
             </span>
             <div>
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary">
+              <p className="mb-1.5 hidden text-xs font-bold uppercase tracking-[0.15em] text-primary sm:block">
                 {isBusiness ? 'Your business payments' : 'Receive money'}
               </p>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {isBusiness ? 'Get paid your way' : 'Receive Money'}
+              <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-3xl">
+                {isBusiness ? <><span className="sm:hidden">Your business payments</span><span className="hidden sm:inline">Get paid your way</span></> : 'Receive Money'}
               </h1>
-              <p className="mt-1.5 max-w-xl text-sm leading-6 text-muted-foreground">
+              <p className="mt-1.5 hidden max-w-xl text-sm leading-6 text-muted-foreground sm:block">
                 {isBusiness
                   ? 'Share your account number, payment link or QR code with any customer.'
                   : 'Use your personal account number to receive money from any Nigerian bank.'}
@@ -271,8 +310,8 @@ export function ReceiveMoneyPage() {
               { id: 'account' as const, icon: Landmark, title: 'Account' },
               { id: 'request' as const, icon: Link2, title: 'Request' },
               { id: 'qr' as const, icon: QrCode, title: 'QR code' },
-            ].map((method) => <button key={method.id} type="button" aria-pressed={activeMethod === method.id} onClick={() => setActiveMethod(method.id)} className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all sm:min-w-32 sm:text-sm ${activeMethod === method.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
-              <method.icon size={15} /><span className="truncate">{method.title}</span>
+            ].map((method) => <button key={method.id} type="button" aria-pressed={activeMethod === method.id} onClick={() => { setActiveMethod(method.id); if (method.id === 'qr') void ensureSmartQr(); }} className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all sm:min-w-32 sm:text-sm ${activeMethod === method.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+              <method.icon size={15} className="hidden sm:block" /><span className="truncate">{method.title}</span>
             </button>)}
             </div>
           </div>
@@ -281,8 +320,8 @@ export function ReceiveMoneyPage() {
           <div className={`${activeMethod !== 'account' ? 'hidden' : ''} grid gap-5 md:grid-cols-[1.2fr_.8fr]`}>
             <Card className="overflow-hidden border-primary/15 shadow-sm">
               <div className="bg-primary p-6 text-white dark:bg-[#04162f]">
-                <p className="flex items-center gap-2 text-sm font-medium text-white/70">
-                  <Landmark size={16} /> Business Naitrust account
+                <p className="text-sm font-medium text-white/70">
+                  Business Naitrust account
                 </p>
                 <p className="mt-5 font-mono text-2xl font-bold tracking-[0.12em]">
                   {account?.accountNumber ?? 'Account setup pending'}
@@ -310,8 +349,8 @@ export function ReceiveMoneyPage() {
               </div>
             </Card>
 
-            <Card className="flex flex-col justify-center gap-3 p-6 shadow-sm">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Card className="flex flex-col justify-center gap-3 p-4 shadow-sm sm:p-6">
+              <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary sm:flex">
                 <AtSign size={18} />
               </div>
               <div>
@@ -335,19 +374,19 @@ export function ReceiveMoneyPage() {
             </Card>
           </div>
 
-          <Card className={`${activeMethod !== 'request' ? 'hidden' : ''} overflow-hidden rounded-3xl border-primary/15 shadow-sm`}>
-            <div className="p-5 sm:p-7 lg:p-8">
+          <Card className={`${activeMethod !== 'request' ? 'hidden' : ''} overflow-hidden rounded-none border-x-0 border-primary/15 shadow-none sm:rounded-3xl sm:border-x sm:shadow-sm`}>
+            <div className="px-0 py-4 sm:p-7 lg:p-8">
               <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e9f8f0] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400">
+                <span className="hidden h-10 w-10 items-center justify-center rounded-xl bg-[#e9f8f0] text-[#087a4b] dark:bg-emerald-500/10 dark:text-emerald-400 sm:flex">
                   <Link2 size={19} />
                 </span>
                 <div>
-                  <p className="font-semibold">Request a payment</p>
-                  <p className="text-xs text-muted-foreground">Set the payment details, then share the link.</p>
+                  <p className="font-semibold">Request payment</p>
+                  <p className="hidden text-xs text-muted-foreground sm:block">Set the payment details, then share the link. This is a payment request, not a Protected Deal — there's no held payment, evidence, or dispute review.</p>
                 </div>
                 </div>
-                <div className="flex flex-wrap gap-2"><Button variant="ghost" size="sm" className="rounded-full" onClick={() => window.open(`/trust/${business?.slug || slugify(business?.name || '')}`, '_blank', 'noopener,noreferrer')}><BadgeCheck size={15} /> Trust Profile</Button><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={15} /> Protected Deal</Button></div>
+                <div className="hidden flex-wrap gap-2 sm:flex"><Button variant="ghost" size="sm" className="rounded-full" onClick={() => window.open(`/trust/${business?.slug || slugify(business?.name || '')}`, '_blank', 'noopener,noreferrer')}><BadgeCheck size={15} /> Trust Profile</Button><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={15} /> Protected Deal</Button></div>
               </div>
               <div className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
@@ -366,7 +405,7 @@ export function ReceiveMoneyPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className={`${showRequestOptions ? 'block' : 'hidden'} sm:block`}>
                   <Label htmlFor="checkout-category">Transaction type</Label>
                   <Select value={checkoutCategory} onValueChange={(value) => setCheckoutCategory(value as TrustCheckoutCategory)}>
                     <SelectTrigger id="checkout-category" className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
@@ -378,7 +417,7 @@ export function ReceiveMoneyPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className={`${showRequestOptions ? 'block' : 'hidden'} sm:block`}>
                   <Label htmlFor="payment-expiry">Request expires after</Label>
                   <Select value={linkExpiryMinutes} onValueChange={setLinkExpiryMinutes}>
                     <SelectTrigger id="payment-expiry" className="mt-1.5 w-full">
@@ -410,12 +449,31 @@ export function ReceiveMoneyPage() {
                   </Select>
                 </div>
                 {amountMode === 'fixed' && <div><Label htmlFor="whatsapp-amount">Amount (NGN)</Label><Input id="whatsapp-amount" type="number" min={1} value={linkAmount} onChange={(event) => setLinkAmount(event.target.value)} placeholder="0.00" className="mt-1.5" /></div>}
+                <button type="button" onClick={() => setShowRequestOptions((value) => !value)} className="inline-flex items-center gap-1 text-xs font-semibold text-primary sm:hidden">More options <ChevronDown size={14} className={`transition-transform ${showRequestOptions ? 'rotate-180' : ''}`} /></button>
                 <div className="sm:col-span-2 lg:col-span-3">
                   <Label htmlFor="whatsapp-reason">Payment details <span className="font-normal text-muted-foreground">(optional)</span></Label>
-                  <Textarea id="whatsapp-reason" value={linkReason} onChange={(event) => setLinkReason(event.target.value)} placeholder="Describe what this payment is for, invoice details, quantity, or any note the payer should see." className="mt-1.5 min-h-24 resize-y" />
+                  <Textarea id="whatsapp-reason" value={linkReason} onChange={(event) => setLinkReason(event.target.value)} placeholder="Add a short note" className="mt-1.5 min-h-20 resize-y sm:min-h-24" />
                 </div>
               </div>
-              <div className="mt-6 flex justify-end border-t pt-5"><Button className="h-11 w-full rounded-md px-7 sm:w-auto" disabled={createTrustCheckout.isPending} onClick={() => void createCheckout()}>{createTrustCheckout.isPending ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}{createdCheckout ? 'Create another payment link' : 'Create payment link'} <ArrowRight size={15} /></Button></div>
+              {amountMode === 'fixed' && Math.round(Number(linkAmount) * 100) > LIGHT_PROTECTION_MAX_AMOUNT_MINOR && (
+                <div className="mt-5 flex items-start gap-3 rounded-xl border border-primary/25 bg-primary/5 p-4">
+                  <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-foreground">This amount may be better suited to a Protected Deal</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">A payment link only requests money — it doesn't hold the payment, collect evidence, or support a dispute review. For amounts above ₦50,000, a Protected Deal gives your customer that protection.</p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="mt-3 rounded-full bg-background"
+                      onClick={() => navigate(`/app/deals/new?amount=${encodeURIComponent(linkAmount)}${paymentCustomerName ? `&name=${encodeURIComponent(paymentCustomerName)}` : ''}`)}
+                    >
+                      <ShieldCheck size={14} /> Start a Protected Deal instead
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <div className="mt-5 flex justify-end border-t pt-4 sm:mt-6 sm:pt-5"><Button className="h-10 w-full rounded-full px-7 text-xs sm:h-11 sm:w-auto sm:rounded-md sm:text-sm" disabled={createTrustCheckout.isPending} onClick={() => void createCheckout()}>{createTrustCheckout.isPending ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}{createdCheckout ? 'Create another link' : 'Create payment link'} <ArrowRight size={15} /></Button></div>
               {createdCheckout && <div className="mt-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.045] p-4 sm:p-5">
                 <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700"><Check size={15} /></span><div><p className="text-sm font-semibold">Payment link ready</p><p className="text-xs text-muted-foreground">Share it with your customer to collect this payment.</p></div></div>
                 <div className="mt-4 flex items-center gap-2 rounded-xl border bg-background p-2"><p className="min-w-0 flex-1 truncate px-2 text-xs text-muted-foreground">{paymentLink}</p><Button size="sm" variant="ghost" className="shrink-0 rounded-lg" onClick={() => void copy(paymentLink, 'link')}>{copied === 'link' ? <Check size={14} /> : <Copy size={14} />} {copied === 'link' ? 'Copied' : 'Copy'}</Button></div>
@@ -431,30 +489,24 @@ export function ReceiveMoneyPage() {
           </Card>
           </div>
 
-          <Card className={`${activeMethod !== 'qr' ? 'hidden' : ''} w-full overflow-hidden rounded-3xl p-0 shadow-sm`}>
+          <Card className={`${activeMethod !== 'qr' ? 'hidden' : ''} w-full overflow-hidden rounded-2xl p-0 shadow-sm`}>
             <div className="grid items-center lg:grid-cols-[minmax(0,1fr)_auto]">
-              <div className="p-5 sm:p-7">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><QrCode size={20} /></span>
-                  <div>
-                    <p className="font-semibold">Customer payment QR</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">For your counter, stall, invoice, or checkout.</p>
-                  </div>
+              <div className="order-2 p-4 sm:p-6 lg:order-1 lg:p-7">
+                <div>
+                  <p className="text-base font-semibold">Customer payment QR</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground sm:text-sm">Customers scan to pay {business?.name} on its verified payment page.</p>
                 </div>
-                <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
-                  Customers scan this code to open the verified payment page for {business?.name}. Download it for print or share it digitally.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <Button variant="outline" onClick={() => void copyQrImage()}><Copy size={15} /> Copy QR code</Button>
-                  <Button variant="outline" onClick={() => void shareQrPoster()}><Share2 size={15} /> Share</Button>
-                  <Button variant="outline" onClick={() => window.open(paymentLink, '_blank', 'noopener,noreferrer')}>Preview</Button>
-                  <Button onClick={() => void downloadQrPoster()}><Download size={15} /> Download QR</Button>
+                <div className="mt-4 grid grid-cols-4 divide-x overflow-hidden rounded-xl border bg-background">
+                  <button disabled={!createdCheckout} type="button" className="flex h-12 flex-col items-center justify-center gap-0.5 text-[10px] font-medium hover:bg-muted/50 disabled:opacity-40 sm:h-11 sm:flex-row sm:gap-1.5 sm:text-xs" onClick={() => void copyQrImage()}><Copy size={15} />Copy</button>
+                  <button disabled={!createdCheckout} type="button" className="flex h-12 flex-col items-center justify-center gap-0.5 text-[10px] font-medium hover:bg-muted/50 disabled:opacity-40 sm:h-11 sm:flex-row sm:gap-1.5 sm:text-xs" onClick={() => void shareQrPoster()}><Share2 size={15} />Share</button>
+                  <button disabled={!createdCheckout} type="button" className="flex h-12 flex-col items-center justify-center gap-0.5 text-[10px] font-medium hover:bg-muted/50 disabled:opacity-40 sm:h-11 sm:flex-row sm:gap-1.5 sm:text-xs" onClick={() => window.open(paymentLink, '_blank', 'noopener,noreferrer')}><Eye size={15} />Preview</button>
+                  <button disabled={!createdCheckout} type="button" className="flex h-12 flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-primary hover:bg-muted/50 disabled:opacity-40 sm:h-11 sm:flex-row sm:gap-1.5 sm:text-xs" onClick={() => void downloadQrPoster()}><Download size={15} />Download</button>
                 </div>
               </div>
-              <div className="border-t bg-muted/30 p-5 lg:border-l lg:border-t-0">
+              <div className="order-1 border-b bg-muted/30 p-5 lg:order-2 lg:border-b-0 lg:border-l">
                 <div ref={qrPosterRef} className="flex flex-col items-center rounded-2xl border bg-white p-5 text-[#071b31] shadow-sm">
                   <p className="mb-3 max-w-48 truncate text-sm font-bold">{business?.name}</p>
-                  <QRCode value={paymentLink} size={164} fgColor="#071b31" />
+                  {createdCheckout ? <QRCode value={paymentLink} size={164} fgColor="#071b31" /> : <div className="grid h-[164px] w-[164px] place-items-center"><Loader2 size={24} className="animate-spin text-primary" /></div>}
                   <p className="mt-3 text-[10px] font-semibold">Scan to pay with Naitrust</p>
                   <p className="mt-1 text-[9px] text-slate-500">{linkAmount ? formatMinorAmount(Math.round(Number(linkAmount) * 100), 'NGN') : 'Customer enters the amount'}</p>
                 </div>
@@ -497,8 +549,9 @@ export function ReceiveMoneyPage() {
 
         {!accountContentLoading && isBusiness && (
           <div className="mt-5 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-100">
-            <ShieldCheck size={16} className="mt-0.5 shrink-0" />
-            Naitrust confirms payments from the payment provider. A screenshot or customer message is never treated as proof that money arrived.
+            <ShieldCheck size={16} className="mt-0.5 hidden shrink-0 sm:block" />
+            <span className="sm:hidden">Only provider-confirmed payments count as received.</span>
+            <span className="hidden sm:inline">Naitrust confirms payments from the payment provider. A screenshot or customer message is never treated as proof that money arrived.</span>
           </div>
         )}
       </div>

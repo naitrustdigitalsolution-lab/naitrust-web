@@ -42,6 +42,7 @@ export function PublicBusinessPaymentPage() {
   const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const requestId = searchParams.get('request');
+  const isQrEntry = searchParams.get('source') === 'qr';
   const legacyFixedAmount = Number(searchParams.get('amount') || 0);
   const legacyReason = searchParams.get('for');
   const requestedExpiry = Number(searchParams.get('expires') || 15);
@@ -77,6 +78,16 @@ export function PublicBusinessPaymentPage() {
   useEffect(() => {
     if (requestId) void trustCheckoutsApi.recordEvent(requestId, 'link_viewed');
   }, [requestId]);
+
+  useEffect(() => {
+    if (!isQrEntry || !requestId || checkoutLoading) return;
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    if (!isAuthenticated) {
+      navigate(`/login?returnTo=${encodeURIComponent(returnTo)}`, { replace: true });
+      return;
+    }
+    if (checkout) navigate(`/app/payments/send?checkout=${encodeURIComponent(requestId)}`, { replace: true });
+  }, [checkout, checkoutLoading, isAuthenticated, isQrEntry, navigate, requestId]);
 
   // Mock provider webhook. Production changes this state only after Anchor (or
   // the configured regulated provider) reports a matching inbound transfer.
@@ -153,28 +164,28 @@ export function PublicBusinessPaymentPage() {
   const allowsProtected = !checkout || checkout.paymentMode !== 'direct';
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10">
+    <div className="relative min-h-screen overflow-hidden bg-[#f4f7f9] py-0 dark:bg-background sm:px-4 sm:py-10">
       <SEOHead title={`Pay ${businessName}`} description={`Make a verified bank transfer to ${businessName} with Naitrust.`} noindex />
       <img src={spiralBackground} alt="" aria-hidden="true" className="pointer-events-none absolute -right-48 -top-40 w-[42rem] opacity-[0.055] dark:opacity-[0.035]" />
       <div className="relative mx-auto max-w-xl">
-        <Card className="overflow-hidden rounded-3xl border-0 shadow-xl shadow-slate-950/10">
-          <div className="bg-[#071b31] px-6 py-7 text-center text-white">
-            <div className="mb-6 flex items-center justify-between gap-3 text-left">
+        <Card className="overflow-hidden rounded-none border-0 shadow-none sm:rounded-3xl sm:shadow-xl sm:shadow-slate-950/10">
+          <div className="bg-[#071b31] px-5 py-5 text-center text-white sm:px-6 sm:py-7">
+            <div className="mb-4 flex items-center justify-between gap-3 text-left sm:mb-6">
               <button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80"><NaitrustLogo size="sm" textColor="text-white" /></button>
               <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Secure payment</Badge>
             </div>
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-xl font-bold text-[#071b31] shadow-lg">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-sm font-bold text-[#071b31] shadow-lg sm:h-16 sm:w-16 sm:text-xl">
               {initials || <Store />}
             </div>
-            <div className="mt-4 flex items-center justify-center gap-1.5">
-              <h1 className="text-xl font-bold">{businessName}</h1>
+            <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-4">
+              <h1 className="text-lg font-bold sm:text-xl">{businessName}</h1>
               <BadgeCheck size={18} className="text-emerald-400" />
             </div>
             <p className="mt-1 text-sm text-white/65">{checkout?.recipientType === 'individual' ? 'Naitrust individual account' : checkout?.verification.businessVerified || business?.verified ? 'Verified Naitrust business' : 'Naitrust business account'}</p>
             <p className="mt-2 text-xs text-white/50">{checkout?.businessCategory || business?.category} · {checkout?.recipientNtId || business?.ntId}</p>
           </div>
 
-          <div className="space-y-4 p-5 sm:p-7">
+          <div className="space-y-4 p-4 sm:p-7">
             <div className="flex items-center justify-between gap-3">
               <Badge variant="outline" className="gap-1 rounded-full">
                 {isSpecificRequest ? <MessageCircle size={12} /> : <Store size={12} />}
@@ -218,7 +229,7 @@ export function PublicBusinessPaymentPage() {
 
             {isUnavailable && <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-4 text-sm"><p className="font-semibold">This Trust Checkout is no longer available.</p><p className="mt-1 text-muted-foreground">Ask the recipient to create a new payment request before transferring money.</p></div>}
 
-            {allowsDirect && !isUnavailable && <div className="rounded-2xl border border-primary/15 bg-primary/[0.035] p-4">
+            {allowsDirect && !isUnavailable && <div className="rounded-xl border border-primary/15 bg-primary/[0.035] p-4 sm:rounded-2xl">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Landmark size={16} className="text-primary" /> Transfer to this account
               </div>
@@ -253,7 +264,7 @@ export function PublicBusinessPaymentPage() {
               </div>
             ) : (
               <Button
-                className="h-12 w-full rounded-xl text-base"
+                className="h-11 w-full rounded-full text-sm sm:h-12 sm:rounded-xl sm:text-base"
                 disabled={Number(amount) <= 0 || isUnavailable}
                 onClick={() => void checkTransfer()}
               >
@@ -263,8 +274,8 @@ export function PublicBusinessPaymentPage() {
 
             <p className="flex gap-2 text-xs leading-5 text-muted-foreground"><ShieldCheck size={14} className="mt-0.5 shrink-0 text-emerald-600" /> Confirm the account name before paying. Screenshots are not proof of payment; Naitrust waits for provider confirmation.</p>
 
-            {allowsProtected && !isUnavailable && !isPaid && <div className="rounded-2xl border border-sky-200 bg-sky-50 p-5 text-[#071b31] dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-foreground">
-              <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background"><LockKeyhole size={18} /></span><div><p className="font-semibold">Need more than a transfer?</p><p className="mt-1 text-xs leading-5 text-[#527086] dark:text-muted-foreground">Keep the agreement, delivery evidence, milestones, messages, payment status, and any issues together in one Protected Deal.</p></div></div>
+            {allowsProtected && !isUnavailable && !isPaid && <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-[#071b31] dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-foreground sm:rounded-2xl sm:p-5">
+              <div className="flex items-start gap-3"><span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background sm:flex"><LockKeyhole size={18} /></span><div><p className="font-semibold">Need payment protection?</p><p className="mt-1 text-xs leading-5 text-[#527086] dark:text-muted-foreground">Keep terms, evidence, messages, and payment status together in a Protected Deal.</p></div></div>
               {checkout && (checkout.evidenceRequirements.length > 0 || checkout.milestones.length > 0) && <div className="mt-4 grid gap-2 text-xs text-[#527086] dark:text-muted-foreground">{checkout.evidenceRequirements.map((item) => <p key={item}>Evidence: {item}</p>)}{checkout.milestones.map((item) => <p key={item}>Milestone: {item}</p>)}</div>}
               <Button className="mt-4 w-full rounded-full" onClick={startProtectedTransaction}>Protect this transaction <ArrowRight size={16} /></Button>
             </div>}

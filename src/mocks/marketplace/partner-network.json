@@ -1,0 +1,57 @@
+{
+  "applications": [
+    {
+      "id": "partner_agent_lin",
+      "role": "agent",
+      "contactName": "Chinedu Okafor",
+      "email": "lin.partner@naitrust.test",
+      "phone": "+86 138 0000 1068",
+      "country": "CN",
+      "city": "Guangzhou",
+      "languages": ["Mandarin", "English"],
+      "services": ["Market sourcing", "Factory visits", "Inspection", "Shipping coordination"],
+      "experience": "Eight years supporting wholesale buyers across Guangzhou and Foshan.",
+      "status": "approved",
+      "inviteCode": "AGENT-LIN-2026",
+      "createdAt": "2026-07-18T08:00:00.000Z"
+    },
+    {
+      "id": "partner_supplier_brightpack",
+      "role": "supplier",
+      "companyName": "Guangzhou BrightPack Manufacturing",
+      "contactName": "Zhang Min",
+      "email": "brightpack.partner@naitrust.test",
+      "phone": "+86 139 0000 2210",
+      "country": "CN",
+      "city": "Guangzhou",
+      "languages": ["Mandarin"],
+      "services": ["Custom cartons", "Retail packaging"],
+      "experience": "Export packaging manufacturer with custom print and carton production.",
+      "status": "approved",
+      "inviteCode": "SUPPLIER-BRIGHT-2026",
+      "createdAt": "2026-07-15T08:00:00.000Z"
+    },
+    {
+      "id": "partner_pending_agent",
+      "role": "agent",
+      "contactName": "Kelechi Eze",
+      "email": "mei.chen@example.cn",
+      "phone": "+86 136 0000 4421",
+      "country": "CN",
+      "city": "Shenzhen",
+      "languages": ["Mandarin", "English"],
+      "services": ["Electronics inspection", "Supplier checks"],
+      "experience": "Five years of electronics quality control.",
+      "status": "pending",
+      "createdAt": "2026-08-12T08:00:00.000Z"
+    }
+  ],
+  "agentAssignments": [
+    { "id": "assignment_1", "title": "Source custom woven labels", "buyer": "Aisha Retail Ltd", "city": "Guangzhou", "fee": "¥1,200", "status": "New request" },
+    { "id": "assignment_2", "title": "Inspect 600 private-label sneakers", "buyer": "Northstar Wholesale", "city": "Quanzhou", "fee": "$240", "status": "Evidence due" }
+  ],
+  "supplierAssignments": [
+    { "id": "inquiry_1", "title": "2,000 branded shoe cartons", "buyer": "Aisha Retail Ltd", "quantity": "2,000 boxes", "status": "Quote requested" },
+    { "id": "inquiry_2", "title": "Custom retail carrier bags", "buyer": "Northstar Wholesale", "quantity": "5,000 bags", "status": "Artwork review" }
+  ]
+}

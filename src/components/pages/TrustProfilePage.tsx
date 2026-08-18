@@ -13,7 +13,7 @@ export function TrustProfilePage() {
         {isLoading ? (
           <div className="space-y-4"><Skeleton className="h-48 w-full rounded-3xl" /><Skeleton className="h-36 w-full rounded-3xl" /></div>
         ) : business ? (
-          <PublicTrustProfilePage businessIdentifier={business.id} embedded showBackToBusinesses={false} />
+          <PublicTrustProfilePage businessIdentifier={business.id} embedded showBackToBusinesses />
         ) : (
           <Card className="rounded-2xl p-8 text-center"><h2 className="font-semibold">Business profile unavailable</h2><p className="mt-2 text-sm text-muted-foreground">Complete your business profile before publishing a Trust Profile.</p></Card>
         )}

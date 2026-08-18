@@ -1,10 +1,23 @@
 # Naitrust Web
 
-Frontend for Naitrust as a trusted transaction platform.
+Frontend for Naitrust as a protected-commerce and sourcing platform.
 
-This app should help Nigerian businesses and informal sellers create safe transaction rooms, invite counterparties, agree terms, track evidence, and complete protected payments through regulated financial partners.
+This app helps Nigerian individuals and businesses discover verified suppliers in China and Nigeria, browse products in English, request a confirmed landed-cost quote, pay through a protected order, and track delivery. Business accounts use the same sourcing journey and can additionally publish a Showcase, sell products, fulfil customer orders, and receive earnings.
 
-The default first screen is the new Naitrust product home screen. The coming-soon and be-back screens still exist and are controlled by environment.
+The default first screen is the China-sourcing and protected-commerce home. The coming-soon and be-back screens still exist and are controlled by environment.
+
+## Product model
+
+- Public browsing: markets, products, suppliers, Showcases, and Trust Profiles.
+- Authenticated buying: Cart, Buying Quotes, Buying Orders, Agents, Messages, and Wallet.
+- Business selling: Showcase, Products, customers, fulfilment, and earnings.
+- Protected commerce: supplier product funds and logistics charges are recorded separately.
+- Optional agents: AI may suggest a suitable agent, but the user decides whether to hire under a separate service scope and fee.
+- Production workflows: business buyers can connect a main product, packaging, labels, inspection, consolidation, and shipping across several suppliers. A missing stage can become an agent sourcing request.
+- Payment choice: confirmed quotes are Naira-first, with optional USD checkout for eligible business orders. Chinese supplier settlement is modelled separately in CNY or USD through a regulated provider.
+- Partner network: China-based agents and suppliers apply through a separate reviewed onboarding flow and receive revocable partner access only after admin approval.
+- Localisation: the partner experience starts with English and Simplified Chinese, defaulting from the partner locale. The typed locale boundary can be extended as new markets launch.
+- Account isolation: authenticated mock carts, quotes, orders, agent tasks, and seller products are namespaced by account. Production APIs must enforce ownership server-side.
 
 ## Stack
 
@@ -86,24 +99,16 @@ Configured entirely by `netlify.toml`: build command (same SEO prerender step as
 
 The waitlist, contact, subscribe, feedback, and report-concern forms all call the backend directly via `POST {VITE_API_BASE_URL}/api/Public/*` (see `src/libs/api/home.api.ts`). There is no serverless proxy function on either host — both Vercel and Netlify just serve the static frontend, and the frontend talks to the real backend API over `VITE_API_BASE_URL`.
 
-## Source of Truth
+## Source of truth
 
 Read these files before building:
 
-1. `../futureidea.md`
-2. `../TECHNICAL_BUILD_ROADMAP.md`
-3. `../Naitrust Technical Spec v2.docx`
-4. `guardrails/README.md`
-5. `guardrails/pre-build-checklist.md`
-6. `guardrails/plan.md`
-7. `guardrails/skill.md`
-8. `guardrails/architecture.md`
-9. `guardrails/workflow.md`
-10. `guardrails/ui.md`
-11. `guardrails/tool.md`
-12. `guardrails/api-contract.md`
-13. `guardrails/verification-flow.md`
-14. `guardrails/ai-intelligence-plan.md`
+1. `guardrails/README.md`
+2. `guardrails/product-guardrails.md`
+3. `guardrails/seo/search-language-and-feature-claims.md`
+4. `guardrails/marketing/naitrust-problem-statement-and-social-copy.md`
+5. `src/libs/marketplace/types.ts`
+6. `src/libs/marketplace/marketplace.api.ts`
 
 ## Old Code Reuse
 
@@ -119,5 +124,5 @@ Prefer reusing:
 - API client patterns from `../naitrust-web-old/src/lib/api`
 - store patterns from `../naitrust-web-old/src/lib/store`
 
-Do not blindly copy old feature flows if they conflict with the new trusted-transaction product direction.
+Do not copy old payment-first flows when they conflict with the protected-commerce direction.
 # naitrust-web

@@ -1,5 +1,5 @@
-import { ArrowLeft, AtSign, BadgeCheck, Bookmark, Building2, CalendarDays, CheckCircle2, Copy, ExternalLink, Globe, Landmark, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Star } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowLeft, AtSign, BadgeCheck, Bookmark, Building2, CalendarDays, CheckCircle2, ChevronDown, Copy, ExternalLink, Globe, ImagePlus, Landmark, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Star } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { usePublicBusiness } from '../../hooks/useBusinessDirectory';
@@ -52,6 +52,8 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
   const [contactOpen, setContactOpen] = useState(false);
   const [payAmount, setPayAmount] = useState('');
   const [message, setMessage] = useState('');
+  const [coverImage, setCoverImage] = useState('');
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const { businessSlug } = useParams();
   const [searchParams] = useSearchParams();
   const profileIdentifier = businessIdentifier ?? businessSlug;
@@ -86,6 +88,11 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
     toast.success('Trust Profile link copied');
   };
 
+  const copyContact = async (value: string, label: string) => {
+    await navigator.clipboard.writeText(value);
+    toast.success(`${label} copied`);
+  };
+
   const returnToPayment = () => {
     if (returnTo?.startsWith('/pay/')) window.location.assign(returnTo);
     else window.close();
@@ -95,11 +102,22 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
   const startProtectedDeal = () => {
     const query = new URLSearchParams({ business: business.id, name: business.name, from: 'trust-profile' });
     if (business.email) query.set('email', business.email);
+    if (Number(payAmount) > 0) query.set('amount', payAmount);
     const destination = `/app/deals/new?${query.toString()}`;
     navigate(isAuthenticated ? destination : `/login?returnTo=${encodeURIComponent(destination)}`);
   };
 
-  return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] px-4 py-6 dark:bg-background sm:py-10'}>
+  const handleCoverImage = (file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCoverImage(String(reader.result ?? ''));
+      toast.success('Cover image updated');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] sm:px-4 sm:py-10 dark:bg-background'}>
     <SEOHead
       title={`${business.name} Trust Profile`}
       description={`Review available verification information, completed deal activity, and customer feedback for ${business.name} on Naitrust.`}
@@ -114,39 +132,44 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
       }}
     />
     <div className="mx-auto max-w-5xl">
-      <div className={`mb-5 flex items-center gap-3 ${embedded && !showBackToBusinesses ? 'justify-end' : 'justify-between'}`}>{embedded && showBackToBusinesses ? <Button size="sm" variant="ghost" className="rounded-full" onClick={() => navigate('/app/businesses')}><ArrowLeft size={14} /> Back to businesses</Button> : <span />} <div className="flex gap-2">{openedFromPayment && <Button size="sm" variant="ghost" className="rounded-full" onClick={returnToPayment}><ArrowLeft size={14} /> Back to payment</Button>}<Button size="sm" variant="outline" className="rounded-full bg-white" onClick={() => void copyProfile()}><Copy size={14} /> Share</Button></div></div>
-      <Card className="overflow-hidden rounded-3xl border-0 shadow-[0_24px_70px_rgba(7,27,49,.12)]">
-        <div className="bg-[#071b31] p-6 text-white sm:p-8">
-          {!embedded && <div className="mb-6 flex items-center justify-between gap-3"><button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80"><NaitrustLogo size="sm" textColor="text-white" /></button><Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Trust Profile</Badge></div>}
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-xl font-bold text-[#071b31]">{business.name.split(' ').slice(0, 2).map((word) => word[0]).join('')}</span>
-            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h1 className="text-2xl font-bold sm:text-3xl">{business.name}</h1>{business.verified && <Badge className="border-emerald-300/30 bg-emerald-400/15 text-emerald-200"><BadgeCheck size={13} /> Verified business</Badge>}</div><p className="mt-2 text-sm text-white/65">{business.category} · {business.ntId}</p><p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{business.description}</p><p className="mt-3 text-xs text-white/45">Naitrust member since {new Date(business.createdAt).toLocaleDateString()}</p></div>
-          </div>
+      <div className={`mb-3 flex items-center gap-3 px-3 pt-3 sm:mb-5 sm:px-0 sm:pt-0 ${embedded && !showBackToBusinesses ? 'justify-end' : 'justify-between'}`}>{embedded && showBackToBusinesses ? <Button size="sm" variant="ghost" className="h-9 rounded-full px-2 sm:px-3" onClick={() => navigate('/app/businesses')}><ArrowLeft size={16} /><span className="hidden sm:inline">Back to businesses</span></Button> : <span />} <div className="flex gap-2">{openedFromPayment && <Button size="sm" variant="ghost" className="rounded-full" onClick={returnToPayment}><ArrowLeft size={14} /> Back to payment</Button>}<Button size="icon" variant="outline" className="h-9 w-9 rounded-full bg-white sm:hidden" aria-label="Share Trust Profile" onClick={() => void copyProfile()}><Copy size={15} /></Button><Button size="sm" variant="outline" className="hidden rounded-full bg-white sm:inline-flex" onClick={() => void copyProfile()}><Copy size={14} /> Share</Button></div></div>
+      <Card className="overflow-hidden rounded-none border-x-0 shadow-none sm:rounded-3xl sm:border-0 sm:shadow-[0_24px_70px_rgba(7,27,49,.12)]">
+        <div className="relative min-h-24 bg-[#071b31] bg-cover bg-center p-5 text-white sm:min-h-32 sm:p-8" style={coverImage ? { backgroundImage: `linear-gradient(rgba(7,27,49,.45), rgba(7,27,49,.65)), url(${coverImage})` } : undefined}>
+          {!embedded && <div className="relative z-10 flex items-center justify-between gap-3"><button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80"><NaitrustLogo size="sm" textColor="text-white" /></button><Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Trust Profile</Badge></div>}
+          {isBusinessOwner && <><input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(event) => handleCoverImage(event.target.files?.[0])} /><button type="button" className="absolute bottom-3 left-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 sm:bottom-4 sm:left-8" aria-label="Upload cover image" title="Upload cover image" onClick={() => coverInputRef.current?.click()}><ImagePlus size={15} /></button></>}
+          <span className="absolute -bottom-6 right-5 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-card bg-white text-sm font-bold text-[#071b31] shadow-sm sm:-bottom-8 sm:right-8 sm:h-16 sm:w-16 sm:text-xl">{business.name.split(' ').slice(0, 2).map((word) => word[0]).join('')}</span>
         </div>
-        <div className="space-y-7 p-5 sm:p-8">
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border bg-muted/20 p-2.5">
-            <Button size="sm" className="rounded-full px-4" onClick={() => setPayOpen(true)}><Building2 size={15} /> Pay</Button>
-            {isAuthenticated && !isBusinessOwner && <Button size="sm" variant="outline" className="rounded-full bg-background px-4" onClick={() => toggleSavedBusiness(business.id)}><Bookmark size={15} className={savedBusinessIds.includes(business.id) ? 'fill-primary text-primary' : ''} /> {savedBusinessIds.includes(business.id) ? 'Saved' : 'Save'}</Button>}
-            <Button size="sm" variant="outline" className="rounded-full bg-background px-4" onClick={() => setContactOpen(true)}><MessageCircle size={15} /> Message</Button>
-            {business.website && <Button size="icon" variant="outline" className="ml-auto h-9 w-9 rounded-full bg-background" aria-label={`Open ${business.name} website`} title="Open business website" onClick={() => window.open(business.website, '_blank', 'noopener,noreferrer')}><ExternalLink size={15} /></Button>}
+        <div className="space-y-5 px-4 pb-4 pt-8 sm:space-y-7 sm:px-8 sm:pb-8 sm:pt-10">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 pr-14 sm:pr-20">
+              <h1 className="min-w-0 text-xl font-bold leading-tight sm:text-3xl">{business.name}</h1>
+              {business.verified && <><span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 sm:hidden" aria-label="Verified business" title="Verified business"><BadgeCheck size={15} /></span><Badge variant="success" className="hidden shrink-0 sm:inline-flex"><BadgeCheck size={12} /> Verified</Badge></>}
+            </div>
+            <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">{business.category} · {business.ntId}</p>
+            <p className="mt-2 line-clamp-2 max-w-2xl text-xs leading-5 text-muted-foreground sm:mt-3 sm:text-sm sm:leading-6">{business.description}</p>
+            <p className="mt-2 text-[11px] text-muted-foreground sm:mt-3 sm:text-xs">Member since {new Date(business.createdAt).toLocaleDateString()}</p>
           </div>
-          <div className="grid divide-y rounded-2xl border bg-muted/20 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
-            {[['Protected Deals completed', business.completedProtectedTransactions ?? 0], ['Completion rate', `${business.completionRatePercent ?? 0}%`], ['Response rate', `${business.responseRatePercent ?? 0}%`], ['Transaction reviews', displayedReviewCount]].map(([label, value]) => <div key={String(label)} className="p-4"><p className="text-xl font-bold sm:text-2xl">{value}</p><p className="mt-1 text-xs text-muted-foreground">{label}</p></div>)}
+          <div className={`grid divide-x overflow-hidden rounded-xl border bg-background ${isAuthenticated && !isBusinessOwner ? 'grid-cols-3 sm:max-w-md' : 'grid-cols-2 sm:max-w-xs'}`}>
+            <button type="button" className="flex h-11 items-center justify-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:bg-muted/50 sm:text-sm" onClick={() => setPayOpen(true)}><Building2 size={16} />Pay</button>
+            {isAuthenticated && !isBusinessOwner && <button type="button" className="flex h-11 items-center justify-center gap-1.5 text-xs font-semibold transition-colors hover:bg-muted/50 sm:text-sm" onClick={() => toggleSavedBusiness(business.id)}><Bookmark size={16} className={savedBusinessIds.includes(business.id) ? 'fill-primary text-primary' : ''} />{savedBusinessIds.includes(business.id) ? 'Saved' : 'Save'}</button>}
+            <button type="button" className="flex h-11 items-center justify-center gap-1.5 text-xs font-semibold transition-colors hover:bg-muted/50 sm:text-sm" onClick={() => setContactOpen(true)}><MessageCircle size={16} />Message</button>
+          </div>
+          <div className="grid grid-cols-2 overflow-hidden rounded-2xl border bg-muted/20 sm:grid-cols-4">
+            {[['Deals completed', business.completedProtectedTransactions ?? 0], ['Completion rate', `${business.completionRatePercent ?? 0}%`], ['Response rate', `${business.responseRatePercent ?? 0}%`], ['Reviews', displayedReviewCount]].map(([label, value], index) => <div key={String(label)} className={`p-3 sm:p-4 ${index % 2 ? 'border-l' : ''} ${index > 1 ? 'border-t sm:border-t-0' : ''} ${index > 0 ? 'sm:border-l' : ''}`}><p className="text-lg font-bold sm:text-2xl">{value}</p><p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-xs">{label}</p></div>)}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border p-4"><p className="flex items-center gap-2 font-semibold"><ShieldCheck size={17} className="text-emerald-600" /> Verification information</p><div className="mt-3 grid gap-3 text-sm text-muted-foreground"><div className="flex gap-2"><CheckCircle2 size={15} className="mt-0.5 shrink-0" /><span><strong className="block text-foreground">Business identity verified</strong>Business details were matched during verification.</span></div><div className="flex gap-2"><CheckCircle2 size={15} className="mt-0.5 shrink-0" /><span><strong className="block text-foreground">Representative verified</strong>An authorised representative completed identity checks.</span></div>{business.verificationExpiresAt && <p className="flex gap-2"><CalendarDays size={15} /> Verification current until {new Date(business.verificationExpiresAt).toLocaleDateString()}</p>}</div></div>
             <div className="rounded-2xl border p-4"><p className="flex items-center gap-2 font-semibold"><Star size={17} className="fill-amber-400 text-amber-400" /> Feedback from completed transactions</p><p className="mt-3 text-3xl font-bold">{displayedRating?.toFixed(1) ?? 'Not available'} <span className="text-sm font-normal text-muted-foreground">from {displayedReviewCount} completed transactions</span></p><p className="mt-2 text-xs leading-5 text-muted-foreground">Only customers who completed a Naitrust transfer or Protected Deal with this business can review it.</p></div>
           </div>
-          <section className="rounded-2xl border p-4 sm:p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
+          <section className="rounded-2xl border p-4 sm:px-5 sm:py-4">
+            <div className="sm:grid sm:grid-cols-[210px_minmax(0,1fr)] sm:items-center sm:gap-5">
               <div><h2 className="font-semibold">Contact & online presence</h2><p className="mt-1 text-xs text-muted-foreground">Public details supplied by the business.</p></div>
-              <Button size="sm" variant="outline" className="rounded-full" onClick={() => setContactOpen(true)}><MessageCircle size={14} /> Send a message</Button>
-            </div>
-            <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-              {business.email && <a href={`mailto:${business.email}`} className="flex min-w-0 items-center gap-3 rounded-xl bg-muted/40 p-3 hover:bg-muted"><Mail size={16} className="shrink-0 text-primary" /><span className="truncate">{business.email}</span></a>}
-              {business.phone && <a href={`tel:${business.phone}`} className="flex min-w-0 items-center gap-3 rounded-xl bg-muted/40 p-3 hover:bg-muted"><Phone size={16} className="shrink-0 text-primary" /><span>{business.phone}</span></a>}
-              {business.website && <a href={business.website} target="_blank" rel="noreferrer" className="flex min-w-0 items-center gap-3 rounded-xl bg-muted/40 p-3 hover:bg-muted"><Globe size={16} className="shrink-0 text-primary" /><span className="truncate">{business.website.replace(/^https?:\/\//, '')}</span><ExternalLink size={13} className="ml-auto shrink-0 text-muted-foreground" /></a>}
-              {business.address && <div className="flex items-start gap-3 rounded-xl bg-muted/40 p-3"><MapPin size={16} className="mt-0.5 shrink-0 text-primary" /><span>{business.address}</span></div>}
+              <div className="mt-4 grid gap-2 text-sm sm:mt-0 sm:grid-cols-2">
+                {business.email && <div className="flex min-w-0 items-start gap-2 rounded-xl bg-muted/40 px-3 py-2.5"><Mail size={15} className="mt-0.5 shrink-0 text-primary" /><a href={`mailto:${business.email}`} className="min-w-0 flex-1 break-all hover:underline">{business.email}</a><button type="button" className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Copy email" onClick={() => void copyContact(business.email!, 'Email')}><Copy size={13} /></button></div>}
+                {business.phone && <div className="flex min-w-0 items-start gap-2 rounded-xl bg-muted/40 px-3 py-2.5"><Phone size={15} className="mt-0.5 shrink-0 text-primary" /><a href={`tel:${business.phone}`} className="min-w-0 flex-1 break-words hover:underline">{business.phone}</a><button type="button" className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Copy phone number" onClick={() => void copyContact(business.phone!, 'Phone number')}><Copy size={13} /></button></div>}
+                {business.website && <div className="flex min-w-0 items-start gap-2 rounded-xl bg-muted/40 px-3 py-2.5"><Globe size={15} className="mt-0.5 shrink-0 text-primary" /><a href={business.website} target="_blank" rel="noreferrer" className="min-w-0 flex-1 break-all hover:underline">{business.website.replace(/^https?:\/\//, '')}</a><button type="button" className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Copy website" onClick={() => void copyContact(business.website!, 'Website')}><Copy size={13} /></button></div>}
+                {business.address && <div className="flex min-w-0 items-start gap-2 rounded-xl bg-muted/40 px-3 py-2.5"><MapPin size={15} className="mt-0.5 shrink-0 text-primary" /><span className="min-w-0 flex-1 break-words">{business.address}</span><button type="button" className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Copy address" onClick={() => void copyContact(business.address!, 'Address')}><Copy size={13} /></button></div>}
+              </div>
             </div>
             {business.socialHandles && business.socialHandles.length > 0 && <div className="mt-4 border-t pt-4"><p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground"><AtSign size={14} /> Social media</p><div className="flex flex-wrap gap-2">{business.socialHandles.map((social) => { const href = socialUrl(social.platform, social.value); const content = <><span className="capitalize">{social.platform}</span><span className="font-normal text-muted-foreground">{social.value}</span>{href && <ExternalLink size={12} />}</>; return href ? <a key={`${social.platform}-${social.value}`} href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted">{content}</a> : <span key={`${social.platform}-${social.value}`} className="inline-flex items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium">{content}</span>; })}</div></div>}
             {!business.email && !business.phone && !business.website && !business.address && !business.socialHandles?.length && <p className="mt-4 rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground">No public contact details have been added yet. You can still send an in-app message.</p>}
@@ -176,12 +199,31 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
     </div>
     <Sheet open={payOpen} onOpenChange={setPayOpen}>
       <SheetContent className="w-[94vw] gap-0 overflow-y-auto p-0 sm:max-w-xl">
-        <SheetHeader className="border-b px-6 py-5"><SheetTitle>Pay {business.name}</SheetTitle><SheetDescription>Make a normal transfer or protect the transaction with agreed terms.</SheetDescription></SheetHeader>
+        <SheetHeader className="border-b px-6 py-5"><SheetTitle>Pay {business.name}</SheetTitle><SheetDescription>Protect the transaction with agreed terms, or pay directly if you already know and trust them.</SheetDescription></SheetHeader>
         <div className="space-y-5 p-6">
+          {isAuthenticated && user?.name && (
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-muted/50 px-3 py-2.5">
+              <div className="min-w-0"><p className="text-[11px] text-muted-foreground">Payer</p><p className="truncate text-sm font-semibold">{user.name}</p></div>
+              <Badge variant="outline" className="shrink-0 rounded-full text-[10px]">Your account</Badge>
+            </div>
+          )}
           <div><Label htmlFor="profile-pay-amount">Amount to pay (NGN)</Label><Input id="profile-pay-amount" type="number" min="1" className="mt-2 h-12 text-lg font-semibold" value={payAmount} onChange={(event) => setPayAmount(event.target.value)} placeholder="0.00" /></div>
-          <div className="rounded-2xl border bg-muted/30 p-4"><p className="flex items-center gap-2 text-sm font-semibold"><Landmark size={16} className="text-primary" /> Business payment account</p><p className="mt-4 text-xs text-muted-foreground">{paymentAccount.bankName}</p><div className="mt-1 flex items-center justify-between gap-3"><p className="font-mono text-2xl font-bold tracking-wider">{paymentAccount.accountNumber}</p><Button size="icon" variant="ghost" className="rounded-full" aria-label="Copy account number" onClick={() => void navigator.clipboard.writeText(paymentAccount.accountNumber).then(() => toast.success('Account number copied'))}><Copy size={15} /></Button></div><p className="mt-1 text-sm font-medium">{paymentAccount.accountName}</p></div>
-          <Button className="h-11 w-full rounded-full" disabled={Number(payAmount) <= 0} onClick={() => toast.success('Transfer monitoring started. Naitrust will confirm when the provider reports payment.')}>I have made the transfer</Button>
-          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-400/15 dark:bg-sky-400/10"><p className="font-semibold">Need payment protection?</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Create a Protected Deal with this business and keep terms, evidence, delivery, and payment status together.</p><Button variant="outline" className="mt-4 w-full rounded-full bg-background" onClick={startProtectedDeal}><ShieldCheck size={15} /> Start Protected Deal</Button></div>
+          <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4">
+            <p className="flex items-center gap-2 text-sm font-semibold"><ShieldCheck size={16} className="text-primary" /> Recommended: Protected Deal</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">Keep terms, evidence, delivery, and payment status together, with the payment held until you confirm. This is how Naitrust verification actually protects you.</p>
+            <Button className="mt-4 h-11 w-full rounded-full" onClick={startProtectedDeal}><ShieldCheck size={15} /> Start Protected Deal</Button>
+          </div>
+          <details className="group rounded-2xl border p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-foreground">
+              I already know and trust them — pay directly instead
+              <ChevronDown size={16} className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="mt-4 space-y-4">
+              <p className="text-xs leading-5 text-muted-foreground">A direct transfer is not protected: there is no held payment, evidence, or dispute review if something goes wrong.</p>
+              <div className="rounded-2xl border bg-muted/30 p-4"><p className="flex items-center gap-2 text-sm font-semibold"><Landmark size={16} className="text-primary" /> Business payment account</p><p className="mt-4 text-xs text-muted-foreground">{paymentAccount.bankName}</p><div className="mt-1 flex items-center justify-between gap-3"><p className="font-mono text-2xl font-bold tracking-wider">{paymentAccount.accountNumber}</p><Button size="icon" variant="ghost" className="rounded-full" aria-label="Copy account number" onClick={() => void navigator.clipboard.writeText(paymentAccount.accountNumber).then(() => toast.success('Account number copied'))}><Copy size={15} /></Button></div><p className="mt-1 text-sm font-medium">{paymentAccount.accountName}</p></div>
+              <Button variant="outline" className="h-11 w-full rounded-full" disabled={Number(payAmount) <= 0} onClick={() => toast.success('Transfer monitoring started. Naitrust will confirm when the provider reports payment.')}>I have made the transfer</Button>
+            </div>
+          </details>
         </div>
       </SheetContent>
     </Sheet>

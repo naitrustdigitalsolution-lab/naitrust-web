@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { HelpCircle, ChevronDown, ChevronUp, Search, Shield, CreditCard, Users, MessageCircle, Settings, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import { HelpCircle, ChevronDown, Search, Shield, CreditCard, Users, MessageCircle, Settings, Globe, ArrowRight, X } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
 
 interface FAQsPageProps {
@@ -8,13 +8,10 @@ interface FAQsPageProps {
   userId?: string | null;
 }
 
-const ITEMS_PER_PAGE = 8;
-
-export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId }) => {
+export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [currentPage, setCurrentPage] = useState(1);
 
   const categories = [
     { id: 'all', name: 'All Questions', icon: HelpCircle },
@@ -31,7 +28,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'gs-1',
       category: 'getting-started',
       question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal: a shared deal room for participants, terms, payments, evidence, milestones, and issues: when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
+      answer: 'Naitrust Market connects Nigerian individuals and businesses with verified local and Chinese suppliers. Browse products in English, request a confirmed landed-cost quote in Naira, and track the order to delivery.'
     },
     {
       id: 'gs-2',
@@ -48,8 +45,8 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 'gs-4',
       category: 'getting-started',
-      question: 'How do I find the right Naitrust recipient?',
-      answer: 'Use a verified account number, email address, or phone number to find the intended recipient. Naitrust shows the resolved recipient details for confirmation before money moves.'
+      question: 'How do I find a product or supplier?',
+      answer: 'Search Naitrust Market by product, supplier, category, source country, location, rating, price estimate, or minimum order quantity. Open the supplier Showcase and Trust Profile before adding products to your cart.'
     },
     {
       id: 'gs-5',
@@ -105,7 +102,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
       id: 'p-1',
       category: 'payments',
       question: 'What does Naitrust charge for?',
-      answer: 'Public package details are not shown while the launch offer is being finalised. The core product is instant payments plus Protected Deal coordination: participant verification, documented terms, partner-led payment status, supporting evidence, confirmation, and issues.'
+      answer: 'A confirmed quote itemizes products, inspection, customs, handling, insurance and logistics where applicable. Catalogue prices are estimates until Naitrust confirms the landed cost for your quantity and Nigerian delivery address.'
     },
     {
       id: 'p-2',
@@ -122,14 +119,14 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     {
       id: 'p-4',
       category: 'payments',
-      question: 'Does Naitrust handle payments between customers and businesses?',
-      answer: 'Naitrust coordinates protected transaction workflows and payment status, but it does not present itself as a bank or wallet. Regulated partners handle payment or banking activity where protected funding is used.'
+      question: 'Can I pay in Naira or US dollars?',
+      answer: 'Yes. Quotes are shown and paid in Naira. For Chinese products, Naitrust may also display the original supplier subtotal in CNY for transparency.'
     },
     {
       id: 'p-5',
       category: 'payments',
-      question: 'What is the difference between Send Money and Protect a Payment?',
-      answer: 'Send Money is for people and businesses you already trust: it moves like a normal transfer. Protect a Payment is for a new supplier, contractor, agent, or large order: funds are held by the regulated partner and only released once the agreed conditions are met.'
+      question: 'How are product payment and logistics handled?',
+      answer: 'Supplier product funds remain protected until the agreed order stage. Buyer-paid logistics and service costs are collected separately upfront. If an order is cancelled, Naitrust refunds the unused portion and itemizes costs already committed.'
     },
 
     {
@@ -236,61 +233,66 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
     });
   }, [selectedCategory, searchQuery]);
 
-  const totalPages = Math.ceil(filteredFAQs.length / ITEMS_PER_PAGE);
-  const paginatedFAQs = filteredFAQs.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    setCurrentPage(1);
     setExpandedFAQ(null);
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    setCurrentPage(1);
     setExpandedFAQ(null);
   };
 
+  const selectedCategoryName = categories.find((category) => category.id === selectedCategory)?.name;
+
   return (
-    <div className="min-h-screen bg-background relative py-12">
+    <div className="min-h-screen bg-background">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers about Naitrust instant payments, Protected Deals, participant verification, payment records, supporting evidence, issues, and account management."
+        description="Find answers about Naitrust Market, verified suppliers, landed-cost quotes, China logistics, agents, delivery, and withdrawals."
         keywords="Naitrust FAQ, business verification questions, CAC verification FAQ, fraud reporting help"
         canonicalPath="/faqs"
       />
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
-            <HelpCircle className="w-8 h-8 text-white" />
+      <section className="border-b border-border/70 bg-gradient-to-b from-primary/[0.08] to-background">
+        <div className="mx-auto max-w-6xl px-4 pb-12 pt-16 sm:px-6 sm:pb-16 sm:pt-20 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-background/80 px-3 py-1.5 text-xs font-semibold text-primary shadow-sm">
+              <HelpCircle className="h-3.5 w-3.5" />
+              Naitrust Help
+            </span>
+            <h1 className="mt-5 text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">How can we help?</h1>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
+              Clear answers about suppliers, quotes, orders, logistics, agents, payments, and security.
+            </p>
           </div>
-          <h1 className="mb-2">Frequently Asked Questions</h1>
-          <p className="text-gray-600 text-lg">
-            Find quick answers to common questions about Naitrust
-          </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="relative mx-auto mt-7 max-w-2xl">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search FAQs..."
+              placeholder="Search for an answer"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-lg focus:border-[#1E90FF] focus:outline-none transition-colors"
+              className="h-14 w-full rounded-2xl border border-border bg-background pl-12 pr-12 text-base shadow-[0_12px_36px_rgba(15,23,42,0.08)] outline-none transition placeholder:text-muted-foreground/70 focus:border-primary focus:ring-4 focus:ring-primary/10"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearchChange('')}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
+      </section>
 
-        {/* Category Tabs */}
-        <div className="mb-8">
-          <div className="flex flex-wrap gap-2 justify-center">
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
+          <aside className="mb-8 lg:mb-0">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Browse topics</p>
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:block lg:space-y-1 lg:overflow-visible lg:px-0 lg:pb-0">
             {categories.map((category) => {
               const Icon = category.icon;
               const count = category.id === 'all' 
@@ -301,63 +303,68 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
                 <button
                   key={category.id}
                   onClick={() => handleCategoryChange(category.id)}
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${
+                  className={`flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition lg:w-full lg:rounded-xl lg:px-3 lg:text-left ${
                     selectedCategory === category.id
-                      ? 'bg-gradient-to-r from-[#1E90FF] to-blue-600 text-white shadow-md'
-                      : 'bg-muted/30 text-muted-foreground hover:bg-muted/50 border-2'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground lg:border-transparent'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm">{category.name}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    selectedCategory === category.id
-                      ? 'bg-white/20'
-                      : 'bg-white/20'
-                  }`}>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="whitespace-nowrap lg:flex-1">{category.name}</span>
+                  <span className={`hidden min-w-6 rounded-full px-1.5 py-0.5 text-center text-[11px] lg:inline ${selectedCategory === category.id ? 'bg-white/15' : 'bg-muted'}`}>
                     {count}
                   </span>
                 </button>
               );
             })}
-          </div>
-        </div>
+            </div>
+          </aside>
 
-        {/* FAQ List */}
-        <div className="bg-muted/30 rounded-lg shadow-lg">
-          {paginatedFAQs.length === 0 ? (
-            <div className="p-12 text-center">
-              <HelpCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-gray-600 mb-2">No FAQs found</p>
-              <p className="text-sm text-gray-500">Try adjusting your search or category filter</p>
+          <div className="min-w-0">
+            <div className="mb-5 flex items-end justify-between gap-4 border-b border-border pb-4">
+              <div>
+                <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                  {searchQuery ? 'Search results' : selectedCategoryName}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {filteredFAQs.length} {filteredFAQs.length === 1 ? 'answer' : 'answers'}
+                  {searchQuery ? ` for “${searchQuery}”` : ''}
+                </p>
+              </div>
+              {(searchQuery || selectedCategory !== 'all') && (
+                <button type="button" onClick={() => { handleSearchChange(''); handleCategoryChange('all'); }} className="shrink-0 text-sm font-semibold text-primary hover:underline">
+                  Reset
+                </button>
+              )}
+            </div>
+
+            {filteredFAQs.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border px-5 py-14 text-center">
+              <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-muted text-muted-foreground"><Search className="h-5 w-5" /></span>
+              <h3 className="mt-4 font-semibold text-foreground">No matching answers</h3>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">Try a shorter phrase or browse another topic.</p>
+              <button type="button" onClick={() => { handleSearchChange(''); handleCategoryChange('all'); }} className="mt-5 text-sm font-semibold text-primary hover:underline">View all questions</button>
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {paginatedFAQs.map((faq) => {
+              {filteredFAQs.map((faq) => {
                 const isExpanded = expandedFAQ === faq.id;
                 
                 return (
-                  <div key={faq.id}>
+                  <div key={faq.id} className="group">
                     <button
                       onClick={() => setExpandedFAQ(isExpanded ? null : faq.id)}
-                      className="w-full px-6 py-5 flex items-start justify-between hover:bg-muted/30 transition-colors text-left"
+                      aria-expanded={isExpanded}
+                      className="flex w-full items-start justify-between gap-4 py-5 text-left sm:py-6"
                     >
-                      <div className="flex-1 pr-4">
-                        <h3 className="mb-1">{faq.question}</h3>
-                        {!isExpanded && (
-                          <p className="text-sm text-gray-500 line-clamp-1">
-                            {faq.answer}
-                          </p>
-                        )}
-                      </div>
-                      {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-[#1E90FF] flex-shrink-0 mt-1" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0 mt-1" />
-                      )}
+                      <span className="text-[15px] font-semibold leading-6 text-foreground sm:text-base">{faq.question}</span>
+                      <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition ${isExpanded ? 'border-primary bg-primary text-white' : 'border-border text-muted-foreground group-hover:border-primary/40 group-hover:text-primary'}`}>
+                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                      </span>
                     </button>
                     {isExpanded && (
-                      <div className="px-6 pb-5">
-                        <p className="text-muted-foreground whitespace-pre-line">{faq.answer}</p>
+                      <div className="max-w-3xl pb-6 pr-10 sm:pr-14">
+                        <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground sm:text-[15px]">{faq.answer}</p>
                       </div>
                     )}
                   </div>
@@ -365,108 +372,27 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate, userType, userId
               })}
             </div>
           )}
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="mt-6 flex items-center justify-between">
-            <button
-              onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); setExpandedFAQ(null); }}
-              disabled={currentPage === 1}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted/30"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm">Previous</span>
-            </button>
-
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => { setCurrentPage(page); setExpandedFAQ(null); }}
-                  className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
-                    currentPage === page
-                      ? 'bg-gradient-to-r from-[#1E90FF] to-blue-600 text-white shadow-md'
-                      : 'hover:bg-muted/30'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); setExpandedFAQ(null); }}
-              disabled={currentPage === totalPages}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted/30"
-            >
-              <span className="text-sm">Next</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-
-        {/* Page info */}
-        {totalPages > 1 && (
-          <p className="text-center text-sm text-muted-foreground mt-2">
-            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredFAQs.length)} of {filteredFAQs.length} questions
-          </p>
-        )}
-
-        {/* Still Need Help */}
-        <div className="mt-12 bg-primary rounded-lg shadow-lg p-8 text-white text-center">
-          <h2 className="text-2xl mb-3">Still have questions?</h2>
-          <p className="text-blue-100 mb-6">
-            Can't find what you're looking for? Our support team is here to help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => onNavigate('help')}
-              className="px-8 py-3 bg-white text-[#1E90FF] rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              Visit Help Center
-            </button>
-            <button
-              onClick={() => onNavigate('contact')}
-              className="px-8 py-3 bg-white/10 backdrop-blur text-white rounded-lg hover:bg-white/20 transition-colors border-2 border-white/30"
-            >
-              Contact Support
-            </button>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button
-            onClick={() => onNavigate('privacy')}
-            className="p-4 bg-muted/30 rounded-lg shadow hover:shadow-md transition-shadow text-center"
-          >
-            <Shield className="w-6 h-6 mx-auto mb-2 text-[#1E90FF]" />
-            <p className="text-sm">Privacy Policy</p>
+        <section className="mt-12 overflow-hidden rounded-3xl bg-foreground px-5 py-7 text-background sm:flex sm:items-center sm:justify-between sm:gap-8 sm:px-8 sm:py-8">
+          <div>
+            <h2 className="text-xl font-semibold sm:text-2xl">Still need help?</h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-background/70">Talk to support about your account, payment, or Protected Deal. Include a transaction reference when you have one.</p>
+          </div>
+          <button onClick={() => onNavigate('contact')} className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary/90 sm:mt-0 sm:w-auto sm:shrink-0">
+            Contact support <ArrowRight className="h-4 w-4" />
           </button>
-          <button
-            onClick={() => onNavigate('terms')}
-            className="p-4 bg-muted/30 rounded-lg shadow hover:shadow-md transition-shadow text-center"
-          >
-            <Shield className="w-6 h-6 mx-auto mb-2 text-[#1E90FF]" />
-            <p className="text-sm">Terms of Service</p>
-          </button>
-          <button
-            onClick={() => onNavigate('verification-policy')}
-            className="p-4 bg-muted/30 rounded-lg shadow hover:shadow-md transition-shadow text-center"
-          >
-            <Shield className="w-6 h-6 mx-auto mb-2 text-[#1E90FF]" />
-            <p className="text-sm">Verification Policy</p>
-          </button>
-          <button
-            onClick={() => onNavigate('report-fraud')}
-            className="p-4 bg-muted/30 rounded-lg shadow hover:shadow-md transition-shadow text-center"
-          >
-            <Shield className="w-6 h-6 mx-auto mb-2 text-[#1E90FF]" />
-            <p className="text-sm">Report a Concern</p>
-          </button>
-        </div>
-      </div>
+        </section>
+
+        <nav aria-label="Helpful policies" className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 font-medium text-foreground"><Shield className="h-4 w-4 text-primary" /> Helpful policies</span>
+          <button onClick={() => onNavigate('privacy')} className="hover:text-primary">Privacy</button>
+          <button onClick={() => onNavigate('terms')} className="hover:text-primary">Terms</button>
+          <button onClick={() => onNavigate('verification-policy')} className="hover:text-primary">Verification</button>
+          <button onClick={() => onNavigate('report-fraud')} className="hover:text-primary">Report a concern</button>
+        </nav>
+      </main>
     </div>
   );
 };

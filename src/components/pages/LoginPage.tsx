@@ -14,6 +14,7 @@ import { ResetPasswordForm } from '../pieces/auth/ResetPasswordForm';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { SEOHead } from '../utility/SEOHead';
 import spiralBackground from '../../assets/spiral.svg';
+import { pageImages } from '../../libs/images/image-manifest';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -58,9 +59,9 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const [view, setView] = useState<AuthView>(initialView);
 
   const trustHighlights = [
-    'Return to payments and Protected Deals in progress',
-    'Keep identity, business, and evidence records together',
-    'Review your complete payment and deal activity',
+    'Return to quotes, protected orders, and deliveries in progress',
+    'Keep supplier checks, documents, messages, and evidence together',
+    'Review landed costs, protected funds, and order activity',
   ];
 
   // Shared so the same trust points sit in the desktop side panel AND, on
@@ -294,8 +295,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
-        title="Sign in to Payments and Protected Deals"
-        description="Sign in to Naitrust to send and receive money, manage customer or business payments, and continue your Protected Deals."
+        title="Sign in to Naitrust Market"
+        description="Sign in to browse saved suppliers, manage carts and quotes, pay for protected orders, and track delivery to Nigeria."
         canonicalPath="/login"
       />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
@@ -332,12 +333,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                   Welcome back. Pick up with confidence.
                 </h1>
                 <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                  Pay someone you trust, collect from a customer, or continue a Protected Deal with the full story still attached.
+                  Continue your supplier cart, review a landed-cost quote, or track a protected order from China to your door.
                 </p>
               </div>
 
               {/* Trust points: desktop side panel only; on mobile they appear below the form. */}
               <div className="mt-10 hidden lg:block">{highlightsBlock}</div>
+              <img src={pageImages.login.src} alt={pageImages.login.alt} loading="lazy" className="mt-5 aspect-[3/2] w-full rounded-2xl object-cover shadow-sm" />
             </div>
           </motion.div>
           <div className="mt-10 hidden text-sm leading-6 text-muted-foreground lg:block">

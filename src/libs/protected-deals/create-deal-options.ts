@@ -71,6 +71,18 @@ const FALLBACK_RELEASE_CONDITIONS =
 
 export const DEFAULT_INVITATION_EXPIRY_DAYS = 7;
 
+/**
+ * Deals at or below this amount use light protection: verified recipient, held
+ * payment, and delivery review, without a per-deal identity photo. Above it,
+ * full protection applies. Keeps the identity-photo ceremony for the
+ * high-stakes deals it's meant for instead of every deal regardless of size.
+ */
+export const LIGHT_PROTECTION_MAX_AMOUNT_MINOR = 5_000_000; // ₦50,000
+
+export function isLightProtectionAmount(amountMinor: number): boolean {
+  return amountMinor > 0 && amountMinor <= LIGHT_PROTECTION_MAX_AMOUNT_MINOR;
+}
+
 export function shortUseCaseLabel(useCase: UseCase): string {
   return SHORT_LABELS[useCase.slug] ?? useCase.title;
 }

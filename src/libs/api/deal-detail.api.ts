@@ -49,6 +49,8 @@ import { mockDealParticipantUserIds } from './mock-deal-access';
 import { mockCreatedDealParticipantIndex, mockCreatedDealRoleContext, mockParticipantUserId } from './mock-deal-participants';
 import { hasRequiredProductEvidence, supportsDeliveryReview } from '../protected-deals/delivery-review';
 import { activateDisputeWithEvidence } from './dispute.api';
+import { recommendedWorkflowForUseCase } from '../features/use-case-features';
+import { notificationsApi } from './notifications.api';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -472,6 +474,14 @@ const MILESTONE_STAGES = [
   { title: 'Delivered & confirmed', description: 'Buyer confirmed delivery: release can proceed.' },
 ];
 
+const WORK_MILESTONE_STAGES = [
+  { title: 'Scope confirmed', description: 'Both parties agreed the work, evidence, and payment conditions.' },
+  { title: 'Work started', description: 'The provider started the agreed work.' },
+  { title: 'Progress submitted', description: 'Progress evidence was added for review.' },
+  { title: 'Final work submitted', description: 'The provider submitted the completed work and evidence.' },
+  { title: 'Reviewed & approved', description: 'The buyer reviewed the active stage and approved it.' },
+];
+
 /** How far along the tracking stages a deal is, by status. */
 function milestoneProgress(status: SafeDealStatus): number {
   switch (status) {
@@ -493,14 +503,15 @@ function milestoneProgress(status: SafeDealStatus): number {
   }
 }
 
-function milestonesFor(summary: SafeDealSummary, sellerName = 'Seller'): DealMilestone[] {
+function milestonesFor(summary: SafeDealSummary, sellerName = 'Seller', workflowMode: 'delivery' | 'service' | 'milestone' = 'delivery'): DealMilestone[] {
   const reached = milestoneProgress(summary.status);
   // Funding confirms the order, but it does not prove dispatch. The seller
   // must explicitly complete the Dispatched step after creating the delivery
   // handover code.
   const waitingForDispatch = summary.status === 'funded';
   const base = new Date(summary.createdAt).getTime();
-  return MILESTONE_STAGES.map((stage, i) => {
+  const stages = workflowMode === 'delivery' ? MILESTONE_STAGES : WORK_MILESTONE_STAGES;
+  return stages.map((stage, i) => {
     let status: MilestoneStatus = 'pending';
     if (i < reached) status = 'done';
     else if (i === reached && !waitingForDispatch) status = 'current';
@@ -642,8 +653,10 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   // The Tracking tab is available to every Protected Deal, but single-release
   // deals begin empty. Their seller adds only the delivery/work updates that
   // fit the deal; preset stages belong to explicit milestone-tracking deals.
-  const milestones = trackingOverrides[summary.id] ?? (dealType === 'milestone'
-    ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName)
+  const useCase = input?.useCase ?? overlay?.useCase ?? 'supplier-orders';
+  const workflowMode = input?.workflowMode ?? recommendedWorkflowForUseCase(useCase);
+  const milestones = trackingOverrides[summary.id] ?? (dealType === 'milestone' || workflowMode === 'milestone'
+    ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName, workflowMode)
     : []);
   const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
   return {
@@ -651,7 +664,8 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     publicInvitePath: viewerIsCreator ? createdDeal?.summary.publicInvitePath : undefined,
     title: summary.title ?? `Protected Deal with ${summary.counterpartyName}`,
     description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
-    useCase: input?.useCase ?? overlay?.useCase ?? 'supplier-orders',
+    useCase,
+    workflowMode,
     dealType,
     partyMode: input?.partyMode ?? overlay?.partyMode ?? inferredPartyMode,
     deliveryDueDate: input?.deliveryDueDate ?? new Date(created + 10 * 86400000).toISOString().slice(0, 10),
@@ -676,6 +690,7 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     activity: [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
     milestones,
     delivery: runtime?.delivery ?? reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays),
+    completion: runtime?.completion ?? { status: 'in_progress' },
     activePaymentStage: runtime?.activePaymentStage,
     firstPaymentReleasedAt: runtime?.firstPaymentReleasedAt,
   };
@@ -733,7 +748,80 @@ function getMockDetailOrThrow(id: string): SafeDealDetail {
   return buildDealDetail(summary);
 }
 
+function mockRecipientUserId(id: string, role: DealRole): string | undefined {
+  const created = findMockCreatedDeal(id);
+  if (!created) return undefined;
+  const context = mockCreatedDealRoleContext(id);
+  if (context.creatorRole === role) return created.summary.createdByUserId;
+  return created.input.participants
+    .filter((_, index) => index !== context.selfParticipantIndex)
+    .map(mockParticipantUserId)
+    .find(Boolean);
+}
+
 export const dealDetailApi = {
+  requestServiceRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) {
+      return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/request-release`) as ApiSuccess<SafeDealDetail>;
+    }
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    const actor = deal.parties.find((party) => party.isYou);
+    if (deal.workflowMode === 'delivery') throw new Error('Use the delivery handover flow for this deal.');
+    if (actor?.role !== 'seller') throw new Error('Only the provider can request payment.');
+    if (deal.funding.status !== 'funded') throw new Error('Payment must be funded before release can be requested.');
+    if (!deal.evidence.some((item) => item.uploadedByRole === 'seller')) throw new Error('Add completion evidence before requesting payment.');
+    const current = getMockDealRuntime(id);
+    const now = new Date().toISOString();
+    patchMockDealRuntime(id, {
+      status: 'buyer_review',
+      completion: { status: 'release_requested', requestedAt: now, requestedByName: actor.name },
+      activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'review', message: `${actor.name} submitted work and requested payment release.`, createdAt: now }, ...(current?.activity ?? [])],
+    });
+    notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Work ready for review', message: `${deal.title} is ready for your review and payment decision.`, link: `/app/deals/${id}` });
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
+
+  requestServiceChanges: async (id: string, reason: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) {
+      return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/request-changes`, { reason }) as ApiSuccess<SafeDealDetail>;
+    }
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    const actor = deal.parties.find((party) => party.isYou);
+    if (actor?.role !== 'buyer') throw new Error('Only the buyer can request changes.');
+    if (deal.completion.status !== 'release_requested') throw new Error('There is no work awaiting review.');
+    if (!reason.trim()) throw new Error('Explain what needs to be changed.');
+    const current = getMockDealRuntime(id);
+    const now = new Date().toISOString();
+    patchMockDealRuntime(id, {
+      status: 'in_progress',
+      completion: { ...deal.completion, status: 'changes_requested', changesRequestedAt: now, changesReason: reason.trim() },
+      activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'review', message: `Buyer requested changes: ${reason.trim()}`, createdAt: now }, ...(current?.activity ?? [])],
+    });
+    notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Changes requested', message: `The buyer requested changes to ${deal.title}.`, link: `/app/deals/${id}` });
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
+
+  approveServiceRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    if (!appConfig.isMock) {
+      return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/approve-release`) as ApiSuccess<SafeDealDetail>;
+    }
+    await delay(250);
+    const deal = getMockDetailOrThrow(id);
+    const actor = deal.parties.find((party) => party.isYou);
+    if (actor?.role !== 'buyer') throw new Error('Only the buyer can approve release.');
+    if (deal.completion.status !== 'release_requested') throw new Error('The provider has not requested payment.');
+    const current = getMockDealRuntime(id);
+    const now = new Date().toISOString();
+    patchMockDealRuntime(id, {
+      status: 'completed',
+      completion: { ...deal.completion, status: 'paid_out', approvedAt: now, paidOutAt: now },
+      activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'released', message: 'Buyer reviewed the work and approved payment release.', createdAt: now }, ...(current?.activity ?? [])],
+    });
+    notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Payment released', message: `The buyer approved payment for ${deal.title}.`, link: `/app/deals/${id}` });
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
   fundFromWallet: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
     if (!appConfig.isMock) {
       const res = await httpClient.post<SafeDealDetail>(endpoints.transactions.fund(id), { source: 'wallet' });
@@ -987,6 +1075,15 @@ export const dealDetailApi = {
       }));
       evidenceExtra[id] = [...(evidenceExtra[id] ?? []), ...created];
       if (uploadedByRole === 'buyer') activateDisputeWithEvidence(id);
+      const deal = getMockDetailOrThrow(id);
+      const runtime = getMockDealRuntime(id);
+      const now = new Date().toISOString();
+      patchMockDealRuntime(id, {
+        activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'evidence', message: `${uploadedByName} added ${created.length === 1 ? 'evidence' : `${created.length} evidence files`} to the deal.`, createdAt: now }, ...(runtime?.activity ?? [])],
+      });
+      if (deal.workflowMode !== 'delivery' && uploadedByRole === 'seller' && deal.completion.status === 'changes_requested') {
+        notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Revised work evidence added', message: `${uploadedByName} added revised evidence to ${deal.title}.`, link: `/app/deals/${id}` });
+      }
       return { success: true, data: evidenceExtra[id] };
     }
     const res = await httpClient.post<DealEvidenceItem[]>(endpoints.upload.verificationDocument, {

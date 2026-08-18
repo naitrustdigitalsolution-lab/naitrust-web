@@ -3,7 +3,7 @@
  * Component piece for changing user password
  */
 
-import { Lock, Loader2 } from 'lucide-react';
+import { ChevronDown, Lock, Loader2 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { PasswordInput } from '../../ui/input';
 import { Label } from '../../ui/label';
@@ -18,6 +18,8 @@ interface PasswordSettingsProps {
   onConfirmPasswordChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   isChanging: boolean;
+  expanded?: boolean;
+  onToggle?: () => void;
 }
 
 export function PasswordSettings({
@@ -29,22 +31,25 @@ export function PasswordSettings({
   onConfirmPasswordChange,
   onSubmit,
   isChanging,
+  expanded = true,
+  onToggle,
 }: PasswordSettingsProps) {
   return (
-    <Card className="h-full shadow-sm">
-      <CardContent className="flex h-full flex-col px-5 py-4">
-        <div className="mb-4 flex items-center gap-3 border-b pb-4">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <Card className="h-full rounded-xl shadow-none sm:shadow-sm">
+      <CardContent className="flex h-full flex-col px-4 py-4 sm:px-5">
+        <button type="button" onClick={onToggle} className="flex w-full items-center gap-3 border-b pb-3 text-left sm:pointer-events-none sm:pb-4">
+          <span className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary sm:flex">
             <Lock size={17} />
           </span>
           <div>
-            <h2 className="text-sm font-semibold text-foreground">Change password</h2>
+            <h2 className="text-base font-semibold text-foreground sm:text-sm">Change password</h2>
             <p className="text-xs text-muted-foreground">Keep your sign-in secure</p>
           </div>
-        </div>
-        <form onSubmit={onSubmit} className="flex flex-1 flex-col gap-3">
+          <ChevronDown size={17} className={`ml-auto shrink-0 transition-transform sm:hidden ${expanded ? 'rotate-180' : ''}`} />
+        </button>
+        <form onSubmit={onSubmit} className={`${expanded ? 'flex' : 'hidden'} mt-4 flex-1 flex-col gap-3 sm:flex`}>
           <div>
-            <Label htmlFor="current-password">Current Password</Label>
+            <Label htmlFor="current-password">Current password</Label>
             <PasswordInput
               id="current-password"
               value={currentPassword}
@@ -55,7 +60,7 @@ export function PasswordSettings({
           </div>
 
           <div>
-            <Label htmlFor="new-password">New Password</Label>
+            <Label htmlFor="new-password">New password</Label>
             <PasswordInput
               id="new-password"
               value={newPassword}
@@ -63,13 +68,11 @@ export function PasswordSettings({
               placeholder="Enter new password"
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Password must be at least 8 characters
-            </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">At least 8 characters</p>
           </div>
 
           <div>
-            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Label htmlFor="confirm-password">Confirm new password</Label>
             <PasswordInput
               id="confirm-password"
               value={confirmPassword}
@@ -79,7 +82,7 @@ export function PasswordSettings({
             />
           </div>
 
-          <Button type="submit" className="mt-auto w-full self-end rounded-full sm:w-44" disabled={isChanging}>
+          <Button type="submit" className="mt-2 h-10 w-full self-end rounded-full sm:mt-auto sm:w-44" disabled={isChanging}>
             {isChanging ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -88,7 +91,7 @@ export function PasswordSettings({
             ) : (
               <>
                 <Lock size={16} className="mr-2" />
-                Update Password
+                Update password
               </>
             )}
           </Button>

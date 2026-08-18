@@ -5,8 +5,8 @@
  * notifications, and more nav items arrive with future slices.
  */
 
-import { useState, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   LogOut,
@@ -26,8 +26,20 @@ import {
   Building2,
   Search,
   MessageCircle,
-  BadgeCheck,
   Gift,
+  ShoppingCart,
+  ClipboardList,
+  PackageSearch,
+  UserCheck,
+  WalletCards,
+  Store,
+  Boxes,
+  CircleDollarSign,
+  Workflow,
+  Network,
+  Ship,
+  Truck,
+  ChevronDown,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -41,12 +53,16 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
 } from '../../ui/sidebar';
 import { Avatar, AvatarFallback } from '../../ui/avatar';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../ui/collapsible';
 import { Skeleton } from '../../ui/skeleton';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { SEOHead } from '../../utility/SEOHead';
@@ -56,6 +72,7 @@ import { usePendingInvitationCount } from '../../../hooks/useInvitations';
 import { useUnreadNotificationCount } from '../../../hooks/useNotifications';
 import { accountTypeLabel, accountTypeOf } from '../../../libs/utils/account';
 import { useMyBusiness } from '../../../hooks/useMyBusiness';
+import { marketplaceApi, MARKET_CART_UPDATED_EVENT } from '../../../libs/marketplace/marketplace.api';
 
 interface DashboardLayoutProps {
   title: string;
@@ -68,6 +85,7 @@ interface NavItem {
   icon: typeof LayoutDashboard;
   /** true → active on any sub-path; false/undefined → exact match only. */
   matchPrefix?: boolean;
+  children?: NavItem[];
 }
 
 interface NavGroup {
@@ -83,85 +101,104 @@ const SHARED_ACCOUNT_GROUP: NavGroup = {
   ],
 };
 
-const BUSINESS_ACCOUNT_GROUP: NavGroup = {
-  label: 'Account',
-  items: [
-    { label: 'Trust Profile', path: '/app/trust-profile', icon: BadgeCheck, matchPrefix: true },
-    ...SHARED_ACCOUNT_GROUP.items,
-  ],
-};
-
 const BUSINESS_NAV_GROUPS: NavGroup[] = [
+  { items: [{ label: 'Business home', path: '/app', icon: LayoutDashboard }] },
   {
-    items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }],
-  },
-  {
-    label: 'Business trust',
+    label: 'Workspace',
     items: [
-      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
-      { label: 'Customers & Suppliers', path: '/app/network', icon: Building2, matchPrefix: true },
+      { label: 'Buy wholesale', path: '/app/market', icon: Search, children: [
+        { label: 'Find from a link', path: '/app/source', icon: Search, matchPrefix: true },
+        { label: 'Browse market', path: '/app/market', icon: Store, matchPrefix: true },
+        { label: 'Quotes', path: '/app/quotes', icon: ClipboardList, matchPrefix: true },
+        { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
+        { label: 'Production plan', path: '/app/production', icon: Workflow, matchPrefix: true },
+      ] },
+      { label: 'Agents & shipping', path: '/app/agents', icon: Network, children: [
+        { label: 'Nigerian agents in China', path: '/app/agents', icon: UserCheck, matchPrefix: true },
+        { label: 'Agent assignments', path: '/app/agent-assignments', icon: Network, matchPrefix: true },
+        { label: 'Logistics providers', path: '/app/logistics', icon: Truck, matchPrefix: true },
+        { label: 'Shipments', path: '/app/shipments', icon: Ship, matchPrefix: true },
+      ] },
+      { label: 'Sell locally', path: '/app/showcase', icon: Store, children: [
+        { label: 'Showcase', path: '/app/showcase', icon: Store, matchPrefix: true },
+        { label: 'Products', path: '/app/products', icon: Boxes, matchPrefix: true },
+        { label: 'Customers', path: '/app/network', icon: Users, matchPrefix: true },
+      ] },
     ],
   },
   {
-    label: 'Protected Deals',
+    label: 'Money & support',
     items: [
-      { label: 'Your Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
-      { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
-    ],
-  },
-  {
-    label: 'Business money',
-    items: [
-      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
-      { label: 'Send Money', path: '/app/payments', icon: Send },
+      { label: 'Earnings & wallet', path: '/app/wallet', icon: CircleDollarSign, matchPrefix: true },
       { label: 'Transactions', path: '/app/transactions', icon: Receipt },
-    ],
-  },
-  { label: 'More', items: [{ label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText }] },
-  {
-    label: 'Support',
-    items: [
-      { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
-      { label: 'Notifications', path: '/app/notifications', icon: Bell },
-    ],
-  },
-  BUSINESS_ACCOUNT_GROUP,
-];
-
-const CUSTOMER_NAV_GROUPS: NavGroup[] = [
-  { items: [{ label: 'Dashboard', path: '/app', icon: LayoutDashboard }] },
-  {
-    label: 'Businesses',
-    items: [
-      { label: 'Find a Business', path: '/app/businesses', icon: Search, matchPrefix: true },
-    ],
-  },
-  {
-    label: 'Money',
-    items: [
-      { label: 'Send Money', path: '/app/payments', icon: Send },
-      { label: 'Receive Money', path: '/app/payments/receive', icon: ArrowDownToLine },
-      { label: 'Money Activity', path: '/app/transactions', icon: Receipt },
-    ],
-  },
-  { label: 'More', items: [{ label: 'Bills & Airtime', path: '/app/bills', icon: ReceiptText }] },
-  {
-    label: 'Protected Deals',
-    items: [
-      { label: 'Your Deals', path: '/app/deals', icon: ShieldCheck, matchPrefix: true },
-      { label: 'Protect a Payment', path: '/app/deals/new', icon: PlusCircle },
-      { label: 'Invitations', path: '/app/invitations', icon: Inbox, matchPrefix: true },
-    ],
-  },
-  {
-    label: 'Support',
-    items: [
       { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
       { label: 'Notifications', path: '/app/notifications', icon: Bell },
     ],
   },
   SHARED_ACCOUNT_GROUP,
+];
+
+const CUSTOMER_NAV_GROUPS: NavGroup[] = [
+  { items: [{ label: 'Home', path: '/app', icon: LayoutDashboard }] },
+  {
+    label: 'Workspace',
+    items: [
+      { label: 'Buy wholesale', path: '/app/market', icon: Search, children: [
+        { label: 'Find from a link', path: '/app/source', icon: Search, matchPrefix: true },
+        { label: 'Browse market', path: '/app/market', icon: Store, matchPrefix: true },
+        { label: 'Quotes', path: '/app/quotes', icon: ClipboardList, matchPrefix: true },
+        { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
+      ] },
+      { label: 'Agents & shipping', path: '/app/agents', icon: Network, children: [
+        { label: 'Nigerian agents in China', path: '/app/agents', icon: UserCheck, matchPrefix: true },
+        { label: 'Agent assignments', path: '/app/agent-assignments', icon: Network, matchPrefix: true },
+        { label: 'Logistics providers', path: '/app/logistics', icon: Truck, matchPrefix: true },
+        { label: 'Shipments', path: '/app/shipments', icon: Ship, matchPrefix: true },
+      ] },
+    ],
+  },
+  {
+    label: 'Money & support',
+    items: [
+      { label: 'Order wallet', path: '/app/wallet', icon: WalletCards, matchPrefix: true },
+      { label: 'Transactions', path: '/app/transactions', icon: Receipt },
+      { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
+      { label: 'Notifications', path: '/app/notifications', icon: Bell },
+    ],
+  },
+  SHARED_ACCOUNT_GROUP,
+];
+
+const ADMIN_NAV_GROUPS: NavGroup[] = [
+  { items: [{ label: 'Admin overview', path: '/app/admin/overview', icon: LayoutDashboard }] },
+  {
+    label: 'Operations',
+    items: [
+      { label: 'Marketplace', path: '/app/admin/sourcing', icon: Store, children: [
+        { label: 'Sourcing requests', path: '/app/admin/sourcing', icon: Search },
+        { label: 'Suppliers', path: '/app/admin/suppliers', icon: Store },
+        { label: 'Products', path: '/app/admin/products', icon: Boxes },
+      ] },
+      { label: 'Partners', path: '/app/admin/applications', icon: Network, children: [
+        { label: 'Applications', path: '/app/admin/applications', icon: Network },
+        { label: 'Sourcing agents', path: '/app/admin/agents', icon: UserCheck },
+        { label: 'Logistics providers', path: '/app/admin/logistics', icon: Truck },
+      ] },
+      { label: 'Orders & releases', path: '/app/admin/releases', icon: ShieldCheck, children: [
+        { label: 'Supplier releases', path: '/app/admin/releases', icon: ShieldCheck },
+        { label: 'Shipment batches', path: '/app/admin/shipments', icon: Ship },
+      ] },
+    ],
+  },
+  {
+    label: 'Control centre',
+    items: [
+      { label: 'Payments', path: '/app/admin/payments', icon: Receipt },
+      { label: 'Moderation', path: '/app/admin/moderation', icon: MessageCircle },
+      { label: 'Waitlist & leads', path: '/app/admin/leads', icon: Users },
+      { label: 'Audit log', path: '/app/admin/audit', icon: ClipboardList },
+    ],
+  },
 ];
 
 function initialsOf(name: string | undefined): string {
@@ -182,11 +219,24 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const pendingInvitations = usePendingInvitationCount();
   const unreadNotifications = useUnreadNotificationCount();
   const { data: business, isLoading: isBusinessLoading } = useMyBusiness();
-  const isBusinessAccount = accountTypeOf(user) !== 'customer';
+  const accountType = accountTypeOf(user);
+  const isBusinessAccount = accountType === 'business';
   const displayName = isBusinessAccount ? business?.name : user?.name;
   const accountIdentityLoading = isBusinessAccount && isBusinessLoading;
-  const navGroups = isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
-  const navItems = navGroups.flatMap((group) => group.items);
+  const navGroups = accountType === 'admin' ? ADMIN_NAV_GROUPS : isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
+  const navItems = navGroups.flatMap((group) => group.items.flatMap((item) => item.children ?? [item]));
+  const [cartCount, setCartCount] = useState(() => marketplaceApi.getCart()?.items.length ?? 0);
+
+  useEffect(() => {
+    const updateCartCount = () => setCartCount(marketplaceApi.getCart()?.items.length ?? 0);
+    window.addEventListener(MARKET_CART_UPDATED_EVENT, updateCartCount);
+    window.addEventListener('storage', updateCartCount);
+    updateCartCount();
+    return () => {
+      window.removeEventListener(MARKET_CART_UPDATED_EVENT, updateCartCount);
+      window.removeEventListener('storage', updateCartCount);
+    };
+  }, [user?.id, user?.email]);
 
   // Tablets (iPad portrait/landscape included) default to the collapsed icon
   // rail so page content isn't squeezed behind a full 256px sidebar; only
@@ -199,12 +249,22 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   // An exact nav match (e.g. /app/deals/new) wins so a prefix item
   // (/app/deals) doesn't also highlight.
   const exactMatch = navItems.some((i) => i.path === location.pathname);
-  const isActive = (item: NavItem) =>
+  const isPathActive = useCallback((item: NavItem) =>
     exactMatch
       ? item.path === location.pathname
       : item.matchPrefix
         ? location.pathname.startsWith(item.path)
-        : location.pathname === item.path;
+        : location.pathname === item.path, [exactMatch, location.pathname]);
+  const isActive = useCallback((item: NavItem) => isPathActive(item) || Boolean(item.children?.some(isPathActive)), [isPathActive]);
+  const [openNavItems, setOpenNavItems] = useState<Record<string, boolean>>(() => Object.fromEntries(
+    navGroups.flatMap((group) => group.items.filter((item) => item.children).map((item) => [item.label, isActive(item)])),
+  ));
+
+  useEffect(() => {
+    const activeParent = navGroups.flatMap((group) => group.items).find((item) => item.children && isActive(item));
+    if (!activeParent) return;
+    setOpenNavItems((current) => current[activeParent.label] ? current : { ...current, [activeParent.label]: true });
+  }, [isActive, navGroups]);
 
   const handleLogout = async () => {
     await logout();
@@ -247,31 +307,44 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
         </SidebarHeader>
 
         <SidebarContent>
-          {navGroups.map((group, gi) => (
-            <SidebarGroup key={group.label ?? `group-${gi}`}>
-              {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
-              <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton
-                      isActive={isActive(item)}
-                      tooltip={item.label}
-                      onClick={() => navigate(item.path)}
-                    >
+          {navGroups.map((group, gi) => <SidebarGroup key={group.label ?? `group-${gi}`}>{group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}<SidebarMenu>{group.items.map((item) => {
+            if (!item.children) return <SidebarMenuItem key={item.path}><SidebarMenuButton isActive={isActive(item)} tooltip={item.label} onClick={() => navigate(item.path)}><item.icon /><span>{item.label}</span></SidebarMenuButton>{item.path === '/app/invitations' && pendingInvitations > 0 && <SidebarMenuBadge>{pendingInvitations}</SidebarMenuBadge>}{item.path === '/app/notifications' && unreadNotifications > 0 && <SidebarMenuBadge>{unreadNotifications}</SidebarMenuBadge>}</SidebarMenuItem>;
+            const open = Boolean(openNavItems[item.label]);
+            return (
+              <Collapsible
+                key={item.label}
+                asChild
+                open={open}
+                onOpenChange={(next) => {
+                  setOpenNavItems((current) => ({ ...current, [item.label]: next }));
+                  if (next) setSidebarOpen(true);
+                }}
+              >
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton isActive={isActive(item)} tooltip={item.label}>
                       <item.icon />
                       <span>{item.label}</span>
+                      <ChevronDown
+                        className={`ml-auto transition-transform group-data-[collapsible=icon]:hidden ${open ? 'rotate-180' : ''}`}
+                      />
                     </SidebarMenuButton>
-                    {item.path === '/app/invitations' && pendingInvitations > 0 && (
-                      <SidebarMenuBadge>{pendingInvitations}</SidebarMenuBadge>
-                    )}
-                    {item.path === '/app/notifications' && unreadNotifications > 0 && (
-                      <SidebarMenuBadge>{unreadNotifications}</SidebarMenuBadge>
-                    )}
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
-          ))}
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {item.children.map((child) => (
+                        <SidebarMenuSubItem key={child.path}>
+                          <SidebarMenuSubButton asChild isActive={isActive(child)}>
+                            <Link to={child.path}>{child.label}</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            );
+          })}</SidebarMenu></SidebarGroup>)}
         </SidebarContent>
 
         <SidebarFooter>
@@ -310,6 +383,20 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
           <h1 className="min-w-0 truncate text-sm font-semibold text-foreground sm:text-base">{title}</h1>
 
           <div className="ml-auto flex items-center gap-1">
+            {accountType !== 'admin' && <Button
+              variant="ghost"
+              size="icon"
+              aria-label={cartCount > 0 ? `Cart with ${cartCount} items` : 'Cart'}
+              className="relative"
+              onClick={() => navigate('/app/cart')}
+            >
+              <ShoppingCart size={18} />
+              {cartCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-white">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
+            </Button>}
             <Button
               variant="ghost"
               size="icon"

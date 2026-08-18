@@ -68,32 +68,32 @@ function SecurityRow({
     <div
       role="button"
       tabIndex={0}
-      className="flex cursor-pointer items-center justify-between gap-4 border-b px-5 py-4 transition-colors last:border-b-0 hover:bg-accent/40"
+      className="flex cursor-pointer items-center justify-between gap-3 border-b px-3 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:gap-4 sm:px-5"
       onClick={onAction}
       onKeyDown={(event) => {
         if (event.key === 'Enter') onAction();
       }}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-start gap-3 sm:items-center">
         <div
           className={
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ' +
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ' +
             (done ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-primary/10 text-primary')
           }
         >
-          {done ? <BadgeCheck size={20} /> : <Icon size={20} />}
+          {done ? <BadgeCheck size={17} /> : <Icon size={17} />}
         </div>
         <div className="min-w-0">
-          <p className="truncate font-semibold text-foreground">{title}</p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">{description}</p>
+          <p className="truncate text-sm font-semibold text-foreground sm:text-base">{title}</p>
+          <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-muted-foreground sm:truncate sm:text-sm">{description}</p>
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
         {done ? (
-          <Badge variant="success">{doneLabel}</Badge>
+          <Badge variant="success" className="px-2 py-0.5 text-[10px] sm:text-xs">{doneLabel}</Badge>
         ) : (
-          <Badge variant={required ? 'default' : 'outline'}>{required ? 'Required' : 'Recommended'}</Badge>
+          <Badge variant={required ? 'default' : 'outline'} className="px-2 py-0.5 text-[10px] sm:text-xs">{required ? 'Required' : 'Recommended'}</Badge>
         )}
         <ChevronRight size={16} className="text-muted-foreground" />
       </div>
@@ -714,7 +714,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
           </button>
         )}
 
-        <div className={embedded ? 'mb-7 border-b pb-6' : 'mb-8 overflow-hidden rounded-xl border border-[#071b31]/10 bg-[#c4e9fdb3] text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground'}>
+        <div className={embedded ? 'mb-5 border-b pb-4 sm:mb-7 sm:pb-6' : 'mb-5 overflow-hidden rounded-xl border border-[#071b31]/10 bg-[#c4e9fdb3] text-[#071b31] shadow-sm dark:border-primary/20 dark:bg-primary/10 dark:text-foreground sm:mb-8'}>
           <div className={embedded ? '' : 'grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_320px] lg:items-center'}>
             <div className="flex items-start gap-4">
               {!embedded && (
@@ -725,23 +725,22 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
               <div className="min-w-0 flex-1">
                 {!embedded && <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">Account protection</p>}
                 <div className={embedded ? 'flex flex-wrap items-center justify-between gap-3' : ''}>
-                <h1 className={embedded ? 'text-xl font-bold tracking-tight text-foreground' : 'text-2xl font-bold tracking-tight text-[#071b31] dark:text-foreground sm:text-3xl'}>Security Center</h1>
+                <h1 className={embedded ? 'text-lg font-semibold tracking-tight text-foreground sm:text-xl sm:font-bold' : 'text-2xl font-bold tracking-tight text-[#071b31] dark:text-foreground sm:text-3xl'}>Security Center</h1>
                   {embedded && (
-                    <Badge variant={progress === 100 ? 'success' : 'outline'} className="rounded-full px-3 py-1">
-                      {requiredComplete} of {requiredChecks.length} required complete
+                    <Badge variant={progress === 100 ? 'success' : 'outline'} className="rounded-full px-2 py-0.5 text-[10px] sm:px-3 sm:py-1 sm:text-xs">
+                      {requiredComplete}/{requiredChecks.length} required
                     </Badge>
                   )}
                 </div>
-                <p className={embedded ? 'mt-1 max-w-2xl text-sm leading-6 text-muted-foreground' : 'mt-2 max-w-2xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground sm:text-base'}>
-                  Verify who you are and protect sensitive Protected Deal actions. Identity,
-                  email, and a transaction PIN are required before creating a transaction.
+                <p className={embedded ? 'mt-1 max-w-2xl text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6' : 'mt-2 max-w-2xl text-sm leading-6 text-[#35546f] dark:text-muted-foreground sm:text-base'}>
+                  Complete the required checks to protect payments and sensitive actions.
                 </p>
                 {embedded && (
-                  <div className="mt-4 flex items-center gap-3">
+                  <div className="mt-3 flex items-center gap-3 sm:mt-4">
                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                       <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${progress}%` }} />
                     </div>
-                    <span className="text-sm font-semibold tabular-nums text-foreground">{progress}%</span>
+                    <span className="text-xs font-semibold tabular-nums text-foreground sm:text-sm">{progress}%</span>
                   </div>
                 )}
               </div>
@@ -764,14 +763,14 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
           </div>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <h2 className="text-base font-semibold text-foreground">Security checks</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Manage the checks and protections linked to your account.</p>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">Manage the checks and protections linked to your account.</p>
         </div>
 
         <div className="mb-2">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Required</p>
-          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Required security checks">
+          <Card className="gap-0 overflow-hidden p-0 shadow-none sm:shadow-sm" aria-label="Required security checks">
             <SecurityRow
               icon={isBusiness ? Building2 : Fingerprint}
               title={isBusiness ? 'Business verification (KYC)' : 'Identity verification (KYC)'}
@@ -811,11 +810,11 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
 
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recommended protection</p>
-          <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Recommended security checks">
+          <Card className="gap-0 overflow-hidden p-0 shadow-none sm:shadow-sm" aria-label="Recommended security checks">
             <SecurityRow
               icon={ScanFace}
               title="Liveness check"
-              description="A live photo confirms you're really present. General account check valid for six months; every deal action still requires a fresh check."
+              description="Confirm your presence for protected account actions."
               done={security.livenessFresh}
               doneLabel="Fresh"
               actionLabel={security.livenessFresh ? 'Redo check' : 'Run check'}
@@ -833,7 +832,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
             <SecurityRow
               icon={Smartphone}
               title="Two-factor (authenticator)"
-              description="Protect sign-in with a time-based code from an app."
+              description="Use an authenticator app to protect sign-in."
               done={security.twoFactorEnabled}
               doneLabel="Enabled"
               actionLabel="Enable 2FA"

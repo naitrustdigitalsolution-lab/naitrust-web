@@ -11,11 +11,12 @@
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
-import type { AgreementDraft, ExtendedProductTestingDays } from '../store/types';
+import type { AgreementDraft, DealWorkflowMode, ExtendedProductTestingDays } from '../store/types';
 import type { ApiSuccess } from './types';
 import { formatMinorAmount } from '../utils/safe-deal-presentation';
 
 export interface DraftAgreementInput {
+  workflowMode: DealWorkflowMode;
   useCaseTitle: string;
   partyModeLabel: string;
   buyerName: string;
@@ -32,6 +33,8 @@ export interface DraftAgreementInput {
 }
 
 export interface DraftPaymentConditionsInput {
+  workflowMode: DealWorkflowMode;
+  paymentStage?: 'first' | 'final';
   useCaseTitle: string;
   title: string;
   description: string;
@@ -80,6 +83,8 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
     ? formatMinorAmount(input.amountMinor - input.initialPaymentMinor!, input.currency)
     : null;
   const reviewWindow = 'standard 1-hour payment-review period';
+  const isDelivery = input.workflowMode === 'delivery';
+  const isService = input.workflowMode === 'service';
   return {
     version,
     generatedByAi: true,
@@ -95,19 +100,27 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
           : `The Buyer will fund ${amount} into a virtual account issued by a regulated payment partner. Naitrust never holds the funds directly. Funds remain protected until the release conditions in this agreement are met.`,
       },
       {
-        heading: 'Delivery obligations',
-        body: `The Seller must deliver as agreed on or before ${input.deliveryDueDate}. Before handover, the Seller should record the product model, serial or IMEI where applicable, packaging condition, and tamper seal in the transaction room.`,
+        heading: isDelivery ? 'Delivery obligations' : isService ? 'Service completion' : 'Milestone obligations',
+        body: isDelivery
+          ? `The Seller must deliver as agreed on or before ${input.deliveryDueDate}. Before handover, the Seller should add the relevant product and dispatch evidence to the Deal Room.`
+          : isService
+            ? `The Provider must complete the agreed work on or before ${input.deliveryDueDate}, add relevant completion evidence, and request payment from the Deal Room when the work is ready for review.`
+            : `The Provider must complete the agreed stages by ${input.deliveryDueDate}, record progress, and attach evidence relevant to each completed milestone.`,
       },
       {
         heading: 'Release conditions',
-        body: firstPayment
+        body: isService
+          ? `Funds release only after the Provider submits completion evidence and requests payment, and the Buyer reviews the work and approves release with their transaction PIN. The Buyer may request changes or open a dispute. There is no automatic release timer for this service deal.`
+          : input.workflowMode === 'milestone'
+            ? `Funds release only for the currently eligible stage after its progress and evidence meet these conditions: ${input.releaseConditions} The Buyer must approve release with their transaction PIN or raise an issue.`
+            : firstPayment
           ? `Payments are released separately. The first payment releases only after this condition is met: ${input.releaseConditions} Receipt starts a ten-minute handover review followed by the ${reviewWindow}. The second payment remains locked until the first payment has been released successfully, then requires this condition: ${input.nextPaymentReleaseConditions} Each release has its own review period. The Seller may request a release, but only the Buyer can approve an early release with a transaction PIN. A dispute opened before either deadline blocks that release.`
           : `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten-minute handover review, followed by the ${reviewWindow}. The Seller may request release. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
       },
-      {
+      ...(isDelivery ? [{
         heading: 'Product checks and consumer rights',
         body: `The ${reviewWindow} controls only Naitrust's partner-funding release deadline. Receipt confirmation and timer expiry do not waive defect, statutory, manufacturer, or seller warranty rights.`,
-      },
+      }] : []),
       {
         heading: 'Disputes',
         body: 'Either party may open a dispute in the transaction room before release. While a dispute is open, no release occurs. Disputes are reviewed against the evidence attached to this deal, and the outcome may be a release, a refund, or a documented split.',
@@ -133,7 +146,7 @@ export const agreementsApi = {
         'equipment-purchase': { titles: ['Equipment purchase and delivery', 'Machinery order and inspection', 'Business equipment supply'], detailDraft: 'Equipment: [name, brand and model]. Quantity and specification: [add details]. Condition: [new/used and warranty]. Included parts or accessories: [list them]. Delivery location and installation requirement: [add details].' },
         'logistics-agreement': { titles: ['Goods delivery and haulage', 'Logistics service agreement', 'Pickup and delivery service'], detailDraft: 'Goods being moved: [description and quantity]. Pickup location: [location]. Destination: [location]. Handling requirements: [fragile, sealed or temperature-sensitive]. Required delivery proof: [waybill, recipient name or photos].' },
         'import-export': { titles: ['Imported goods order', 'International shipment purchase', 'Import and delivery transaction'], detailDraft: 'Goods and quantities: [list them]. Origin and destination: [locations]. Shipping method: [air, sea or road]. Required commercial or customs documents: [list them]. Delivery condition and inspection requirements: [add details].' },
-        'high-value-personal-purchases': { titles: ['Product purchase and delivery', 'Item order from seller', 'Protected product purchase'], detailDraft: 'Product: [name, brand and model]. Quantity, size or colour: [add details]. Condition: [new/used]. Included accessories or warranty: [list them]. Delivery location and condition checks: [add details].' },
+        'high-value-personal-purchases': { titles: ['Product purchase and delivery', 'Item order from seller', 'Product order agreement'], detailDraft: 'Product: [name, brand and model]. Quantity, size or colour: [add details]. Condition: [new/used]. Included accessories or warranty: [list them]. Delivery location and condition checks: [add details].' },
       };
       const selected = suggestions[input.useCase] ?? { titles: [`${input.useCaseTitle} agreement`, `${input.useCaseTitle} and delivery`, 'Protected purchase or service'], detailDraft: 'What is being provided: [describe it]. Quantity, scope or specification: [add details]. Expected condition or result: [describe it]. Delivery or completion location: [location]. Anything specifically included or excluded: [add details].' };
       const alternateTitles = [
@@ -155,8 +168,24 @@ export const agreementsApi = {
     if (appConfig.isMock) {
       await delay(900);
       const subject = input.description.trim() || input.title.trim() || input.useCaseTitle;
-      const standardDraft = `1. Seller’s delivery obligation\n${input.sellerName} must provide ${subject} on or before ${input.deliveryDueDate}, in the quantity, condition, and specification agreed in this Deal Room.\n\n2. Buyer’s receipt check\nAt handover, ${input.buyerName} must be able to confirm physical receipt and check the item or completed work against the deal description and attached evidence.\n\n3. Handover review\nThe 10-minute handover check must finish without a relevant evidenced issue before the 1-hour payment-release countdown begins.\n\n4. Problems before release\nIf either party reports a relevant problem with supporting evidence before payment is released, automatic release is paused for review.\n\n5. Payment release\nIf no evidenced issue freezes payment, ${input.buyerName} may release payment early using their transaction PIN. Otherwise, payment releases automatically when the 1-hour countdown ends.`;
-      const alternateDraft = `1. What the seller must complete\nBy ${input.deliveryDueDate}, ${input.sellerName} must deliver ${subject} exactly as described in this Deal Room, including the agreed quantity, condition, specification, and included items.\n\n2. What the buyer must be able to check\n${input.buyerName} must receive the purchase or completed work and have a reasonable opportunity to compare it with the agreed details and evidence.\n\n3. When the release countdown starts\nThe 1-hour release countdown starts after an issue-free 10-minute handover check, or earlier when ${input.buyerName} confirms the purchase is received and intact.\n\n4. When payment must pause\nRelevant evidence submitted before release pauses automatic payment while Naitrust reviews the reported issue. An evidence-free report is recorded but does not freeze release.\n\n5. How payment is released\n${input.buyerName} can approve early release with their transaction PIN. If payment is not frozen, it releases automatically when the countdown reaches zero.`;
+      if (input.paymentStage === 'final') {
+        const finalText = input.workflowMode === 'delivery'
+          ? `The remaining payment releases after the full order is delivered, the buyer completes the final handover checks, and no dispute is open.`
+          : input.workflowMode === 'service'
+            ? `The remaining payment releases only after the provider submits final completion evidence and the buyer reviews the completed work and approves release with their transaction PIN.`
+            : `The remaining payment releases only after the final milestone and its supporting evidence are completed and approved by the buyer.`;
+        return { success: true, data: { generatedByAi: true, text: finalText } };
+      }
+      const standardDraft = input.workflowMode === 'service'
+        ? `${input.sellerName} must complete ${subject} by ${input.deliveryDueDate} and submit evidence for review. Payment releases only when ${input.buyerName} approves the completed work with their transaction PIN.`
+        : input.workflowMode === 'milestone'
+          ? `${input.sellerName} must complete the eligible stage for ${subject} and attach progress evidence. Its payment releases only after ${input.buyerName} reviews and approves that stage.`
+          : `${input.sellerName} must deliver ${subject} by ${input.deliveryDueDate} as agreed. Payment releases after ${input.buyerName} confirms receipt and condition, provided no dispute is open.`;
+      const alternateDraft = input.workflowMode === 'service'
+        ? `Release payment after ${subject} is completed, supporting evidence is submitted, and ${input.buyerName} approves the work with their transaction PIN.`
+        : input.workflowMode === 'milestone'
+          ? `Release the eligible stage payment after its agreed work and evidence have been reviewed and approved by ${input.buyerName}.`
+          : `Release payment after ${subject} is delivered and ${input.buyerName} completes the agreed receipt check without reporting an issue.`;
       return {
         success: true,
         data: {

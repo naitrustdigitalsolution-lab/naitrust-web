@@ -7,7 +7,7 @@
  * for it. Add new per-use-case behaviours here as their own fields/modules.
  */
 
-import type { DealType } from '../store/types';
+import type { DealType, DealWorkflowMode } from '../store/types';
 
 export interface UseCaseFeatures {
   /** Deal structures offered for this use case, in display order. */
@@ -20,6 +20,36 @@ export interface UseCaseFeatures {
   supportsRecurring: boolean;
   /** Short hint shown when this use case is picked. */
   note?: string;
+  recommendedWorkflow?: DealWorkflowMode;
+  availableWorkflows?: DealWorkflowMode[];
+}
+
+const DELIVERY_USE_CASES = new Set([
+  'supplier-purchase', 'supplier-orders', 'wholesale-order', 'equipment-purchase',
+  'vehicle-transactions', 'high-value-personal-purchases', 'logistics-agreement',
+  'social-commerce', 'import-export',
+]);
+
+const MILESTONE_USE_CASES = new Set([
+  'contractor-engagement', 'contractor-projects', 'manufacturing-order',
+  'property-agent-payments', 'developer-instalments', 'land-transactions',
+  'agent-led-property', 'diaspora-purchases',
+]);
+
+export const WORKFLOW_META: Record<DealWorkflowMode, { label: string; description: string; tabLabel: string }> = {
+  delivery: { label: 'Delivery', description: 'A physical item will be handed over or delivered.', tabLabel: 'Delivery' },
+  service: { label: 'Service', description: 'Work will be completed and reviewed.', tabLabel: 'Work' },
+  milestone: { label: 'Milestones', description: 'Progress will be completed in stages.', tabLabel: 'Progress' },
+};
+
+export function recommendedWorkflowForUseCase(slug: string | undefined): DealWorkflowMode {
+  if (slug && DELIVERY_USE_CASES.has(slug)) return 'delivery';
+  if (slug && MILESTONE_USE_CASES.has(slug)) return 'milestone';
+  return 'service';
+}
+
+export function availableWorkflowsForUseCase(): DealWorkflowMode[] {
+  return ['delivery', 'service', 'milestone'];
 }
 
 const SINGLE_ONLY: UseCaseFeatures = {
@@ -136,7 +166,12 @@ export const USE_CASE_FEATURES: Record<string, UseCaseFeatures> = {
 };
 
 export function featuresForUseCase(slug: string | undefined): UseCaseFeatures {
-  return (slug && USE_CASE_FEATURES[slug]) || SINGLE_ONLY;
+  const base = (slug && USE_CASE_FEATURES[slug]) || SINGLE_ONLY;
+  return {
+    ...base,
+    recommendedWorkflow: base.recommendedWorkflow ?? recommendedWorkflowForUseCase(slug),
+    availableWorkflows: base.availableWorkflows ?? availableWorkflowsForUseCase(),
+  };
 }
 
 const DEAL_TYPE_META: Record<DealType, { label: string; description: string }> = {

@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
   ArrowLeft,
@@ -41,6 +41,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useBeneficiaries, useCreateBeneficiary } from '../../hooks/useBeneficiaries';
 import { useSecurity } from '../../hooks/useSecurity';
 import { useCreateInstantTransfer, useInstantTransfers, useValidateRecipient } from '../../hooks/useInstantTransfer';
+import { useTrustCheckout } from '../../hooks/useTrustCheckouts';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import {
   beneficiaryInputFromRecipient,
@@ -81,6 +82,8 @@ const STEP_SEQUENCE: { key: FlowStep; label: string }[] = [
 
 export function SendInstantlyPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const checkoutToken = searchParams.get('checkout');
   const security = useSecurity();
   const [step, setStep] = useState<FlowStep>('recipient');
   const [method, setMethod] = useState<RecipientRoute>('naitrust');
@@ -104,6 +107,32 @@ export function SendInstantlyPage() {
   const { data: recentTransfers } = useInstantTransfers();
   const validateRecipient = useValidateRecipient();
   const createTransfer = useCreateInstantTransfer();
+  const { data: scannedCheckout, isLoading: scannedCheckoutLoading } = useTrustCheckout(checkoutToken);
+
+  useEffect(() => {
+    if (!checkoutToken || scannedCheckoutLoading || !scannedCheckout) return;
+    if (scannedCheckout.status !== 'active') {
+      toast.error(`This payment request is ${scannedCheckout.status}.`);
+      navigate('/app/payments/send', { replace: true });
+      return;
+    }
+    const identifier = scannedCheckout.recipientNtId || scannedCheckout.account.accountNumber;
+    const nextRecipient: TransferRecipient = {
+      method: scannedCheckout.recipientNtId ? 'naitrust_id' : 'naitrust_account_number',
+      identifier,
+      resolvedName: scannedCheckout.recipientName,
+      naitrustId: scannedCheckout.recipientNtId,
+      naitrustAccountNumber: scannedCheckout.account.accountNumber,
+      accountType: scannedCheckout.recipientType === 'business' ? 'business' : 'customer',
+      identityVerified: scannedCheckout.verification.businessVerified || scannedCheckout.verification.identityVerified,
+    };
+    setMethod('naitrust');
+    setRecipient(nextRecipient);
+    setIdentifier(identifier);
+    setAmountNaira(scannedCheckout.amountMinor ? String(scannedCheckout.amountMinor / 100) : '');
+    setNarration(scannedCheckout.purpose);
+    setStep('amount');
+  }, [checkoutToken, navigate, scannedCheckout, scannedCheckoutLoading]);
 
   const recentRecipients = useMemo(() => {
     if (!recentTransfers) return [];
@@ -284,21 +313,21 @@ export function SendInstantlyPage() {
   return (
     <DashboardLayout title="Send Money">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-7 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-6 shadow-sm sm:px-7 lg:px-9 lg:py-8">
+        <div className="mb-5 sm:mb-7 sm:overflow-hidden sm:rounded-3xl sm:border sm:border-primary/15 sm:bg-gradient-to-br sm:from-primary/[0.09] sm:via-background sm:to-background sm:px-7 sm:py-6 sm:shadow-sm lg:px-9 lg:py-8">
           <div className="flex items-start justify-between gap-5">
             <div className="flex items-start gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15">
+              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/15 sm:flex">
                 <Send size={21} />
               </span>
               <div>
-                <div className="mb-1.5 flex items-center gap-2">
+                <div className="mb-1.5 hidden items-center gap-2 sm:flex">
                   <span className="text-xs font-bold uppercase tracking-[0.15em] text-primary">Instant transfer</span>
                   <span className="hidden items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 sm:inline-flex">
                     <Zap size={10} /> Fast & direct
                   </span>
                 </div>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Send Money</h1>
-                <p className="mt-1.5 max-w-xl text-sm leading-6 text-muted-foreground">
+                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-3xl">Send money</h1>
+                <p className="mt-1.5 hidden max-w-xl text-sm leading-6 text-muted-foreground sm:block">
                   Use this for people and businesses you already trust.
                 </p>
               </div>
@@ -306,18 +335,21 @@ export function SendInstantlyPage() {
             <button
               type="button"
               onClick={() => (step === 'recipient' ? navigate('/app/payments') : reset())}
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-full border bg-background/80 px-3.5 py-2 text-xs font-semibold text-muted-foreground shadow-sm backdrop-blur transition-colors hover:border-primary/30 hover:text-foreground"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-background/80 text-xs font-semibold text-muted-foreground shadow-sm backdrop-blur transition-colors hover:border-primary/30 hover:text-foreground sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3.5 sm:py-2"
+              aria-label={step === 'recipient' ? 'Back to Payments' : 'Start over'}
             >
               <ArrowLeft size={14} />
               <span className="hidden sm:inline">{step === 'recipient' ? 'Back to Payments' : 'Start over'}</span>
-              <span className="sm:hidden">{step === 'recipient' ? 'Back' : 'Reset'}</span>
             </button>
           </div>
         </div>
 
         {currentStepIndex >= 0 && (
-          <div className="mb-7 rounded-2xl border bg-card px-4 py-4 shadow-sm sm:px-6">
-            <div className="flex items-center">
+          <div className="mb-5 sm:mb-7 sm:rounded-2xl sm:border sm:bg-card sm:px-6 sm:py-4 sm:shadow-sm">
+            <div className="grid grid-cols-3 gap-1.5 sm:hidden" aria-label={`Step ${currentStepIndex + 1} of ${STEP_SEQUENCE.length}`}>
+              {STEP_SEQUENCE.map((item, index) => <span key={item.key} className={`h-1 rounded-full ${index <= currentStepIndex ? 'bg-primary' : 'bg-muted'}`} />)}
+            </div>
+            <div className="hidden items-center sm:flex">
               {STEP_SEQUENCE.map((s, i) => (
                 <div key={s.key} className="flex flex-1 items-center last:flex-none">
                   <div className="flex items-center gap-2 sm:gap-2.5">
@@ -346,27 +378,27 @@ export function SendInstantlyPage() {
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:gap-8">
           <div className="min-w-0">
         {step === 'recipient' && (
-          <Card className="overflow-hidden rounded-3xl border-border/80 p-0 shadow-sm">
-            <div className="border-b px-5 py-5 sm:px-7">
-              <p className="text-lg font-bold text-foreground">Who are you sending money to?</p>
-              <p className="mt-1 text-sm text-muted-foreground">Choose a beneficiary, Naitrust account, or Nigerian bank account.</p>
+          <Card className="overflow-hidden rounded-none border-x-0 border-border/80 p-0 shadow-none sm:rounded-3xl sm:border-x sm:shadow-sm">
+            <div className="border-b px-0 pb-4 sm:px-7 sm:py-5">
+              <p className="text-base font-bold text-foreground sm:text-lg">Who are you paying?</p>
+              <p className="mt-1 hidden text-sm text-muted-foreground sm:block">Choose a beneficiary, Naitrust account, or Nigerian bank account.</p>
             </div>
-            <div className="p-5 sm:p-7">
+            <div className="px-0 py-4 sm:p-7">
             {recentRecipients.length > 0 && (
               <div className="mb-6">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Recent recipients</p>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <p className="mb-3 text-xs font-semibold text-foreground sm:font-bold sm:uppercase sm:tracking-[0.12em] sm:text-muted-foreground">Recent recipients</p>
+                <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:p-0">
                   {recentRecipients.map((r) => (
                     <button
                       key={r.identifier}
                       type="button"
                       onClick={() => void handlePickRecipient(r)}
-                      className="flex min-w-0 items-center gap-3 rounded-xl border bg-background p-3 text-left transition-all hover:border-primary/30 hover:bg-primary/[0.03] hover:shadow-sm"
+                      className="flex w-20 shrink-0 flex-col items-center gap-1.5 rounded-xl p-1.5 text-center transition-all hover:bg-primary/[0.04] sm:w-auto sm:flex-row sm:gap-3 sm:border sm:bg-background sm:p-3 sm:text-left sm:hover:border-primary/30 sm:hover:shadow-sm"
                     >
-                      <CounterpartyAvatar name={r.resolvedName ?? r.identifier} className="h-9 w-9 shrink-0 text-xs" />
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-semibold text-foreground">{r.resolvedName ?? r.identifier}</span>
-                        <span className="block truncate text-xs text-muted-foreground">
+                      <CounterpartyAvatar name={r.resolvedName ?? r.identifier} className="h-11 w-11 shrink-0 text-xs sm:h-9 sm:w-9" />
+                      <span className="min-w-0 max-w-full">
+                        <span className="block truncate text-[10px] font-semibold leading-4 text-foreground sm:text-sm">{r.resolvedName ?? r.identifier}</span>
+                        <span className="hidden truncate text-xs text-muted-foreground sm:block">
                           {recipientDetails(r)}
                         </span>
                       </span>
@@ -389,7 +421,14 @@ export function SendInstantlyPage() {
                 setBeneficiarySaved(false);
               }}
             >
-              <TabsList className="grid h-auto w-full grid-cols-3 rounded-xl bg-muted/70 p-1">
+              <div className="mb-4 sm:hidden">
+                <Label>Send to</Label>
+                <Select value={method} onValueChange={(value) => { setMethod(value as RecipientRoute); setIdentifier(''); setRecipientBank(''); setRecipient(null); setLookupError(''); setBankLookupError(''); setError(''); }}>
+                  <SelectTrigger className="mt-1.5 h-11 w-full rounded-xl"><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="naitrust">Naitrust account</SelectItem><SelectItem value="bank_transfer">Bank account</SelectItem><SelectItem value="beneficiary">Beneficiaries</SelectItem></SelectContent>
+                </Select>
+              </div>
+              <TabsList className="hidden h-auto w-full grid-cols-3 rounded-xl bg-muted/70 p-1 sm:grid">
                 {([
                   { key: 'naitrust', label: 'Naitrust account' },
                   { key: 'bank_transfer', label: 'Bank account' },
@@ -404,7 +443,13 @@ export function SendInstantlyPage() {
               <TabsContent value="naitrust" className="mt-4 space-y-4">
                 <div>
                   <Label>Find their Naitrust account with</Label>
-                  <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div className="mt-2 sm:hidden">
+                    <Select value={naitrustLookup} onValueChange={(value) => { setNaitrustLookup(value as NaitrustLookup); setIdentifier(''); setRecipient(null); setLookupError(''); }}>
+                      <SelectTrigger className="h-11 w-full rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="naitrust_account_number">Account number</SelectItem><SelectItem value="naitrust_id">Naitrust ID</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div className="mt-2 hidden grid-cols-2 gap-2 sm:grid">
                     {(Object.entries(METHOD_META) as [NaitrustLookup, (typeof METHOD_META)[NaitrustLookup]][]).map(([key, meta]) => {
                       const Icon = meta.icon;
                       return (
@@ -485,7 +530,7 @@ export function SendInstantlyPage() {
                         <dd className="mt-1 font-semibold text-foreground">{recipient.naitrustId ?? 'Not available'}</dd>
                       </div>
                     </dl>
-                    <div className="grid gap-2 border-t border-primary/10 bg-background/55 p-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-[1fr_auto] gap-2 border-t border-primary/10 bg-background/55 p-2.5 sm:grid-cols-2 sm:p-3">
                       {recipientAlreadySaved || beneficiarySaved ? (
                         <div className="flex min-h-10 items-center justify-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.07] px-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                           <Check size={14} /> Saved beneficiary
@@ -494,15 +539,15 @@ export function SendInstantlyPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          className="rounded-full"
+                          className="h-9 rounded-full px-3 text-xs sm:h-10 sm:text-sm"
                           disabled={createBeneficiary.isPending}
                           onClick={() => void handleAddBeneficiary()}
                         >
                           {createBeneficiary.isPending ? <Loader2 size={15} className="mr-1.5 animate-spin" /> : <UserPlus size={15} className="mr-1.5" />}
-                          Add to beneficiaries
+                          <span className="sm:hidden">Save</span><span className="hidden sm:inline">Add to beneficiaries</span>
                         </Button>
                       )}
-                      <Button type="button" className="rounded-full" onClick={() => setStep('amount')}>
+                      <Button type="button" className="h-9 rounded-full px-4 text-xs sm:h-10 sm:text-sm" onClick={() => setStep('amount')}>
                         Continue
                       </Button>
                     </div>
@@ -559,15 +604,15 @@ export function SendInstantlyPage() {
                   </p>
                 )}
                 {recipient?.method === 'bank_transfer' && !resolvingBankRecipient && (
-                  <div className="overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.035]">
-                    <div className="flex items-center gap-3 px-4 py-4">
-                      <CounterpartyAvatar name={recipientName ?? ''} className="h-11 w-11 text-sm" />
+                  <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/[0.035] sm:rounded-2xl">
+                    <div className="flex items-center gap-3 px-3 py-3 sm:px-4 sm:py-4">
+                      <CounterpartyAvatar name={recipientName ?? ''} className="h-9 w-9 text-xs sm:h-11 sm:w-11 sm:text-sm" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold text-foreground">{recipientName}</p>
                         <p className="mt-0.5 truncate text-xs text-muted-foreground">{recipientDetails(recipient)}</p>
                       </div>
                     </div>
-                    <div className="grid gap-2 border-t border-primary/10 bg-background/55 p-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-[1fr_auto] gap-2 border-t border-primary/10 bg-background/55 p-2.5 sm:grid-cols-2 sm:p-3">
                       {recipientAlreadySaved || beneficiarySaved ? (
                         <div className="flex min-h-10 items-center justify-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.07] px-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                           <Check size={14} /> Saved beneficiary
@@ -576,15 +621,15 @@ export function SendInstantlyPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          className="rounded-full"
+                          className="h-9 rounded-full px-3 text-xs sm:h-10 sm:text-sm"
                           disabled={createBeneficiary.isPending}
                           onClick={() => void handleAddBeneficiary()}
                         >
                           {createBeneficiary.isPending ? <Loader2 size={15} className="mr-1.5 animate-spin" /> : <UserPlus size={15} className="mr-1.5" />}
-                          Add to beneficiaries
+                          <span className="sm:hidden">Save</span><span className="hidden sm:inline">Add to beneficiaries</span>
                         </Button>
                       )}
-                      <Button type="button" className="rounded-full" onClick={() => setStep('amount')}>
+                      <Button type="button" className="h-9 rounded-full px-4 text-xs sm:h-10 sm:text-sm" onClick={() => setStep('amount')}>
                         Continue
                       </Button>
                     </div>
@@ -800,7 +845,7 @@ export function SendInstantlyPage() {
 
           <aside className="space-y-4 lg:sticky lg:top-6">
             {recipient && step !== 'result' && step !== 'processing' ? (
-              <Card className="gap-0 overflow-hidden rounded-2xl border-primary/15 p-0 shadow-sm">
+              <Card className="hidden gap-0 overflow-hidden rounded-2xl border-primary/15 p-0 shadow-sm lg:flex">
                 <div className="border-b bg-primary/[0.05] p-5">
                   <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary">Transfer summary</p>
                   <div className="mt-4 flex items-center gap-3">
@@ -829,7 +874,12 @@ export function SendInstantlyPage() {
                 </div>
               </Card>
             ) : (
-              <Card className="rounded-2xl border-primary/15 bg-primary/[0.035] p-5 shadow-none">
+              <>
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-primary/15 bg-primary/[0.035] px-3 py-2.5 lg:hidden">
+                <p className="text-[11px] leading-4 text-muted-foreground"><span className="font-semibold text-foreground">Only pay people you trust.</span> Check the recipient before sending.</p>
+                <button type="button" onClick={() => navigate('/app/deals/new')} className="shrink-0 text-[10px] font-semibold text-primary">Protect payment →</button>
+              </div>
+              <Card className="hidden rounded-2xl border-primary/15 bg-primary/[0.035] p-5 shadow-none lg:flex">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <ShieldCheck size={19} />
                 </div>
@@ -845,9 +895,10 @@ export function SendInstantlyPage() {
                   Paying someone new? Protect the payment instead →
                 </button>
               </Card>
+              </>
             )}
 
-            <div className="rounded-2xl border bg-muted/30 p-4">
+            <div className="hidden rounded-2xl border bg-muted/30 p-4 lg:block">
               <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
                 <ShieldCheck size={14} className="text-emerald-600" /> Secure transfer
               </p>

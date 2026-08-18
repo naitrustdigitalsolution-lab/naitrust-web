@@ -8,9 +8,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarRange, ChevronLeft, ChevronRight, FileClock, Plus, Search, ShieldCheck, X } from 'lucide-react';
+import { CalendarRange, ChevronLeft, ChevronRight, FileClock, Plus, Search, ShieldCheck, SlidersHorizontal, X } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
+import { getAppImage } from '../../libs/images/image-manifest';
 import { TransactionList } from '../pieces/dashboard/TransactionList';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -59,6 +60,8 @@ export function DealsPage() {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [showDates, setShowDates] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
@@ -105,11 +108,22 @@ export function DealsPage() {
   return (
     <DashboardLayout title="Protected Deals">
       <div className="mx-auto w-full max-w-9xl">
-        <PageHero
+        <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
+          <h1 className="text-xl font-bold tracking-tight">Protected Deals</h1>
+          <div className="flex items-center gap-1.5">
+            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Drafts" onClick={() => navigate('/app/drafts')}><FileClock size={15} /></Button>
+            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Search Protected Deals" onClick={() => setShowMobileSearch((value) => !value)}><Search size={15} /></Button>
+            <Button variant={filter !== 'all' ? 'default' : 'outline'} size="icon" className="h-9 w-9 rounded-full" aria-label="Filter Protected Deals" onClick={() => setShowMobileFilters((value) => !value)}><SlidersHorizontal size={15} /></Button>
+            <Button size="icon" className="h-9 w-9 rounded-full" aria-label="New Protected Deal" onClick={() => navigate('/app/deals/new')}><Plus size={16} /></Button>
+          </div>
+        </div>
+
+        <div className="hidden sm:block"><PageHero
           eyebrow="Protected Deals"
           title="Your Protected Deals"
           description="View active, completed, and disputed deals in one place."
           icon={ShieldCheck}
+          image={getAppImage('deliveryWorkflow', 'A protected product delivery being checked')}
           actions={<div className="flex flex-wrap gap-2">
             <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/drafts')}>
               <FileClock size={16} className="mr-1" /> Drafts
@@ -118,12 +132,12 @@ export function DealsPage() {
               <Plus size={16} className="mr-1" /> New Protected Deal
             </Button>
           </div>}
-        />
+        /></div>
 
         {/* Toolbar */}
-        <div className="mb-4 space-y-3 rounded-xl border bg-card p-3 shadow-sm sm:p-4">
+        <div className={`${showMobileSearch || showMobileFilters || showDates ? 'block' : 'hidden'} mb-4 space-y-3 rounded-none border-0 bg-transparent p-0 shadow-none sm:block sm:rounded-xl sm:border sm:bg-card sm:p-4 sm:shadow-sm`}>
           {/* Search + date range (dates inline on desktop, toggled on mobile) */}
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:gap-3">
+          <div className={`${showMobileSearch || showDates ? 'flex' : 'hidden'} flex-col gap-2 sm:flex lg:flex-row lg:items-end lg:gap-3`}>
             <div className="flex flex-1 items-center gap-2">
               <div className="relative flex-1">
                 <Label htmlFor="deal-search" className="sr-only">
@@ -135,7 +149,7 @@ export function DealsPage() {
                   placeholder="Search Protected Deals…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9"
+                  className="h-11 rounded-xl bg-card pl-9 sm:h-10"
                 />
               </div>
               {/* Mobile-only date toggle keeps the bar compact. */}
@@ -168,7 +182,7 @@ export function DealsPage() {
           </div>
 
           {/* Status chips scroll horizontally on mobile instead of wrapping. */}
-          <div className="flex items-center gap-2">
+          <div className={`${showMobileFilters ? 'flex' : 'hidden'} items-center gap-2 sm:flex`}>
             <div className="-mx-1 flex flex-1 items-center gap-2 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {FILTERS.map((f) => {
                 const active = filter === f.key;
@@ -226,6 +240,7 @@ export function DealsPage() {
             deals={paged}
             isLoading={isLoading}
             isError={isError}
+            compactMobile
             onCreate={() => navigate('/app/deals/new')}
             onSelect={(deal) => navigate(`/app/deals/${deal.id}`)}
           />

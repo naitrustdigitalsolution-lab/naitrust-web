@@ -22,6 +22,7 @@ interface TransactionListProps {
   onCreate: () => void;
   onSelect?: (deal: SafeDealSummary) => void;
   mobileOverflow?: boolean;
+  compactMobile?: boolean;
 }
 
 function LoadingRows() {
@@ -64,7 +65,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   );
 }
 
-function DealRow({ deal, onSelect, mobileOverflow = false }: { deal: SafeDealSummary; onSelect?: (deal: SafeDealSummary) => void; mobileOverflow?: boolean }) {
+function DealRow({ deal, onSelect, mobileOverflow = false, compactMobile = false }: { deal: SafeDealSummary; onSelect?: (deal: SafeDealSummary) => void; mobileOverflow?: boolean; compactMobile?: boolean }) {
   const interactive = !!onSelect;
   return (
     <div
@@ -79,32 +80,36 @@ function DealRow({ deal, onSelect, mobileOverflow = false }: { deal: SafeDealSum
       className={
         (mobileOverflow
           ? 'flex items-center gap-3 border-b px-5 py-4 last:border-b-0 '
+          : compactMobile
+          ? 'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b px-3 py-4 last:border-b-0 sm:flex sm:gap-3 sm:px-5 '
           : 'flex flex-col items-stretch gap-3 border-b px-4 py-4 last:border-b-0 sm:flex-row sm:items-center sm:px-5 ') +
         (interactive ? 'cursor-pointer transition-colors hover:bg-accent/40' : '')
       }
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <CounterpartyAvatar name={deal.counterpartyName} />
+        <CounterpartyAvatar name={deal.counterpartyName} className={compactMobile ? 'h-8 w-8 text-[10px] sm:h-10 sm:w-10 sm:text-xs' : undefined} />
         <div className="min-w-0">
-          <p className="truncate font-semibold text-foreground">{deal.title}</p>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{deal.counterpartyName}</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="truncate text-sm font-semibold leading-5 text-foreground sm:text-base sm:leading-normal">{deal.title}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">{deal.counterpartyName}</p>
+          <p className={`${compactMobile ? 'hidden sm:block' : ''} mt-0.5 text-xs text-muted-foreground`}>
             {deal.reference} · {formatDistanceToNow(new Date(deal.createdAt), { addSuffix: true })}
           </p>
         </div>
       </div>
       <div className={mobileOverflow
         ? 'grid shrink-0 grid-cols-[minmax(110px,auto)_150px_18px] items-center gap-3'
+        : compactMobile
+        ? 'grid shrink-0 justify-items-end gap-2 sm:grid-cols-[minmax(110px,auto)_150px_18px] sm:items-center sm:gap-3'
         : 'grid w-full grid-cols-[1fr_auto_18px] items-center gap-2 pl-12 sm:w-auto sm:shrink-0 sm:grid-cols-[minmax(110px,auto)_150px_18px] sm:gap-3 sm:pl-0'}>
-        <span className="text-sm font-semibold text-foreground tabular-nums sm:text-right">{formatMinorAmount(deal.amountMinor, deal.currency)}</span>
+        <span className="text-xs font-semibold leading-4 text-foreground tabular-nums sm:text-right sm:text-sm">{formatMinorAmount(deal.amountMinor, deal.currency)}</span>
         <div className="justify-self-end"><TransactionStatusBadge status={deal.status} /></div>
-        {interactive && <ChevronRight size={16} className="justify-self-end text-muted-foreground" />}
+        {interactive && <ChevronRight size={16} className={`${compactMobile ? 'hidden sm:block' : ''} justify-self-end text-muted-foreground`} />}
       </div>
     </div>
   );
 }
 
-export function TransactionList({ deals, isLoading, isError, onCreate, onSelect, mobileOverflow = false }: TransactionListProps) {
+export function TransactionList({ deals, isLoading, isError, onCreate, onSelect, mobileOverflow = false, compactMobile = false }: TransactionListProps) {
   if (isLoading) return <LoadingRows />;
 
   if (isError) {
@@ -118,9 +123,9 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect,
   if (!deals || deals.length === 0) return <EmptyState onCreate={onCreate} />;
 
   const list = (
-    <Card className={`gap-0 overflow-hidden p-0 shadow-sm ${mobileOverflow ? 'min-w-[44rem]' : ''}`} aria-label="Your Protected Deals">
+    <Card className={`gap-0 overflow-hidden p-0 shadow-sm ${mobileOverflow ? 'min-w-[44rem]' : ''} ${compactMobile ? 'rounded-none border-x-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm' : ''}`} aria-label="Your Protected Deals">
       {deals.map((deal) => (
-        <DealRow key={deal.id} deal={deal} onSelect={onSelect} mobileOverflow={mobileOverflow} />
+        <DealRow key={deal.id} deal={deal} onSelect={onSelect} mobileOverflow={mobileOverflow} compactMobile={compactMobile} />
       ))}
     </Card>
   );

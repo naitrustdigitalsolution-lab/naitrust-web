@@ -20,5 +20,5 @@ const PRESENTATION: Record<InvitationStatus, { label: string; variant: StatusBad
 
 export function InvitationStatusBadge({ status }: { status: InvitationStatus }) {
   const { label, variant } = PRESENTATION[status];
-  return <Badge variant={variant}>{label}</Badge>;
+  return <Badge variant={variant} className="px-2 py-0.5 text-[10px] leading-4 sm:px-2.5 sm:text-xs">{label}</Badge>;
 }

@@ -34,11 +34,21 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       title: 'Platform',
       links: [
-        { label: 'Personal', page: 'customer' },
-        { label: 'Business', page: 'business' },
-        { label: 'Send Money', page: 'register', modal: true },
-        { label: 'Protect a Payment', page: 'register', modal: true },
+        { label: 'Explore China Market', page: 'market' },
+        { label: 'Source for yourself', page: 'customer' },
+        { label: 'Sell on Naitrust', page: 'business' },
+        { label: 'Protected Orders', page: 'register', modal: true },
+        { label: 'Verified Agents', page: 'market' },
         { label: 'Join Early Access', page: 'register', modal: true },
+      ],
+    },
+    {
+      title: 'Partners',
+      links: [
+        { label: 'Become a sourcing agent', page: '/partners/agent/apply' },
+        { label: 'Register as a supplier', page: '/partners/supplier/apply' },
+        { label: 'Become a logistics partner', page: '/partners/logistics/apply' },
+        { label: 'Partner sign in', page: '/partners/login' },
       ],
     },
     {
@@ -72,7 +82,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <div className="mb-3">
               <NaitrustLogo size="sm" showText={true} textColor="text-white" />
             </div>
-            <p className="max-w-xs text-sm leading-6 text-white/60">Know who you are paying, receive money, and add protection when a transaction needs it.</p>
+            <p className="max-w-xs text-sm leading-6 text-white/60">Find verified suppliers, confirm the landed cost, pay through a protected order, and track delivery to Nigeria.</p>
             <div className="mt-4 flex gap-2">
               <a aria-label="Naitrust on Instagram" href="https://instagram.com/naitrust_digitalsolutions" target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white">
                 <Instagram size={16} />
@@ -86,7 +96,7 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
             {footerGroups.map((group) => (
               <div key={group.title}>
                 <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-white">{group.title}</h4>

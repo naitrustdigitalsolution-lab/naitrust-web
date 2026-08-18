@@ -303,6 +303,9 @@ export function LivenessCheckModal({
               <Camera size={16} className="mr-1.5" />
               Open camera
             </Button>
+            <Button type="button" variant="ghost" className="w-full rounded-md" onClick={() => handleOpenChange(false)}>
+              Cancel
+            </Button>
           </div>
         )}
 

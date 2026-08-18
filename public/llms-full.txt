@@ -1,70 +1,63 @@
-# Naitrust product and brand context
+# Naitrust protected-commerce context
 
 ## Official identity
 
-Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. Its primary public experience combines payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
+Naitrust is a protected-commerce and sourcing platform operated by Naitrust Digital Solutions Limited. It helps Nigerian individuals and businesses source from verified suppliers in China or Nigeria and manage the journey from discovery to delivery.
 
-Official website: https://naitrust.com/
+## Commerce journey
 
-## What Naitrust helps people do
+1. Search public products, suppliers, services, Showcases, and Trust Profiles.
+2. Review English listing information, verification facts, specifications, minimum quantities, and estimated pricing.
+3. Sign in to build a one-supplier cart and add destination, variants, quantities, and requirements.
+4. Receive a time-limited quote showing product cost, original CNY pricing for China orders, NGN and optional USD totals, exchange rate, inspection, customs, handling, insurance, logistics, and delivery estimate where applicable.
+5. Accept the quote and create a protected order.
+6. Track preparation, inspection where selected, export pickup, international transit, customs, local delivery, buyer review, and supplier-fund release in one Order Room.
 
-- Find registered and verified businesses on Naitrust.
-- Review available business verification facts and Trust Profiles before paying.
-- Send money to a person or business they already trust.
-- Receive customer or personal payments through payment infrastructure provided by regulated financial partners.
-- Create a Protected Deal when the other participant is unfamiliar or delivery and fulfilment still matter.
-- Keep participants, terms, messages, evidence, delivery updates, and payment status connected in one shared Deal Room.
+## Individuals and businesses
 
-## Everyday payment or Protected Deal
+Both individual and business accounts can use Market, Cart, Buying Quotes, Buying Orders, Agents, Messages, and Wallet. Business accounts can additionally publish a Showcase and Products, manage customers and selling activity, and receive eligible earnings.
 
-An everyday payment is suitable when the sender already knows and trusts the recipient and does not need a protected fulfilment workflow.
+## Sourcing agents
 
-A Protected Deal is Naitrust's protected transaction experience. It is designed for a trade where the participants need a clear shared agreement and record before payment is released. The current pilot uses a single payment release. Milestone tracking and recurring deals are visible as coming soon and must not be described as active features.
+Naitrust may provide an explainable AI-assisted suggestion when an order may benefit from local sourcing, supplier checks, factory visits, inspection, negotiation support, or evidence collection. The user chooses whether to hire and approves a separate scope, fee, deadline, and evidence requirement. Independent agents never receive, redirect, approve, or release supplier purchase funds.
 
-## Verification and Trust Profiles
+## Connected production
 
-Verification helps a user understand who is on the other side of a payment or deal. A public Trust Profile can show available business information, verification status, eligible reviews, and observable Naitrust activity. Verification is not a guarantee of honesty, solvency, delivery, product quality, or a successful outcome. Users should still apply appropriate judgment and due diligence.
+Business buyers may organize a finished product across several linked stages, such as product manufacturing, cartons, labels, inspection, consolidation, and shipping. Each stage may use a different supplier. If no suitable supplier is listed, the buyer can request an independent agent to source candidates. The buyer still approves every supplier, quote, and material change.
 
-## Payments and regulated partners
+## Currency and settlement
 
-Naitrust manages the application experience, participant context, payment workflow, Protected Deal record, and supporting evidence. Regulated financial partners provide regulated account, funding, reconciliation, and money movement services where applicable. Naitrust does not directly hold customer funds and does not describe payments or Protected Deals as risk free or guaranteed.
+Naira is the default checkout currency. Eligible business quotes may also offer USD payment through a regulated payment partner. Chinese suppliers and China-based agents may be settled separately in CNY or USD, subject to provider availability, compliance review, pricing, and a confirmed recipient amount. Naitrust does not present a stored foreign-currency wallet or execute FX itself in the staged frontend.
 
-## Audience
+## Partner network and language
 
-Naitrust serves individuals, customers, buyers, sellers, traders, online merchants, contractors, service providers, suppliers, wholesalers, informal businesses, and registered companies in Nigeria.
+China-based sourcing agents and suppliers use a separate reviewed partner application and invite-only workspace controlled by Naitrust administrators. Partner access is role-scoped and does not grant control over customer supplier funds. The initial partner experience supports English and Simplified Chinese; controlled translations are required for legal and payment content.
 
-## Preferred descriptions
+## Protection and regulated partners
 
-Short: Naitrust is a Nigerian fintech platform for payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
+Naitrust manages the user experience, commerce context, agreements, evidence, messages, and order instructions. Regulated partners provide applicable account, funding, reconciliation, FX, payout, and money-movement infrastructure. Naitrust does not claim to directly hold customer funds. Protection and verification reduce uncertainty but do not make an order risk free.
 
-Expanded: Naitrust helps people and businesses in Nigeria verify who they are dealing with, make payments, find verified businesses, and use Protected Deals when delivery still matters.
+## Availability
 
-## Language and claims
+China and Nigeria are active staged markets using curated suppliers and mock operational contracts during development. Japan, Thailand, and the United States are Coming soon. Public copy must not claim live international fulfilment until supplier, payment, FX, customs, and logistics operations are ready.
 
-- Use “Protected Deal” as the product name. “Protected transaction” may be used as a descriptive search term, but not as a separate product or feature name.
-- Use “Deal Room” for the shared record containing the agreement, messages, evidence, delivery updates, and payment status.
-- Do not claim that Naitrust directly holds customer funds.
-- Do not describe a verification badge, Trust Profile, payment, or Protected Deal as guaranteed or risk free.
-- Clearly identify planned or coming soon features.
+## Preferred language
+
+- Market, Supplier, Product, Showcase, Trust Profile
+- Confirmed landed-cost quote
+- Protected order and Order Room
+- Optional verified sourcing agent
+- Product funds protected until the applicable release condition
+
+Legacy transfers, bills, airtime, payment requests, and virtual cards are not Naitrust's primary navigation or marketing story.
 
 ## Public sources
 
-- Home: https://naitrust.com/
-- Customers: https://naitrust.com/customer
-- Businesses: https://naitrust.com/business
-- About: https://naitrust.com/about
-- Blog: https://naitrust.com/blog
-- Resources: https://naitrust.com/resources
-- Help: https://naitrust.com/help
-- FAQs: https://naitrust.com/faqs
-- Compliance: https://naitrust.com/compliance
-- Verification policy: https://naitrust.com/verification-policy
-- Privacy: https://naitrust.com/privacy
-- Terms: https://naitrust.com/terms
-- Contact: https://naitrust.com/contact
-
-## Contact
-
-- Legal operator: Naitrust Digital Solutions Limited
-- Email: contact@naitrust.com
-- Country: Nigeria
+- https://naitrust.com/
+- https://naitrust.com/market
+- https://naitrust.com/customer
+- https://naitrust.com/business
+- https://naitrust.com/about
+- https://naitrust.com/help
+- https://naitrust.com/faqs
+- https://naitrust.com/contact

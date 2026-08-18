@@ -9,6 +9,8 @@
     "build": "tsc --noEmit && vite build",
     "prerender": "node scripts/prerender.mjs",
     "build:seo": "npm run build && node scripts/prerender.mjs",
+    "verify:images": "node scripts/verify-image-coverage.mjs",
+    "verify:sourcing": "node scripts/verify-sourcing-mocks.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

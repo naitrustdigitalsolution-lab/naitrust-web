@@ -1,11 +1,12 @@
 import {
-  ArrowDownToLine,
   ArrowRight,
   BadgeCheck,
   Building2,
   CheckCircle2,
   Handshake,
-  Send,
+  Search,
+  ReceiptText,
+  PackageCheck,
   ShieldCheck,
   Store,
 } from 'lucide-react';
@@ -15,16 +16,16 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { SEOHead } from '../utility/SEOHead';
 import { openWaitlistModal } from '../modals/waitlist-events';
-import businessPaymentHero from '../../assets/nigerian-business-payment-hero.webp';
+import { pageImages } from '../../libs/images/image-manifest';
 
 interface AboutPageProps {
   onNavigate: (page: string, params?: unknown) => void;
 }
 
 const audiences = [
-  'Everyday customers and buyers',
-  'Market and shop traders',
-  'Online sellers and service providers',
+  'Individuals sourcing for themselves',
+  'Retailers importing stock',
+  'Nigerian manufacturers and sellers',
   'Wholesalers and growing companies',
 ];
 
@@ -32,8 +33,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="About Naitrust: Nigerian Payments and Trust Fintech"
-        description="Naitrust is a Nigerian fintech platform where people and businesses can pay, get paid, verify who they are dealing with, and protect important P2P, customer and B2B transactions."
+        title="About Naitrust Market and Protected Commerce"
+        description="Naitrust connects Nigerian buyers with verified suppliers in China and Nigeria through English listings, confirmed landed-cost quotes, protected orders, and tracked delivery."
         canonicalPath="/about"
       />
 
@@ -50,10 +51,10 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 Why Naitrust exists
               </Badge>
               <h1 className="text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-[4.25rem]">
-                Nigeria’s digital economy deserves trust built into <span className="text-[#50adff]">every transaction.</span>
+                Cross-border sourcing should be clear from <span className="text-[#50adff]">supplier to doorstep.</span>
               </h1>
               <p className="mt-7 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-                Customers should know who they are paying. Businesses should be able to prove who they are. Naitrust connects verified identity, everyday payments, and Protected Deals so both sides can move with greater confidence.
+                Naitrust helps Nigerians find verified suppliers, understand foreign listings, confirm the full landed cost, protect product funds, and follow delivery in one place.
               </p>
               <Button className="mt-8 h-12 rounded-full px-7 shadow-lg shadow-primary/20" onClick={openWaitlistModal}>
                 Join Naitrust
@@ -64,8 +65,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               <div className="absolute -inset-3 rounded-[2.25rem] border border-white/10 bg-white/[0.04]" />
               <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/5 shadow-2xl shadow-black/30">
                 <img
-                  src={businessPaymentHero}
-                  alt="Nigerian business owners celebrating a successful mobile payment"
+                  src={pageImages.aboutHero.src}
+                  alt={pageImages.aboutHero.alt}
                   className="aspect-[4/3] w-full object-cover object-center"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#04162f]/25 via-transparent to-transparent" />
@@ -79,17 +80,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
         <div className="mx-auto grid max-w-[90rem] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">About Naitrust</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Payments built around trust.</h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Commerce built around clarity.</h2>
           </div>
           <div className="max-w-3xl space-y-4 text-base leading-7 text-muted-foreground">
               <p>
-                Naitrust is a Nigerian fintech platform operated by Naitrust Digital Solutions Limited. It brings payments, verified participants, and Protected Deals into one clear experience for customers and businesses.
+                Naitrust is a protected-commerce platform operated by Naitrust Digital Solutions Limited. It connects Nigerian customers and businesses with curated suppliers in China and verified sellers in Nigeria.
               </p>
               <p>
-                Customers can send and receive money, pay bills and airtime, and fund protected purchases from their available balance. Businesses can collect payments, manage counterparties, create deal invitations, and follow delivery and payment activity in one deal room.
+                Customers browse translated listings, request a confirmed landed-cost quote, fund protected orders, and track delivery. Nigerian sellers publish showcases, respond to quotes, fulfil orders, and withdraw available earnings.
               </p>
               <p>
-                Protected Deals bring roles, agreed terms, delivery verification, and transaction records together before money is released. Funds are maintained through Naitrust’s regulated financial partners, while Naitrust provides the technology connecting identity, agreements, payments, and fulfilment.
+                Each Order Room keeps the accepted quote, supplier checks, agreement, messages, logistics, evidence, disputes, refunds, and payment release together. Regulated financial partners handle money movement.
               </p>
           </div>
         </div>
@@ -101,7 +102,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">The problem</p>
               <h2 className="text-4xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-5xl">
-                Money moves quickly. Trust signals rarely move with it.
+                Importing is too often built on screenshots, unknown suppliers, and incomplete costs.
               </h2>
             </motion.div>
             <motion.div
@@ -111,10 +112,10 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               className="grid gap-4 sm:grid-cols-2"
             >
               {[
-                'Customers often pay before they can confidently verify the seller.',
-                'Important terms are agreed verbally or buried inside chats.',
-                'Businesses struggle to turn honest work into visible credibility.',
-                'Payment, delivery evidence, and issue history live in separate places.',
+                'Buyers struggle to verify an overseas supplier before committing money.',
+                'Catalogue prices rarely show customs, handling, inspection, and final delivery.',
+                'Product requirements and supplier updates are scattered across chats.',
+                'Payment, shipment documents, evidence, and issues live in separate places.',
               ].map((problem, index) => (
                 <Card key={problem} className="rounded-2xl border-0 p-6 shadow-[0_14px_40px_rgba(11,43,69,.07)]">
                   <span className="text-xs font-bold text-primary">0{index + 1}</span>
@@ -129,17 +130,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-[90rem]">
           <div className="mb-12 max-w-3xl">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">Trust infrastructure for both sides</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">One protected commerce flow</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-              Move normally when trust exists. Add protection when it matters.
+              Know the supplier, the cost, and the next step before you commit.
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden rounded-[2rem] border bg-border md:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: BadgeCheck, title: 'Verify both sides', text: 'Give customers and businesses clearer identity signals before money moves.' },
-              { icon: Send, title: 'Pay normally', text: 'Send money quickly when you already know and trust the recipient.' },
-              { icon: ShieldCheck, title: 'Protect transactions', text: 'Keep terms, evidence, delivery, messages, and payment status together.' },
-              { icon: ArrowDownToLine, title: 'Build confidence', text: 'Turn verified details and completed activity into a stronger platform history.' },
+              { icon: Search, title: 'Discover', text: 'Browse products, suppliers, showcases, verification, and translated specifications.' },
+              { icon: ReceiptText, title: 'Confirm the cost', text: 'Accept an itemized, time-limited landed-cost quote before paying.' },
+              { icon: ShieldCheck, title: 'Protect the order', text: 'Keep supplier product funds protected through the agreed order stages.' },
+              { icon: PackageCheck, title: 'Track delivery', text: 'Follow inspection, export, transit, customs, local delivery, and buyer review.' },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -165,10 +166,10 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           <motion.div initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#67b7ff]">Built for people who buy and sell</p>
             <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-              Trust should not depend on the size of the transaction or business.
+              Better sourcing should work for one product or wholesale stock.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/60">
-              Naitrust supports the customer making an important purchase and the business working to earn that customer’s confidence, from informal sellers to registered companies.
+              Naitrust supports individuals buying for themselves, retailers restocking, wholesalers importing at scale, and Nigerian businesses selling locally.
             </p>
           </motion.div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -218,9 +219,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
 
       <section className="bg-[#04162f] px-4 py-20 text-center text-white sm:px-6 sm:py-24 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-3xl">
-          <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">Know who you are dealing with. Protect what matters.</h2>
+          <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">Source with confidence. Follow every order.</h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/60">
-            One trust layer for customers, businesses, everyday payments, and important transactions.
+            Verified suppliers, confirmed landed costs, protected product funds, and delivery updates in one place.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button size="lg" className="rounded-full px-7" onClick={openWaitlistModal}>

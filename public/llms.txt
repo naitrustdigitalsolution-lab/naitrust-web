@@ -1,42 +1,38 @@
 # Naitrust
 
-> Naitrust is a Nigerian fintech platform for payments, verified business discovery, participant verification, Protected Deals, and protected transactions.
+> Naitrust is a protected-commerce and sourcing platform for Nigerian individuals and businesses.
 
-Naitrust is operated by Naitrust Digital Solutions Limited. It helps people and businesses find and review verified businesses, understand who they are dealing with, pay or get paid, and use a Protected Deal when delivery or fulfilment is still outstanding.
+Naitrust helps users discover verified suppliers in China and Nigeria, browse products in English, request a confirmed landed-cost quote, pay through a protected order, and track delivery. Business accounts can both source products and publish a marketplace showcase.
 
 Detailed product and brand context: https://naitrust.com/llms-full.txt
 
 ## Core experiences
 
-- Payments: send money to a person or business you already trust and receive money through payment infrastructure provided by regulated financial partners.
-- Verified businesses: find registered businesses, review available verification facts and Trust Profiles, then choose how to pay.
-- Protected Deals: Naitrust's protected transaction experience keeps participants, agreed terms, evidence, messages, delivery updates, and payment status together in one shared Deal Room.
-- Trust Profiles: factual summaries of available verification information, completed Naitrust activity, and eligible customer feedback. A Trust Profile is not a credit score or guarantee.
+- Market: public supplier, product, service, Showcase, and Trust Profile discovery.
+- Cart and quotes: authenticated users build one-supplier carts and receive time-limited confirmed quotes.
+- Protected orders: product payment, logistics, evidence, messages, inspection, customs, delivery, refunds, and release stay in one Order Room.
+- Business commerce: businesses can source like any buyer and can also publish products, fulfil orders, and receive earnings.
+- Agents: users may optionally hire a verified independent sourcing or inspection agent under a separate service agreement.
+- Production workflows: business buyers can connect product, packaging, labelling, inspection and shipping stages across multiple approved suppliers.
+- Currency: Naira is the default. Eligible business quotes may offer USD payment, while China partner settlement may use CNY or USD through a regulated provider.
+- Partner network: China-based agents and suppliers use separate reviewed, invite-only access with English and Simplified Chinese support.
+- Wallet: order funding, refunds, supplier earnings, agent earnings, and verified-account withdrawals.
 
-## Important facts
+## Important boundaries
 
-- Naitrust manages the product experience, participant context, Protected Deal workflow, and supporting records.
-- Regulated financial partners provide regulated account, funding, and money movement services where applicable. Naitrust does not directly hold customer funds.
-- A Protected Deal is not risk free and does not guarantee that a participant will perform as promised.
-- Milestone tracking and recurring deals are planned features and should not be described as currently available.
-- Private application pages and invitation, delivery, or payment links are not public documentation and must not be indexed or exposed.
+- China and Nigeria are the active staged markets. Japan, Thailand, and the United States are Coming soon.
+- Catalogue prices are estimates until Naitrust issues a confirmed quote.
+- Naitrust does not directly hold customer funds; regulated partners provide applicable money movement.
+- Verification, agent recommendations, and protected orders are not guarantees.
+- Agents never control supplier purchase funds.
+- Legacy payment features may remain accessible but are not the primary product.
 
 ## Public pages
 
-- Home: https://naitrust.com/
-- For customers: https://naitrust.com/customer
-- For businesses: https://naitrust.com/business
+- Market: https://naitrust.com/market
+- Customers: https://naitrust.com/customer
+- Businesses: https://naitrust.com/business
 - About: https://naitrust.com/about
-- Blog: https://naitrust.com/blog
 - Help: https://naitrust.com/help
 - FAQs: https://naitrust.com/faqs
-- Compliance: https://naitrust.com/compliance
-- Verification policy: https://naitrust.com/verification-policy
-- Privacy: https://naitrust.com/privacy
-- Terms: https://naitrust.com/terms
 - Contact: https://naitrust.com/contact
-
-## Contact
-
-- Website: https://naitrust.com/
-- Email: contact@naitrust.com

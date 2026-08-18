@@ -3,7 +3,7 @@
  * Component piece for managing user profile information
  */
 
-import { User, Save, Loader2 } from 'lucide-react';
+import { ChevronDown, User, Save, Loader2 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { PhoneField } from '../general/PhoneField';
@@ -21,6 +21,8 @@ interface ProfileInfoSettingsProps {
   onPhoneChange: (value: string) => void;
   onSave: () => void;
   isSaving: boolean;
+  expanded?: boolean;
+  onToggle?: () => void;
 }
 
 export function ProfileInfoSettings({
@@ -34,22 +36,25 @@ export function ProfileInfoSettings({
   onPhoneChange,
   onSave,
   isSaving,
+  expanded = true,
+  onToggle,
 }: ProfileInfoSettingsProps) {
   return (
-    <Card className="h-full shadow-sm">
-      <CardContent className="flex h-full flex-col px-5 py-4">
-        <div className="flex items-center gap-3 border-b pb-4">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <Card className="h-full rounded-xl shadow-none sm:shadow-sm">
+      <CardContent className="flex h-full flex-col px-4 py-4 sm:px-5">
+        <button type="button" onClick={onToggle} className="flex w-full items-center gap-3 border-b pb-3 text-left sm:pointer-events-none sm:pb-4">
+          <span className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary sm:flex">
             <User size={17} />
           </span>
           <div className="min-w-0">
-            <h2 className="text-sm font-semibold text-foreground">Profile information</h2>
+            <h2 className="text-base font-semibold text-foreground sm:text-sm">Profile information</h2>
             <p className="text-xs text-muted-foreground">Your personal account details</p>
           </div>
-        </div>
-        <div className="mt-4 grid gap-x-4 gap-y-3 sm:grid-cols-2">
+          <ChevronDown size={17} className={`ml-auto shrink-0 transition-transform sm:hidden ${expanded ? 'rotate-180' : ''}`} />
+        </button>
+        <div className={`${expanded ? 'grid' : 'hidden'} mt-4 gap-x-4 gap-y-4 sm:grid sm:grid-cols-2`}>
           <div>
-            <Label htmlFor="firstname">First Name</Label>
+            <Label htmlFor="firstname">First name</Label>
             <Input
               id="firstname"
               value={firstName}
@@ -58,7 +63,7 @@ export function ProfileInfoSettings({
             />
           </div>
           <div>
-            <Label htmlFor="lastname">Last Name</Label>
+            <Label htmlFor="lastname">Last name</Label>
             <Input
               id="lastname"
               value={lastName}
@@ -73,21 +78,17 @@ export function ProfileInfoSettings({
               type="email"
               value={email}
               disabled
-              className="bg-muted"
+              className="bg-muted/60"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Email cannot be changed
-            </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Cannot be changed</p>
           </div>
           <div>
             <Label htmlFor="naitrust-id">Naitrust ID</Label>
-            <Input id="naitrust-id" value={naitrustId} disabled className="bg-muted font-mono" />
-            <p className="mt-1 text-xs text-muted-foreground">
-              Your permanent account identifier
-            </p>
+            <Input id="naitrust-id" value={naitrustId} disabled className="bg-muted/60 font-mono" />
+            <p className="mt-1 text-[11px] text-muted-foreground">Permanent account ID</p>
           </div>
           <div>
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Phone number</Label>
             <PhoneField
               id="phone"
               className="mt-1.5"
@@ -96,8 +97,8 @@ export function ProfileInfoSettings({
             />
           </div>
         </div>
-        <div className="mt-auto flex justify-end border-t pt-4">
-          <Button className="w-full rounded-md sm:w-44" onClick={onSave} disabled={isSaving}>
+        <div className={`${expanded ? 'flex' : 'hidden'} mt-5 justify-end border-t pt-4 sm:flex`}>
+          <Button className="h-10 w-full rounded-full sm:w-44" onClick={onSave} disabled={isSaving}>
             {isSaving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -106,7 +107,7 @@ export function ProfileInfoSettings({
             ) : (
               <>
                 <Save size={16} className="mr-2" />
-                Save Changes
+                Save changes
               </>
             )}
           </Button>

@@ -14,5 +14,5 @@ interface TransactionStatusBadgeProps {
 
 export function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) {
   const { label, variant } = getStatusPresentation(status);
-  return <Badge variant={variant}>{label}</Badge>;
+  return <Badge variant={variant} className="px-2 py-0.5 text-[10px] leading-4 sm:px-2.5 sm:text-xs">{label}</Badge>;
 }

@@ -147,7 +147,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g1',
         question: 'What is Naitrust?',
-        answer: 'Naitrust is a trusted business payments platform for Nigeria. Send instantly to people and businesses you already trust, or start a Protected Deal: recording participants, agreements, payments, milestones, evidence, and issues: when you\'re dealing with someone new. Naitrust does not list or sell goods or property.'
+        answer: 'Naitrust Market connects Nigerian individuals and businesses with verified local and Chinese suppliers. Customers browse products in English, request a confirmed landed-cost quote, fund a protected order, and track logistics to delivery.'
       },
       {
         id: 'g2',
@@ -167,12 +167,12 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g5',
         question: 'Is Naitrust available outside Nigeria?',
-        answer: 'Naitrust is built for individuals and businesses in Nigeria. Customers can pay trusted recipients, check a business before paying, or create a Protected Deal when they do not yet know the other party. Businesses can receive customer payments, pay suppliers, demonstrate verified identity, and protect B2B or customer transactions. Business verification requirements depend on the account and service being used.'
+        answer: 'Naitrust is built for Nigerian customers, retailers, importers and verified businesses. Customers can source locally or from China, while Nigerian businesses can publish showcases, quote customers, fulfil orders, build trust history, and withdraw available earnings.'
       },
       {
         id: 'g6',
         question: 'What kinds of transactions is Naitrust for?',
-        answer: 'Naitrust supports everyday instant payments plus Protected Deals for supplier purchases, wholesale orders, contractor engagements, service delivery, equipment purchases, logistics, manufacturing orders, import/export, property transactions, and custom business deals.'
+        answer: 'Naitrust supports domestic purchases and China imports, including wholesale stock, packaging, electronics, equipment and manufactured goods. International orders can include inspection, export pickup, transit, customs clearance and final delivery tracking.'
       },
     ],
   };
@@ -185,8 +185,8 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
     <div className="min-h-screen bg-linear-to-b from-muted/30 via-muted/10 to-background relative py-12">
       <SEOHead
         title="Help Center"
-        description="Get help with Naitrust. Find guides on business verification, account management, fraud reporting, and payment support."
-        keywords="Naitrust help, business verification help, support center, fraud reporting guide"
+        description="Get help with Naitrust Market, supplier verification, landed-cost quotes, protected orders, sourcing agents, logistics, delivery, refunds, and withdrawals."
+        keywords="Naitrust Market help, China sourcing help Nigeria, landed cost quote, protected order support, supplier verification, delivery tracking"
         canonicalPath="/help"
       />
       <div className="relative z-10 max-w-6xl mx-auto px-4">

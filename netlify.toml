@@ -3,6 +3,18 @@
   command = "npm run build && (npx playwright install chromium > /dev/null 2>&1 && node scripts/prerender.mjs || echo '[prerender] skipped on this build')"
 
 [[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
   for = "/"
   [headers.values]
     Link = "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </sitemap.xml>; rel=\"describedby\"; type=\"application/xml\", </help>; rel=\"service-doc\"; type=\"text/html\""

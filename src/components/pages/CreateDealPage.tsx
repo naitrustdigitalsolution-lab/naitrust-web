@@ -33,6 +33,7 @@ import {
   User,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'motion/react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { PageHero } from '../pieces/dashboard/PageHero';
 import { VerticalStepper, type StepMeta } from '../pieces/general/VerticalStepper';
@@ -51,6 +52,7 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
 import { useCreateDeal, useUpdateDeal } from '../../hooks/useTransactions';
@@ -63,11 +65,12 @@ import { useAuth } from '../../libs/auth-context';
 import { agreementsApi, containsAiDealDetailPlaceholder } from '../../libs/api/agreements.api';
 import { bindMockDealIdentityCapture, registerMockDealIdentityCapture } from '../../libs/api/deal-identity-captures.mock';
 import { useCases } from '../../libs/use-cases';
-import { featuresForUseCase } from '../../libs/features/use-case-features';
+import { featuresForUseCase, recommendedWorkflowForUseCase, WORKFLOW_META } from '../../libs/features/use-case-features';
 import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 import {
   canReplaceWithSuggestedReleaseConditions,
   DEFAULT_INVITATION_EXPIRY_DAYS,
+  isLightProtectionAmount,
   shortUseCaseLabel,
   splitCreateDealUseCases,
   suggestedReleaseConditions,
@@ -83,6 +86,7 @@ import {
   type CounterpartyProfile,
   type DealRole,
   type DealType,
+  type DealWorkflowMode,
   type PartyMode,
 } from '../../libs/store/types';
 import { findMockCreatedDeal } from '../../libs/api/mock-protected-deal-store';
@@ -94,10 +98,13 @@ const STEPS: StepMeta[] = [
   { title: 'Review agreement & send', description: 'Check the agreement and invite the other party.' },
 ];
 
+const MOBILE_TERM_STEPS = ['Deal details', 'Money and date', 'Other party', 'Conditions'] as const;
+
 const CREATE_DEAL_USE_CASES = splitCreateDealUseCases(useCases);
 
 interface FormState extends DealDetailsValues {
   useCase: string;
+  workflowMode: DealWorkflowMode;
   dealType: DealType | null;
   partyMode: PartyMode | null;
   role: DealRole | null;
@@ -107,6 +114,7 @@ const emptyParticipant = (paymentTargets: Array<'first' | 'second'> = ['first', 
 
 const INITIAL: FormState = {
   useCase: '',
+  workflowMode: 'service',
   dealType: 'single',
   partyMode: null,
   role: null,
@@ -168,7 +176,7 @@ function ChoiceCard({
       disabled={disabled}
       aria-pressed={selected}
       className={
-        'group flex flex-1 items-start gap-3 rounded-2xl border p-4 text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-55 ' +
+        'group flex flex-1 items-start gap-2.5 rounded-xl border p-3 text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-55 sm:gap-3 sm:rounded-2xl sm:p-4 ' +
         (selected
           ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30'
           : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')
@@ -176,7 +184,7 @@ function ChoiceCard({
     >
       <div
         className={
-          'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors ' +
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors sm:h-10 sm:w-10 sm:rounded-xl ' +
           (selected ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/20' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary')
         }
       >
@@ -242,7 +250,10 @@ export function CreateDealPage() {
   const [actionLiveness, setActionLiveness] = useState<DealDraftLiveness | undefined>(() =>
     isDealDraftLivenessFresh(recoveredLiveness) ? recoveredLiveness : undefined,
   );
-  const [showLiveness, setShowLiveness] = useState(() => !isDealDraftLivenessFresh(recoveredLiveness));
+  // Liveness is only known to be required once the deal amount is entered in
+  // step 2 (light-protection deals skip it), so it is never auto-shown on
+  // mount — only requested explicitly, ahead of final submission.
+  const [showLiveness, setShowLiveness] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [showPinDraftSaved, setShowPinDraftSaved] = useState(false);
   const profileBusinessName = searchParams.get('name')?.trim() ?? '';
@@ -255,16 +266,15 @@ export function CreateDealPage() {
     if (legacyStep <= 3) return 2;
     return 3;
   });
+  const [mobileTermStage, setMobileTermStage] = useState<1 | 2 | 3 | 4>(1);
+  const [isMobileLayout, setIsMobileLayout] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
   const [form, setForm] = useState<FormState>(() => {
     if (recoveredDraft?.form) {
       return {
         ...recoveredDraft.form,
+        workflowMode: recoveredDraft.form.workflowMode ?? recommendedWorkflowForUseCase(recoveredDraft.form.useCase),
         dealType: 'single',
-        // Split payments are paused for the pilot. Recovered drafts resume as
-        // the supported single-release flow.
-        splitPayment: false,
-        initialPayment: '',
-        nextPaymentReleaseConditions: '',
+        splitPayment: recoveredDraft.form.splitPayment ?? false,
         openUntil:
           recoveredDraft.form.openUntil ||
           format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
@@ -287,16 +297,19 @@ export function CreateDealPage() {
       const secondPool = input.remainingPaymentMinor ?? 0;
       return {
         useCase: input.useCase,
+        workflowMode: input.workflowMode ?? recommendedWorkflowForUseCase(input.useCase),
         dealType: 'single',
         partyMode: input.partyMode,
         role: input.role,
         title: input.title,
         description: input.description,
         amount: String(input.amountMinor / 100),
-        splitPayment: false,
-        initialPaymentMode: 'fixed',
-        initialPayment: '',
-        nextPaymentReleaseConditions: '',
+        splitPayment: Boolean(input.remainingPaymentMinor),
+        initialPaymentMode: input.initialPaymentMode ?? 'fixed',
+        initialPayment: input.initialPaymentMode === 'percentage'
+          ? String(input.initialPaymentPercentage ?? '')
+          : String((input.initialPaymentMinor ?? input.amountMinor) / 100),
+        nextPaymentReleaseConditions: input.nextPaymentReleaseConditions ?? '',
         deliveryDueDate: input.deliveryDueDate,
         openUntil: format(addDays(new Date(), input.expiresInDays), 'yyyy-MM-dd'),
         releaseConditions: input.releaseConditions,
@@ -323,8 +336,10 @@ export function CreateDealPage() {
     const businessName = searchParams.get('name') ?? '';
     const businessEmail = searchParams.get('email') ?? '';
     const businessId = searchParams.get('business') ?? undefined;
+    const prefilledAmount = searchParams.get('amount') ?? '';
     return {
       ...INITIAL,
+      amount: prefilledAmount,
       openUntil: format(addDays(new Date(), DEFAULT_INVITATION_EXPIRY_DAYS), 'yyyy-MM-dd'),
       partyMode: accountType === 'customer' && businessId ? 'b2c' : null,
       role: accountType === 'customer' ? 'buyer' : null,
@@ -334,6 +349,7 @@ export function CreateDealPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [agreement, setAgreement] = useState<AgreementDraft | null>(() => editingDeal?.input.agreement ?? null);
   const [agreementConfirmed, setAgreementConfirmed] = useState(Boolean(editingDeal));
+  const [agreementAcceptanceChecked, setAgreementAcceptanceChecked] = useState(Boolean(editingDeal));
   const [editingAgreement, setEditingAgreement] = useState(false);
   const [agreementPreviewOpen, setAgreementPreviewOpen] = useState(false);
   const [dealTermsPreviewOpen, setDealTermsPreviewOpen] = useState(false);
@@ -344,8 +360,16 @@ export function CreateDealPage() {
   const [showAllUseCases, setShowAllUseCases] = useState(() =>
     CREATE_DEAL_USE_CASES.more.some((useCase) => useCase.slug === recoveredDraft?.form?.useCase),
   );
-  const [showAdvancedTiming, setShowAdvancedTiming] = useState(true);
+  const [showAdvancedTiming, setShowAdvancedTiming] = useState(false);
   const [createdInvitation, setCreatedInvitation] = useState<{ dealId: string; title: string; url: string } | null>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 639px)');
+    const updateLayout = () => setIsMobileLayout(media.matches);
+    updateLayout();
+    media.addEventListener('change', updateLayout);
+    return () => media.removeEventListener('change', updateLayout);
+  }, []);
 
   useEffect(() => {
     if (editingDeal) toast.info('Editing this deal. Saving will update the existing invitation.');
@@ -385,6 +409,7 @@ export function CreateDealPage() {
   const invalidateAgreement = () => {
     setAgreement(null);
     setAgreementConfirmed(false);
+    setAgreementAcceptanceChecked(false);
   };
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
@@ -397,6 +422,7 @@ export function CreateDealPage() {
     setForm((prev) => ({
       ...prev,
       useCase: slug,
+      workflowMode: recommendedWorkflowForUseCase(slug),
       dealType: 'single',
       releaseConditions: canReplaceWithSuggestedReleaseConditions(prev.releaseConditions)
         ? suggestedReleaseConditions(slug)
@@ -482,6 +508,30 @@ export function CreateDealPage() {
     invalidateAgreement();
   };
 
+  const removeParticipantFromStage = (index: number, stage: 'first' | 'second') => {
+    setForm((prev) => {
+      const participant = prev.participants[index];
+      if (!participant) return prev;
+      const remainingTargets = participant.paymentTargets.filter((target) => target !== stage);
+      if (remainingTargets.length === 0) {
+        const remaining = prev.participants.filter((_, participantIndex) => participantIndex !== index);
+        return { ...prev, participants: remaining.length > 0 ? remaining : [emptyParticipant()] };
+      }
+      return {
+        ...prev,
+        participants: prev.participants.map((item, participantIndex) => participantIndex === index
+          ? {
+              ...item,
+              paymentTargets: remainingTargets,
+              ...(stage === 'first' ? { allocation: '' } : { secondAllocation: '' }),
+            }
+          : item),
+      };
+    });
+    setErrors((current) => ({ ...current, allocation: '' }));
+    invalidateAgreement();
+  };
+
   const removeSelectedCounterparty = (counterparty: CounterpartyProfile) => {
     const identities = [counterparty.email, counterparty.phone, counterparty.notes].filter(Boolean).map((value) => value!.trim().toLowerCase());
     setForm((prev) => {
@@ -494,6 +544,10 @@ export function CreateDealPage() {
   const selectedUseCase = useCases.find((u) => u.slug === form.useCase);
   const features = featuresForUseCase(form.useCase);
   const amountMinor = parseMajorAmountToMinor(form.amount);
+  // Small, frequent deals (typical social-commerce sales) get light
+  // protection instead of the full identity-photo ceremony meant for
+  // high-stakes deals. See LIGHT_PROTECTION_MAX_AMOUNT_MINOR.
+  const isLightProtection = isLightProtectionAmount(amountMinor);
   const initialPaymentMinor = form.splitPayment
     ? form.initialPaymentMode === 'percentage'
       ? Math.round(amountMinor * Number(form.initialPayment || 0) / 100)
@@ -519,15 +573,15 @@ export function CreateDealPage() {
   );
   const secondAllocatedMinor = useMemo(() => secondStageParticipants.length === 1 ? remainingPaymentMinor : secondStageParticipants.reduce((sum, participant) => sum + (form.initialPaymentMode === 'percentage' ? Math.round(remainingPaymentMinor * Number(participant.secondAllocation || 0) / 100) : parseMajorAmountToMinor(participant.secondAllocation)), 0), [form.initialPaymentMode, remainingPaymentMinor, secondStageParticipants]);
 
-  const generatePaymentConditions = async () => {
+  const generatePaymentConditions = async (stage: 'first' | 'final') => {
     if (!form.title.trim() || !form.deliveryDueDate) {
-      toast.error('Add the deal title and delivery date before generating payment conditions.');
+      toast.error(`Add the deal title and ${form.workflowMode === 'delivery' ? 'delivery' : 'completion'} date before generating payment conditions.`);
       return;
     }
     setIsGeneratingPaymentConditions(true);
     try {
       const nextRequest = paymentConditionsGeneratedByAi ? paymentConditionsRequest + 1 : paymentConditionsRequest;
-      const response = await agreementsApi.draftPaymentConditions({
+      const conditionInput = {
         useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
         title: form.title,
         description: form.description,
@@ -535,8 +589,14 @@ export function CreateDealPage() {
         buyerName,
         sellerName,
         requestIndex: nextRequest,
-      });
-      setForm((current) => ({ ...current, releaseConditions: response.data.text }));
+        workflowMode: form.workflowMode,
+      } as const;
+      const response = await agreementsApi.draftPaymentConditions({ ...conditionInput, paymentStage: stage });
+      setForm((current) => ({
+        ...current,
+        releaseConditions: stage === 'first' ? response.data.text : current.releaseConditions,
+        nextPaymentReleaseConditions: stage === 'final' ? response.data.text : current.nextPaymentReleaseConditions,
+      }));
       setPaymentConditionsRequest(nextRequest);
       setPaymentConditionsGeneratedByAi(true);
       setAgreement(null);
@@ -579,6 +639,7 @@ export function CreateDealPage() {
       const response = await agreementsApi.draft(
         {
           useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
+          workflowMode: form.workflowMode,
           partyModeLabel: form.partyMode ? partyModeLabel(form.partyMode) : 'Protected',
           buyerName,
           sellerName,
@@ -633,7 +694,9 @@ export function CreateDealPage() {
       if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the next milestone or completion date.';
       form.participants.forEach((participant, index) => {
         if (!participant.name.trim()) next[`participant_${index}_name`] = 'Enter a name.';
-        if (!isValidContact(participant.contact)) next[`participant_${index}_contact`] = 'Enter a valid Naitrust ID, account number, email, or phone.';
+        if (participant.isManualSaved && !participant.profileId) {
+          if (!EMAIL_RE.test(participant.contact.trim()) && !(PHONE_RE.test(participant.contact.trim()) && !ACCOUNT_RE.test(participant.contact.trim()))) next[`participant_${index}_contact`] = 'Enter a valid email address or phone number.';
+        } else if (!isValidContact(participant.contact)) next[`participant_${index}_contact`] = 'Choose a valid Naitrust recipient.';
       });
       if (firstPaymentPoolMinor > 0 && allocatedMinor !== firstPaymentPoolMinor)
         next.allocation = `First payment allocations must add up to ${formatMinorAmount(firstPaymentPoolMinor, 'NGN')}.`;
@@ -656,12 +719,54 @@ export function CreateDealPage() {
     return Object.keys(next).length === 0;
   };
 
+  const validateMobileTermStage = (): boolean => {
+    const next: Record<string, string> = {};
+    if (mobileTermStage === 1) {
+      if (!form.title.trim()) next.title = 'Give the deal a short title.';
+      if (containsAiDealDetailPlaceholder(form.description)) next.description = 'Replace the remaining AI placeholders with your deal details.';
+    }
+    if (mobileTermStage === 2) {
+      const amount = Number(form.amount);
+      if (!form.amount || Number.isNaN(amount) || amount <= 0) next.amount = 'Enter an amount greater than zero.';
+      if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the delivery or completion date.';
+    }
+    if (mobileTermStage === 3) {
+      form.participants.forEach((participant, index) => {
+        if (!participant.name.trim()) next[`participant_${index}_name`] = 'Choose the other party.';
+        if (participant.isManualSaved && !participant.profileId) {
+          if (!EMAIL_RE.test(participant.contact.trim()) && !(PHONE_RE.test(participant.contact.trim()) && !ACCOUNT_RE.test(participant.contact.trim()))) next[`participant_${index}_contact`] = 'Enter a valid email address or phone number.';
+        } else if (!isValidContact(participant.contact)) next[`participant_${index}_contact`] = 'Choose a valid Naitrust profile or saved contact.';
+      });
+      if (firstPaymentPoolMinor > 0 && allocatedMinor !== firstPaymentPoolMinor)
+        next.allocation = `Payment allocations must add up to ${formatMinorAmount(firstPaymentPoolMinor, 'NGN')}.`;
+    }
+    if (mobileTermStage === 4) {
+      if (!form.releaseConditions.trim()) next.releaseConditions = 'Describe what must happen before funds release.';
+      if (!form.openUntil) next.openUntil = 'Set how long the invitation stays open.';
+    }
+    setErrors((current) => ({ ...current, ...next }));
+    if (next.openUntil) setShowAdvancedTiming(true);
+    return Object.keys(next).length === 0;
+  };
+
   const handleNext = () => {
+    if (isMobileLayout && step === 2 && mobileTermStage < 4) {
+      if (!validateMobileTermStage()) return;
+      setMobileTermStage((current) => Math.min(current + 1, 4) as 1 | 2 | 3 | 4);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (!validateStep()) return;
     setStep((s) => Math.min(s + 1, STEPS.length));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBack = () => {
+    if (isMobileLayout && step === 2 && mobileTermStage > 1) {
+      setMobileTermStage((current) => Math.max(current - 1, 1) as 1 | 2 | 3 | 4);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (step === 1) {
       navigate('/app/deals');
       return;
@@ -685,7 +790,8 @@ export function CreateDealPage() {
   };
 
   const doSubmit = async () => {
-    if (!agreement || !actionLiveness || !isDealDraftLivenessFresh(actionLiveness) || !user?.id) {
+    if (!agreement || !user?.id) return;
+    if (!isLightProtection && (!actionLiveness || !isDealDraftLivenessFresh(actionLiveness))) {
       setActionLiveness(undefined);
       setShowLiveness(true);
       toast.error('Take a fresh liveness check for this deal before creating it.');
@@ -698,6 +804,7 @@ export function CreateDealPage() {
       );
       const dealInput: CreateSafeDealInput = {
         useCase: form.useCase,
+        workflowMode: form.workflowMode,
         dealType: 'single',
         partyMode: form.partyMode!,
         role: form.role!,
@@ -726,7 +833,9 @@ export function CreateDealPage() {
         extendedProductTestingDays: undefined,
         expiresInDays,
         agreement,
-        actionLiveness: { actorUserId: user.id, verifiedAt: actionLiveness.verifiedAt, captureId: actionLiveness.captureId },
+        actionLiveness: actionLiveness
+          ? { actorUserId: user.id, verifiedAt: actionLiveness.verifiedAt, captureId: actionLiveness.captureId }
+          : undefined,
       };
       if (editDealId) {
         await updateDeal.mutateAsync(dealInput);
@@ -736,7 +845,7 @@ export function CreateDealPage() {
         return;
       }
       const created = await createDeal.mutateAsync(dealInput);
-      bindMockDealIdentityCapture(actionLiveness.captureId, created.data.id);
+      if (actionLiveness) bindMockDealIdentityCapture(actionLiveness.captureId, created.data.id);
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
       setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
@@ -784,8 +893,10 @@ export function CreateDealPage() {
   };
 
   const submittingDeal = createDeal.isPending || updateDeal.isPending;
-  const continueDisabled =
-    submittingDeal || !isDealDraftLivenessFresh(actionLiveness);
+  // Liveness isn't required to move through the wizard — only light vs. full
+  // protection at the point of sending matters, and that's enforced below.
+  const continueDisabled = submittingDeal;
+  const livenessRequiredNow = !isLightProtection && !isDealDraftLivenessFresh(actionLiveness);
 
   // Hard gate: no deal starts until email + KYC are verified.
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
@@ -863,7 +974,15 @@ export function CreateDealPage() {
       />
 
       <div className="mx-auto w-full max-w-9xl">
-        <PageHero
+        <div className="mb-4 flex items-center justify-between gap-3 sm:hidden">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Protected Deals</p>
+            <h1 className="mt-1 text-lg font-bold tracking-tight">{editDealId ? 'Edit deal' : 'Create a deal'}</h1>
+          </div>
+          <Button variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full" aria-label="Back to deals" onClick={() => navigate('/app/deals')}><ArrowLeft size={15} /></Button>
+        </div>
+
+        <div className="hidden sm:block"><PageHero
           eyebrow={editDealId ? "Editing existing invitation" : "Protected Deals"}
           title={editDealId ? "Edit Protected Deal" : "Create a Protected Deal"}
           description={editDealId ? "Update the original deal details. The same invitation will be returned to the other party for review." : "Turn an agreement into a clear, trackable payment journey for everyone involved."}
@@ -873,12 +992,21 @@ export function CreateDealPage() {
               <ArrowLeft size={15} /> Active Deals
             </Button>
           }
-        />
+        /></div>
 
         <div className="grid items-start gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
           {/* Left rail */}
-          <aside className="rounded-3xl border border-primary/10 bg-card p-5 shadow-sm xl:sticky xl:top-20 xl:self-start">
-            <div className="mb-5 flex items-center justify-between">
+          <aside className="xl:sticky xl:top-20 xl:self-start xl:rounded-3xl xl:border xl:border-primary/10 xl:bg-card xl:p-5 xl:shadow-sm">
+            <div className="rounded-2xl border bg-card px-3.5 py-3 shadow-sm xl:hidden">
+              <div className="flex items-center justify-between gap-3">
+                <p className="truncate text-sm font-bold">{step === 2 && isMobileLayout ? MOBILE_TERM_STEPS[mobileTermStage - 1] : STEPS[step - 1].title}</p>
+                <p className="shrink-0 text-xs font-medium text-muted-foreground">{step === 2 && isMobileLayout ? `${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}</p>
+              </div>
+              <div className={`mt-2 grid gap-1.5 ${step === 2 && isMobileLayout ? 'grid-cols-4' : 'grid-cols-3'}`} aria-label={step === 2 && isMobileLayout ? `Deal terms ${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}>
+                {(step === 2 && isMobileLayout ? MOBILE_TERM_STEPS : STEPS).map((item, index) => <span key={typeof item === 'string' ? item : item.title} className={`h-1 rounded-full ${index < (step === 2 && isMobileLayout ? mobileTermStage : step) ? 'bg-primary' : 'bg-muted'}`} />)}
+              </div>
+            </div>
+            <div className="mb-5 hidden items-center justify-between xl:flex">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Deal setup</p>
                 <p className="mt-1 text-sm font-semibold text-foreground">{Math.round((step / STEPS.length) * 100)}% complete</p>
@@ -887,10 +1015,10 @@ export function CreateDealPage() {
                 <ShieldCheck size={18} />
               </span>
             </div>
-            <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-muted">
+            <div className="mb-6 hidden h-1.5 overflow-hidden rounded-full bg-muted xl:block">
               <div className="h-full rounded-full bg-gradient-to-r from-primary to-sky-400 transition-all duration-500" style={{ width: `${(step / STEPS.length) * 100}%` }} />
             </div>
-            <div>
+            <div className="hidden xl:block">
               <VerticalStepper steps={STEPS} currentStep={step} />
             </div>
             <div className="mt-7 hidden gap-3 rounded-2xl bg-gradient-to-br from-[#071b31] to-[#0b4d91] p-4 text-white xl:flex">
@@ -903,8 +1031,15 @@ export function CreateDealPage() {
 
           {/* Right: step card (fills the column) */}
           <main className="w-full">
-            <Card className="gap-0 overflow-hidden rounded-3xl border-border/80 p-0 shadow-[0_16px_45px_rgba(7,27,49,.08)]">
-              <div className="relative overflow-hidden border-b bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-5 sm:px-7">
+            <motion.div
+              key={`deal-step-card-${step}-${step === 2 && isMobileLayout ? mobileTermStage : 0}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              style={{ willChange: 'opacity' }}
+            >
+            <Card className="gap-0 overflow-hidden rounded-none border-x-0 border-border/80 p-0 shadow-none sm:rounded-3xl sm:border-x sm:shadow-[0_16px_45px_rgba(7,27,49,.08)]">
+              <div className="relative hidden overflow-hidden border-b bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-5 sm:block sm:px-7">
                 <div className="pointer-events-none absolute -right-14 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-2xl" />
                 <div className="relative flex items-start gap-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20">
@@ -920,15 +1055,25 @@ export function CreateDealPage() {
                 </div>
               </div>
 
-              <div className="p-5 sm:p-7">
+              <div className="px-1 py-4 sm:p-7">
               {step === 1 && (
                 <div className="flex flex-col gap-6">
                   <div>
                     <Label className="block text-base">What are you protecting?</Label>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    <p className="mt-1 hidden text-sm leading-6 text-muted-foreground sm:block">
                       Choose the closest match. If none fits, select “Something else.”
                     </p>
-                    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    <div className="mt-2 sm:hidden">
+                      <Select value={form.useCase || undefined} onValueChange={selectUseCase}>
+                        <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose a deal type" /></SelectTrigger>
+                        <SelectContent>
+                          {[...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
+                            .sort((left, right) => Number(left.slug === 'custom-business-deal') - Number(right.slug === 'custom-business-deal'))
+                            .map((useCase) => <SelectItem key={useCase.slug} value={useCase.slug}>{shortUseCaseLabel(useCase)}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="mt-3 hidden grid-cols-2 gap-2 sm:grid sm:grid-cols-3">
                       {(showAllUseCases
                         ? [...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
                         : [...CREATE_DEAL_USE_CASES.quick]
@@ -941,10 +1086,10 @@ export function CreateDealPage() {
                             type="button"
                             onClick={() => selectUseCase(useCase.slug)}
                             aria-pressed={selected}
-                            className={'group flex min-h-16 flex-row items-center gap-3 rounded-2xl border p-3 text-left transition-all duration-200 ' +
+                            className={'group flex min-h-14 flex-row items-center gap-2 rounded-xl border p-2.5 text-left transition-all duration-200 sm:min-h-16 sm:gap-3 sm:rounded-2xl sm:p-3 ' +
                               (selected ? 'border-primary/50 bg-primary/[0.07] shadow-sm ring-1 ring-primary/30' : 'border-border/80 bg-background hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md')}
                           >
-                            <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'}`}>
+                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9 sm:rounded-xl ${selected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'}`}>
                               <Icon size={17} />
                             </span>
                             <span className="text-xs font-semibold leading-4 text-foreground">
@@ -957,7 +1102,7 @@ export function CreateDealPage() {
                     <button
                       type="button"
                       onClick={() => setShowAllUseCases((current) => !current)}
-                      className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                      className="mt-3 hidden items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80 sm:inline-flex"
                     >
                       {showAllUseCases ? 'Show common choices only' : 'See all deal types'}
                       <ChevronDown
@@ -968,10 +1113,45 @@ export function CreateDealPage() {
                     <FieldError message={errors.useCase} />
                   </div>
 
+                  {form.useCase && (
+                    <div>
+                      <div className="flex items-center justify-between gap-3">
+                        <Label className="text-sm">How will it be completed?</Label>
+                        <span className="text-[10px] text-muted-foreground">Recommended from your deal type</span>
+                      </div>
+                      <div className="mt-2 grid grid-cols-3 rounded-xl border bg-muted/30 p-1">
+                        {(features.availableWorkflows ?? []).map((workflowMode) => {
+                          const selected = form.workflowMode === workflowMode;
+                          return (
+                            <button
+                              key={workflowMode}
+                              type="button"
+                              aria-pressed={selected}
+                              onClick={() => {
+                                setForm((current) => ({ ...current, workflowMode, extendedProductTestingDays: workflowMode === 'delivery' ? current.extendedProductTestingDays : undefined }));
+                                invalidateAgreement();
+                              }}
+                              className={`min-w-0 rounded-lg px-2 py-2 text-xs font-semibold transition sm:text-sm ${selected ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                            >
+                              {WORKFLOW_META[workflowMode].label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground">{WORKFLOW_META[form.workflowMode].description}</p>
+                    </div>
+                  )}
+
                   <div className="grid gap-6 lg:grid-cols-2">
                     <div>
                       <Label className="mb-2 block">Who are you dealing with?</Label>
-                      <div className="flex flex-col gap-3">
+                      <div className="sm:hidden">
+                        <Select value={form.partyMode || undefined} onValueChange={(value) => set('partyMode', value as PartyMode)}>
+                          <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose who is involved" /></SelectTrigger>
+                          <SelectContent>{partyModeOptions.map((opt) => <SelectItem key={opt.mode} value={opt.mode}>{opt.title}</SelectItem>)}</SelectContent>
+                        </Select>
+                      </div>
+                      <div className="hidden flex-col gap-3 sm:flex">
                         {partyModeOptions.map((opt) => (
                           <ChoiceCard
                             key={opt.mode}
@@ -988,7 +1168,13 @@ export function CreateDealPage() {
 
                     <div>
                       <Label className="mb-2 block">Will you pay or receive?</Label>
-                      <div className="flex flex-col gap-3">
+                      <div className="sm:hidden">
+                        <Select value={form.role || undefined} onValueChange={(value) => set('role', value as DealRole)}>
+                          <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose your role" /></SelectTrigger>
+                          <SelectContent><SelectItem value="buyer">I will pay</SelectItem><SelectItem value="seller">I will receive</SelectItem></SelectContent>
+                        </Select>
+                      </div>
+                      <div className="hidden flex-col gap-3 sm:flex">
                         <ChoiceCard
                           selected={form.role === 'buyer'}
                           onClick={() => set('role', 'buyer')}
@@ -1013,6 +1199,7 @@ export function CreateDealPage() {
               {step === 2 && (
                 <div className="flex flex-col gap-6">
                   <CreateDealDetailsStep
+                  mobileStage={mobileTermStage}
                   form={form}
                   errors={errors}
                   isReleaser={isReleaser}
@@ -1023,13 +1210,24 @@ export function CreateDealPage() {
                   expectedCounterpartyKind={expectedCounterpartyKind}
                   customerMode={accountType === 'customer'}
                   onFieldChange={(field, value) => set(field, value)}
+                  onSplitPaymentChange={(splitPayment) => {
+                    setForm((current) => ({ ...current, splitPayment }));
+                    setErrors((current) => ({ ...current, initialPayment: '', nextPaymentReleaseConditions: '', allocation: '' }));
+                    invalidateAgreement();
+                  }}
+                  onInitialPaymentModeChange={(initialPaymentMode) => {
+                    setForm((current) => ({ ...current, initialPaymentMode, initialPayment: '' }));
+                    setErrors((current) => ({ ...current, initialPayment: '' }));
+                    invalidateAgreement();
+                  }}
                   onParticipantChange={updateParticipant}
                   onAddParticipant={addParticipant}
                   onSelectCounterparty={selectSavedCounterparty}
                   onDeselectCounterparty={removeSelectedCounterparty}
                   onRemoveParticipant={removeParticipant}
+                  onRemoveParticipantFromStage={(index, stage) => removeParticipantFromStage(index, stage as 'first' | 'second')}
                   />
-                  <PaymentConditionsStep splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={() => void generatePaymentConditions()} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} />
+                  <div className={mobileTermStage === 4 ? 'block' : 'hidden sm:block'}><PaymentConditionsStep workflowMode={form.workflowMode} splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={(stage) => void generatePaymentConditions(stage)} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} /></div>
                 </div>
               )}
 
@@ -1038,71 +1236,7 @@ export function CreateDealPage() {
                   {isGenerating || !agreement ? (
                     <AgreementPreparationState />
                   ) : (
-                    <>
-                      <div className="rounded-xl border border-primary/15 bg-primary/[0.04] p-4">
-                        <p className="text-sm font-semibold text-foreground">Check the important details</p>
-                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                          This agreement was generated by AI from your deal details. Read and edit it to make sure it meets your expectations. The other party must review and accept it before funding begins.
-                        </p>
-                      </div>
-                      <AgreementDocument
-                        agreement={agreement}
-                        editable={editingAgreement}
-                        onChange={(next) => {
-                          setAgreement(next);
-                          setAgreementConfirmed(false);
-                        }}
-                      />
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-xs leading-5 text-muted-foreground">
-                          Need a correction? Edit the agreement or reset it from the details you entered.
-                        </p>
-                        <div className="flex shrink-0 items-center gap-2">
-                          <Button
-                            type="button"
-                            variant={editingAgreement ? 'default' : 'outline'}
-                            size="sm"
-                            className="rounded-md"
-                            onClick={() => setEditingAgreement((v) => !v)}
-                          >
-                            {editingAgreement ? (
-                              <>
-                                <Check size={14} className="mr-1.5" />
-                                Done editing
-                              </>
-                            ) : (
-                              <>
-                                <Pencil size={14} className="mr-1.5" />
-                                Edit
-                              </>
-                            )}
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="rounded-md"
-                            onClick={() => {
-                              setEditingAgreement(false);
-                              void generateAgreement(agreement.version + 1);
-                            }}
-                          >
-                            <RefreshCw size={14} className="mr-1.5" />
-                            Reset from details
-                          </Button>
-                        </div>
-                      </div>
-                      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                        <Checkbox
-                          checked={agreementConfirmed}
-                          onCheckedChange={(checked) => setAgreementConfirmed(checked === true)}
-                          className="mt-0.5"
-                        />
-                        <span className="text-sm leading-6 text-foreground">
-                          I have checked the amount, delivery terms, and release condition. Send this agreement for the other party to accept.
-                        </span>
-                      </label>
-                    </>
+                    <div className={`rounded-2xl border p-4 sm:p-5 ${agreementConfirmed ? 'border-emerald-500/25 bg-emerald-500/[0.06]' : 'border-primary/15 bg-primary/[0.04]'}`}><div className="flex items-start gap-3"><span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${agreementConfirmed ? 'bg-emerald-500/15 text-emerald-700' : 'bg-primary/10 text-primary'}`}>{agreementConfirmed ? <Check size={18} /> : <FileCheck2 size={18} />}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{agreementConfirmed ? 'Agreement accepted' : 'Review your agreement'}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Open the agreement to read every clause, make any edits, and confirm your acceptance.</p></div></div><Button type="button" className="mt-4 w-full rounded-full" variant={agreementConfirmed ? 'outline' : 'default'} onClick={() => { setAgreementAcceptanceChecked(agreementConfirmed); setAgreementPreviewOpen(true); }}>{agreementConfirmed ? 'Review again' : 'Open agreement'}</Button></div>
                   )}
                 </div>
               )}
@@ -1121,7 +1255,8 @@ export function CreateDealPage() {
 
                   <dl className="divide-y divide-border rounded-xl border">
                     <ReviewRow label="What you're protecting" value={selectedUseCase?.title ?? 'Not available'} />
-                    <ReviewRow label="Payment release" value="Single release" />
+                    <ReviewRow label="Protection level" value={isLightProtection ? 'Light — no identity photo required' : 'Full — identity-verified'} />
+                    <ReviewRow label="Payment plan" value={form.splitPayment ? 'Two instalments' : 'One-off payment'} />
                     <ReviewRow label="Who's involved" value={form.partyMode ? partyModeLabel(form.partyMode) : 'Not available'} />
                     <ReviewRow
                       label="Your role"
@@ -1133,7 +1268,7 @@ export function CreateDealPage() {
                         .map((p) => (multiParty && p.allocation ? `${p.name} (${p.allocationMode === 'percentage' ? `${p.allocation}% = ` : ''}${formatMinorAmount(p.allocationMode === 'percentage' ? Math.round(amountMinor * Number(p.allocation) / 100) : parseMajorAmountToMinor(p.allocation), 'NGN')})` : p.name))
                         .join(', ')}
                     />
-                    <ReviewRow label="Delivery or completion" value={form.deliveryDueDate || 'Not available'} />
+                    <ReviewRow label={form.workflowMode === 'delivery' ? 'Delivery date' : form.workflowMode === 'service' ? 'Completion date' : 'Target completion'} value={form.deliveryDueDate || 'Not available'} />
                     {form.description.trim() && <ReviewRow label="Deal description" value={form.description} />}
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Payment release condition</dt>
@@ -1153,12 +1288,12 @@ export function CreateDealPage() {
                       label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
                     />
-                    {supportsDeliveryReview(form.useCase) && <ReviewRow label="Payment review" value="1 hour after the handover check" />}
+                    <ReviewRow label="Deal Room" value={form.workflowMode === 'delivery' ? 'Delivery and handover' : form.workflowMode === 'service' ? 'Work review and buyer-approved release' : 'Milestone progress and stage review'} />
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
                       <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
                         <span>{`v${agreement.version} · ${agreement.sections.length} clauses · ${agreementConfirmed ? 'confirmed by you' : 'awaiting your confirmation'}`}</span>
-                        <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full text-primary" onClick={() => setAgreementPreviewOpen(true)}><Eye size={14} />Preview agreement</Button>
+                        <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full text-primary" onClick={() => setAgreementPreviewOpen(true)}><Eye size={14} />Preview</Button>
                       </dd>
                     </div>
                   </dl>
@@ -1203,39 +1338,36 @@ export function CreateDealPage() {
                 )
               )}
 
-              {!isDealDraftLivenessFresh(actionLiveness) && (
+              {step === 3 && agreement && !isGenerating && livenessRequiredNow && (
                 <button
                   type="button"
                   onClick={() => setShowLiveness(true)}
                   className="mt-6 flex w-full items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-left"
                 >
                   <ScanFace size={18} className="shrink-0 text-amber-600 dark:text-amber-400" />
-                  <span className="text-sm leading-5 text-foreground">
-                    Complete a quick liveness check to create this Protected Deal.
-                    <span className="ml-1 font-semibold text-primary underline">Start check</span>
-                  </span>
+                  <span className="min-w-0 flex-1 text-xs leading-5 text-foreground sm:text-sm">This deal is above ₦50,000, so a quick identity check is required before you create it.</span>
+                  <span className="shrink-0 rounded-full bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm">Start check</span>
                 </button>
               )}
-
-              <div className="mt-7 flex flex-col-reverse gap-3 border-t bg-muted/20 -mx-5 -mb-5 px-5 py-5 sm:-mx-7 sm:-mb-7 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-                <Button type="button" variant="ghost" onClick={handleBack} disabled={submittingDeal}>
-                  <ArrowLeft size={16} className="mr-1" />
-                  {step === 1 ? 'Cancel' : 'Back'}
+              <div className="sticky bottom-0 z-20 -mx-1 -mb-4 mt-6 flex items-center gap-2 border-t bg-background/95 px-1 py-3 backdrop-blur sm:static sm:-mx-7 sm:-mb-7 sm:mt-7 sm:justify-between sm:bg-muted/20 sm:px-7 sm:py-5">
+                <Button type="button" variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-full sm:h-9 sm:w-auto sm:px-3" onClick={handleBack} disabled={submittingDeal} aria-label={step === 1 ? 'Cancel' : 'Back'}>
+                  <ArrowLeft size={16} className="sm:mr-1" />
+                  <span className="hidden sm:inline">{step === 1 ? 'Cancel' : 'Back'}</span>
                 </Button>
-                <div className="flex flex-wrap items-center justify-end gap-2">
+                <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
                   {step > 1 && !editDealId && (
-                    <Button type="button" variant="outline" onClick={handleSaveDraft} disabled={submittingDeal} className="rounded-md">
-                      <Save size={16} className="mr-1.5" />
-                      Save to drafts
+                    <Button type="button" variant="ghost" size="sm" onClick={handleSaveDraft} disabled={submittingDeal} className="h-10 shrink-0 rounded-full px-2.5 sm:rounded-md sm:px-3">
+                      <Save size={15} />
+                      <span className="hidden sm:inline">Save draft</span>
                     </Button>
                   )}
                   {step < STEPS.length ? (
-                    <Button type="button" onClick={handleNext} disabled={continueDisabled} className="rounded-md">
+                    <Button type="button" onClick={handleNext} disabled={continueDisabled} className="h-10 min-w-0 flex-1 rounded-full sm:w-auto sm:flex-none sm:rounded-md">
                       Continue
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || isGenerating || !agreement || !agreementConfirmed || !isDealDraftLivenessFresh(actionLiveness)} className="rounded-md">
+                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || isGenerating || !agreement || !agreementConfirmed || livenessRequiredNow} className="rounded-md">
                       {submittingDeal ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />
@@ -1253,6 +1385,7 @@ export function CreateDealPage() {
               </div>
               </div>
             </Card>
+            </motion.div>
           </main>
         </div>
       </div>
@@ -1260,13 +1393,14 @@ export function CreateDealPage() {
         <SheetContent className="w-[96vw] gap-0 overflow-hidden p-0 sm:max-w-2xl lg:max-w-3xl">
           <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3 pr-8">
-              <div><SheetTitle>Agreement preview</SheetTitle><SheetDescription className="mt-1">Review the complete agreement before creating this deal.</SheetDescription></div>
-              {agreement && <Button type="button" variant="outline" size="sm" className="rounded-full" onClick={() => toast.promise(downloadAgreementDraft({ agreement, title: form.title, amountMinor, currency: 'NGN' }), { loading: 'Preparing agreement PDF...', success: 'Agreement downloaded.', error: 'Could not download the agreement.' })}><Download size={14} />Download agreement</Button>}
+              <div><SheetTitle>Review agreement</SheetTitle><SheetDescription className="mt-1">Read every clause and edit anything that does not match the deal.</SheetDescription></div>
+              <div className="flex items-center gap-2">{agreement && <Button type="button" variant={editingAgreement ? 'default' : 'outline'} size="sm" className="rounded-full" onClick={() => setEditingAgreement((current) => !current)}>{editingAgreement ? <Check size={14} /> : <Pencil size={14} />}{editingAgreement ? 'Done editing' : 'Edit'}</Button>}{agreement && <Button type="button" variant="outline" size="icon" className="h-8 w-8 rounded-full" aria-label="Download agreement" onClick={() => toast.promise(downloadAgreementDraft({ agreement, title: form.title, amountMinor, currency: 'NGN' }), { loading: 'Preparing agreement PDF...', success: 'Agreement downloaded.', error: 'Could not download the agreement.' })}><Download size={14} /></Button>}</div>
             </div>
           </SheetHeader>
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
-            {agreement && <AgreementDocument agreement={agreement} hideAiNote />}
+            {agreement && <AgreementDocument agreement={agreement} editable={editingAgreement} hideAiNote onChange={(next) => { setAgreement(next); setAgreementConfirmed(false); setAgreementAcceptanceChecked(false); }} />}
           </div>
+          <div className="border-t bg-background p-4 sm:px-6"><label className="flex cursor-pointer items-start gap-3 rounded-xl border bg-muted/20 p-3"><Checkbox checked={agreementAcceptanceChecked} onCheckedChange={(checked) => setAgreementAcceptanceChecked(checked === true)} className="mt-0.5" /><span className="text-sm leading-5">I have read this agreement and accept the amount, {form.workflowMode === 'delivery' ? 'delivery terms' : form.workflowMode === 'service' ? 'work-completion terms' : 'milestone terms'}, and payment release conditions.</span></label><Button type="button" className="mt-3 w-full rounded-full" disabled={!agreementAcceptanceChecked || editingAgreement} onClick={() => { setAgreementConfirmed(true); setAgreementPreviewOpen(false); }}>Accept agreement</Button></div>
         </SheetContent>
       </Sheet>
       <Sheet open={dealTermsPreviewOpen} onOpenChange={setDealTermsPreviewOpen}>

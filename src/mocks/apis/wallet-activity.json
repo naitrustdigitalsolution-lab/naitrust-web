@@ -6,7 +6,7 @@
       "kind": "funding",
       "amountMinor": 600000000,
       "currency": "NGN",
-      "description": "Sandbox test funding",
+      "description": "Demo balance funding",
       "createdAt": "2026-08-09T00:00:00Z"
     },
     {
@@ -14,7 +14,7 @@
       "kind": "instant_transfer_out",
       "amountMinor": 1500000,
       "currency": "NGN",
-      "description": "Sent to Chioma Electronics",
+      "description": "Paid confirmed quote NTM-4821931",
       "createdAt": "2026-07-23T10:12:00Z"
     },
     {
@@ -22,7 +22,7 @@
       "kind": "funding",
       "amountMinor": 20000000,
       "currency": "NGN",
-      "description": "Wallet funded from GTBank •••• 4821",
+      "description": "Funded from GTBank •••• 4821",
       "createdAt": "2026-07-22T15:40:00Z"
     },
     {
@@ -30,7 +30,7 @@
       "kind": "protected_allocation",
       "amountMinor": 45000000,
       "currency": "NGN",
-      "description": "Allocated to protected deal NT-2026-000182",
+      "description": "Funded supplier order NTM-5738204",
       "createdAt": "2026-07-21T09:05:00Z"
     },
     {
@@ -38,7 +38,7 @@
       "kind": "instant_transfer_in",
       "amountMinor": 3200000,
       "currency": "NGN",
-      "description": "Received from Tunde Bakare",
+      "description": "Marketplace earning from completed order",
       "createdAt": "2026-07-20T18:22:00Z"
     },
     {
@@ -46,7 +46,7 @@
       "kind": "withdrawal",
       "amountMinor": 5000000,
       "currency": "NGN",
-      "description": "Withdrawn to Access Bank •••• 1190",
+      "description": "Sent to Access Bank •••• 1190",
       "createdAt": "2026-07-19T11:47:00Z"
     },
     {
@@ -54,7 +54,7 @@
       "kind": "protected_release",
       "amountMinor": 6300000,
       "currency": "NGN",
-      "description": "Released from completed deal NT-2026-000144",
+      "description": "Refund from order NTM-3917602",
       "createdAt": "2026-07-18T08:30:00Z"
     },
     {
@@ -62,7 +62,7 @@
       "kind": "fee",
       "amountMinor": 15000,
       "currency": "NGN",
-      "description": "Instant transfer fee",
+      "description": "Order processing fee",
       "createdAt": "2026-07-18T08:31:00Z"
     }
   ]

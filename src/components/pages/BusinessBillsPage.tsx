@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle2, History, Loader2, Plus, Radio, Smartphone, Tv, WalletCards, Zap } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Loader2, Plus, Radio, Smartphone, Tv, WalletCards, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBillPayments, useBillProviders, usePayBill } from '../../hooks/useBills';
 import { useFundBillsAccount, useWallet } from '../../hooks/useWallet';
 import type { BillPayment, BillProvider, BillServiceCategory } from '../../libs/store/types';
 import { formatMinorAmount } from '../../libs/utils/safe-deal-presentation';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
-import { PageHero } from '../pieces/dashboard/PageHero';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -30,6 +30,10 @@ function paymentError(error: unknown): string {
 }
 
 export function BusinessBillsPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const openedFromPayments = Boolean((location.state as { fromPayments?: boolean } | null)?.fromPayments);
+  const [view, setView] = useState<'pay' | 'history'>('pay');
   const [category, setCategory] = useState<BillServiceCategory>('electricity');
   const [providerId, setProviderId] = useState('');
   const [identifier, setIdentifier] = useState('');
@@ -87,9 +91,23 @@ export function BusinessBillsPage() {
   return (
     <DashboardLayout title="Bills & airtime">
       <div className="mx-auto w-full max-w-6xl">
-        <PageHero eyebrow="Everyday payments" title="Pay bills from one dedicated balance." description="Set money aside for electricity, internet, TV subscriptions, and airtime." icon={WalletCards} />
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-2 sm:block">
+            {openedFromPayments && <Button variant="outline" size="icon" className="h-8 w-8 shrink-0 rounded-full sm:hidden" aria-label="Back to Payments" onClick={() => navigate('/app/payments')}><ArrowLeft size={14} /></Button>}
+            <div><h1 className="text-xl font-bold tracking-tight sm:text-2xl">Everyday payments</h1>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Pay bills and airtime from your dedicated Bills Account.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {openedFromPayments && <Button variant="ghost" size="sm" className="hidden rounded-full text-xs sm:inline-flex" onClick={() => navigate('/app/payments')}><ArrowLeft size={14} /> Payments</Button>}
+          <div className="flex rounded-full border bg-card p-1 shadow-sm">
+            <button type="button" onClick={() => setView('pay')} className={`rounded-full px-4 py-2 text-xs font-semibold transition ${view === 'pay' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}>Pay bill</button>
+            <button type="button" onClick={() => setView('history')} className={`rounded-full px-4 py-2 text-xs font-semibold transition ${view === 'history' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}>Recent payments</button>
+          </div>
+          </div>
+        </div>
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className={`${view === 'pay' ? 'grid' : 'hidden'} gap-4 lg:grid-cols-[minmax(0,1fr)_340px]`}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {CATEGORIES.map((item) => (
@@ -141,20 +159,42 @@ export function BusinessBillsPage() {
           </div>
 
           <div className="space-y-4">
-            <Card className="rounded-2xl bg-primary p-5 text-primary-foreground shadow-sm">
-              <p className="text-sm text-primary-foreground/75">Bills Account</p>
-              {walletLoading ? <Skeleton className="mt-2 h-9 w-40" /> : <p className="mt-1 text-3xl font-bold">{formatMinorAmount(billsMinor, wallet?.balance.currency ?? 'NGN')}</p>}
-              <p className="mt-3 text-xs leading-5 text-primary-foreground/70">Money set aside here can only be used for bills and airtime.</p>
-              <Button variant="secondary" className="mt-4 w-full rounded-full" onClick={() => setFundOpen(true)}>
-                <Plus size={15} className="mr-1.5" /> Fund Bills Account
-              </Button>
-            </Card>
-            <Card className="gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
-              <div className="flex items-center gap-2 border-b p-4"><History size={17} /><h2 className="font-semibold">Recent bill payments</h2></div>
-              {paymentsLoading ? <div className="space-y-2 p-4"><Skeleton className="h-12" /><Skeleton className="h-12" /></div> : payments.length === 0 ? <p className="p-6 text-center text-sm text-muted-foreground">Your completed payments will appear here.</p> : payments.slice(0, 6).map((payment) => <div key={payment.id} className="flex items-center gap-3 border-b p-4 last:border-0"><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{payment.providerName}</p><p className="text-xs text-muted-foreground">{payment.customerIdentifier} · {formatDistanceToNow(new Date(payment.createdAt), { addSuffix: true })}</p></div><div className="text-right"><p className="text-sm font-semibold">{formatMinorAmount(payment.amountMinor, payment.currency)}</p><Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-[10px] text-emerald-700">Paid</Badge></div></div>)}
+            <Card className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-primary via-primary to-primary/80 p-5 text-primary-foreground shadow-lg shadow-primary/15 sm:p-6">
+              <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10" />
+              <div className="pointer-events-none absolute -bottom-14 right-12 h-28 w-28 rounded-full border border-white/10" />
+              <div className="relative">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15"><WalletCards size={17} /></span>
+                    <div><p className="text-sm font-semibold">Bills Account</p><p className="text-[11px] text-primary-foreground/65">Ready for bills and airtime</p></div>
+                  </div>
+                  <Badge className="border-white/15 bg-white/10 text-[10px] text-white hover:bg-white/10">NGN</Badge>
+                </div>
+
+                <p className="mt-6 text-xs font-medium uppercase tracking-[0.14em] text-primary-foreground/60">Available balance</p>
+                {walletLoading ? <Skeleton className="mt-2 h-10 w-44 bg-white/15" /> : <p className="mt-1 text-3xl font-bold tracking-tight tabular-nums sm:text-4xl">{formatMinorAmount(billsMinor, wallet?.balance.currency ?? 'NGN')}</p>}
+
+                <div className="my-5 h-px bg-white/15" />
+                <div className="flex items-center justify-between gap-4 text-xs">
+                  <span className="text-primary-foreground/65">Available to move</span>
+                  {walletLoading ? <Skeleton className="h-4 w-24 bg-white/15" /> : <span className="font-semibold tabular-nums">{formatMinorAmount(availableMinor, wallet?.balance.currency ?? 'NGN')}</span>}
+                </div>
+                <p className="mt-2 text-[11px] leading-5 text-primary-foreground/60">Set money aside here to keep everyday bill payments separate.</p>
+
+                <Button variant="secondary" className="mt-5 w-full rounded-full font-semibold shadow-sm" onClick={() => setFundOpen(true)}>
+                  <Plus size={15} className="mr-1.5" /> Add money
+                </Button>
+              </div>
             </Card>
           </div>
         </div>
+
+        {view === 'history' && (
+          <Card className="gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
+            <div className="border-b px-4 py-3"><h2 className="text-sm font-semibold">Recent bill payments</h2></div>
+            {paymentsLoading ? <div className="space-y-2 p-4"><Skeleton className="h-12" /><Skeleton className="h-12" /></div> : payments.length === 0 ? <p className="p-8 text-center text-sm text-muted-foreground">Your completed payments will appear here.</p> : payments.map((payment) => <div key={payment.id} className="flex items-center gap-3 border-b p-4 last:border-0"><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{payment.providerName}</p><p className="truncate text-xs text-muted-foreground">{payment.customerIdentifier} · {formatDistanceToNow(new Date(payment.createdAt), { addSuffix: true })}</p></div><div className="shrink-0 text-right"><p className="text-sm font-semibold">{formatMinorAmount(payment.amountMinor, payment.currency)}</p><Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-[10px] text-emerald-700">Paid</Badge></div></div>)}
+          </Card>
+        )}
       </div>
 
       <Dialog open={fundOpen} onOpenChange={setFundOpen}>

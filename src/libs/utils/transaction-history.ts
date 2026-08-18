@@ -68,6 +68,7 @@ export function transfersToTransactionRecords(transfers: InstantTransfer[]): Tra
 
 const WALLET_KIND_TO_TYPE: Partial<Record<WalletActivityEvent['kind'], TransactionRecord['type']>> = {
   funding: 'wallet_funding',
+  currency_exchange: 'currency_exchange',
   withdrawal: 'withdrawal',
   instant_transfer_in: 'incoming_transfer',
   bill_payment: 'bill_payment',
@@ -102,15 +103,16 @@ export function walletActivityToTransactionRecords(events: WalletActivityEvent[]
 }
 
 export const TRANSACTION_TYPE_LABEL: Record<TransactionRecord['type'], string> = {
-  instant_transfer: 'Instant Transfer',
-  incoming_transfer: 'Money Received',
-  bill_payment: 'Bill Payment',
-  wallet_funding: 'Wallet Funding',
+  instant_transfer: 'Direct Payment',
+  incoming_transfer: 'Payment Received',
+  bill_payment: 'Bill Payment (Legacy)',
+  wallet_funding: 'Wallet Deposit',
+  currency_exchange: 'Currency Swap',
   withdrawal: 'Withdrawal',
-  protected_funding: 'Protected Payment',
-  milestone_release: 'Milestone Release',
-  final_release: 'Final Release',
-  refund: 'Refund',
+  protected_funding: 'Protected Order Funding',
+  milestone_release: 'Stage Payment Released',
+  final_release: 'Supplier Payment Released',
+  refund: 'Order Refund',
   reversal: 'Reversal',
   fee: 'Fee',
 };

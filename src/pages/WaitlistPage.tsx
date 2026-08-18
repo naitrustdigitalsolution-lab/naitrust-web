@@ -22,11 +22,11 @@ const USER_TYPES: Array<{ value: WaitlistUserType; label: string }> = [
 ];
 
 const PAYMENT_NEEDS = [
-  { value: 'business-discovery', label: 'Find and check registered businesses' },
-  { value: 'verified-business-payments', label: 'Pay a business after checking its Trust Profile' },
-  { value: 'protected-deals', label: 'Protect an important payment with a Protected Deal' },
-  { value: 'business-payments', label: 'Receive and manage business payments' },
-  { value: 'supplier-payments', label: 'Find and pay suppliers' },
+  { value: 'china-products', label: 'Find products and verified suppliers in China' },
+  { value: 'landed-quotes', label: 'Receive a confirmed landed-cost quote' },
+  { value: 'protected-orders', label: 'Pay through a protected supplier order' },
+  { value: 'sourcing-agents', label: 'Hire a sourcing or inspection agent in China' },
+  { value: 'sell-nigeria', label: 'Publish products and sell in Nigeria' },
   { value: 'other', label: 'Something else' },
 ];
 
@@ -95,7 +95,7 @@ export default function WaitlistPage() {
 
   return (
     <div className="relative min-h-svh overflow-hidden bg-white text-foreground dark:bg-background">
-      <SEOHead title="Join the Naitrust Waitlist" description="Join Naitrust early access to find registered businesses, review Trust Profiles, pay with confidence, and use Protected Deals." canonicalPath="/waitlist" />
+      <SEOHead title="Join the Naitrust Market Waitlist" description="Join early access to discover verified suppliers, receive landed-cost quotes, fund protected orders, and track delivery from China to Nigeria." canonicalPath="/waitlist" />
       <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-7xl px-8 lg:block">
         <img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-8 top-1/2 h-[900px] w-[900px] max-w-none -translate-y-1/2 rotate-180 opacity-70" />
@@ -114,10 +114,10 @@ export default function WaitlistPage() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust early access</p>
           </div>
-          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">Know who you are dealing with before money moves.</h1>
-          <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Find a business, review its Trust Profile, then pay normally or protect the deal.</p>
+          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">Wholesale sourcing, organized from request to delivery.</h1>
+          <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Discover China and Nigeria suppliers, request complete quotes, work with vetted agents, and follow every supplier order clearly.</p>
           <div className="mt-7 hidden space-y-3 text-sm text-[#496274] dark:text-slate-300 lg:block">
-            {['Search registered businesses and Trust Profiles', 'Review available verification details before paying', 'Pay normally or create a Protected Deal'].map((item) => (
+            {['Browse wholesale products and supplier showcases', 'Coordinate independent product and factory checks', 'Track separate orders, consolidation, shipping, and delivery'].map((item) => (
               <p key={item} className="flex items-start gap-2.5"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</p>
             ))}
           </div>
@@ -168,7 +168,7 @@ export default function WaitlistPage() {
                     </summary>
                     <div className="mt-4 grid gap-4">
                       <label className="grid gap-2 text-sm font-medium">Typical transaction size<select value={form.range} onChange={(e) => setForm({ ...form, range: e.target.value as TransactionRange })} className="h-11 rounded-lg border border-input-border bg-input-background px-4 text-sm outline-none focus:border-primary"><option value="">Select one</option>{RANGES.map((range) => <option key={range.value} value={range.value}>{range.label}</option>)}</select></label>
-                      <label className="grid gap-2 text-sm font-medium">What would make payments clearer?<Textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="min-h-20" placeholder="Tell us in one sentence" /></label>
+                      <label className="grid gap-2 text-sm font-medium">What sourcing problem should Naitrust solve for you?<Textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="min-h-20" placeholder="Tell us in one sentence" /></label>
                     </div>
                   </details>
                   <label className="flex items-start gap-3 rounded-2xl bg-muted/60 p-3 text-xs leading-5 text-muted-foreground"><input type="checkbox" checked={form.consent} onChange={(e) => setForm({ ...form, consent: e.target.checked })} className="mt-0.5 h-4 w-4 accent-primary" />Naitrust can contact me about early access and useful product updates.</label>

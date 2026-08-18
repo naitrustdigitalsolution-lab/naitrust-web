@@ -55,6 +55,7 @@ import { AddTrackingStepModal } from '../pieces/transaction/AddTrackingStepModal
 import { UploadEvidenceModal } from '../pieces/transaction/UploadEvidenceModal';
 import { RaiseDisputeModal } from '../pieces/transaction/RaiseDisputeModal';
 import { DealDeliveryReviewPanel } from '../pieces/transaction/DealDeliveryReviewPanel';
+import { DealServiceCompletionPanel } from '../pieces/transaction/DealServiceCompletionPanel';
 import { DisputePanel } from '../pieces/transaction/DisputePanel';
 import { TerminationPanel } from '../pieces/transaction/TerminationPanel';
 import { TerminationReasonModal } from '../pieces/transaction/TerminationReasonModal';
@@ -80,6 +81,7 @@ import { useNegotiation, useProposeNegotiation } from '../../hooks/useNegotiatio
 import { useDispute, useOpenDispute } from '../../hooks/useDispute';
 import { useTermination, useRequestTermination, useRespondTermination } from '../../hooks/useTermination';
 import { useCases } from '../../libs/use-cases';
+import { WORKFLOW_META } from '../../libs/features/use-case-features';
 import {
   formatMinorAmount,
   getFundingPresentation,
@@ -90,7 +92,6 @@ import {
 import { downloadAgreementDocument, downloadDealSummaryCard } from '../../libs/utils/deal-documents';
 import type { DealActivityEvent, SafeDealDetail } from '../../libs/store/types';
 import type { DealNegotiation } from '../../libs/store/types';
-import { supportsDeliveryReview } from '../../libs/protected-deals/delivery-review';
 import { useAuth } from '../../libs/auth-context';
 import { accountTypeOf } from '../../libs/utils/account';
 import { listMockDealIdentityCaptures, viewMockDealIdentityCapture, type DealIdentityCaptureView } from '../../libs/api/deal-identity-captures.mock';
@@ -378,8 +379,8 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
   const sellers = deal.parties.filter((party) => party.role === 'seller');
   return (
     <div className="space-y-5">
-      <div className="overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-background to-background">
-        <div className="p-5 sm:p-6">
+      <div className="overflow-hidden rounded-xl border border-primary/15 sm:rounded-2xl sm:bg-gradient-to-br sm:from-primary/[0.08] sm:via-background sm:to-background">
+        <div className="hidden p-5 sm:block sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Deal at a glance</p>
@@ -420,7 +421,12 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
         </div>
       )}
 
-      <dl className="divide-y divide-border rounded-xl border">
+      <details className="rounded-xl border sm:hidden">
+        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">Release conditions</summary>
+        <p className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground">{deal.releaseConditions}</p>
+        {hasSplitPayment && deal.nextPaymentReleaseConditions && <p className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground"><span className="font-semibold text-foreground">Next payment: </span>{deal.nextPaymentReleaseConditions}</p>}
+      </details>
+      <dl className="hidden divide-y divide-border rounded-xl border sm:block">
         {hasSplitPayment && (
           <div className="grid gap-3 px-4 py-3 sm:grid-cols-[160px_1fr_1fr] sm:items-center">
             <dt className="text-sm text-muted-foreground">Payment allocation</dt>
@@ -448,7 +454,8 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
           <Button
             size="sm"
             variant="outline"
-            className="rounded-full"
+            className="h-8 w-8 rounded-full p-0 sm:w-auto sm:px-3"
+            aria-label="Download agreement"
             onClick={() =>
               toast.promise(downloadAgreementDocument(deal), {
                 loading: 'Preparing agreement PDF…',
@@ -457,8 +464,8 @@ function OverviewTab({ deal }: { deal: SafeDealDetail }) {
               })
             }
           >
-            <Download size={14} className="mr-1.5" />
-            Download agreement
+            <Download size={14} className="sm:mr-1.5" />
+            <span className="hidden sm:inline">Download agreement</span>
           </Button>
         </div>
         <AgreementDocument agreement={deal.agreement} scrollable hideAiNote collapsible />
@@ -667,11 +674,7 @@ function ActionsPanel({
   onTerminate: () => void;
 }) {
   // Release is blocked while a dispute is open.
-  const canConfirm =
-    youIsReleaser &&
-    !disputeBlocksRelease &&
-    !supportsDeliveryReview(deal.useCase) &&
-    ['funded', 'in_progress', 'evidence_submitted', 'buyer_review'].includes(deal.status);
+  const canConfirm = false;
   const releaseClosed =
     deal.funding.status === 'released' ||
     ['release_approved', 'paid_out', 'completed', 'refunded', 'cancelled'].includes(deal.status) ||
@@ -853,7 +856,7 @@ export function TransactionRoomPage() {
   // Tracking describes delivery/work progress and is independent of how the
   // protected payment releases. Single-release deals still need seller
   // updates for the buyer.
-  const hasTracking = Boolean(deal);
+  const hasTracking = deal?.workflowMode === 'delivery' || deal?.workflowMode === 'milestone';
 
   const hasNegotiation = (negotiation?.proposals.length ?? 0) > 0;
   const negotiationOpen = negotiation?.status === 'open';
@@ -862,7 +865,7 @@ export function TransactionRoomPage() {
   const disputeOpen = dispute?.status === 'open' || dispute?.status === 'under_review';
   const terminationPending = termination?.status === 'requested';
   const terminated = termination?.status === 'accepted';
-  const terminationLocked = deal?.delivery.handover.status === 'in_progress' || deal?.delivery.fundingReview.status === 'in_progress';
+  const terminationLocked = deal?.workflowMode === 'delivery' && (deal.delivery.handover.status === 'in_progress' || deal.delivery.fundingReview.status === 'in_progress');
   // Anyone on the deal can request termination while it's live and none is pending.
   const canTerminate =
     !!deal &&
@@ -980,10 +983,11 @@ export function TransactionRoomPage() {
         <button
           type="button"
           onClick={() => navigate('/app/deals')}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full border text-muted-foreground transition-colors hover:text-foreground sm:mb-4 sm:h-auto sm:w-auto sm:justify-start sm:rounded-none sm:border-0"
+          aria-label="All Protected Deals"
         >
           <ArrowLeft size={16} />
-          All Protected Deals
+          <span className="hidden sm:inline">All Protected Deals</span>
         </button>
 
         {isLoading ? (
@@ -1003,21 +1007,21 @@ export function TransactionRoomPage() {
         ) : (
           <>
             {/* Header */}
-            <Card className="gap-3 rounded-2xl p-4 shadow-none md:p-5">
-              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+            <Card className="gap-3 rounded-none border-x-0 p-0 pb-3 shadow-none sm:rounded-2xl sm:border-x sm:p-4 md:p-5">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 md:flex md:justify-between md:gap-4">
                 <div className="flex items-start gap-3">
                   <CounterpartyAvatar
                     name={counterparty?.name ?? deal.counterpartyName}
-                    className="h-10 w-10 text-sm"
+                    className="hidden h-10 w-10 text-sm sm:flex"
                   />
                   <div className="min-w-0">
                     <h1 className="text-lg font-bold tracking-tight text-foreground md:text-xl">{deal.title}</h1>
-                    <p className="mt-0.5 text-xs text-muted-foreground md:text-sm">
-                      {counterparty?.name ?? deal.counterpartyName} · {deal.reference}
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground md:text-sm">
+                      {counterparty?.name ?? deal.counterpartyName}<span className="hidden sm:inline"> · {deal.reference}</span>
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       <TransactionStatusBadge status={deal.status} />
-                      {useCaseTitle && <Badge variant="outline">{useCaseTitle}</Badge>}
+                      {useCaseTitle && <Badge variant="outline" className="hidden sm:inline-flex">{useCaseTitle}</Badge>}
                       {negotiationOpen && (
                         <Badge variant="outline" className="gap-1 text-amber-600 dark:text-amber-400">
                           <GitPullRequestArrow size={12} />
@@ -1050,17 +1054,17 @@ export function TransactionRoomPage() {
                     )}
                   </div>
                 </div>
-                <div className="shrink-0 border-t pt-3 text-left md:border-0 md:pt-0 md:text-right">
-                  <p className="text-xl font-bold text-foreground tabular-nums md:text-2xl">
+                <div className="shrink-0 text-right md:border-0 md:pt-0">
+                  <p className="text-base font-bold text-foreground tabular-nums sm:text-xl md:text-2xl">
                     {formatMinorAmount(deal.amountMinor, deal.currency)}
                   </p>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground md:justify-end">
+                  <p className="mt-1 hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex md:justify-end">
                     <CalendarClock size={13} />
                     {expired
                       ? 'Invitation expired'
                       : `Open until ${format(new Date(deal.expiresAt), 'MMM d')} · ${formatDistanceToNow(new Date(deal.expiresAt))} left`}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2 md:justify-end">
+                  <div className="mt-2 flex flex-wrap justify-end gap-1.5 sm:mt-3 sm:gap-2">
                   {canResendInvite && <>
                     <Button size="sm" variant="outline" className="rounded-full" disabled={resendingInvite} onClick={() => void resendInvitation()}><Send size={14} />{resendingInvite ? 'Resending…' : 'Resend invite'}</Button>
                     <Button size="icon" variant="outline" className="h-8 w-8 rounded-full" onClick={() => void copyInvitationLink()} aria-label="Copy invitation link" title="Copy invitation link"><Copy size={14} /></Button>
@@ -1068,7 +1072,8 @@ export function TransactionRoomPage() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="rounded-full text-muted-foreground"
+                    className="h-8 w-8 rounded-full p-0 text-muted-foreground sm:w-auto sm:px-3"
+                    aria-label="Download deal summary"
                     onClick={() =>
                       toast.promise(downloadDealSummaryCard(deal), {
                         loading: 'Preparing summary PDF…',
@@ -1077,8 +1082,8 @@ export function TransactionRoomPage() {
                       })
                     }
                   >
-                    <Download size={14} className="mr-1.5" />
-                    Summary
+                    <Download size={14} className="sm:mr-1.5" />
+                    <span className="hidden sm:inline">Summary</span>
                   </Button>
                   {deal.parties.some((party) => party.isYou && party.status === 'creator') && ['pending_counterparty', 'terms_negotiation'].includes(deal.status) && (
                     <Button
@@ -1111,51 +1116,51 @@ export function TransactionRoomPage() {
             {/* Body */}
             <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_360px]">
               <Tabs value={activeTab} onValueChange={changeTab} className="w-full min-w-0">
-                <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-muted/60 p-1">
-                  <TabsTrigger value="overview">
-                    <ScrollText size={15} className="mr-1.5" />
-                    Overview
+                <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-muted/60 p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <TabsTrigger value="overview" aria-label="Overview">
+                    <ScrollText size={15} className="sm:mr-1.5" />
+                    <span className="hidden sm:inline">Overview</span>
                   </TabsTrigger>
                   {hasNegotiation && (
-                    <TabsTrigger value="negotiations">
-                      <GitPullRequestArrow size={15} className="mr-1.5" />
-                      Negotiations
+                    <TabsTrigger value="negotiations" aria-label="Negotiations">
+                      <GitPullRequestArrow size={15} className="sm:mr-1.5" />
+                      <span className="hidden sm:inline">Negotiations</span>
                     </TabsTrigger>
                   )}
                   {hasTracking && (
-                    <TabsTrigger value="tracking">
-                      <Truck size={15} className="mr-1.5" />
-                      Tracking
+                    <TabsTrigger value="tracking" aria-label="Tracking">
+                      <Truck size={15} className="sm:mr-1.5" />
+                      <span className="hidden sm:inline">{deal ? WORKFLOW_META[deal.workflowMode].tabLabel : 'Progress'}</span>
                     </TabsTrigger>
                   )}
                   {hasDispute && (
-                    <TabsTrigger value="dispute">
-                      <ShieldAlert size={15} className="mr-1.5" />
-                      Dispute
+                    <TabsTrigger value="dispute" aria-label="Dispute">
+                      <ShieldAlert size={15} className="sm:mr-1.5" />
+                      <span className="hidden sm:inline">Dispute</span>
                     </TabsTrigger>
                   )}
                   {termination && (
-                    <TabsTrigger value="termination">
-                      <Ban size={15} className="mr-1.5" />
-                      Termination
+                    <TabsTrigger value="termination" aria-label="Termination">
+                      <Ban size={15} className="sm:mr-1.5" />
+                      <span className="hidden sm:inline">Termination</span>
                     </TabsTrigger>
                   )}
-                  <TabsTrigger value="chat">
-                    <MessageSquare size={15} className="mr-1.5" />
-                    Messages
+                  <TabsTrigger value="chat" aria-label="Messages">
+                    <MessageSquare size={15} className="sm:mr-1.5" />
+                    <span className="hidden sm:inline">Messages</span>
                   </TabsTrigger>
-                  <TabsTrigger value="evidence">
-                    <Paperclip size={15} className="mr-1.5" />
-                    Evidence
+                  <TabsTrigger value="evidence" aria-label="Evidence">
+                    <Paperclip size={15} className="sm:mr-1.5" />
+                    <span className="hidden sm:inline">Evidence</span>
                   </TabsTrigger>
-                  <TabsTrigger value="activity">
-                    <CalendarClock size={15} className="mr-1.5" />
-                    Activity
+                  <TabsTrigger value="activity" aria-label="Activity">
+                    <CalendarClock size={15} className="sm:mr-1.5" />
+                    <span className="hidden sm:inline">Activity</span>
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview">
-                  {youParty && <DealDeliveryReviewPanel
+                  {youParty && deal.workflowMode === 'delivery' && <DealDeliveryReviewPanel
                     deal={deal}
                     viewerRole={youParty.role}
                   hasDispute={disputeBlocksRelease}
@@ -1164,7 +1169,16 @@ export function TransactionRoomPage() {
                       setShowDeliveryEvidence(true);
                     }}
                   />}
-                  <Card className="p-5 shadow-sm">
+                  {youParty && deal.workflowMode !== 'delivery' && <DealServiceCompletionPanel
+                    deal={deal}
+                    viewerRole={youParty.role}
+                    hasDispute={disputeBlocksRelease}
+                    onUploadEvidence={() => {
+                      setDeliveryEvidenceKind(deal.workflowMode === 'service' ? 'Completion evidence' : 'Milestone evidence');
+                      setShowDeliveryEvidence(true);
+                    }}
+                  />}
+                  <Card className="rounded-none border-x-0 p-0 pt-4 shadow-sm sm:rounded-xl sm:border-x sm:p-5">
                     <OverviewTab deal={deal} />
                   </Card>
                 </TabsContent>
@@ -1359,7 +1373,7 @@ export function TransactionRoomPage() {
                   {
                     onSuccess: () => {
                       setShowDeliveryEvidence(false);
-                      toast.success('Product evidence added to this Protected Deal.');
+                      toast.success(`${deal.workflowMode === 'delivery' ? 'Product' : deal.workflowMode === 'service' ? 'Work' : 'Milestone'} evidence added to this Protected Deal.`);
                     },
                   },
                 )

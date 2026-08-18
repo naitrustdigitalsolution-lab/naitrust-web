@@ -1,0 +1,2181 @@
+{
+  "suppliers": [
+    {
+      "id": "sup_cn_pack",
+      "name": "Guangzhou BrightPack Manufacturing",
+      "slug": "guangzhou-brightpack",
+      "country": "CN",
+      "city": "Guangzhou",
+      "category": "Packaging & retail supplies",
+      "description": "Custom retail packaging, shipping boxes and branded carrier bags for growing businesses.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.8,
+      "completedOrders": 184,
+      "responseRate": 97,
+      "verificationSummary": "Factory identity, representative and operating address reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "pack_0",
+          "type": "image",
+          "title": "Factory floor",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "pack_1",
+          "type": "image",
+          "title": "Packaging samples"
+        },
+        {
+          "id": "pack_2",
+          "type": "image",
+          "title": "Quality check"
+        },
+        {
+          "id": "pack_3",
+          "type": "image",
+          "title": "Export preparation"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_elec",
+      "name": "Shenzhen Luma Electronics",
+      "slug": "shenzhen-luma",
+      "country": "CN",
+      "city": "Shenzhen",
+      "category": "Electronics & accessories",
+      "description": "Consumer electronics accessories, power products and private-label production.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.7,
+      "completedOrders": 126,
+      "responseRate": 95,
+      "verificationSummary": "Company registration, factory location and export contact reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "luma_0",
+          "type": "image",
+          "title": "Product showroom",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "luma_1",
+          "type": "image",
+          "title": "Assembly line"
+        },
+        {
+          "id": "luma_2",
+          "type": "image",
+          "title": "Batch inspection"
+        },
+        {
+          "id": "luma_3",
+          "type": "image",
+          "title": "Packed shipment"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_textile",
+      "name": "Adebisi Textile Works",
+      "slug": "adebisi-textile",
+      "country": "NG",
+      "city": "Lagos",
+      "category": "Textiles & fashion",
+      "description": "Locally produced fabrics, uniforms and custom textile orders for retailers and organisations.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English",
+        "Yoruba"
+      ],
+      "rating": 4.9,
+      "completedOrders": 73,
+      "responseRate": 98,
+      "verificationSummary": "Nigerian business and representative verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "textile_0",
+          "type": "image",
+          "title": "Available fabrics",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "textile_1",
+          "type": "image",
+          "title": "Workshop"
+        },
+        {
+          "id": "textile_2",
+          "type": "image",
+          "title": "Completed uniforms"
+        },
+        {
+          "id": "textile_3",
+          "type": "image",
+          "title": "Order packaging"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_home",
+      "name": "Foshan Haven Homeware",
+      "slug": "foshan-haven-homeware",
+      "country": "CN",
+      "city": "Foshan",
+      "category": "Home & kitchen",
+      "description": "Kitchen organisers, cookware accessories and private-label homeware for retailers.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.8,
+      "completedOrders": 211,
+      "responseRate": 96,
+      "verificationSummary": "Company registration, showroom, representative and export records reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "home_0",
+          "type": "image",
+          "title": "Showroom",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "home_1",
+          "type": "image",
+          "title": "Product samples"
+        },
+        {
+          "id": "home_2",
+          "type": "image",
+          "title": "Quality check"
+        },
+        {
+          "id": "home_3",
+          "type": "image",
+          "title": "Export cartons"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_solar",
+      "name": "Shenzhen SunGrid Energy",
+      "slug": "shenzhen-sungrid-energy",
+      "country": "CN",
+      "city": "Shenzhen",
+      "category": "Solar & power",
+      "description": "Portable solar systems, inverters, lighting kits and power accessories.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.9,
+      "completedOrders": 168,
+      "responseRate": 98,
+      "verificationSummary": "Factory address, certifications, testing process and export contact reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "solar_0",
+          "type": "image",
+          "title": "Product lab",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "solar_1",
+          "type": "image",
+          "title": "Solar kits"
+        },
+        {
+          "id": "solar_2",
+          "type": "image",
+          "title": "Load testing"
+        },
+        {
+          "id": "solar_3",
+          "type": "image",
+          "title": "Shipment preparation"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_beauty",
+      "name": "Guangzhou Miora Beauty Labs",
+      "slug": "guangzhou-miora-beauty",
+      "country": "CN",
+      "city": "Guangzhou",
+      "category": "Beauty & personal care",
+      "description": "Private-label beauty tools, salon accessories and compliant retail packaging.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.7,
+      "completedOrders": 142,
+      "responseRate": 95,
+      "verificationSummary": "Business identity, production site and quality documentation reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "beauty_0",
+          "type": "image",
+          "title": "Sample room",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "beauty_1",
+          "type": "image",
+          "title": "Production line"
+        },
+        {
+          "id": "beauty_2",
+          "type": "image",
+          "title": "Packaging options"
+        },
+        {
+          "id": "beauty_3",
+          "type": "image",
+          "title": "Batch review"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_furniture",
+      "name": "Foshan Oakline Furniture",
+      "slug": "foshan-oakline",
+      "country": "CN",
+      "city": "Foshan",
+      "category": "Furniture & interiors",
+      "description": "Commercial seating, office furniture and flat-pack interior products.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.8,
+      "completedOrders": 96,
+      "responseRate": 94,
+      "verificationSummary": "Factory, materials showroom and international fulfilment capability reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "furniture_0",
+          "type": "image",
+          "title": "Furniture showroom",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "furniture_1",
+          "type": "image",
+          "title": "Materials"
+        },
+        {
+          "id": "furniture_2",
+          "type": "image",
+          "title": "Assembly"
+        },
+        {
+          "id": "furniture_3",
+          "type": "image",
+          "title": "Protective packing"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_auto",
+      "name": "Yiwu Motive Auto Supplies",
+      "slug": "yiwu-motive-auto",
+      "country": "CN",
+      "city": "Yiwu",
+      "category": "Automotive accessories",
+      "description": "Vehicle organisers, cleaning tools, phone mounts and retail-ready auto accessories.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.6,
+      "completedOrders": 119,
+      "responseRate": 93,
+      "verificationSummary": "Trading company registration, warehouse and product sourcing records reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "auto_0",
+          "type": "image",
+          "title": "Warehouse",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "auto_1",
+          "type": "image",
+          "title": "Product range"
+        },
+        {
+          "id": "auto_2",
+          "type": "image",
+          "title": "Packing station"
+        },
+        {
+          "id": "auto_3",
+          "type": "image",
+          "title": "Export order"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_machinery",
+      "name": "Dongguan CraftPro Machinery",
+      "slug": "dongguan-craftpro",
+      "country": "CN",
+      "city": "Dongguan",
+      "category": "Machinery & tools",
+      "description": "Compact production equipment, workshop tools and spare-part packages for SMEs.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.9,
+      "completedOrders": 87,
+      "responseRate": 97,
+      "verificationSummary": "Manufacturer identity, demonstration site, serial records and support contact reviewed.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "machinery_0",
+          "type": "image",
+          "title": "Machine demo",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "machinery_1",
+          "type": "image",
+          "title": "Workshop"
+        },
+        {
+          "id": "machinery_2",
+          "type": "image",
+          "title": "Parts package"
+        },
+        {
+          "id": "machinery_3",
+          "type": "image",
+          "title": "Export crate"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_footwear",
+      "name": "Quanzhou Stepwise Footwear",
+      "slug": "quanzhou-stepwise",
+      "country": "CN",
+      "city": "Quanzhou",
+      "category": "Fashion & footwear",
+      "description": "Private-label casual footwear with size runs, colour options and custom packaging.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.7,
+      "completedOrders": 154,
+      "responseRate": 96,
+      "verificationSummary": "Factory registration, sample room and production capacity reviewed by Naitrust.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "footwear_0",
+          "type": "image",
+          "title": "Sample room",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "footwear_1",
+          "type": "image",
+          "title": "Materials"
+        },
+        {
+          "id": "footwear_2",
+          "type": "image",
+          "title": "Production"
+        },
+        {
+          "id": "footwear_3",
+          "type": "image",
+          "title": "Boxed order"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_phone",
+      "name": "Shenzhen Nova Mobile Accessories",
+      "slug": "shenzhen-nova-mobile",
+      "country": "CN",
+      "city": "Shenzhen",
+      "category": "Phones & accessories",
+      "description": "Charging cables, cases, stands and retail accessories for phone dealers.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.8,
+      "completedOrders": 238,
+      "responseRate": 99,
+      "verificationSummary": "Company, warehouse, batch-testing process and export representative reviewed.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "phone_0",
+          "type": "image",
+          "title": "Product wall",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "phone_1",
+          "type": "image",
+          "title": "Cable testing"
+        },
+        {
+          "id": "phone_2",
+          "type": "image",
+          "title": "Packing"
+        },
+        {
+          "id": "phone_3",
+          "type": "image",
+          "title": "Export cartons"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_hospitality",
+      "name": "Guangzhou TableCraft Hospitality",
+      "slug": "guangzhou-tablecraft",
+      "country": "CN",
+      "city": "Guangzhou",
+      "category": "Hospitality supplies",
+      "description": "Restaurant tableware, hotel amenities and branded service supplies.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.8,
+      "completedOrders": 133,
+      "responseRate": 96,
+      "verificationSummary": "Showroom, supplier network, representative and fulfilment records reviewed.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "hospitality_0",
+          "type": "image",
+          "title": "Tableware showroom",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "hospitality_1",
+          "type": "image",
+          "title": "Amenity samples"
+        },
+        {
+          "id": "hospitality_2",
+          "type": "image",
+          "title": "Quality review"
+        },
+        {
+          "id": "hospitality_3",
+          "type": "image",
+          "title": "Bulk packing"
+        }
+      ]
+    },
+    {
+      "id": "sup_cn_toys",
+      "name": "Shantou BrightPlay Products",
+      "slug": "shantou-brightplay",
+      "country": "CN",
+      "city": "Shantou",
+      "category": "Toys & learning",
+      "description": "Educational toys, activity sets and retail-ready learning products.",
+      "verified": true,
+      "managedByNaitrust": true,
+      "languages": [
+        "Mandarin",
+        "English through Naitrust"
+      ],
+      "rating": 4.6,
+      "completedOrders": 102,
+      "responseRate": 94,
+      "verificationSummary": "Manufacturer registration, product test documents and packing facility reviewed.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "toys_0",
+          "type": "image",
+          "title": "Toy samples",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "toys_1",
+          "type": "image",
+          "title": "Assembly"
+        },
+        {
+          "id": "toys_2",
+          "type": "image",
+          "title": "Safety review"
+        },
+        {
+          "id": "toys_3",
+          "type": "image",
+          "title": "Retail cartons"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_food",
+      "name": "Kwara Harvest Foods",
+      "slug": "kwara-harvest-foods",
+      "country": "NG",
+      "city": "Ilorin",
+      "category": "Food & agriculture",
+      "description": "Cleaned, processed and packaged Nigerian grains, spices and food ingredients.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English",
+        "Yoruba"
+      ],
+      "rating": 4.8,
+      "completedOrders": 89,
+      "responseRate": 97,
+      "verificationSummary": "Nigerian business identity, processing location and representative verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "food_0",
+          "type": "image",
+          "title": "Processing floor",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "food_1",
+          "type": "image",
+          "title": "Packaged goods"
+        },
+        {
+          "id": "food_2",
+          "type": "image",
+          "title": "Quality review"
+        },
+        {
+          "id": "food_3",
+          "type": "image",
+          "title": "Dispatch stock"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_leather",
+      "name": "Kano Heritage Leather",
+      "slug": "kano-heritage-leather",
+      "country": "NG",
+      "city": "Kano",
+      "category": "Leather goods",
+      "description": "Locally crafted leather bags, belts and corporate gift products.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English",
+        "Hausa"
+      ],
+      "rating": 4.9,
+      "completedOrders": 64,
+      "responseRate": 96,
+      "verificationSummary": "Workshop, business representative and production samples verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "leather_0",
+          "type": "image",
+          "title": "Leather selection",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "leather_1",
+          "type": "image",
+          "title": "Workshop"
+        },
+        {
+          "id": "leather_2",
+          "type": "image",
+          "title": "Finished bags"
+        },
+        {
+          "id": "leather_3",
+          "type": "image",
+          "title": "Order packaging"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_furniture",
+      "name": "Abuja Form & Function",
+      "slug": "abuja-form-function",
+      "country": "NG",
+      "city": "Abuja",
+      "category": "Furniture & interiors",
+      "description": "Made-to-order office desks, retail fixtures and residential furniture.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English"
+      ],
+      "rating": 4.8,
+      "completedOrders": 57,
+      "responseRate": 95,
+      "verificationSummary": "Business identity, workshop and lead craft representative verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "ngfurniture_0",
+          "type": "image",
+          "title": "Workshop",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "ngfurniture_1",
+          "type": "image",
+          "title": "Desk collection"
+        },
+        {
+          "id": "ngfurniture_2",
+          "type": "image",
+          "title": "Finishing"
+        },
+        {
+          "id": "ngfurniture_3",
+          "type": "image",
+          "title": "Delivery preparation"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_print",
+      "name": "Lagos Print & Pack Studio",
+      "slug": "lagos-print-pack",
+      "country": "NG",
+      "city": "Lagos",
+      "category": "Printing & packaging",
+      "description": "Short-run product packaging, labels, promotional prints and branded stationery.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English"
+      ],
+      "rating": 4.7,
+      "completedOrders": 121,
+      "responseRate": 98,
+      "verificationSummary": "Registered business, production address and equipment reviewed.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "print_0",
+          "type": "image",
+          "title": "Print floor",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "print_1",
+          "type": "image",
+          "title": "Label samples"
+        },
+        {
+          "id": "print_2",
+          "type": "image",
+          "title": "Colour check"
+        },
+        {
+          "id": "print_3",
+          "type": "image",
+          "title": "Finished order"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_skincare",
+      "name": "Eko Botanics Manufacturing",
+      "slug": "eko-botanics",
+      "country": "NG",
+      "city": "Lagos",
+      "category": "Beauty & personal care",
+      "description": "Locally formulated soaps, body-care products and private-label production.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English"
+      ],
+      "rating": 4.8,
+      "completedOrders": 78,
+      "responseRate": 96,
+      "verificationSummary": "Business identity, production facility and responsible representative verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "skincare_0",
+          "type": "image",
+          "title": "Product range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "skincare_1",
+          "type": "image",
+          "title": "Mixing room"
+        },
+        {
+          "id": "skincare_2",
+          "type": "image",
+          "title": "Packaging"
+        },
+        {
+          "id": "skincare_3",
+          "type": "image",
+          "title": "Finished cartons"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_footwear",
+      "name": "Aba Sole Works",
+      "slug": "aba-sole-works",
+      "country": "NG",
+      "city": "Aba",
+      "category": "Fashion & footwear",
+      "description": "Locally made sandals, shoes and private-label footwear for retailers.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English",
+        "Igbo"
+      ],
+      "rating": 4.7,
+      "completedOrders": 92,
+      "responseRate": 94,
+      "verificationSummary": "Workshop, owner identity, sample quality and fulfilment process verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "abasole_0",
+          "type": "image",
+          "title": "Shoe samples",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "abasole_1",
+          "type": "image",
+          "title": "Cutting"
+        },
+        {
+          "id": "abasole_2",
+          "type": "image",
+          "title": "Assembly"
+        },
+        {
+          "id": "abasole_3",
+          "type": "image",
+          "title": "Packed pairs"
+        }
+      ]
+    },
+    {
+      "id": "sup_ng_cleaning",
+      "name": "Port Harcourt CleanPro",
+      "slug": "ph-cleanpro",
+      "country": "NG",
+      "city": "Port Harcourt",
+      "category": "Cleaning supplies",
+      "description": "Commercial cleaning liquids, dispensers and janitorial supply bundles.",
+      "verified": true,
+      "managedByNaitrust": false,
+      "languages": [
+        "English"
+      ],
+      "rating": 4.6,
+      "completedOrders": 51,
+      "responseRate": 93,
+      "verificationSummary": "Business registration, production address and representative verified.",
+      "fulfilmentRegions": [
+        "Nigeria"
+      ],
+      "media": [
+        {
+          "id": "cleaning_0",
+          "type": "image",
+          "title": "Product range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "cleaning_1",
+          "type": "image",
+          "title": "Filling line"
+        },
+        {
+          "id": "cleaning_2",
+          "type": "image",
+          "title": "Bulk packs"
+        },
+        {
+          "id": "cleaning_3",
+          "type": "image",
+          "title": "Dispatch"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": "prd_boxes",
+      "supplierId": "sup_cn_pack",
+      "title": "Custom corrugated shipping boxes",
+      "description": "Five-layer export cartons with custom dimensions and optional printed branding.",
+      "category": "Packaging",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 480,
+      "estimatedNgnMinor": 108000,
+      "minimumOrderQuantity": 500,
+      "unit": "box",
+      "variants": [
+        {
+          "name": "Print",
+          "values": [
+            "Plain",
+            "One colour",
+            "Full colour"
+          ]
+        }
+      ],
+      "specifications": {
+        "Material": "Five-layer corrugated board",
+        "Customisation": "Size and print available",
+        "Lead_time": "12–18 days after artwork approval"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "box_0",
+          "type": "image",
+          "title": "Shipping box",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "box_1",
+          "type": "image",
+          "title": "Printed finish"
+        },
+        {
+          "id": "box_2",
+          "type": "image",
+          "title": "Packed cartons"
+        }
+      ]
+    },
+    {
+      "id": "prd_bags",
+      "supplierId": "sup_cn_pack",
+      "title": "Branded retail carrier bags",
+      "description": "Reusable non-woven shopping bags produced with your colour, size and logo.",
+      "category": "Packaging",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 290,
+      "estimatedNgnMinor": 65000,
+      "minimumOrderQuantity": 1000,
+      "unit": "bag",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "Small",
+            "Medium",
+            "Large"
+          ]
+        },
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "White",
+            "Custom"
+          ]
+        }
+      ],
+      "specifications": {
+        "Material": "80gsm non-woven fabric",
+        "Printing": "Screen or heat transfer",
+        "Lead_time": "10–15 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "bags_0",
+          "type": "image",
+          "title": "Carrier bag",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "bags_1",
+          "type": "image",
+          "title": "Logo samples"
+        },
+        {
+          "id": "bags_2",
+          "type": "image",
+          "title": "Bulk packaging"
+        }
+      ]
+    },
+    {
+      "id": "prd_powerbank",
+      "supplierId": "sup_cn_elec",
+      "title": "10,000mAh branded power banks",
+      "description": "Private-label power banks with USB-C input, dual output and retail packaging.",
+      "category": "Electronics",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 4650,
+      "estimatedNgnMinor": 1040000,
+      "minimumOrderQuantity": 100,
+      "unit": "unit",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "White"
+          ]
+        }
+      ],
+      "specifications": {
+        "Capacity": "10,000mAh",
+        "Input": "USB-C",
+        "Certification": "CE and RoHS documents available"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "power_0",
+          "type": "image",
+          "title": "Power bank",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "power_1",
+          "type": "image",
+          "title": "Retail package"
+        },
+        {
+          "id": "power_2",
+          "type": "image",
+          "title": "Batch testing"
+        }
+      ]
+    },
+    {
+      "id": "prd_luma_earbuds",
+      "supplierId": "sup_cn_elec",
+      "title": "Private-label wireless earbuds",
+      "description": "Compact true-wireless earbuds with charging cases and custom retail packaging for distributors.",
+      "category": "Electronics",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 3750,
+      "estimatedNgnMinor": 842000,
+      "minimumOrderQuantity": 200,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "White",
+            "Navy"
+          ]
+        },
+        {
+          "name": "Package",
+          "values": [
+            "Standard",
+            "Private label"
+          ]
+        }
+      ],
+      "specifications": {
+        "Playback": "Up to 6 hours",
+        "Charging": "USB-C case",
+        "Lead_time": "15–22 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "lumaearbuds_0",
+          "type": "image",
+          "title": "Earbud range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "lumaearbuds_1",
+          "type": "image",
+          "title": "Charging cases"
+        },
+        {
+          "id": "lumaearbuds_2",
+          "type": "image",
+          "title": "Retail packaging"
+        }
+      ]
+    },
+    {
+      "id": "prd_luma_chargers",
+      "supplierId": "sup_cn_elec",
+      "title": "30W USB-C fast wall chargers",
+      "description": "Compact fast chargers available with UK, EU and US plug configurations and plain or custom boxes.",
+      "category": "Electronics",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 2250,
+      "estimatedNgnMinor": 505000,
+      "minimumOrderQuantity": 300,
+      "unit": "unit",
+      "variants": [
+        {
+          "name": "Plug",
+          "values": [
+            "UK",
+            "EU",
+            "US"
+          ]
+        },
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "specifications": {
+        "Output": "Up to 30W",
+        "Port": "USB-C",
+        "Testing": "Batch report available"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "lumachargers_0",
+          "type": "image",
+          "title": "Charger range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "lumachargers_1",
+          "type": "image",
+          "title": "Plug options"
+        },
+        {
+          "id": "lumachargers_2",
+          "type": "image",
+          "title": "Packing"
+        }
+      ]
+    },
+    {
+      "id": "prd_luma_speakers",
+      "supplierId": "sup_cn_elec",
+      "title": "Portable fabric Bluetooth speakers",
+      "description": "Retail-ready compact speakers with textured fabric finish, rechargeable battery and colour options.",
+      "category": "Electronics",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 5400,
+      "estimatedNgnMinor": 1215000,
+      "minimumOrderQuantity": 100,
+      "unit": "unit",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "Navy",
+            "Grey"
+          ]
+        }
+      ],
+      "specifications": {
+        "Playback": "Up to 8 hours",
+        "Charging": "USB-C",
+        "Branding": "Logo and box options"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "lumaspeakers_0",
+          "type": "image",
+          "title": "Speaker range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "lumaspeakers_1",
+          "type": "image",
+          "title": "Control detail"
+        },
+        {
+          "id": "lumaspeakers_2",
+          "type": "image",
+          "title": "Retail box"
+        }
+      ]
+    },
+    {
+      "id": "prd_luma_strips",
+      "supplierId": "sup_cn_elec",
+      "title": "USB surge-protected power strips",
+      "description": "Universal socket power strips with USB charging ports for homes, offices and electronics retailers.",
+      "category": "Electronics",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 4100,
+      "estimatedNgnMinor": 922000,
+      "minimumOrderQuantity": 150,
+      "unit": "unit",
+      "variants": [
+        {
+          "name": "Cable",
+          "values": [
+            "1.5 metres",
+            "3 metres"
+          ]
+        },
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "specifications": {
+        "Sockets": "Four universal outlets",
+        "USB_ports": "Three",
+        "Protection": "Overload switch"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "lumastrips_0",
+          "type": "image",
+          "title": "Power strip range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "lumastrips_1",
+          "type": "image",
+          "title": "Socket detail"
+        },
+        {
+          "id": "lumastrips_2",
+          "type": "image",
+          "title": "Export carton"
+        }
+      ]
+    },
+    {
+      "id": "prd_uniform",
+      "supplierId": "sup_ng_textile",
+      "title": "Custom staff uniforms",
+      "description": "Locally made branded work shirts and trousers with measurement support.",
+      "category": "Textiles",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 1850000,
+      "estimatedNgnMinor": 1850000,
+      "minimumOrderQuantity": 10,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Fabric",
+          "values": [
+            "Cotton blend",
+            "Premium cotton"
+          ]
+        }
+      ],
+      "specifications": {
+        "Branding": "Embroidery included",
+        "Production": "7–14 working days",
+        "Delivery": "Nationwide"
+      },
+      "shippingPaidBy": "seller",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "uniform_0",
+          "type": "image",
+          "title": "Completed uniform",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "uniform_1",
+          "type": "image",
+          "title": "Fabric options"
+        },
+        {
+          "id": "uniform_2",
+          "type": "image",
+          "title": "Workshop finish"
+        }
+      ]
+    },
+    {
+      "id": "prd_kitchen",
+      "supplierId": "sup_cn_home",
+      "title": "Modular kitchen storage sets",
+      "description": "Stackable food and pantry organisers supplied in retail-ready sets.",
+      "category": "Home & kitchen",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 1850,
+      "estimatedNgnMinor": 410000,
+      "minimumOrderQuantity": 200,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Set size",
+          "values": [
+            "4 piece",
+            "8 piece"
+          ]
+        }
+      ],
+      "specifications": {
+        "Material": "Food-grade plastic",
+        "Packing": "Retail carton",
+        "Lead_time": "14–20 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "kitchen_0",
+          "type": "image",
+          "title": "Storage set",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "kitchen_1",
+          "type": "image",
+          "title": "Sizes"
+        },
+        {
+          "id": "kitchen_2",
+          "type": "image",
+          "title": "Retail carton"
+        }
+      ]
+    },
+    {
+      "id": "prd_solar",
+      "supplierId": "sup_cn_solar",
+      "title": "Portable solar lighting kits",
+      "description": "Retail solar kit with panel, lamps, charging ports and battery unit.",
+      "category": "Solar & power",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 12800,
+      "estimatedNgnMinor": 2890000,
+      "minimumOrderQuantity": 50,
+      "unit": "kit",
+      "variants": [
+        {
+          "name": "Capacity",
+          "values": [
+            "Basic",
+            "Extended"
+          ]
+        }
+      ],
+      "specifications": {
+        "Panel": "Included",
+        "Outputs": "USB and DC",
+        "Testing": "Batch report available"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "solarprd_0",
+          "type": "image",
+          "title": "Complete kit",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "solarprd_1",
+          "type": "image",
+          "title": "Panel"
+        },
+        {
+          "id": "solarprd_2",
+          "type": "image",
+          "title": "Load test"
+        }
+      ]
+    },
+    {
+      "id": "prd_beauty",
+      "supplierId": "sup_cn_beauty",
+      "title": "Private-label beauty tool sets",
+      "description": "Retail beauty accessory kits with customizable colour and packaging.",
+      "category": "Beauty & personal care",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 980,
+      "estimatedNgnMinor": 220000,
+      "minimumOrderQuantity": 500,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "Pink",
+            "Custom"
+          ]
+        }
+      ],
+      "specifications": {
+        "Packaging": "Custom box available",
+        "Sample": "Available",
+        "Lead_time": "12–18 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "beautyprd_0",
+          "type": "image",
+          "title": "Tool set",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "beautyprd_1",
+          "type": "image",
+          "title": "Colour options"
+        },
+        {
+          "id": "beautyprd_2",
+          "type": "image",
+          "title": "Custom box"
+        }
+      ]
+    },
+    {
+      "id": "prd_chair",
+      "supplierId": "sup_cn_furniture",
+      "title": "Commercial dining chair collection",
+      "description": "Durable restaurant and hospitality chairs with finish options.",
+      "category": "Furniture & interiors",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 16800,
+      "estimatedNgnMinor": 3790000,
+      "minimumOrderQuantity": 30,
+      "unit": "chair",
+      "variants": [
+        {
+          "name": "Finish",
+          "values": [
+            "Natural",
+            "Walnut",
+            "Black"
+          ]
+        }
+      ],
+      "specifications": {
+        "Frame": "Solid wood and steel options",
+        "Assembly": "Supplier packed",
+        "Lead_time": "20–30 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "chair_0",
+          "type": "image",
+          "title": "Chair range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "chair_1",
+          "type": "image",
+          "title": "Finish detail"
+        },
+        {
+          "id": "chair_2",
+          "type": "image",
+          "title": "Export packing"
+        }
+      ]
+    },
+    {
+      "id": "prd_auto",
+      "supplierId": "sup_cn_auto",
+      "title": "Car accessory retail bundles",
+      "description": "Mixed phone mount, organiser and cleaning accessory packs for retailers.",
+      "category": "Automotive accessories",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 3200,
+      "estimatedNgnMinor": 720000,
+      "minimumOrderQuantity": 100,
+      "unit": "bundle",
+      "variants": [
+        {
+          "name": "Mix",
+          "values": [
+            "Standard",
+            "Premium"
+          ]
+        }
+      ],
+      "specifications": {
+        "Packaging": "Individual retail packs",
+        "Mix": "Customizable",
+        "Lead_time": "10–16 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "autoprd_0",
+          "type": "image",
+          "title": "Bundle",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "autoprd_1",
+          "type": "image",
+          "title": "Retail packs"
+        },
+        {
+          "id": "autoprd_2",
+          "type": "image",
+          "title": "Cartons"
+        }
+      ]
+    },
+    {
+      "id": "prd_machine",
+      "supplierId": "sup_cn_machinery",
+      "title": "Compact liquid filling machine",
+      "description": "Bench-top filling equipment for small food, beauty and cleaning-product lines.",
+      "category": "Machinery & tools",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 285000,
+      "estimatedNgnMinor": 64100000,
+      "minimumOrderQuantity": 1,
+      "unit": "machine",
+      "variants": [
+        {
+          "name": "Voltage",
+          "values": [
+            "220V"
+          ]
+        }
+      ],
+      "specifications": {
+        "Output": "Adjustable",
+        "Support": "Video setup guide",
+        "Spares": "Starter kit included"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "machine_0",
+          "type": "image",
+          "title": "Machine",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "machine_1",
+          "type": "image",
+          "title": "Controls"
+        },
+        {
+          "id": "machine_2",
+          "type": "image",
+          "title": "Export crate"
+        }
+      ]
+    },
+    {
+      "id": "prd_shoes_cn",
+      "supplierId": "sup_cn_footwear",
+      "title": "Private-label casual sneakers",
+      "description": "Retail sneaker collection with full size runs and custom box options.",
+      "category": "Fashion & footwear",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 6900,
+      "estimatedNgnMinor": 1550000,
+      "minimumOrderQuantity": 120,
+      "unit": "pair",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Black",
+            "White",
+            "Mixed"
+          ]
+        }
+      ],
+      "specifications": {
+        "Sizes": "EU 36–46",
+        "Branding": "Private label available",
+        "Lead_time": "18–25 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "shoescn_0",
+          "type": "image",
+          "title": "Sneaker range",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "shoescn_1",
+          "type": "image",
+          "title": "Sole detail"
+        },
+        {
+          "id": "shoescn_2",
+          "type": "image",
+          "title": "Boxes"
+        }
+      ]
+    },
+    {
+      "id": "prd_cables",
+      "supplierId": "sup_cn_phone",
+      "title": "Fast-charge USB-C cable packs",
+      "description": "Braided charging cables in retail packaging with batch testing.",
+      "category": "Phones & accessories",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 460,
+      "estimatedNgnMinor": 104000,
+      "minimumOrderQuantity": 500,
+      "unit": "cable",
+      "variants": [
+        {
+          "name": "Length",
+          "values": [
+            "1 metre",
+            "2 metres"
+          ]
+        }
+      ],
+      "specifications": {
+        "Power": "Fast-charge capable",
+        "Testing": "Batch report",
+        "Packaging": "Retail box"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "cables_0",
+          "type": "image",
+          "title": "Cable pack",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "cables_1",
+          "type": "image",
+          "title": "Connectors"
+        },
+        {
+          "id": "cables_2",
+          "type": "image",
+          "title": "Testing"
+        }
+      ]
+    },
+    {
+      "id": "prd_hotel",
+      "supplierId": "sup_cn_hospitality",
+      "title": "Hotel amenity starter sets",
+      "description": "Customizable hospitality amenity kits for hotels and serviced apartments.",
+      "category": "Hospitality supplies",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 720,
+      "estimatedNgnMinor": 162000,
+      "minimumOrderQuantity": 1000,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Contents",
+          "values": [
+            "Basic",
+            "Premium"
+          ]
+        }
+      ],
+      "specifications": {
+        "Branding": "Custom print available",
+        "Packing": "Individual",
+        "Lead_time": "15–20 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "hotel_0",
+          "type": "image",
+          "title": "Amenity set",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "hotel_1",
+          "type": "image",
+          "title": "Packaging"
+        },
+        {
+          "id": "hotel_2",
+          "type": "image",
+          "title": "Bulk cartons"
+        }
+      ]
+    },
+    {
+      "id": "prd_toys",
+      "supplierId": "sup_cn_toys",
+      "title": "Educational activity sets",
+      "description": "Retail-ready learning and activity sets for early-age classrooms and stores.",
+      "category": "Toys & learning",
+      "country": "CN",
+      "sourceCurrency": "CNY",
+      "sourcePriceMinor": 1550,
+      "estimatedNgnMinor": 349000,
+      "minimumOrderQuantity": 300,
+      "unit": "set",
+      "variants": [
+        {
+          "name": "Age range",
+          "values": [
+            "3–5",
+            "6–8"
+          ]
+        }
+      ],
+      "specifications": {
+        "Materials": "Documented",
+        "Packaging": "Retail box",
+        "Samples": "Available"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": true,
+      "media": [
+        {
+          "id": "toysprd_0",
+          "type": "image",
+          "title": "Activity set",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "toysprd_1",
+          "type": "image",
+          "title": "Contents"
+        },
+        {
+          "id": "toysprd_2",
+          "type": "image",
+          "title": "Retail carton"
+        }
+      ]
+    },
+    {
+      "id": "prd_spices",
+      "supplierId": "sup_ng_food",
+      "title": "Retail spice starter cartons",
+      "description": "Assorted cleaned and sealed Nigerian spice packs for grocery retailers.",
+      "category": "Food & agriculture",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 13500000,
+      "estimatedNgnMinor": 13500000,
+      "minimumOrderQuantity": 1,
+      "unit": "carton",
+      "variants": [
+        {
+          "name": "Mix",
+          "values": [
+            "Standard",
+            "Custom"
+          ]
+        }
+      ],
+      "specifications": {
+        "Packaging": "Sealed retail pouches",
+        "Dispatch": "3–5 days",
+        "Delivery": "Nationwide"
+      },
+      "shippingPaidBy": "seller",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "spices_0",
+          "type": "image",
+          "title": "Spice packs",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "spices_1",
+          "type": "image",
+          "title": "Processing"
+        },
+        {
+          "id": "spices_2",
+          "type": "image",
+          "title": "Carton"
+        }
+      ]
+    },
+    {
+      "id": "prd_leather",
+      "supplierId": "sup_ng_leather",
+      "title": "Handcrafted corporate leather bags",
+      "description": "Locally made leather work bags suitable for retail or corporate gifting.",
+      "category": "Leather goods",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 2800000,
+      "estimatedNgnMinor": 2800000,
+      "minimumOrderQuantity": 20,
+      "unit": "bag",
+      "variants": [
+        {
+          "name": "Colour",
+          "values": [
+            "Brown",
+            "Black"
+          ]
+        }
+      ],
+      "specifications": {
+        "Material": "Nigerian leather",
+        "Branding": "Debossing available",
+        "Production": "14–21 days"
+      },
+      "shippingPaidBy": "seller",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "leatherprd_0",
+          "type": "image",
+          "title": "Work bag",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "leatherprd_1",
+          "type": "image",
+          "title": "Leather detail"
+        },
+        {
+          "id": "leatherprd_2",
+          "type": "image",
+          "title": "Packaging"
+        }
+      ]
+    },
+    {
+      "id": "prd_desk",
+      "supplierId": "sup_ng_furniture",
+      "title": "Made-to-order office desks",
+      "description": "Commercial office desks built locally with size and finish options.",
+      "category": "Furniture & interiors",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 14500000,
+      "estimatedNgnMinor": 14500000,
+      "minimumOrderQuantity": 2,
+      "unit": "desk",
+      "variants": [
+        {
+          "name": "Finish",
+          "values": [
+            "Oak",
+            "Walnut",
+            "White"
+          ]
+        }
+      ],
+      "specifications": {
+        "Size": "Custom available",
+        "Production": "10–18 days",
+        "Installation": "Quoted by location"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "desk_0",
+          "type": "image",
+          "title": "Desk",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "desk_1",
+          "type": "image",
+          "title": "Finish"
+        },
+        {
+          "id": "desk_2",
+          "type": "image",
+          "title": "Workshop"
+        }
+      ]
+    },
+    {
+      "id": "prd_labels",
+      "supplierId": "sup_ng_print",
+      "title": "Custom product label rolls",
+      "description": "Full-colour adhesive labels for food, beauty and retail packaging.",
+      "category": "Printing & packaging",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 4500,
+      "estimatedNgnMinor": 4500,
+      "minimumOrderQuantity": 1000,
+      "unit": "label",
+      "variants": [
+        {
+          "name": "Finish",
+          "values": [
+            "Matte",
+            "Gloss"
+          ]
+        }
+      ],
+      "specifications": {
+        "Artwork": "Preflight included",
+        "Production": "4–7 days",
+        "Shape": "Custom die-cut"
+      },
+      "shippingPaidBy": "seller",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "labels_0",
+          "type": "image",
+          "title": "Label roll",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "labels_1",
+          "type": "image",
+          "title": "Finishes"
+        },
+        {
+          "id": "labels_2",
+          "type": "image",
+          "title": "Print check"
+        }
+      ]
+    },
+    {
+      "id": "prd_soap",
+      "supplierId": "sup_ng_skincare",
+      "title": "Private-label body soap cartons",
+      "description": "Locally formulated bar soaps with custom scent, colour and packaging.",
+      "category": "Beauty & personal care",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 85000,
+      "estimatedNgnMinor": 85000,
+      "minimumOrderQuantity": 500,
+      "unit": "bar",
+      "variants": [
+        {
+          "name": "Scent",
+          "values": [
+            "Citrus",
+            "Herbal",
+            "Unscented"
+          ]
+        }
+      ],
+      "specifications": {
+        "Formula": "Supplier standard",
+        "Branding": "Custom wrapper",
+        "Production": "14–21 days"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "soap_0",
+          "type": "image",
+          "title": "Soap bars",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "soap_1",
+          "type": "image",
+          "title": "Wrapping"
+        },
+        {
+          "id": "soap_2",
+          "type": "image",
+          "title": "Cartons"
+        }
+      ]
+    },
+    {
+      "id": "prd_sandals",
+      "supplierId": "sup_ng_footwear",
+      "title": "Retail leather sandal collection",
+      "description": "Locally made men’s and women’s sandals supplied in mixed size runs.",
+      "category": "Fashion & footwear",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 1150000,
+      "estimatedNgnMinor": 1150000,
+      "minimumOrderQuantity": 30,
+      "unit": "pair",
+      "variants": [
+        {
+          "name": "Range",
+          "values": [
+            "Men",
+            "Women",
+            "Mixed"
+          ]
+        }
+      ],
+      "specifications": {
+        "Sizes": "Mixed run",
+        "Branding": "Available",
+        "Production": "10–18 days"
+      },
+      "shippingPaidBy": "seller",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "sandals_0",
+          "type": "image",
+          "title": "Sandals",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "sandals_1",
+          "type": "image",
+          "title": "Materials"
+        },
+        {
+          "id": "sandals_2",
+          "type": "image",
+          "title": "Packed pairs"
+        }
+      ]
+    },
+    {
+      "id": "prd_cleaning",
+      "supplierId": "sup_ng_cleaning",
+      "title": "Commercial cleaning starter bundle",
+      "description": "Bulk floor, glass and multipurpose cleaning liquids for offices and retailers.",
+      "category": "Cleaning supplies",
+      "country": "NG",
+      "sourceCurrency": "NGN",
+      "sourcePriceMinor": 9500000,
+      "estimatedNgnMinor": 9500000,
+      "minimumOrderQuantity": 1,
+      "unit": "bundle",
+      "variants": [
+        {
+          "name": "Size",
+          "values": [
+            "Starter",
+            "Wholesale"
+          ]
+        }
+      ],
+      "specifications": {
+        "Contents": "Mixed products",
+        "Dispatch": "3–6 days",
+        "Delivery": "Quoted by location"
+      },
+      "shippingPaidBy": "buyer",
+      "available": true,
+      "translatedByNaitrust": false,
+      "media": [
+        {
+          "id": "cleaningprd_0",
+          "type": "image",
+          "title": "Bundle",
+          "caption": "Reviewed and translated by Naitrust."
+        },
+        {
+          "id": "cleaningprd_1",
+          "type": "image",
+          "title": "Containers"
+        },
+        {
+          "id": "cleaningprd_2",
+          "type": "image",
+          "title": "Dispatch"
+        }
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "id": "agt_lin",
+      "name": "Chinedu Okafor",
+      "city": "Guangzhou",
+      "country": "CN",
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "services": [
+        "Market sourcing",
+        "Factory visit",
+        "Product inspection"
+      ],
+      "verified": true,
+      "rating": 4.9,
+      "completedTasks": 61,
+      "feeFromNgnMinor": 9500000
+    },
+    {
+      "id": "agt_chen",
+      "name": "Amina Yusuf",
+      "city": "Shenzhen",
+      "country": "CN",
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "services": [
+        "Electronics inspection",
+        "Supplier checks",
+        "Evidence collection"
+      ],
+      "verified": true,
+      "rating": 4.8,
+      "completedTasks": 44,
+      "feeFromNgnMinor": 12000000
+    }
+  ]
+}

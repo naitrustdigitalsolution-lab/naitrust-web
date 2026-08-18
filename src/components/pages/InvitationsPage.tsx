@@ -70,23 +70,23 @@ function InvitationRow({ invitation, onOpen }: { invitation: DealInvitation; onO
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => e.key === 'Enter' && onOpen()}
-      className="flex cursor-pointer flex-col items-stretch gap-3 border-b px-4 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:flex-row sm:items-center sm:px-5"
+      className="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b px-3 py-4 transition-colors last:border-b-0 hover:bg-accent/40 sm:flex sm:gap-3 sm:px-5"
     >
       <div className="flex min-w-0 flex-1 items-start gap-3">
         <CounterpartyAvatar name={invitation.fromName} />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate font-semibold text-foreground">{invitation.fromName}</p>
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold leading-5 text-foreground sm:text-base sm:leading-normal">{invitation.fromName}</p>
             <Badge variant="outline" className="shrink-0">{partyModeShort(invitation.partyMode)}</Badge>
           </div>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{invitation.title}</p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+          <p className="mt-0.5 truncate text-xs leading-4 text-muted-foreground sm:text-sm">{invitation.title}</p>
+          <p className="mt-0.5 truncate text-[10px] leading-4 text-muted-foreground sm:text-xs">
             You’d join as {roleLabel(invitation.yourRole)} · {expiryLabel}
           </p>
         </div>
       </div>
-      <div className="grid w-full grid-cols-[1fr_auto_18px] items-center gap-2 pl-12 sm:w-auto sm:shrink-0 sm:grid-cols-[minmax(110px,auto)_130px_18px] sm:gap-3 sm:pl-0">
-        <span className="text-sm font-semibold text-foreground tabular-nums sm:text-right">
+      <div className="grid shrink-0 justify-items-end gap-1 sm:grid-cols-[minmax(110px,auto)_130px_18px] sm:items-center sm:gap-3">
+        <span className="text-xs font-semibold leading-4 text-foreground tabular-nums sm:text-right sm:text-sm">
           {formatMinorAmount(invitation.amountMinor, invitation.currency)}
         </span>
         <div className="justify-self-end"><InvitationStatusBadge status={invitation.status} /></div>
@@ -115,7 +115,11 @@ export function InvitationsPage() {
   return (
     <DashboardLayout title="Invitations">
       <div className="mx-auto w-full max-w-9xl">
-        <PageHero
+        <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
+          <h1 className="text-lg font-bold tracking-tight">Deal invitations</h1>
+          <Button size="icon" className="h-8 w-8 rounded-full" aria-label="New deal" onClick={() => navigate('/app/deals/new')}><Plus size={14} /></Button>
+        </div>
+        <div className="hidden sm:block"><PageHero
           eyebrow="Protected Deals"
           title="Deal invitations"
           description="Review Protected Deals you have been invited to, then accept to agree the terms."
@@ -125,7 +129,7 @@ export function InvitationsPage() {
               <Plus size={15} /> Create a deal
             </Button>
           }
-        />
+        /></div>
 
         {isLoading ? (
           <LoadingRows />
@@ -137,7 +141,7 @@ export function InvitationsPage() {
           <EmptyState />
         ) : (
           <>
-            <Card className="gap-0 overflow-hidden p-0 shadow-sm" aria-label="Invitations">
+            <Card className="gap-0 overflow-hidden rounded-none border-x-0 p-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm" aria-label="Invitations">
               {paged?.map((inv) => (
                 <InvitationRow
                   key={inv.id}

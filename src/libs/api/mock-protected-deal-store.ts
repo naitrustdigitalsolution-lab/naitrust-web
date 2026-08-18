@@ -3,6 +3,7 @@ import type {
   CreateSafeDealResult,
   DealActivityEvent,
   DealDeliveryLifecycle,
+  DealCompletionLifecycle,
   SafeDealStatus,
   InvitationStatus,
 } from '../store/types';
@@ -16,6 +17,7 @@ export interface MockCreatedDeal {
 
 interface MockDealRuntime {
   delivery?: DealDeliveryLifecycle;
+  completion?: DealCompletionLifecycle;
   status?: SafeDealStatus;
   activity?: DealActivityEvent[];
   participantUserIds?: string[];

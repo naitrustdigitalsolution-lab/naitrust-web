@@ -6,7 +6,7 @@ export function AuthPageLoader({ contained = false }: { contained?: boolean }) {
     <div
       className={`flex flex-col items-center justify-center gap-6 bg-background px-4 text-center ${
         contained
-          ? 'min-h-[calc(100dvh-7.5rem)] w-full rounded-xl'
+          ? '-m-3 min-h-[calc(100dvh-3.5rem)] w-[calc(100%+1.5rem)] sm:-m-4 sm:w-[calc(100%+2rem)] md:-m-6 md:w-[calc(100%+3rem)]'
           : 'fixed inset-0 z-[100] h-[100dvh] min-h-[100svh] w-full'
       }`}
       role="status"

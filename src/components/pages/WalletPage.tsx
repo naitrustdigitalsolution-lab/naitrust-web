@@ -39,6 +39,7 @@ import type { WalletActivityKind } from '../../libs/store/types';
 
 const ACTIVITY_META: Record<WalletActivityKind, { label: string; positive: boolean }> = {
   funding: { label: 'Money added', positive: true },
+  currency_exchange: { label: 'Currency swap', positive: false },
   withdrawal: { label: 'Withdrawal', positive: false },
   instant_transfer_out: { label: 'Instant transfer', positive: false },
   instant_transfer_in: { label: 'Instant transfer received', positive: true },

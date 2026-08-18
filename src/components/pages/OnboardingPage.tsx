@@ -58,19 +58,19 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 Start with the right profile
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                One account for the way you do business.
+                Start sourcing or start selling.
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                Choose the profile that best reflects how you work. Both options can send instantly and protect important payments.
+                Choose how you will use Naitrust Market. Both profiles support verified commerce and protected orders.
               </p>
             </div>
 
             {/* Desktop only: on mobile these bullets move BELOW the choice cards. */}
             <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
-                'Instant transfers, plus Protected Deals before money moves',
-                'Identity, business, and evidence records in one place',
-                'Built for informal traders, registered businesses, and everyone between',
+                'Verified suppliers and products from China and Nigeria',
+                'Confirmed landed-cost quotes before you pay',
+                'Protected orders, evidence, and delivery updates in one place',
               ].map((item) => (
                 <div
                   key={item}
@@ -136,14 +136,14 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                         </Button>
                       </div>
                       <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
-                        Receive money, pay people you trust instantly, or protect an important payment when you are dealing with someone new.
+                        Discover verified suppliers, request a complete quote, hire sourcing help, and track protected orders to your door.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
-                          'Verify who you are dealing with',
-                          'Record what the payment is for',
-                          'Follow payments and agreed delivery',
-                          'Keep receipts, evidence, and messages',
+                          'Browse China and Nigeria markets',
+                          'See products and suppliers in clear English',
+                          'Confirm the landed cost before paying',
+                          'Track protected orders and delivery',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
@@ -180,14 +180,14 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Registered or informal, whether you run a shop, market stall, wholesale business, or WhatsApp storefront, manage customer and supplier payments professionally.
+                        Publish a trusted showcase, receive quote requests, fulfil protected orders, and withdraw your earnings professionally.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify your business and representatives',
-                          'Receive sales and pay regular suppliers',
-                          'Protect larger orders and unfamiliar payments',
-                          'Manage customers, suppliers, and business contacts',
+                          'Publish products, services, photos, and videos',
+                          'Respond to customer quote requests',
+                          'Manage protected orders and customers',
                           'Build a reusable Trust Profile',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -203,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Individuals and businesses: registered or informal: can both send instantly and complete Protected Deals. Choose the profile that matches how you want records and reputation to appear.
+              Choose Individual to source products and services. Choose Business to publish a showcase, respond to quotes, and fulfil orders.
             </div>
           </motion.div>
         </main>
@@ -211,9 +211,9 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
         {/* Mobile: supporting points + login link sit BELOW the choice cards. */}
         <section className="lg:hidden">
           {[
-            'Instant transfers, plus Protected Deals before money moves',
-            'Identity, business, and evidence records in one place',
-            'Built for informal traders, registered businesses, and everyone between',
+            'Verified suppliers and products from China and Nigeria',
+            'Confirmed landed-cost quotes before you pay',
+            'Protected orders and delivery updates in one place',
           ].map((item) => (
             <div
               key={item}

@@ -1,0 +1,597 @@
+{
+  "version": 2,
+  "sourcingRequests": [
+    {
+      "id": "src_demo_sneakers",
+      "ownerUserId": "usr_mock_008",
+      "title": "600 private-label casual sneakers",
+      "inputType": "link",
+      "sourceUrl": "https://detail.1688.com/offer/mock-sneakers",
+      "category": "Fashion & footwear",
+      "quantity": 600,
+      "destination": "Ikeja, Lagos, Nigeria",
+      "supplierName": "Quanzhou Stepwise Footwear",
+      "supplierCity": "Quanzhou",
+      "supplierCountry": "CN",
+      "verificationStatus": "deeper_review",
+      "status": "agent_matching",
+      "extractedFields": [
+        {
+          "key": "material",
+          "label": "Upper material",
+          "value": "Synthetic leather and mesh",
+          "confidence": 0.91,
+          "source": "link"
+        },
+        {
+          "key": "moq",
+          "label": "Minimum order",
+          "value": "120 pairs",
+          "confidence": 0.96,
+          "source": "link"
+        },
+        {
+          "key": "branding",
+          "label": "Customization",
+          "value": "Logo, colour and retail box available",
+          "confidence": 0.84,
+          "source": "ai"
+        }
+      ],
+      "missingFields": [],
+      "createdAt": "2026-08-18T08:00:00.000Z",
+      "updatedAt": "2026-08-18T08:00:00.000Z"
+    }
+  ],
+  "agents": [
+    {
+      "id": "agt_lin",
+      "name": "Chinedu Okafor",
+      "profileType": "company",
+      "businessName": "Okafor China Sourcing Ltd",
+      "nationality": "NG",
+      "yearsBasedInChina": 9,
+      "city": "Guangzhou",
+      "country": "CN",
+      "serviceRadiusKm": 90,
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "expertise": [
+        "Fashion & footwear",
+        "Printing & packaging",
+        "General wholesale"
+      ],
+      "services": [
+        "Market sourcing",
+        "Factory visit",
+        "Price negotiation",
+        "Product inspection",
+        "Evidence collection"
+      ],
+      "logisticsCapabilities": [
+        "Supplier pickup",
+        "Warehouse consolidation"
+      ],
+      "verified": true,
+      "available": true,
+      "rating": 4.9,
+      "completedTasks": 61,
+      "responseMinutes": 18,
+      "feeFromMinor": 9500000,
+      "feeToMinor": 21000000,
+      "feeCurrency": "NGN",
+      "verificationSummary": "Identity, operating address, references and sourcing history reviewed by Naitrust operations."
+    },
+    {
+      "id": "agt_chen",
+      "name": "Amina Yusuf",
+      "profileType": "individual",
+      "nationality": "NG",
+      "yearsBasedInChina": 7,
+      "city": "Shenzhen",
+      "country": "CN",
+      "serviceRadiusKm": 75,
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "expertise": [
+        "Electronics",
+        "Phone accessories",
+        "Machinery"
+      ],
+      "services": [
+        "Supplier checks",
+        "Factory visit",
+        "Electronics inspection",
+        "Batch testing",
+        "Evidence collection"
+      ],
+      "logisticsCapabilities": [],
+      "verified": true,
+      "available": true,
+      "rating": 4.8,
+      "completedTasks": 44,
+      "responseMinutes": 24,
+      "feeFromMinor": 12000000,
+      "feeToMinor": 26000000,
+      "feeCurrency": "NGN",
+      "verificationSummary": "Identity, electronics QC experience and two professional references reviewed."
+    },
+    {
+      "id": "agt_mei",
+      "name": "Kelechi Eze",
+      "profileType": "company",
+      "businessName": "Kelechi Trade Bridge",
+      "nationality": "NG",
+      "yearsBasedInChina": 6,
+      "city": "Quanzhou",
+      "country": "CN",
+      "serviceRadiusKm": 65,
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "expertise": [
+        "Fashion & footwear",
+        "Textiles",
+        "Custom packaging"
+      ],
+      "services": [
+        "Supplier verification",
+        "Sample review",
+        "Production inspection",
+        "Price negotiation"
+      ],
+      "logisticsCapabilities": [
+        "Factory pickup"
+      ],
+      "verified": true,
+      "available": true,
+      "rating": 4.7,
+      "completedTasks": 29,
+      "responseMinutes": 31,
+      "feeFromMinor": 8800000,
+      "feeToMinor": 18500000,
+      "feeCurrency": "NGN",
+      "verificationSummary": "Identity, Quanzhou operating area, footwear experience and references reviewed."
+    },
+    {
+      "id": "agt_hao",
+      "name": "Tobi Adeyemi",
+      "profileType": "individual",
+      "nationality": "NG",
+      "yearsBasedInChina": 8,
+      "city": "Foshan",
+      "country": "CN",
+      "serviceRadiusKm": 80,
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "expertise": [
+        "Furniture & interiors",
+        "Building materials",
+        "Machinery"
+      ],
+      "services": [
+        "Factory visit",
+        "Production checks",
+        "Loading supervision"
+      ],
+      "logisticsCapabilities": [
+        "Loading supervision"
+      ],
+      "verified": true,
+      "available": false,
+      "rating": 4.9,
+      "completedTasks": 52,
+      "responseMinutes": 40,
+      "feeFromMinor": 11000000,
+      "feeToMinor": 25000000,
+      "feeCurrency": "NGN",
+      "verificationSummary": "Identity, factory-audit experience and operational references reviewed."
+    }
+  ],
+  "favouriteAgents": [
+    {
+      "ownerUserId": "usr_mock_008",
+      "agentId": "agt_mei",
+      "createdAt": "2026-08-18T08:00:00.000Z"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "asn_demo_sneakers",
+      "ownerUserId": "usr_mock_008",
+      "agentId": "agt_mei",
+      "supplierName": "Quanzhou Stepwise Footwear",
+      "supplierCity": "Quanzhou",
+      "relatedSourcingRequestId": "src_demo_sneakers",
+      "title": "Inspect private-label sneaker order",
+      "scope": "Confirm materials, size run, logo placement, box artwork, quantity and finished-product quality.",
+      "deadline": "2026-09-04",
+      "feeMinor": 14500000,
+      "feeCurrency": "NGN",
+      "status": "evidence_submitted",
+      "productScopes": [
+        {
+          "id": "scope_sneakers",
+          "productName": "Private-label casual sneakers",
+          "requirements": [
+            "600 pairs",
+            "EU 36–46 size run",
+            "Black woven logo",
+            "Custom retail box"
+          ],
+          "status": "passed"
+        }
+      ],
+      "messages": [
+        {
+          "id": "msg_1",
+          "senderRole": "agent",
+          "senderName": "Kelechi Eze",
+          "body": "I confirmed the sample and asked the supplier to improve the logo stitching before production.",
+          "createdAt": "2026-08-17T05:30:00.000Z"
+        },
+        {
+          "id": "msg_2",
+          "senderRole": "buyer",
+          "senderName": "Sade Imports Ltd",
+          "body": "Please check the revised stitching and confirm the carton quantity before recommending payment.",
+          "createdAt": "2026-08-17T06:10:00.000Z"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_1",
+          "productScopeId": "scope_sneakers",
+          "kind": "image",
+          "title": "Revised logo stitching",
+          "description": "Close-up review of the corrected black woven logo.",
+          "fileName": "revised-logo-sample.jpg",
+          "createdAt": "2026-08-18T04:30:00.000Z",
+          "submittedBy": "Kelechi Eze"
+        },
+        {
+          "id": "ev_2",
+          "productScopeId": "scope_sneakers",
+          "kind": "video",
+          "title": "Finished batch walkthrough",
+          "description": "Quantity, colours, box artwork and packed cartons shown.",
+          "fileName": "batch-review.mp4",
+          "createdAt": "2026-08-18T05:00:00.000Z",
+          "submittedBy": "Kelechi Eze"
+        }
+      ],
+      "milestones": [
+        {
+          "id": "mile_deposit",
+          "label": "Production deposit",
+          "percent": 20,
+          "amountMinor": 24000000,
+          "currency": "NGN",
+          "requiredEvidence": [
+            "Supplier verification",
+            "Approved sample"
+          ],
+          "status": "paid"
+        },
+        {
+          "id": "mile_progress",
+          "label": "Production complete",
+          "percent": 30,
+          "amountMinor": 36000000,
+          "currency": "NGN",
+          "requiredEvidence": [
+            "Production evidence",
+            "Quantity check"
+          ],
+          "status": "recommended"
+        },
+        {
+          "id": "mile_balance",
+          "label": "Final inspection and custody",
+          "percent": 50,
+          "amountMinor": 60000000,
+          "currency": "NGN",
+          "requiredEvidence": [
+            "Final inspection",
+            "Warehouse receipt"
+          ],
+          "status": "pending"
+        }
+      ],
+      "certifications": [
+        {
+          "id": "cert_progress",
+          "assignmentId": "asn_demo_sneakers",
+          "milestoneId": "mile_progress",
+          "checks": [
+            "Production evidence reviewed",
+            "Quantity confirmed"
+          ],
+          "declaration": "The production batch is complete and matches the approved sample. I recommend the agreed progress payment.",
+          "submittedByAgentId": "agt_mei",
+          "submittedAt": "2026-08-18T05:15:00.000Z",
+          "status": "buyer_review"
+        }
+      ],
+      "createdAt": "2026-08-15T08:00:00.000Z",
+      "updatedAt": "2026-08-18T05:15:00.000Z"
+    }
+  ],
+  "partnerApplications": [
+    {
+      "id": "pa_agent_1",
+      "kind": "sourcing_agent",
+      "contactName": "Jia Li",
+      "email": "jia.li@example.cn",
+      "phone": "+86 136 0000 6612",
+      "country": "CN",
+      "city": "Yiwu",
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "services": [
+        "Market sourcing",
+        "Product inspection"
+      ],
+      "experience": "Six years supporting buyers in Yiwu wholesale markets.",
+      "status": "pending",
+      "createdAt": "2026-08-17T07:00:00.000Z"
+    },
+    {
+      "id": "pa_logistics_1",
+      "kind": "logistics_provider",
+      "companyName": "Pearl River Consolidation Co.",
+      "contactName": "Wang Jun",
+      "email": "ops@pearlriver.example",
+      "phone": "+86 138 0000 2288",
+      "country": "CN",
+      "city": "Guangzhou",
+      "languages": [
+        "Mandarin",
+        "English"
+      ],
+      "services": [
+        "Supplier pickup",
+        "Consolidation",
+        "Sea freight"
+      ],
+      "routes": [
+        "Guangzhou → Lagos"
+      ],
+      "licences": [
+        "China business registration reviewed"
+      ],
+      "insuranceSummary": "Cargo liability cover declared; policy awaiting review.",
+      "capacitySummary": "Weekly LCL consolidation, up to 60 CBM.",
+      "experience": "Seven years coordinating China to West Africa freight.",
+      "status": "pending",
+      "createdAt": "2026-08-16T09:00:00.000Z"
+    }
+  ],
+  "logisticsProviders": [
+    {
+      "id": "log_prc",
+      "name": "Pearl Route Cargo",
+      "country": "CN",
+      "cities": [
+        "Guangzhou",
+        "Foshan",
+        "Shenzhen"
+      ],
+      "routes": [
+        "South China → Lagos"
+      ],
+      "services": [
+        "Supplier pickup",
+        "Warehouse consolidation",
+        "Sea freight",
+        "Customs coordination"
+      ],
+      "cargoCategories": [
+        "General merchandise",
+        "Fashion",
+        "Electronics"
+      ],
+      "priceFromMinor": 18500000,
+      "priceToMinor": 92000000,
+      "currency": "NGN",
+      "verified": true,
+      "status": "active",
+      "rating": 4.8,
+      "completedShipments": 88,
+      "insuranceSummary": "Cargo cover available by declared value.",
+      "verificationSummary": "Company registration, warehouse, route history and references reviewed.",
+      "linkedAgentId": "agt_lin"
+    },
+    {
+      "id": "log_airbridge",
+      "name": "AirBridge China Nigeria",
+      "country": "CN",
+      "cities": [
+        "Shenzhen",
+        "Guangzhou",
+        "Yiwu"
+      ],
+      "routes": [
+        "China → Lagos air freight"
+      ],
+      "services": [
+        "Factory pickup",
+        "Air freight",
+        "Customs coordination",
+        "Last-mile handover"
+      ],
+      "cargoCategories": [
+        "Samples",
+        "Electronics",
+        "Fashion"
+      ],
+      "priceFromMinor": 26000000,
+      "priceToMinor": 130000000,
+      "currency": "NGN",
+      "verified": true,
+      "status": "active",
+      "rating": 4.7,
+      "completedShipments": 54,
+      "insuranceSummary": "Optional shipment insurance subject to cargo class.",
+      "verificationSummary": "Registration, operational address, route documents and references reviewed."
+    }
+  ],
+  "shipments": [
+    {
+      "id": "ship_demo_1",
+      "ownerUserId": "usr_mock_008",
+      "reference": "NTS-2608181",
+      "name": "September fashion stock",
+      "destination": "Ikeja, Lagos, Nigeria",
+      "orders": [
+        {
+          "orderId": "ord_demo_shoes",
+          "reference": "NTM-2600811",
+          "supplierName": "Quanzhou Stepwise Footwear",
+          "supplierCity": "Quanzhou",
+          "packageCount": 18,
+          "weightKg": 420,
+          "ready": true
+        },
+        {
+          "orderId": "ord_demo_boxes",
+          "reference": "NTM-2600812",
+          "supplierName": "Guangzhou BrightPack",
+          "supplierCity": "Guangzhou",
+          "packageCount": 8,
+          "weightKg": 155,
+          "ready": false
+        }
+      ],
+      "quotes": [
+        {
+          "id": "sq_demo_1",
+          "providerId": "log_prc",
+          "amountMinor": 68500000,
+          "currency": "NGN",
+          "mode": "sea",
+          "estimatedDays": 38,
+          "expiresAt": "2026-08-22T12:00:00.000Z",
+          "includedServices": [
+            "Supplier pickup",
+            "Consolidation",
+            "Sea freight",
+            "Lagos handover"
+          ],
+          "status": "ready"
+        }
+      ],
+      "status": "quote_requested",
+      "custodyEvents": [],
+      "createdAt": "2026-08-18T08:00:00.000Z",
+      "updatedAt": "2026-08-18T08:00:00.000Z"
+    }
+  ],
+  "ledgerEntries": [
+    {
+      "id": "led_1",
+      "ownerUserId": "usr_mock_008",
+      "orderId": "ord_demo_shoes",
+      "kind": "customer_funding",
+      "label": "Order funded through payment partner",
+      "amountMinor": 134500000,
+      "currency": "NGN",
+      "direction": "in",
+      "status": "confirmed",
+      "providerReference": "MOCK-FUND-08261",
+      "createdAt": "2026-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "led_2",
+      "ownerUserId": "usr_mock_008",
+      "orderId": "ord_demo_shoes",
+      "kind": "product_allocation",
+      "label": "Reserved for supplier milestones",
+      "amountMinor": 120000000,
+      "currency": "NGN",
+      "direction": "reserved",
+      "status": "confirmed",
+      "createdAt": "2026-08-15T11:00:01.000Z"
+    },
+    {
+      "id": "led_3",
+      "ownerUserId": "usr_mock_008",
+      "orderId": "ord_demo_shoes",
+      "kind": "agent_fee",
+      "label": "Kelechi Eze inspection assignment",
+      "amountMinor": 14500000,
+      "currency": "NGN",
+      "direction": "out",
+      "status": "confirmed",
+      "providerReference": "MOCK-AGENT-0061",
+      "createdAt": "2026-08-15T11:00:02.000Z"
+    },
+    {
+      "id": "led_4",
+      "ownerUserId": "usr_mock_008",
+      "orderId": "ord_demo_shoes",
+      "kind": "supplier_settlement",
+      "label": "Production deposit paid to verified supplier",
+      "amountMinor": 24000000,
+      "currency": "NGN",
+      "direction": "out",
+      "status": "confirmed",
+      "providerReference": "MOCK-SETTLE-2001",
+      "createdAt": "2026-08-16T09:00:00.000Z"
+    }
+  ],
+  "rewardEntries": [
+    {
+      "id": "rew_1",
+      "ownerUserId": "usr_mock_008",
+      "points": 350,
+      "kind": "earned",
+      "label": "Completed supplier verification",
+      "relatedId": "src_demo_sneakers",
+      "createdAt": "2026-08-16T08:00:00.000Z"
+    }
+  ],
+  "waitlistLeads": [
+    {
+      "id": "lead_1",
+      "fullName": "Kemi Adeola",
+      "email": "kemi@example.com",
+      "businessName": "Kemi Home Stores",
+      "role": "buyer",
+      "markets": [
+        "CN"
+      ],
+      "categories": [
+        "Furniture & interiors"
+      ],
+      "needs": [
+        "Supplier verification",
+        "Shipping"
+      ],
+      "status": "new",
+      "notes": [],
+      "createdAt": "2026-08-18T02:00:00.000Z"
+    }
+  ],
+  "moderationCases": [
+    {
+      "id": "mod_1",
+      "ownerUserId": "usr_mock_008",
+      "sourceType": "message",
+      "reason": "Possible off-platform contact detail",
+      "excerpt": "Contact me on We…",
+      "status": "open",
+      "createdAt": "2026-08-18T06:00:00.000Z"
+    }
+  ],
+  "auditEvents": []
+}

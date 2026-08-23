@@ -27,7 +27,7 @@ function image(path: string, alt: string, aspect: ImageAspect = '4/3', focalPoin
 }
 
 export const pageImages = {
-  homeHero: image('hero/china-sourcing-hero-v1.webp', 'A Nigerian buyer reviewing products with a Chinese supplier', '4/3', 'center', true),
+  homeHero: image('hero/china-sourcing-agent-hero-v2.webp', 'A Nigerian business owner coordinating a China product inspection with a sourcing agent', '16/9', 'right', true),
   homeImportInspection: image('home/import-order-inspection-v1.webp', 'A Nigerian business owner inspecting products received from an import order'),
   aboutHero: image('pages/about-cross-border-v2.webp', 'A Nigerian commerce operator and Chinese sourcing specialist reviewing product requirements'),
   customerHero: image('pages/customer-hero-v2.webp', 'A Nigerian customer comparing product samples with a Chinese supplier representative', '4/3', 'center', true),
@@ -39,6 +39,13 @@ export const pageImages = {
   registerCustomer: image('pages/register-customer-v1.webp', 'A Nigerian entrepreneur documenting a product sample for sourcing'),
   registerBusiness: image('pages/register-business-v1.webp', 'A Nigerian manufacturer standing beside finished products in a workshop'),
 } as const;
+
+const agentImageKeys = ['aboutHero', 'customerHero', 'registerCustomer', 'businessHero', 'customerDelivery'] as const;
+
+export function getAgentRepresentativeImage(agentId: string): ImageAsset {
+  const hash = [...agentId].reduce((total, character) => total + character.charCodeAt(0), 0);
+  return pageImages[agentImageKeys[hash % agentImageKeys.length]];
+}
 
 export type PageImageKey = keyof typeof pageImages;
 

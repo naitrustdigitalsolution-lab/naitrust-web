@@ -58,9 +58,9 @@ export function StatTiles({ counts, reputation, isLoading, currency = 'NGN' }: S
 
   const tiles: Tile[] = [
     {
-      label: 'Active Protected Deals',
+      label: 'Active orders',
       value: String(counts.active),
-      hint: `${formatMinorAmountCompact(counts.activeValueMinor, currency)} protected`,
+      hint: `${formatMinorAmountCompact(counts.activeValueMinor, currency)} in progress`,
       hintClass: 'text-muted-foreground',
       icon: ShieldCheck,
       chipClass: 'bg-primary/10 text-primary',
@@ -78,7 +78,7 @@ export function StatTiles({ counts, reputation, isLoading, currency = 'NGN' }: S
           : 'bg-muted text-muted-foreground',
     },
     {
-      label: 'Completed Protected Deals',
+      label: 'Completed orders',
       value: String(counts.completed),
       hint: `${formatMinorAmountCompact(counts.releasedValueMinor, currency)} released`,
       hintClass: 'text-muted-foreground',

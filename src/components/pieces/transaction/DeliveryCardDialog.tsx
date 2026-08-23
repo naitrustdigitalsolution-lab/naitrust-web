@@ -79,7 +79,7 @@ export function DeliveryCardDialog({
             </p>
             <ol className="mt-2 list-decimal space-y-1 pl-4 text-xs leading-5 text-emerald-950/75">
               <li>Inspect the package, seal, product model, and serial or IMEI with the rider present.</li>
-              <li>Scan the QR or enter the OTP in your Deal Room.</li>
+              <li>Scan the QR or enter the OTP in your Order Room.</li>
               <li>Confirm the correct product or report a problem during the handover review.</li>
             </ol>
             <p className="mt-3 border-t border-emerald-900/10 pt-3 text-[0.7rem] leading-5 text-emerald-950/70">

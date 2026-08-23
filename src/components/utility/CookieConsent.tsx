@@ -14,8 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import { useTranslation } from 'react-i18next';
 
 export function CookieConsent() {
+  const { t } = useTranslation('common');
   const preferenceCookie = 'naitrust_cookie_preferences';
   const consentCookie = 'naitrust_cookie_consent';
   const readCookie = (name: string) => document.cookie.split('; ').find((item) => item.startsWith(`${name}=`))?.split('=').slice(1).join('=');
@@ -116,9 +118,9 @@ export function CookieConsent() {
                 <div className="flex items-start gap-3 flex-1">
                   <Cookie className="mt-0.5 shrink-0 text-primary" size={20} />
                   <div className="flex-1">
-                    <h3 className="mb-0.5 text-sm font-semibold sm:text-base">We use cookies</h3>
+                    <h3 className="mb-0.5 text-sm font-semibold sm:text-base">{t('cookiesTitle')}</h3>
                     <p className="text-xs leading-5 text-muted-foreground sm:text-sm">
-                      We use necessary cookies and, with your permission, analytics and marketing cookies. You can change your choices anytime.
+                      {t('cookiesText')}
                     </p>
                   </div>
                 </div>
@@ -130,23 +132,23 @@ export function CookieConsent() {
                     className="min-w-0 gap-1 px-2 sm:gap-2 sm:px-3"
                   >
                     <Settings size={16} />
-                    <span className="truncate">Preferences</span>
+                    <span className="truncate">{t('preferences')}</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleRejectOptional}
                   >
-                    <span className="truncate">Reject optional</span>
+                    <span className="truncate">{t('rejectOptional')}</span>
                   </Button>
                   <Button
                     size="sm"
                     onClick={handleAcceptAll}
                   >
-                    <span className="truncate">Accept all</span>
+                    <span className="truncate">{t('acceptAll')}</span>
                   </Button>
                 </div>
-                <button type="button" onClick={() => setIsVisible(false)} className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-muted" aria-label="Dismiss cookie notice"><X size={15} /></button>
+                <button type="button" onClick={() => setIsVisible(false)} className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-muted" aria-label={t('dismissCookies')}><X size={15} /></button>
               </div>
             </div>
           </motion.div>
@@ -157,29 +159,29 @@ export function CookieConsent() {
       <Dialog open={showPreferences} onOpenChange={setShowPreferences}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Cookie Preferences</DialogTitle>
+            <DialogTitle>{t('cookiePreferences')}</DialogTitle>
             <DialogDescription>
-              Manage your cookie preferences. You can enable or disable different types of cookies below.
+              {t('cookieDialogText')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             {/* Necessary Cookies */}
             <div className="flex items-start justify-between gap-4 p-3 bg-muted rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-sm mb-1">Necessary Cookies</h4>
+                <h4 className="font-medium text-sm mb-1">{t('necessaryCookies')}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Required for the website to function properly. These cannot be disabled.
+                  {t('necessaryText')}
                 </p>
               </div>
-              <div className="text-sm text-muted-foreground">Always Active</div>
+              <div className="text-sm text-muted-foreground">{t('alwaysActive')}</div>
             </div>
 
             {/* Analytics Cookies */}
             <div className="flex items-start justify-between gap-4 p-3 border rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-sm mb-1">Analytics Cookies</h4>
+                <h4 className="font-medium text-sm mb-1">{t('analyticsCookies')}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Help us understand how visitors interact with our website.
+                  {t('analyticsText')}
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -198,9 +200,9 @@ export function CookieConsent() {
             {/* Marketing Cookies */}
             <div className="flex items-start justify-between gap-4 p-3 border rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-sm mb-1">Marketing Cookies</h4>
+                <h4 className="font-medium text-sm mb-1">{t('marketingCookies')}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Used to deliver personalized advertisements.
+                  {t('marketingText')}
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -219,9 +221,9 @@ export function CookieConsent() {
             {/* Social Media Cookies */}
             <div className="flex items-start justify-between gap-4 p-3 border rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-sm mb-1">Social Media Cookies</h4>
+                <h4 className="font-medium text-sm mb-1">{t('socialCookies')}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Enable social media features and content sharing.
+                  {t('socialText')}
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -239,10 +241,10 @@ export function CookieConsent() {
           </div>
           <div className="flex gap-2 mt-6">
             <Button variant="outline" onClick={() => setShowPreferences(false)} className="flex-1">
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleSavePreferences} className="flex-1">
-              Save Preferences
+              {t('savePreferences')}
             </Button>
           </div>
         </DialogContent>

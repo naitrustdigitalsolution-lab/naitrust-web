@@ -9,6 +9,7 @@ import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../../ui/input-otp';
 import Spinner from '../../ui/spinner';
+import { useTranslation } from 'react-i18next';
 
 interface TwoFactorFormProps {
   code: string;
@@ -20,6 +21,7 @@ interface TwoFactorFormProps {
 }
 
 export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBack }: TwoFactorFormProps) {
+  const { t } = useTranslation('auth');
   return (
     <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <button
@@ -27,15 +29,15 @@ export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBa
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6"
       >
         <ArrowLeft size={16} />
-        Back to login
+        {t('backToLogin')}
       </button>
 
       <div className="mb-6 text-center">
         <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
           <Shield size={24} className="text-primary" />
         </div>
-        <h2 className="mb-2 text-2xl font-bold">Two-Factor Authentication</h2>
-        <p className="text-muted-foreground">Enter the current 6-digit code shown in your authenticator app.</p>
+        <h2 className="mb-2 text-2xl font-bold">{t('twoFactorTitle')}</h2>
+        <p className="text-muted-foreground">{t('twoFactorDescription')}</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
@@ -43,7 +45,7 @@ export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBa
           <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm">{error}</div>
         )}
         <div className="flex justify-center">
-          <InputOTP maxLength={6} value={code} onChange={onChange} disabled={isLoading} autoComplete="one-time-code" aria-label="Six-digit authenticator code">
+          <InputOTP maxLength={6} value={code} onChange={onChange} disabled={isLoading} autoComplete="one-time-code" aria-label={t('authenticatorCode')}>
             <InputOTPGroup>
               {[0, 1, 2, 3, 4, 5].map((i) => (
                 <InputOTPSlot key={i} index={i} />
@@ -55,11 +57,11 @@ export function TwoFactorForm({ code, error, isLoading, onChange, onSubmit, onBa
           {isLoading ? (
             <>
               <Spinner size="sm" colorClass="text-white" />
-              <span className="ml-2">Verifying...</span>
+              <span className="ml-2">{t('verifying')}</span>
             </>
           ) : (
             <>
-              Verify code
+              {t('verifyCode')}
               <ArrowRight size={18} className="ml-2" />
             </>
           )}

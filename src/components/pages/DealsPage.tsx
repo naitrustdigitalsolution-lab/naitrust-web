@@ -106,30 +106,30 @@ export function DealsPage() {
   };
 
   return (
-    <DashboardLayout title="Protected Deals">
+    <DashboardLayout title="Direct orders">
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
-          <h1 className="text-xl font-bold tracking-tight">Protected Deals</h1>
+          <h1 className="text-xl font-bold tracking-tight">Direct orders</h1>
           <div className="flex items-center gap-1.5">
             <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Drafts" onClick={() => navigate('/app/drafts')}><FileClock size={15} /></Button>
-            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Search Protected Deals" onClick={() => setShowMobileSearch((value) => !value)}><Search size={15} /></Button>
-            <Button variant={filter !== 'all' ? 'default' : 'outline'} size="icon" className="h-9 w-9 rounded-full" aria-label="Filter Protected Deals" onClick={() => setShowMobileFilters((value) => !value)}><SlidersHorizontal size={15} /></Button>
-            <Button size="icon" className="h-9 w-9 rounded-full" aria-label="New Protected Deal" onClick={() => navigate('/app/deals/new')}><Plus size={16} /></Button>
+            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Search direct orders" onClick={() => setShowMobileSearch((value) => !value)}><Search size={15} /></Button>
+            <Button variant={filter !== 'all' ? 'default' : 'outline'} size="icon" className="h-9 w-9 rounded-full" aria-label="Filter direct orders" onClick={() => setShowMobileFilters((value) => !value)}><SlidersHorizontal size={15} /></Button>
+            <Button size="icon" className="h-9 w-9 rounded-full" aria-label="New supplier order" onClick={() => navigate('/app/deals/new')}><Plus size={16} /></Button>
           </div>
         </div>
 
         <div className="hidden sm:block"><PageHero
-          eyebrow="Protected Deals"
-          title="Your Protected Deals"
-          description="View active, completed, and disputed deals in one place."
+          eyebrow="Outside the catalogue"
+          title="Direct supplier orders"
+          description="Create and manage an order when the supplier or service is not already listed in Naitrust Market."
           icon={ShieldCheck}
-          image={getAppImage('deliveryWorkflow', 'A protected product delivery being checked')}
+          image={getAppImage('deliveryWorkflow', 'A wholesale product delivery being checked')}
           actions={<div className="flex flex-wrap gap-2">
             <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/drafts')}>
               <FileClock size={16} className="mr-1" /> Drafts
             </Button>
             <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-              <Plus size={16} className="mr-1" /> New Protected Deal
+              <Plus size={16} className="mr-1" /> New supplier order
             </Button>
           </div>}
         /></div>
@@ -141,12 +141,12 @@ export function DealsPage() {
             <div className="flex flex-1 items-center gap-2">
               <div className="relative flex-1">
                 <Label htmlFor="deal-search" className="sr-only">
-                  Search Protected Deals
+                  Search direct orders
                 </Label>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                 <Input
                   id="deal-search"
-                  placeholder="Search Protected Deals…"
+                  placeholder="Search orders or references…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="h-11 rounded-xl bg-card pl-9 sm:h-10"
@@ -220,14 +220,14 @@ export function DealsPage() {
         {/* Result meta */}
         {!isLoading && !isError && (
           <p className="mb-2 text-xs text-muted-foreground">
-            {total === 0 ? 'No Protected Deals match your filters' : `Showing ${paged?.length ?? 0} of ${total} Protected Deals`}
+            {total === 0 ? 'No direct orders match your filters' : `Showing ${paged?.length ?? 0} of ${total} direct orders`}
           </p>
         )}
 
         {!isLoading && !isError && (deals?.length ?? 0) > 0 && total === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed p-10 text-center">
             <Search size={22} className="text-muted-foreground" />
-            <p className="font-semibold text-foreground">No Protected Deals match your filters</p>
+            <p className="font-semibold text-foreground">No direct orders match your filters</p>
             <p className="max-w-sm text-sm text-muted-foreground">
               Try a different search, status, or date range.
             </p>

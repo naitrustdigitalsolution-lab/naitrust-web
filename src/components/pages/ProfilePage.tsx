@@ -106,7 +106,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
               <VerificationRow
                 label="Email address"
                 verified={security.emailVerified}
-                hint="Confirm your email to create Protected Deals."
+                hint="Confirm your email to pay for orders and manage supplier activity."
               />
               <VerificationRow
                 label={isBusiness ? 'Business verification (KYC)' : 'Identity (KYC)'}
@@ -153,7 +153,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                     <p className="text-2xl font-bold text-foreground tabular-nums">
                       {counts?.completed ?? 0}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">Completed Protected Deals</p>
+                    <p className="mt-1 text-xs text-muted-foreground">Completed marketplace orders</p>
                   </div>
                   <div className="px-4 py-5">
                     <p className="text-2xl font-bold text-foreground tabular-nums">
@@ -172,8 +172,7 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
                 </div>
               )}
               <p className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground">
-                Reputation is built from completed Protected Deals and verified activity on the platform , 
-                it cannot be bought or edited.
+                Reputation is built from completed orders, supplier activity, fulfilment and verified reviews on the platform. It cannot be bought or edited.
               </p>
         </Card>
       </div>

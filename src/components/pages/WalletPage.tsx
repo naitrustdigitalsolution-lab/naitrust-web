@@ -110,13 +110,13 @@ export function WalletPage() {
               </span>
               <span className="flex items-center gap-1">
                 <ShieldCheck size={14} />
-                In Protected Deals: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</strong>
+                Assigned to orders: <strong className="font-semibold text-primary-foreground">{formatMinorAmount(wallet.balance.protectedMinor, wallet.balance.currency)}</strong>
               </span>
             </div>
             <p className="text-xs leading-5 text-primary-foreground/70">
-              Money in Protected Deals is managed through Naitrust's regulated payment partners and released
-              according to the agreed deal terms. It isn't available for withdrawal or
-              instant transfer until a deal completes.
+              Money assigned to supplier orders is managed through Naitrust's regulated payment partners and released
+              according to the accepted order terms. It is not available for withdrawal
+              until the relevant order stage is completed.
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">

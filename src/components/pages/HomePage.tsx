@@ -32,7 +32,10 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "../utility/ImageWithFallback";
 import { TrustHeroAnimation } from "../pieces/general/TrustHeroAnimation";
 import { AnimatedHeroText } from "../pieces/general/AnimatedHeroText";
-import { QoreIDLogo, AnchorLogo } from "../pieces/general/TrustedPartnerLogo";
+import {
+  QoreIDLogo,
+  VertoLogo,
+} from "../pieces/general/TrustedPartnerLogo";
 import { FloatingFeedbackButton } from "../utility/FloatingFeedbackButton";
 import { SEOHead } from "../utility/SEOHead";
 import spiralBackground from "../../assets/spiral.svg";
@@ -44,6 +47,8 @@ import wholesaleJourneyDesktopMp4 from "../../assets/home/wholesale-sourcing-jou
 import wholesaleJourneyDesktopWebm from "../../assets/home/wholesale-sourcing-journey-desktop.webm";
 import wholesaleJourneyMobileMp4 from "../../assets/home/wholesale-sourcing-journey-mobile.mp4";
 import wholesaleJourneyMobileWebm from "../../assets/home/wholesale-sourcing-journey-mobile.webm";
+import { usePlatformFeatures } from "../../libs/platform-features";
+import { useTranslation } from "react-i18next";
 
 const saferDealsImage = "/images/blog/safer-deals.webp";
 interface HomePageProps {
@@ -51,6 +56,8 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
+  const { t } = useTranslation('home');
+  const platformFeatures = usePlatformFeatures();
   const [allowAmbientMotion, setAllowAmbientMotion] = useState(false);
   const [allowHeroVideo, setAllowHeroVideo] = useState(false);
   const [heroVideoPlaying, setHeroVideoPlaying] = useState(true);
@@ -105,77 +112,57 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const accountCapabilities = [
     {
       step: "1",
-      title: "Discover Verified Suppliers",
-      description:
-        "Search products and verified suppliers in Nigeria and China from one clear marketplace.",
+      title: t('cap1Title'), description: t('cap1Text'),
       icon: Search,
     },
     {
       step: "2",
-      title: "Understand Every Listing",
-      description:
-        "Review products, specifications, minimum quantities and Chinese supplier details in English.",
+      title: t('cap2Title'), description: t('cap2Text'),
       icon: Languages,
     },
     {
       step: "3",
-      title: "Confirm the Landed Cost",
-      description:
-        "Receive an itemized quote for products, inspection, customs, handling and delivery before paying.",
+      title: t('cap3Title'), description: t('cap3Text'),
       icon: Shield,
     },
     {
       step: "4",
-      title: "Protect Supplier Payment",
-      description:
-        "Keep product funds protected while Naitrust coordinates the supplier and your order.",
+      title: t('cap4Title'), description: t('cap4Text'),
       icon: Lock,
     },
     {
       step: "5",
-      title: "Track Logistics",
-      description:
-        "Follow inspection, export pickup, international transit, customs and local delivery.",
+      title: t('cap5Title'), description: t('cap5Text'),
       icon: Globe,
     },
     {
       step: "6",
-      title: "Receive It at Your Door",
-      description:
-        "Review the delivered order and approve supplier payment only at the agreed stage.",
+      title: t('cap6Title'), description: t('cap6Text'),
       icon: PackageCheck,
     },
   ];
 
   const faqs = [
     {
-      question: "What is Naitrust Market?",
-      answer:
-        "It is a marketplace where Nigerians discover verified local and Chinese suppliers, browse products in English, request a confirmed landed-cost quote, pay, and follow delivery.",
+      question: t('faq1q'), answer: t('faq1a'),
     },
     {
-      question: "Can I pay the catalogue price immediately?",
-      answer:
-        "Catalogue prices are estimates. Submit your cart and destination first, then Naitrust confirms the products, exchange rate, inspection, customs, handling and logistics in a time-limited quote.",
+      question: t('faq2q'), answer: t('faq2a'),
     },
     {
-      question: "How does Naitrust protect an import order?",
-      answer:
-        "Supplier product funds stay protected through the agreed order stages. Naitrust keeps supplier checks, documents, translated updates, logistics, evidence and issues together while regulated payment partners handle money movement.",
+      question: t('faq3q'), answer: t('faq3a'),
     },
     {
-      question: "Who is Naitrust for?",
-      answer:
-        "Naitrust is for Nigerian individuals, retailers, importers and businesses buying locally or sourcing products from verified Chinese suppliers.",
+      question: t('faq4q'), answer: t('faq4a'),
     },
   ];
 
   return (
     <div className="home-page relative min-h-screen">
       <SEOHead
-        title="Find Products and Verified Suppliers in China"
-        description="Browse wholesale products and verified suppliers in China, receive the complete landed-cost quote in Naira, and track delivery to Nigeria."
-        keywords="Naitrust Market, source from China Nigeria, verified China suppliers, landed cost quote Nigeria, protected supplier order, China sourcing agents, product inspection China, customs delivery Nigeria"
+        title={t('heroTitle')}
+        description={t('heroDescription')}
+        keywords="Naitrust, source from China Nigeria, China sourcing agents, product inspection China, supplier order room, freight and clearing Nigeria"
         canonicalPath="/"
       />
 
@@ -203,7 +190,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             loop
             playsInline
             preload="metadata"
-            aria-label="Sourcing, inspection, export and delivery journey from China to a Nigerian business"
+            aria-label={t('videoLabel')}
             onPlay={() => setHeroVideoPlaying(true)}
             onPause={() => setHeroVideoPlaying(false)}
           >
@@ -226,38 +213,37 @@ export function HomePage({ onNavigate }: HomePageProps) {
             transition={{ duration: 0.6 }}
             className="relative z-20 mx-auto min-w-0 max-w-3xl text-center xl:mx-0 xl:text-left"
           >
-            <p className="mx-auto mb-2 w-fit max-w-[20rem] rounded-2xl border border-white/15 bg-white/[0.08] px-3 py-1.5 text-center text-[8px] font-semibold uppercase leading-3 tracking-[0.06em] text-white shadow-sm backdrop-blur sm:mb-3 sm:max-w-none sm:rounded-full sm:px-4 sm:py-2 sm:text-xs sm:leading-4 sm:tracking-[0.12em] xl:mx-0">
-              Wholesale sourcing · Verified suppliers · Confirmed landed cost
-            </p>
-            <AnimatedHeroText />
+            <p className="mx-auto mb-4 w-fit rounded-full border border-sky-300/20 bg-sky-300/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-sky-200 sm:text-xs xl:mx-0">{t('heroEyebrow')}</p>
+            <h1 className="text-4xl font-bold leading-[1.02] tracking-[-.05em] sm:text-6xl lg:text-7xl">{t('heroTitle')}</h1>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/72 sm:text-lg xl:mx-0">{t('heroDescription')}</p>
 
             <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-2 sm:gap-3 xl:justify-start">
               <Button
                 size="sm"
-                onClick={() => onNavigate("/market")}
+                onClick={() => onNavigate("/register?returnTo=/app/agents")}
                 className="group h-10 w-auto rounded-full bg-[#1e90ff] px-6 text-xs font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-12 sm:px-7 sm:text-sm"
               >
-                Explore wholesale products
+                {t('findAgent')}
                 <ArrowRight
                   size={18}
                   className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6"
                 />
               </Button>
-              <button
+              {platformFeatures.marketplace && <button
                 type="button"
-                onClick={() => onNavigate("/login?returnTo=/app/source")}
+                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
                 className="inline-flex h-10 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-6 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-12 sm:gap-2 sm:px-7 sm:text-sm"
               >
-                Find a product
+                {t('exploreChina', { ns: 'common' })}
                 <ChevronRight size={18} />
-              </button>
+              </button>}
             </div>
 
             <div className="mx-auto mt-8 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] font-semibold text-white/70 sm:gap-x-5 sm:text-xs xl:mx-0 xl:justify-start">
-              <span>Supplier search</span><ChevronRight size={13} />
-              <span>Inspection</span><ChevronRight size={13} />
-              <span>Consolidation</span><ChevronRight size={13} />
-              <span>Delivery in Nigeria</span>
+              <span>{t('flowRequest')}</span><ChevronRight size={13} />
+              <span>{t('flowAgent')}</span><ChevronRight size={13} />
+              <span>{t('flowStages')}</span><ChevronRight size={13} />
+              <span>{t('flowRoom')}</span>
             </div>
           </motion.div>
         </div>
@@ -278,15 +264,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-              The complete sourcing journey
+              {t('journeyEyebrow')}
             </p>
             <h2 className="mt-3 text-2xl font-bold tracking-[-0.04em] sm:mt-4 sm:text-5xl">
-              Find the right product. Know the real cost. Follow every step.
+              {t('journeyTitle')}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:mt-5 sm:text-lg sm:leading-7">
-              Naitrust translates supplier information, confirms the landed
-              cost, protects the product payment, coordinates logistics, and
-              keeps every update in one order record.
+              {t('journeyDescription')}
             </p>
           </div>
 
@@ -296,21 +280,20 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Users size={23} />
               </span>
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-primary">
-                Discover
+                {t('discover')}
               </p>
               <h3 className="mt-2 text-xl font-bold sm:text-2xl">
-                Browse products and suppliers in clear English.
+                {t('discoverTitle')}
               </h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Compare specifications, minimum order quantities, source prices,
-                verification and previous order activity.
+                {t('discoverText')}
               </p>
               <Button
                 variant="outline"
                 className="mt-6 rounded-full"
-                onClick={() => onNavigate("/market")}
+                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
               >
-                Explore products <ArrowRight size={15} />
+                {platformFeatures.marketplace ? 'Explore products' : t('findAgent')} <ArrowRight size={15} />
               </Button>
             </Card>
 
@@ -319,21 +302,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Shield size={23} />
               </span>
               <p className="relative mt-6 text-xs font-bold uppercase tracking-[0.15em] text-sky-300">
-                Confirmed quote
+                {t('confirmed')}
               </p>
               <h3 className="relative mt-2 text-xl font-bold sm:text-2xl">
-                See the landed cost before you pay.
+                {t('confirmedTitle')}
               </h3>
               <p className="relative mt-3 text-sm leading-6 text-white/70">
-                Products, inspection, customs, handling, insurance and delivery
-                are itemized in NGN, with the Chinese CNY source cost still
-                visible.
+                {t('confirmedText')}
               </p>
               <Button
                 className="relative mt-6 rounded-full bg-white text-[#071b31] hover:bg-white/90"
-                onClick={() => onNavigate("/market")}
+                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
               >
-                Start a cart <ArrowRight size={15} />
+                {platformFeatures.marketplace ? 'Start a cart' : t('startAgent')} <ArrowRight size={15} />
               </Button>
             </Card>
 
@@ -342,27 +323,27 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Landmark size={23} />
               </span>
               <p className="mt-6 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">
-                Protected delivery
+                {t('protectedDelivery')}
               </p>
               <h3 className="mt-2 text-xl font-bold sm:text-2xl">
-                Follow the order until it reaches your door.
+                {t('protectedTitle')}
               </h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Track supplier confirmation, inspection, export, transit,
-                customs, local delivery and buyer review from one Order Room.
+                {t('protectedText')}
               </p>
               <Button
                 variant="outline"
                 className="mt-6 rounded-full"
-                onClick={() => onNavigate("/market")}
+                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
               >
-                See how orders work <ArrowRight size={15} />
+                {t('seeOrders')} <ArrowRight size={15} />
               </Button>
             </Card>
           </div>
         </div>
       </section>
 
+      {false && <>{/* Legacy local-business section hidden while Naitrust focuses on Nigeria-to-China sourcing. */}
       {/* Traders and local businesses */}
       <section className="relative overflow-hidden bg-[#f3f8fc] px-4 py-12 dark:bg-[#081827] sm:px-6 sm:py-20 lg:px-8 lg:py-28">
         <div className="pointer-events-none absolute -left-24 top-1/3 h-80 w-80 rounded-full bg-[#1e90ff]/10 blur-[90px]" />
@@ -526,6 +507,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
+      </>}
       {/* Customer journey */}
       <section
         id="customer-journey"
@@ -535,15 +517,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                Customer journey
+                {t('customerJourney')}
               </p>
               <h2 className="mt-3 text-2xl font-bold tracking-[-0.04em] sm:mt-4 sm:text-5xl">
-                From supplier search to delivery, without the guesswork.
+                {t('customerJourneyTitle')}
               </h2>
             </div>
             <p className="max-w-2xl text-sm leading-6 text-[#35546f] sm:text-lg sm:leading-7 lg:justify-self-end">
-              Browse products, check the supplier, receive the complete landed
-              cost, and follow the order until it reaches you.
+              {t('customerJourneyText')}
             </p>
           </div>
 
@@ -552,26 +533,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
               {
                 icon: Search,
                 step: "01",
-                title: "Discover products",
-                text: "Search verified suppliers and translated product listings from China or Nigeria.",
+                title: t('journey1Title'), text: t('journey1Text'),
               },
               {
                 icon: Building2,
                 step: "02",
-                title: "Check the supplier",
-                text: "Explore products, factory or shop media, fulfilment details, ratings, and the Trust Profile.",
+                title: t('journey2Title'), text: t('journey2Text'),
               },
               {
                 icon: ReceiptText,
                 step: "03",
-                title: "Confirm the full cost",
-                text: "Receive an itemized quote covering products, inspection, customs, handling, and delivery.",
+                title: t('journey3Title'), text: t('journey3Text'),
               },
               {
                 icon: Shield,
                 step: "04",
-                title: "Pay and track safely",
-                text: "Pay for the order and follow preparation, transit, customs, delivery, and buyer review.",
+                title: t('journey4Title'), text: t('journey4Text'),
               },
             ].map((item, index) => (
               <motion.div
@@ -602,7 +579,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="h-9 rounded-full px-4 text-xs sm:h-10 sm:px-5 sm:text-sm"
               onClick={() => onNavigate("register-customer")}
             >
-              Start as a customer <ArrowRight size={14} />
+              {t('startCustomer')} <ArrowRight size={14} />
             </Button>
           </div>
         </div>
@@ -622,79 +599,78 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="mb-9 grid items-end gap-4 sm:mb-12 sm:gap-6 lg:grid-cols-[1fr_0.8fr]">
             <div>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                One trusted platform
+                {t('platformEyebrow')}
               </p>
               <h2 className="max-w-3xl text-2xl leading-[1.08] tracking-[-0.04em] sm:text-5xl sm:leading-[1.03] lg:text-6xl naitrust-satoshi-bold">
-                Sourcing should feel clear.
+                {t('platformTitle')}
                 <br />
                 <span className="text-muted-foreground">
-                  From search to doorstep.
+                  {t('platformSubtitle')}
                 </span>
               </h2>
             </div>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground lg:justify-self-end lg:text-lg">
-              Naitrust brings supplier discovery, translated listings, confirmed
-              costs, protected funds, logistics, and evidence into one commerce
-              flow.
+              {t('platformDescription')}
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
             {[
               {
-                platform: "Discover Suppliers",
-                kicker: "China and Nigeria",
-                iconComponent: Landmark,
-                description:
-                  "Browse curated products, services, supplier showcases, verification, ratings, and fulfilment information.",
-                gradient: "from-emerald-400 to-emerald-600",
-                className: "lg:col-span-4 bg-[#09243b] text-white",
-              },
-              {
-                platform: "Understand Every Product",
-                kicker: "Clear English listings",
+                platform: t('compareTitle'),
+                kicker: t('compareKicker'),
                 iconComponent: Search,
                 description:
-                  "Review translated titles, specifications, variants, minimum orders, source prices, and supplier requirements.",
+                  t('compareText'),
                 gradient: "from-sky-400 to-blue-600",
                 className: "lg:col-span-4 bg-white dark:bg-card",
               },
               {
-                platform: "Know the Landed Cost",
-                kicker: "No checkout guesswork",
+                platform: t('agentsTitle'),
+                kicker: t('agentsKicker'),
                 iconComponent: Send,
                 description:
-                  "See the product, FX, inspection, customs, handling, insurance, and delivery costs before accepting.",
+                  t('agentsText'),
                 gradient: "from-blue-400 to-blue-600",
                 className: "lg:col-span-4 bg-[#1e90ff] text-white",
               },
               {
-                platform: "Protect Supplier Funds",
-                kicker: "Pay for an order",
+                platform: t('roomsTitle'),
+                kicker: t('roomsKicker'),
                 iconComponent: Handshake,
                 description:
-                  "Keep product funds protected through the agreed order stages while logistics charges stay itemized.",
+                  t('roomsText'),
                 gradient: "from-amber-400 to-orange-500",
                 showAccentGlow: false,
                 className: "lg:col-span-4 bg-white dark:bg-card",
               },
               {
-                platform: "Track the Full Journey",
-                kicker: "One Order Room",
+                platform: t('evidenceTitle'),
+                kicker: t('evidenceKicker'),
                 iconComponent: Handshake,
                 description:
-                  "Keep inspection, export, transit, customs, local delivery, messages, evidence, and issues on one record.",
+                  t('evidenceText'),
                 gradient: "from-cyan-400 to-sky-600",
                 showAccentGlow: false,
                 className: "lg:col-span-4 bg-white dark:bg-card",
               },
               {
-                platform: "Get Help in China",
-                kicker: "Verified agents",
+                platform: t('wholesaleTitle'),
+                kicker: t('wholesaleKicker'),
                 iconComponent: Fingerprint,
                 description:
-                  "Hire independent agents for supplier checks, sourcing, factory visits, negotiation, or product inspection.",
+                  t('wholesaleText'),
                 gradient: "from-violet-400 to-indigo-600",
+                showAccentGlow: false,
+                className: "lg:col-span-4 bg-white dark:bg-card",
+              },
+              {
+                platform: t('deliveryTitle'),
+                kicker: t('deliveryKicker'),
+                iconComponent: PackageCheck,
+                description:
+                  t('deliveryText'),
+                gradient: "from-emerald-400 to-teal-600",
                 showAccentGlow: false,
                 className: "lg:col-span-4 bg-white dark:bg-card",
               },
@@ -742,17 +718,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
           >
             <div>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">
-                One connected order account
+                {t('accountEyebrow')}
               </p>
               <h2 className="text-2xl leading-[1.08] tracking-[-0.04em] sm:text-5xl sm:leading-[1.05]">
-                Source, pay and track
-                <br />
-                from one place.
+                {t('accountTitle')}
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-white/60 sm:text-lg sm:leading-8 lg:justify-self-end">
-              Discover suppliers, confirm the complete cost, protect product
-              funds and follow delivery to Nigeria.
+              {t('accountText')}
             </p>
           </motion.div>
 
@@ -807,14 +780,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="h-9 rounded-full px-4 text-xs shadow-[0_10px_26px_rgba(30,144,255,.2)] sm:h-10 sm:px-5 sm:text-sm"
               onClick={openWaitlistModal}
             >
-              Get Early Access
+              {t('earlyAccess')}
               <ArrowRight size={14} className="ml-1" />
             </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* Import account: funding, protected order balances, refunds and withdrawals */}
+      {/* Order money: funding, supplier payments, refunds and withdrawals */}
       <section className="bg-[#f5f8fc] py-12 dark:bg-[#0d0f13] sm:py-20 lg:py-28">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-9 lg:grid-cols-2 lg:gap-12">
@@ -842,34 +815,32 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="order-1 lg:order-2"
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                Your import account
+                {t('moneyEyebrow')}
               </p>
               <h2 className="mb-4 text-2xl leading-tight tracking-[-0.04em] sm:mb-5 sm:text-5xl">
-                Fund orders, receive refunds and withdraw earnings clearly.
+                {t('moneyTitle')}
               </h2>
               <p className="mb-7 text-sm leading-6 text-muted-foreground sm:mb-8 sm:text-lg sm:leading-relaxed">
-                Use your Naitrust balance for accepted supplier quotes.
-                Order payments, refundable logistics amounts and available
-                money remain clearly separated.
+                {t('moneyText')}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {[
                   {
                     icon: ArrowDownToLine,
-                    text: "Fund accepted supplier orders",
+                    text: t('money1'),
                   },
                   {
                     icon: Shield,
-                    text: "Keep supplier and logistics payments separate",
+                    text: t('money2'),
                   },
                   {
                     icon: MessageCircle,
-                    text: "Receive order refunds and adjustments",
+                    text: t('money3'),
                   },
                   {
                     icon: Landmark,
-                    text: "Withdraw only to your verified bank account",
+                    text: t('money4'),
                   },
                 ].map((item, index) => {
                   const Icon = item.icon;
@@ -896,7 +867,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   className="h-9 w-auto self-start rounded-full px-4 text-xs sm:h-10 sm:px-5 sm:text-sm"
                   onClick={openWaitlistModal}
                 >
-                  Get Early Access
+                  {t('earlyAccess')}
                   <ArrowRight size={14} className="ml-1" />
                 </Button>
               </div>
@@ -915,26 +886,24 @@ export function HomePage({ onNavigate }: HomePageProps) {
               viewport={{ once: true }}
             >
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#53b0ff]">
-                International Order Room
+                {t('roomEyebrow')}
               </p>
               <h2 className="mb-4 text-2xl leading-tight tracking-[-0.04em] text-white sm:mb-5 sm:text-5xl">
-                Follow your China order from supplier to doorstep.
+                {t('roomSectionTitle')}
               </h2>
               <p className="mb-7 text-sm leading-6 text-white/65 sm:mb-8 sm:text-lg sm:leading-8">
-                Naitrust keeps the verified supplier, accepted quote, product
-                payment, inspection, shipping documents, customs progress,
-                delivery evidence and next action in one order room.
+                {t('roomSectionText')}
               </p>
 
               <div className="mb-6 grid gap-3 sm:grid-cols-2 sm:gap-4">
                 {[
                   {
                     icon: Fingerprint,
-                    text: "Seller evidence and secure buyer handover kept together",
+                    text: t('roomPoint1'),
                   },
                   {
                     icon: Lock,
-                    text: "Time to inspect, report a problem, or approve payment release",
+                    text: t('roomPoint2'),
                   },
                 ].map((item, index) => {
                   const Icon = item.icon;
@@ -962,9 +931,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <Button
                   size="sm"
                   className="w-auto rounded-full px-5"
-                  onClick={() => onNavigate("/market")}
+                  onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
                 >
-                  Explore China Market
+                  {platformFeatures.marketplace ? 'Explore China Market' : t('browseAgents')}
                   <ArrowRight size={15} className="ml-1.5" />
                 </Button>
               </div>
@@ -1024,11 +993,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#04162f] via-[#04162f]/10 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 px-5 pb-12 pt-6 text-white sm:p-8">
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7fc5ff]">
-                    A shared record for both sides
+                    {t('sharedRecord')}
                   </p>
                   <p className="mt-2 max-w-sm text-lg font-bold leading-snug sm:text-xl">
-                    The order, evidence, payment status, and next action stay
-                    together.
+                    {t('sharedRecordText')}
                   </p>
                 </div>
               </div>
@@ -1048,9 +1016,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       <CheckCircle2 size={21} />
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500">Order update</p>
+                      <p className="text-xs text-slate-500">{t('orderUpdate')}</p>
                       <p className="font-bold text-[#071b31]">
-                        Delivery evidence added
+                        {t('evidenceAdded')}
                       </p>
                     </div>
                   </div>
@@ -1058,8 +1026,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <div className="h-full w-3/4 rounded-full bg-emerald-500" />
                   </div>
                   <div className="mt-2 flex justify-between text-[10px] font-semibold text-slate-500">
-                    <span>Terms agreed</span>
-                    <span>Awaiting confirmation</span>
+                    <span>{t('termsAgreed')}</span>
+                    <span>{t('awaitingConfirmation')}</span>
                   </div>
                 </Card>
               </motion.div>
@@ -1085,10 +1053,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground">
-                        Payment status
+                        {t('paymentStatus')}
                       </p>
                       <p className="text-xs font-bold text-emerald-700">
-                        Protected
+                        {t('protected')}
                       </p>
                     </div>
                   </div>
@@ -1112,19 +1080,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
             className="text-center mb-12"
           >
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-              Infrastructure partners
+              {t('partnersEyebrow')}
             </p>
             <h2 className="mb-4 text-2xl tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-              Trust in front. Regulated infrastructure underneath.
+              {t('partnersTitle')}
             </h2>
             <p className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Payments and account services are provided through regulated
-              banking infrastructure from Anchor. Naitrust provides the customer
-              experience and trust workflow but does not hold customer funds.
+              {t('partnersText')}
             </p>
           </motion.div>
 
-          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 py-4 sm:gap-4">
+          <div className="mx-auto grid max-w-3xl grid-cols-1 gap-3 py-4 sm:grid-cols-2 sm:gap-4">
             {/* <motion.a
               href="https://www.cac.gov.ng/"
               target="_blank"
@@ -1162,13 +1128,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   QoreID
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                  Identity and business checks
+                  {t('identityChecks')}
                 </p>
               </Card>
             </motion.a>
 
             <motion.a
-              href="https://getanchor.co"
+              href="https://verto.co"
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
@@ -1176,16 +1142,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
               animate={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.05 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 * 1 }}
+              transition={{ delay: 0.2 }}
               className="block"
             >
               <Card className="flex h-full min-h-32 items-center justify-center rounded-[1.25rem] p-4 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl sm:min-h-40 sm:rounded-[1.5rem] sm:p-6 dark:from-card dark:to-gray-900/50">
-                <AnchorLogo className="h-12 w-12 rounded-full object-contain sm:h-16 sm:w-16" />
-                <p className="font-semibold text-sm group-hover:text-primary transition-colors">
-                  Anchor
+                <div className="flex h-12 w-24 items-center justify-center rounded-xl border bg-white px-3 sm:h-16 sm:w-28">
+                  <VertoLogo className="h-auto w-full object-contain" />
+                </div>
+                <p className="text-sm font-semibold transition-colors group-hover:text-primary">
+                  Verto
                 </p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                  Payment infrastructure
+                <p className="text-center text-xs text-gray-600 dark:text-gray-400">
+                  {t('fxPayments')}
                 </p>
               </Card>
             </motion.a>
@@ -1204,15 +1172,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
           >
             <div>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                Questions, answered
+                {t('faqEyebrow')}
               </p>
               <h2 className="text-2xl tracking-[-0.04em] text-gray-900 sm:text-5xl dark:text-white">
-                The important stuff.
+                {t('faqTitle')}
               </h2>
             </div>
             <p className="text-sm leading-6 text-muted-foreground sm:text-lg md:justify-self-end">
-              Clear answers about suppliers, landed-cost quotes, protected
-              orders, agents, logistics, delivery, refunds, and withdrawals.
+              {t('faqIntro')}
             </p>
           </motion.div>
 
@@ -1240,7 +1207,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="text-center mt-8">
             <Button variant="outline" onClick={() => onNavigate("faqs")}>
-              View All FAQs
+              {t('viewFaqs')}
               <ChevronRight size={18} className="ml-2" />
             </Button>
           </div>
@@ -1260,56 +1227,47 @@ export function HomePage({ onNavigate }: HomePageProps) {
             {/* Slogan - Prominent */}
             <div className="mb-5 inline-flex max-w-full rounded-full border border-white/15 bg-white/[0.06] px-3 py-2 backdrop-blur sm:mb-8 sm:px-5 sm:py-2.5">
               <p className="text-[9px] font-bold uppercase leading-4 tracking-[0.08em] text-[#7dc1ff] sm:text-xs sm:tracking-[0.14em]">
-                Verified suppliers. Clear landed costs. Protected delivery.
+                {t('finalBadge')}
               </p>
             </div>
 
             <h2 className="mb-4 text-2xl font-bold leading-[1.1] tracking-[-0.04em] text-white sm:mb-5 sm:text-5xl sm:leading-[1.02] lg:text-6xl">
-              Find it in China.
-              <br />
-              Receive it in Nigeria.
+              {t('finalTitle')}
             </h2>
             <p className="mx-auto mb-6 max-w-2xl text-sm leading-6 text-white/60 sm:mb-9 sm:text-base sm:leading-7 lg:text-lg">
-              Browse verified suppliers in English, receive a confirmed quote,
-              pay in Naira, and follow the order to your door.
+              {t('finalText')}
             </p>
 
             <div className="flex flex-row justify-center gap-2 sm:gap-4">
               <Button
                 size="lg"
                 variant="secondary"
-                onClick={() => onNavigate("/market")}
+                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
                 className="h-10 w-auto flex-none rounded-full bg-primary px-6 text-xs font-bold text-white ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-12 sm:px-8 sm:text-base"
               >
-                Explore Naitrust Market
+                {platformFeatures.marketplace ? 'Explore Naitrust Market' : t('findAgent')}
                 <ArrowRight size={14} className="ml-1 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 size="lg"
-                onClick={() =>
-                  window.open(
-                    "/register-business",
-                    "_blank",
-                    "noopener,noreferrer",
-                  )
-                }
+                onClick={() => window.open("/partners/agent/apply", "_blank", "noopener,noreferrer")}
                 className="h-10 w-auto flex-none rounded-full border border-white/30 bg-white/[0.1] px-6 text-xs font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur hover:-translate-y-0.5 hover:bg-white/15 hover:text-white sm:h-12 sm:px-8 sm:text-base"
               >
-                Join as a Business
+                {t('applyAgent')}
               </Button>
             </div>
 
             {/* Feedback Link */}
             <div className="mt-9 border-t border-white/10 pt-7 sm:mt-12 sm:pt-8">
               <p className="mb-3 text-sm text-white/45 sm:mb-4 sm:text-base">
-                Have feedback about importing products into Nigeria?
+                {t('feedbackPrompt')}
               </p>
               <Button
                 variant="ghost"
                 onClick={() => onNavigate("feedback")}
                 className="text-primary hover:bg-primary/10 hover:text-primary"
               >
-                Share Your Feedback
+                {t('shareFeedback')}
               </Button>
             </div>
           </motion.div>

@@ -8,6 +8,7 @@ import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
 import { PasswordInput } from '../../ui/input';
 import { Label } from '../../ui/label';
+import { useTranslation } from 'react-i18next';
 
 interface ResetPasswordFormProps {
   newPassword: string;
@@ -28,20 +29,21 @@ export function ResetPasswordForm({
   onConfirmPassword,
   onSubmit,
 }: ResetPasswordFormProps) {
+  const { t } = useTranslation('auth');
   return (
     <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-2xl mb-4">
           <Lock size={32} className="text-blue-500" />
         </div>
-        <h2 className="mb-2 text-2xl font-bold">Create New Password</h2>
-        <p className="text-muted-foreground">Enter a strong password for your account</p>
+        <h2 className="mb-2 text-2xl font-bold">{t('newPasswordTitle')}</h2>
+        <p className="text-muted-foreground">{t('newPasswordDescription')}</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
         {error && <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm">{error}</div>}
         <div className="space-y-2">
-          <Label htmlFor="new-password">New Password</Label>
+          <Label htmlFor="new-password">{t('newPassword')}</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
             <PasswordInput
@@ -54,10 +56,10 @@ export function ResetPasswordForm({
               minLength={8}
             />
           </div>
-          <p className="text-xs text-muted-foreground">At least 8 characters</p>
+          <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Label htmlFor="confirm-password">{t('confirmPassword')}</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10" size={18} />
             <PasswordInput
@@ -75,11 +77,11 @@ export function ResetPasswordForm({
           {isResetting ? (
             <>
               <Loader2 size={18} className="mr-2 animate-spin" />
-              Resetting...
+              {t('resetting')}
             </>
           ) : (
             <>
-              Reset Password
+              {t('resetPassword')}
               <CheckCircle size={18} className="ml-2" />
             </>
           )}

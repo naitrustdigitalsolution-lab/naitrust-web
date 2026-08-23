@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ClipboardCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -14,9 +15,11 @@ import type { CustomerPaymentCurrency, LandedCostQuote } from '../../../libs/mar
 import { formatCny, formatNaira, formatUsd } from '../lib/money';
 import { WorkspaceEmpty } from './WorkspaceEmpty';
 import { WorkspaceHeader } from './WorkspaceHeader';
+import { TRANSACTIONS_QUERY_KEY } from '../../../hooks/useTransactions';
 
 export function QuotesWorkspace() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const [, refresh] = useState(0);
   const [selected, setSelected] = useState<LandedCostQuote | null>(null);
@@ -25,13 +28,18 @@ export function QuotesWorkspace() {
   const quotes = marketplaceApi.listQuotes();
   const canPayUsd = user?.role === 'business' || user?.role === 'business-member';
 
-  const confirmPayment = () => {
+  const confirmPayment = async () => {
     if (!selected) return;
-    const order = marketplaceApi.acceptQuote(selected.id, currency);
-    toast.success(`Order created with ${currency} payment.`);
-    setSelected(null);
-    refresh((value) => value + 1);
-    navigate(`/app/orders/${order.id}`);
+    try {
+      const order = await marketplaceApi.acceptQuote(selected.id, currency);
+      await queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });
+      toast.success(`Order Room created with ${currency} payment.`);
+      setSelected(null);
+      refresh((value) => value + 1);
+      navigate(order.roomId ? `/app/deals/${order.roomId}` : `/app/orders/${order.id}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not create this order.');
+    }
   };
 
   return (

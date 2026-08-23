@@ -1,10 +1,10 @@
 /**
  * PaymentsHubPage
  * The Payments area landing (`/app/payments`): the primary place the
- * "two ways to pay" choice is offered: Send Instantly for people/businesses
- * you already trust, or Protect a Payment (a Protected Deal) for new
- * suppliers, contractors, large orders, or anything needing delivery
- * confirmation. Quick links to Receive, Wallet, Beneficiaries and Requests,
+ * "two ways to pay" choice is offered: direct payment for people/businesses
+ * already trusted, or a documented supplier order when products, services,
+ * evidence, stages or delivery need to be recorded. Quick links to legacy
+ * payments remain for compatibility,
  * plus a short recent-transfers list.
  */
 
@@ -41,7 +41,7 @@ export function PaymentsHubPage() {
   const quickLinks = isBusiness ? BUSINESS_QUICK_LINKS : CUSTOMER_QUICK_LINKS;
 
   return (
-    <DashboardLayout title="Payments">
+    <DashboardLayout title="Direct payments">
       <div className="mx-auto w-full max-w-7xl">
         <div className="mb-5 sm:mb-7 sm:overflow-hidden sm:rounded-3xl sm:border sm:border-primary/15 sm:bg-gradient-to-br sm:from-primary/[0.09] sm:via-background sm:to-background sm:px-7 sm:py-6 sm:shadow-sm lg:px-9 lg:py-8">
           <div className="flex items-start gap-4">
@@ -50,13 +50,13 @@ export function PaymentsHubPage() {
             </span>
             <div>
               <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary sm:block">
-                {isBusiness ? 'Your business payments' : 'Your payments'}
+                Outside marketplace checkout
               </p>
-              <h1 className="hidden text-2xl font-bold tracking-tight text-foreground sm:block sm:text-3xl">Move money the way the moment requires.</h1>
+              <h1 className="hidden text-2xl font-bold tracking-tight text-foreground sm:block sm:text-3xl">Pay directly or create an Order Room.</h1>
               <p className="mt-1.5 hidden max-w-2xl text-sm leading-6 text-muted-foreground sm:block">
                 {isBusiness
-                  ? 'Receive sales, pay regular suppliers instantly, or protect an important order when the relationship or delivery is still new.'
-                  : 'Send money to people and businesses you trust, receive money from anyone, or protect an important purchase when the seller is still new to you.'}
+                  ? 'Use direct payment only for trusted contacts. Create a supplier order when products, evidence, stages or delivery must be recorded.'
+                  : 'Use direct payment only for trusted contacts. Create a supplier order when products, evidence, stages or delivery must be recorded.'}
               </p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export function PaymentsHubPage() {
               <ShieldCheck size={20} />
             </div>
             <p className="text-base font-semibold text-foreground sm:text-xl">
-              {isBusiness ? 'Protect an important order' : 'Protect an important purchase'}
+              {isBusiness ? 'Create a direct supplier order' : 'Create a documented purchase'}
             </p>
             <p className="hidden text-sm leading-6 text-muted-foreground sm:block">
               {isBusiness
@@ -103,7 +103,7 @@ export function PaymentsHubPage() {
                 : 'Record the order, seller, terms, evidence, and payment when delivery needs to be confirmed.'}
             </p>
             <span className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary">
-              Start a Protected Deal <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+              Create a supplier order <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </span>
           </Card>
         </div>

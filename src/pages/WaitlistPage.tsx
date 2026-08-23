@@ -10,25 +10,7 @@ import { NaitrustLogo } from '../components/utility/NaitrustLogo';
 import spiralBackground from '../assets/spiral.svg';
 import { joinWaitlist } from '../services/publicService';
 import type { TransactionRange, WaitlistPayload, WaitlistUserType } from '../types/global';
-
-const USER_TYPES: Array<{ value: WaitlistUserType; label: string }> = [
-  { value: 'informal_business', label: 'Market trader or stall owner' },
-  { value: 'business_buyer', label: 'Shop, retail business or company' },
-  { value: 'supplier_vendor', label: 'Wholesaler, supplier or distributor' },
-  { value: 'marketplace_social_seller', label: 'Online or social seller' },
-  { value: 'contractor_service_provider', label: 'Service business or contractor' },
-  { value: 'individual_customer', label: 'Individual customer' },
-  { value: 'other', label: 'Something else' },
-];
-
-const PAYMENT_NEEDS = [
-  { value: 'china-products', label: 'Find products and verified suppliers in China' },
-  { value: 'landed-quotes', label: 'Receive a confirmed landed-cost quote' },
-  { value: 'protected-orders', label: 'Pay through a protected supplier order' },
-  { value: 'sourcing-agents', label: 'Hire a sourcing or inspection agent in China' },
-  { value: 'sell-nigeria', label: 'Publish products and sell in Nigeria' },
-  { value: 'other', label: 'Something else' },
-];
+import { interestsForWaitlistRoles, WAITLIST_ROLE_OPTIONS } from '../libs/waitlist/marketplace-options';
 
 const RANGES: Array<{ value: TransactionRange; label: string }> = [
   { value: 'below_100k', label: 'Below NGN 100k' },
@@ -51,6 +33,17 @@ export default function WaitlistPage() {
 
   const toggle = <T extends string>(items: T[], value: T) =>
     items.includes(value) ? items.filter((item) => item !== value) : [...items, value];
+  const interestOptions = interestsForWaitlistRoles(form.userTypes);
+
+  function toggleRole(value: WaitlistUserType) {
+    const userTypes = toggle(form.userTypes, value);
+    const allowedInterests = new Set(interestsForWaitlistRoles(userTypes).map((item) => item.value));
+    setForm({
+      ...form,
+      userTypes,
+      needs: form.needs.filter((need) => allowedInterests.has(need)),
+    });
+  }
 
   function continueToPreferences() {
     if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim()) {
@@ -95,7 +88,7 @@ export default function WaitlistPage() {
 
   return (
     <div className="relative min-h-svh overflow-hidden bg-white text-foreground dark:bg-background">
-      <SEOHead title="Join the Naitrust Market Waitlist" description="Join early access to discover verified suppliers, receive landed-cost quotes, fund protected orders, and track delivery from China to Nigeria." canonicalPath="/waitlist" />
+      <SEOHead title="Join the Naitrust AI Sourcing Waitlist" description="Join early access to turn Chinese product evidence into English research, compare suppliers, work with verified agents and manage bilingual sourcing orders." canonicalPath="/waitlist" />
       <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-7xl px-8 lg:block">
         <img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-8 top-1/2 h-[900px] w-[900px] max-w-none -translate-y-1/2 rotate-180 opacity-70" />
@@ -114,7 +107,7 @@ export default function WaitlistPage() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust early access</p>
           </div>
-          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">Wholesale sourcing, organized from request to delivery.</h1>
+          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">China sourcing, explained in English and managed without travelling.</h1>
           <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Discover China and Nigeria suppliers, request complete quotes, work with vetted agents, and follow every supplier order clearly.</p>
           <div className="mt-7 hidden space-y-3 text-sm text-[#496274] dark:text-slate-300 lg:block">
             {['Browse wholesale products and supplier showcases', 'Coordinate independent product and factory checks', 'Track separate orders, consolidation, shipping, and delivery'].map((item) => (
@@ -143,7 +136,7 @@ export default function WaitlistPage() {
                 </div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">{step === 1 ? 'About you' : 'Your early access'}</p>
                 <h2 className="mt-2 text-2xl font-bold">{step === 1 ? 'Save your place' : 'What fits you best?'}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{step === 1 ? 'It takes less than a minute.' : 'Choose at least one option in each group.'}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{step === 1 ? 'It takes less than a minute.' : 'Select every role that applies to you.'}</p>
               </div>
 
               {step === 1 ? (
@@ -155,9 +148,9 @@ export default function WaitlistPage() {
                 </div>
               ) : (
                 <>
-                  <fieldset><legend className="text-sm font-semibold">I’m joining as</legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{USER_TYPES.map((item) => { const active = form.userTypes.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => setForm({ ...form, userTypes: [item.value] })} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span>{item.label}</button>; })}</div></fieldset>
+                  <fieldset><legend className="text-sm font-semibold">I’m joining as <span className="font-normal text-muted-foreground">(select all that apply)</span></legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{WAITLIST_ROLE_OPTIONS.map((item) => { const active = form.userTypes.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => toggleRole(item.value)} className={`flex min-h-14 items-start gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span><span><strong className="block text-xs font-semibold">{item.label}</strong><span className={`mt-0.5 block text-[10px] leading-4 ${active ? 'text-primary/75' : 'text-muted-foreground'}`}>{item.detail}</span></span></button>; })}</div></fieldset>
 
-                  <fieldset><legend className="text-sm font-semibold">I’m most interested in</legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{PAYMENT_NEEDS.map((item) => { const active = form.needs.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => setForm({ ...form, needs: toggle(form.needs, item.value) })} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span>{item.label}</button>; })}</div></fieldset>
+                  <fieldset><legend className="text-sm font-semibold">What do you want to do on Naitrust?</legend><div className="mt-3 grid gap-2 sm:grid-cols-2">{interestOptions.map((item) => { const active = form.needs.includes(item.value); return <button key={item.value} type="button" aria-pressed={active} onClick={() => setForm({ ...form, needs: toggle(form.needs, item.value) })} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${active ? 'border-primary bg-primary/8 text-primary' : 'hover:border-primary/40'}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${active ? 'border-primary bg-primary text-white' : ''}`}>{active && <Check size={11} />}</span>{item.label}</button>; })}</div></fieldset>
 
                   <details open className="group rounded-xl border bg-muted/20 p-4">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold marker:hidden">

@@ -25,7 +25,11 @@ const seededApplications = partnerNetworkFixture.applications as PartnerApplicat
 
 function listApplications(): PartnerApplication[] {
   const stored = read<PartnerApplication[] | null>(applicationsKey, null);
-  if (stored) return stored;
+  if (stored) {
+    const storedIds = new Set(stored.map((application) => application.id));
+    const missingSeeds = seededApplications.filter((application) => !storedIds.has(application.id));
+    return missingSeeds.length ? write(applicationsKey, [...missingSeeds, ...stored]) : stored;
+  }
   return write(applicationsKey, seededApplications);
 }
 

@@ -1,4 +1,4 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { CartWorkspace } from '../../features/commerce/components/CartWorkspace';
 import { OrderRoom } from '../../features/commerce/components/OrderRoom';
 import { OrdersWorkspace } from '../../features/commerce/components/OrdersWorkspace';
@@ -11,6 +11,7 @@ export function CommerceWorkspacePage() {
   const { orderId } = useParams<{ orderId?: string }>();
   const order = orderId ? marketplaceApi.listOrders().find((candidate) => candidate.id === orderId) : undefined;
 
+  if (order?.roomId) return <Navigate to={`/app/deals/${order.roomId}`} replace />;
   if (order) return <DashboardLayout title="Order room"><OrderRoom order={order} /></DashboardLayout>;
   if (pathname === '/app/cart') return <DashboardLayout title="Cart"><CartWorkspace /></DashboardLayout>;
   if (pathname === '/app/quotes') return <DashboardLayout title="Quotes"><QuotesWorkspace /></DashboardLayout>;

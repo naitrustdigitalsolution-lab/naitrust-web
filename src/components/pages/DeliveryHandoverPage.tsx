@@ -64,7 +64,7 @@ export function DeliveryHandoverPage() {
             <p className="mt-5 text-xs font-bold uppercase tracking-[0.15em] text-primary">Secure product handover</p>
             <h1 className="mt-2 text-2xl font-bold">Sign in to confirm this delivery</h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Naitrust must verify that you are the buyer on this Protected Deal before receipt can be recorded.
+              Naitrust must verify that you are the buyer on this order before delivery can be recorded.
             </p>
             <Button className="mt-6 w-full rounded-full" onClick={() => navigate(loginPath)}>
               Sign in securely <ArrowRight size={16} />
@@ -78,7 +78,7 @@ export function DeliveryHandoverPage() {
               Only the buyer assigned to {preview.reference} can confirm receipt. Sellers, riders, and other accounts cannot use this card.
             </p>
             <Button variant="outline" className="mt-6 rounded-full" onClick={() => navigate(`/app/deals/${preview.dealId}`)}>
-              Open Deal Room
+              Open Order Room
             </Button>
           </Card>
         ) : (
@@ -156,10 +156,10 @@ export function DeliveryHandoverPage() {
                   <ShieldCheck size={34} className="mx-auto text-emerald-600" />
                   <h2 className="mt-4 text-xl font-bold">Handover recorded</h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Continue product checks and follow the funding-review deadline in the Deal Room.
+                    Continue product checks and follow the payment-review deadline in the Order Room.
                   </p>
                   <Button className="mt-6 rounded-full" onClick={() => navigate(`/app/deals/${preview.dealId}`)}>
-                    Open Deal Room <ArrowRight size={16} />
+                    Open Order Room <ArrowRight size={16} />
                   </Button>
                 </div>
               )}

@@ -12,7 +12,9 @@ import {
   Loader2,
   Plus,
   ReceiptText,
+  Repeat2,
   Settings,
+  ShieldCheck,
   WalletCards,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -141,18 +143,25 @@ export function CommerceWalletPage() {
   };
 
   return (
-    <DashboardLayout title="Wallet">
+    <DashboardLayout title="Order money">
       <div className="w-full">
         <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.16em] text-primary">Order wallet</p>
-            <h1 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">Your Naira balance</h1>
-            <p className="mt-1.5 text-sm text-muted-foreground">Fund orders, receive refunds and withdraw earnings.</p>
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-primary">Order money</p>
+            <h1 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">Your Naira account</h1>
+            <p className="mt-1.5 text-sm text-muted-foreground">Add money for quotes and services, receive refunds or seller earnings, and withdraw to your verified bank.</p>
           </div>
           <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/transactions')}>
             <ReceiptText size={15} /> View all activity
           </Button>
         </header>
+
+        <Card className="mb-5 overflow-hidden rounded-3xl border-sky-500/15 bg-gradient-to-r from-sky-500/[.07] to-emerald-500/[.05] p-5 sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.14em] text-primary"><ShieldCheck size={15} /> Simulated partner flow</div><h2 className="mt-2 text-lg font-bold">Collect in NGN or USD. Release by approved order stage.</h2><p className="mt-1 max-w-3xl text-xs leading-5 text-muted-foreground">This frontend models virtual-account funding, FX conversion and separate supplier, agent and logistics beneficiaries. A licensed payment partner must approve custody and production payouts before real funds are enabled.</p></div>
+            <div className="flex shrink-0 items-center gap-2 text-[11px] font-semibold"><span className="rounded-full border bg-card px-3 py-2">NGN / USD</span><Repeat2 size={14} className="text-primary" /><span className="rounded-full border bg-card px-3 py-2">USD / CNY payout</span></div>
+          </div>
+        </Card>
 
         <section className="grid overflow-hidden rounded-[2rem] border bg-card shadow-[0_18px_55px_rgba(7,27,49,.08)] lg:grid-cols-[minmax(0,1.35fr)_minmax(19rem,.65fr)]">
           <div className="relative overflow-hidden bg-[#071b31] p-5 text-white sm:p-7 lg:p-8">
@@ -171,7 +180,7 @@ export function CommerceWalletPage() {
               ) : (
                 <p className="mt-7 text-4xl font-bold tracking-[-.04em] sm:text-5xl">{formatMinorAmount(ngnAccount.availableMinor, 'NGN')}</p>
               )}
-              <p className="mt-3 max-w-lg text-xs leading-5 text-white/55">Available for confirmed quotes or withdrawal to a verified Nigerian bank account.</p>
+              <p className="mt-3 max-w-lg text-xs leading-5 text-white/55">Use this balance for accepted quotes, sourcing agents, logistics, or withdrawal to your verified Nigerian bank.</p>
               <div className="mt-7 flex flex-wrap gap-2.5">
                 <Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={openFunding}><Plus size={15} /> Add money</Button>
                 <Button variant="outline" className="rounded-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => document.querySelector('#withdraw-naira')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}><ArrowUpRight size={15} /> Withdraw</Button>
@@ -207,14 +216,14 @@ export function CommerceWalletPage() {
             <div className="flex items-center justify-between border-b px-5 py-4 sm:px-6">
               <div>
                 <h2 className="font-semibold">Recent activity</h2>
-                <p className="mt-0.5 text-xs text-muted-foreground">Order funding, earnings, refunds and withdrawals.</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Quote payments, supplier releases, service fees, refunds, earnings and withdrawals.</p>
               </div>
               <Button variant="ghost" size="sm" className="rounded-full text-xs" onClick={() => navigate('/app/transactions')}>See all</Button>
             </div>
             {loadingActivity ? (
               <div className="space-y-3 p-5">{[0, 1, 2, 3].map((item) => <Skeleton key={item} className="h-12 rounded-xl" />)}</div>
             ) : activity.length === 0 ? (
-              <div className="grid min-h-64 place-items-center p-8 text-center"><div><span className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-muted text-muted-foreground"><ReceiptText size={19} /></span><p className="mt-3 text-sm font-semibold">No activity yet</p><p className="mt-1 text-xs text-muted-foreground">Funding and order payments will appear here.</p></div></div>
+              <div className="grid min-h-64 place-items-center p-8 text-center"><div><span className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-muted text-muted-foreground"><ReceiptText size={19} /></span><p className="mt-3 text-sm font-semibold">No money activity yet</p><p className="mt-1 text-xs text-muted-foreground">Deposits, quote payments, refunds and earnings will appear here.</p></div></div>
             ) : (
               <div className="divide-y">
                 {activity.slice(0, 6).map((event) => {

@@ -1,6 +1,21 @@
 {
   "applications": [
     {
+      "id": "partner_agent_amina",
+      "role": "agent",
+      "contactName": "Amina Yusuf",
+      "email": "amina.yusuf@naitrust.test",
+      "phone": "+86 138 0000 2048",
+      "country": "CN",
+      "city": "Shenzhen",
+      "languages": ["Mandarin", "English"],
+      "services": ["Supplier checks", "Factory visits", "Electronics inspection", "Batch testing"],
+      "experience": "Seven years supporting electronics and machinery buyers across Shenzhen, Dongguan and Guangzhou.",
+      "status": "approved",
+      "inviteCode": "AGENT-AMINA-2026",
+      "createdAt": "2026-07-16T08:00:00.000Z"
+    },
+    {
       "id": "partner_agent_lin",
       "role": "agent",
       "contactName": "Chinedu Okafor",

@@ -50,7 +50,7 @@ export function BusinessVerificationModal() {
           </div>
           <DialogTitle>Verify your business to start</DialogTitle>
           <DialogDescription>
-            Before you can create Protected Deals, verify your business or professional profile. It only takes a few minutes.
+            Verify your business before publishing a showcase, quoting customers, or creating supplier orders. It only takes a few minutes.
           </DialogDescription>
         </DialogHeader>
 

@@ -15,7 +15,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
 
   const categories = [
     { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
-    { id: 'payments', name: 'Protected Funding', icon: CreditCard, description: 'Virtual accounts from payment partners, payment status, release, and refunds' },
+    { id: 'payments', name: 'Order Money', icon: CreditCard, description: 'Deposits, quote payments, supplier releases, service fees, refunds and withdrawals' },
     { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
     { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
@@ -54,22 +54,22 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'p1',
         question: 'Does Naitrust hold my money?',
-        answer: 'No. Naitrust coordinates the payment workflow, participant records, verification, evidence, payment status, and agreed actions. When Protected Payment is used, funds are handled by regulated payment or banking partners through virtual accounts issued by those partners.'
+        answer: 'No. Naitrust coordinates supplier orders, evidence, payment status and agreed actions. Money movement is handled by regulated payment or banking partners through accounts issued by those partners.'
       },
       {
         id: 'p2',
-        question: 'What is protected funding?',
-        answer: 'Protected funding is the flow where a buyer funds a virtual account issued by a payment partner for a specific deal. Both parties can see payment status, evidence requirements, confirmation steps, and release conditions in the deal room.'
+        question: 'How does order funding work?',
+        answer: 'Order funding is tied to a specific accepted quote. The Order Room shows the amount received, agent or inspection evidence, supplier-payment stages, refunds and the next required decision.'
       },
       {
         id: 'p3',
         question: 'When is payment released?',
-        answer: 'Any payment instruction follows the conditions recorded for the Protected Deal. Required evidence, payment milestones, participant confirmation, or an issue window may apply before an instruction is sent to the regulated partner.'
+        answer: 'Supplier payment follows the accepted quote and Order Room conditions. Required evidence, agent confirmation, milestones, delivery review or an open issue may prevent a release instruction.'
       },
       {
         id: 'p4',
         question: 'What happens if there is a dispute?',
-        answer: 'A participant can raise an issue from the Deal Room. Naitrust keeps the agreement, messages, receipts, evidence, photographs, inspection notes, milestones, and confirmations together so the issue can be reviewed with context.'
+        answer: 'A participant can raise an issue from the Order Room. Naitrust keeps the quote, agreement, messages, receipts, evidence, photographs, inspection notes, milestones and confirmations together for review.'
       },
       {
         id: 'p5',
@@ -130,7 +130,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'm1',
         question: 'How do I contact a business on Naitrust?',
-        answer: 'Open the participant profile or Deal Room and use messaging to clarify roles, terms, payment plan, evidence, or milestones. Important messages should stay attached to the transaction where possible.'
+        answer: 'Open the supplier profile or Order Room and use messaging to clarify products, terms, payment stages, evidence, agent checks or milestones. Important messages should stay attached to the order.'
       },
       {
         id: 'm2',
@@ -147,12 +147,12 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g1',
         question: 'What is Naitrust?',
-        answer: 'Naitrust Market connects Nigerian individuals and businesses with verified local and Chinese suppliers. Customers browse products in English, request a confirmed landed-cost quote, fund a protected order, and track logistics to delivery.'
+        answer: 'Naitrust helps Nigerian individuals and businesses buy from China through verified sourcing agents. Customers choose an agent operating in China, share what they need, approve a complete landed-cost quote, and track the order to delivery in Nigeria.'
       },
       {
         id: 'g2',
         question: 'How can I verify a business I found on social media?',
-        answer: 'Use the participant’s account number, email, phone number, or Naitrust profile link to review the intended person or business. A Deal Room can then keep the terms, payments, evidence, and confirmations together.'
+        answer: 'Ask your verified sourcing agent to investigate the intended China supplier. The agent can collect supplier details and evidence, while the Order Room keeps the quote, terms, payments and confirmations together.'
       },
       {
         id: 'g3',
@@ -162,12 +162,12 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
       {
         id: 'g4',
         question: 'How do reviews work?',
-        answer: 'Only personal customers who complete a Naitrust transfer or Protected Deal with a business can review it. Each completed transaction can receive one 1–5 star rating and an optional comment, which appears on the business’s public Trust Profile. Fake or incentivised reviews violate our policies.'
+        answer: 'Customers who complete an eligible agent-supported order can leave one 1–5 star rating and an optional comment. The review appears on the sourcing agent’s profile. Fake or incentivised reviews violate our policies.'
       },
       {
         id: 'g5',
         question: 'Is Naitrust available outside Nigeria?',
-        answer: 'Naitrust is built for Nigerian customers, retailers, importers and verified businesses. Customers can source locally or from China, while Nigerian businesses can publish showcases, quote customers, fulfil orders, build trust history, and withdraw available earnings.'
+        answer: 'Naitrust is built for Nigerian individuals, retailers, wholesalers and businesses buying from China. Sourcing agents can be of any nationality, but must operate in China and complete Naitrust verification before offering services on the platform.'
       },
       {
         id: 'g6',
@@ -185,8 +185,8 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
     <div className="min-h-screen bg-linear-to-b from-muted/30 via-muted/10 to-background relative py-12">
       <SEOHead
         title="Help Center"
-        description="Get help with Naitrust Market, supplier verification, landed-cost quotes, protected orders, sourcing agents, logistics, delivery, refunds, and withdrawals."
-        keywords="Naitrust Market help, China sourcing help Nigeria, landed cost quote, protected order support, supplier verification, delivery tracking"
+        description="Get help choosing a verified sourcing agent, buying wholesale from China, reviewing landed-cost quotes, using Order Rooms and tracking delivery to Nigeria."
+        keywords="verified sourcing agents China, buy wholesale from China Nigeria, China sourcing help Nigeria, landed cost quote, Order Room, delivery tracking"
         canonicalPath="/help"
       />
       <div className="relative z-10 max-w-6xl mx-auto px-4">

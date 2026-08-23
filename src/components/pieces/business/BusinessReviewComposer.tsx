@@ -20,7 +20,7 @@ interface BusinessReviewComposerProps {
 }
 
 function transactionKindLabel(kind: CompletedCustomerBusinessTransaction['kind']): string {
-  return kind === 'protected_deal' ? 'Protected Deal' : 'Naitrust transfer';
+  return kind === 'protected_deal' ? 'Marketplace order' : 'Naitrust payment';
 }
 
 export function BusinessReviewComposer({
@@ -87,7 +87,7 @@ export function BusinessReviewComposer({
     return (
       <div className="flex gap-3 rounded-2xl border bg-muted/30 p-4">
         <CheckCircle2 className="mt-0.5 shrink-0 text-muted-foreground" size={18} />
-        <div><p className="text-sm font-semibold">Reviews from completed transactions</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Complete a Naitrust payment or Protected Deal with this business to leave a verified review. Each transaction can be reviewed once.</p></div>
+        <div><p className="text-sm font-semibold">Reviews from completed orders</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Complete an eligible marketplace order with this business to leave one verified review.</p></div>
       </div>
     );
   }

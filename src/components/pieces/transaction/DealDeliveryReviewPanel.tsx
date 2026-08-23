@@ -77,9 +77,9 @@ export function DealDeliveryReviewPanel({
     isDeliveryCardStatusEligible(deal.status) &&
     delivery.handover.status === "not_started";
   const deliveryCardBlockedReason = deal.funding.status !== 'funded'
-    ? 'Available after the protected payment is received.'
+    ? 'Available after the order payment is confirmed.'
     : !isDeliveryCardStatusEligible(deal.status)
-      ? 'Delivery cards are unavailable at this stage of the deal.'
+      ? 'Delivery cards are unavailable at this stage of the order.'
       : delivery.handover.status !== 'not_started'
         ? 'The delivery handover has already started.'
         : '';
@@ -208,7 +208,7 @@ export function DealDeliveryReviewPanel({
                 <Button type="button" size="sm" variant="outline" className="mt-2 h-8 rounded-full text-xs" onClick={() => onUploadEvidence('Photo')}><Upload size={13} />Upload proof</Button>
                 {requiresInsurance && (
                   <div className="mt-3 rounded-lg bg-amber-500/10 p-3 text-[11px] leading-4 text-amber-800 dark:text-amber-200">
-                    <p>Expensive or fragile delivery: appropriate courier insurance is recommended but does not block this deal. Without it, parcel loss or damage may not be recoverable beyond the protected payment.</p>
+                    <p>For expensive or fragile goods, appropriate courier insurance is recommended. Without it, parcel loss or damage may not be recoverable beyond the order payment.</p>
                   </div>
                 )}
               </div>
@@ -395,7 +395,7 @@ export function DealDeliveryReviewPanel({
                 {isBuyer && (
                   <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/[0.08] p-3 text-xs leading-5 text-foreground">
                     <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
-                    <p><strong>Check your purchase carefully.</strong> Make sure it is complete, correct, and in the agreed condition. Once payment is released, you can no longer open a Naitrust payment dispute for this deal.</p>
+                    <p><strong>Check your purchase carefully.</strong> Make sure it is complete, correct, and in the agreed condition. Once payment is released, you can no longer open a Naitrust payment dispute for this order.</p>
                   </div>
                 )}
                 {isBuyer && !hasDispute ? (
@@ -464,7 +464,7 @@ export function DealDeliveryReviewPanel({
         {delivery.fundingReview.status === "paid_out" && (
           <StatusNotice
             title="Payment completed"
-            text={`The seller has been paid ${delivery.fundingReview.releaseMethod === 'buyer_approved' ? 'after buyer approval' : 'automatically when the review ended'}. Released ${delivery.fundingReview.paidOutAt ? new Date(delivery.fundingReview.paidOutAt).toLocaleString() : 'successfully'}${delivery.fundingReview.paymentReference ? ` · Reference ${delivery.fundingReview.paymentReference}` : ''}. The Deal Room record remains available, but a Naitrust payment dispute can no longer be opened. Statutory, warranty, fraud-reporting, and other legal rights are not removed.`}
+            text={`The supplier has been paid ${delivery.fundingReview.releaseMethod === 'buyer_approved' ? 'after buyer approval' : 'automatically when the review ended'}. Released ${delivery.fundingReview.paidOutAt ? new Date(delivery.fundingReview.paidOutAt).toLocaleString() : 'successfully'}${delivery.fundingReview.paymentReference ? ` · Reference ${delivery.fundingReview.paymentReference}` : ''}. The Order Room record remains available, but a Naitrust payment dispute can no longer be opened. Statutory, warranty, fraud-reporting, and other legal rights are not removed.`}
           />
         )}
       </div>
@@ -472,7 +472,7 @@ export function DealDeliveryReviewPanel({
       <div className="border-t bg-muted/20 px-4 py-4 sm:px-5">
         <p className="text-xs font-semibold">Delivery responsibility</p>
         <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-          Naitrust does not transport or insure goods, but it freezes protected payment when a delivery problem is reported. For seller-arranged delivery, the seller remains responsible until agreed-condition receipt. Buyer-arranged courier risk depends on documented handover, the deal terms, and applicable law. Return-delivery costs follow fault or the parties’ recorded resolution.
+          Naitrust does not transport or insure goods, but it can pause an order payment when a delivery problem is reported. Supplier-arranged delivery remains the supplier’s responsibility until agreed-condition receipt. Buyer-arranged courier risk depends on documented handover, the order terms, and applicable law.
         </p>
       </div>
 
@@ -488,9 +488,9 @@ export function DealDeliveryReviewPanel({
       <PinPromptModal
         open={showPin}
         onOpenChange={setShowPin}
-        title="Release protected payment now?"
+        title="Release supplier payment now?"
         description="You are releasing this payment early. Confirm that you have checked the purchase and are satisfied."
-        warning="Once released, Naitrust cannot freeze or reverse this payment from the Deal Room, and you can no longer open a Naitrust payment dispute for it. Statutory and warranty rights are not removed."
+        warning="Once released, Naitrust cannot freeze or reverse this payment from the Order Room, and you can no longer open a Naitrust payment dispute for it. Statutory and warranty rights are not removed."
         onVerified={() =>
           release.mutate(undefined, {
             onSuccess: () => toast.success("Payment release approved."),

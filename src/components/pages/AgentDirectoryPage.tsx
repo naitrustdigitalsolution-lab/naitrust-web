@@ -1,35 +1,36 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Heart, MapPinned, Search, SlidersHorizontal } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, MapPinned, Search, SlidersHorizontal, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import { sourcingApi } from '../../features/sourcing/api/sourcing.api';
 import { AgentCard } from '../../features/sourcing/components/AgentCard';
-import { OperationsHeader } from '../../features/sourcing/components/OperationsHeader';
-import type { AgentProfile } from '../../features/sourcing/domain/types';
 import { useOperationsRefresh } from '../../features/sourcing/hooks/use-operations-refresh';
+import { marketSuppliers, marketplaceApi } from '../../libs/marketplace/marketplace.api';
 
 export function AgentDirectoryPage() {
+  const AGENTS_PER_PAGE = 12;
   const operationsVersion = useOperationsRefresh();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const requestId = params.get('request');
+  const supplierId = params.get('supplier');
+  const orderId = params.get('order');
+  const productTitle = params.get('title');
+  const productSupplier = params.get('supplier');
+  const productCity = params.get('city');
+  const supplier = supplierId ? marketSuppliers.find((item) => item.id === supplierId) : undefined;
+  const order = orderId ? marketplaceApi.listOrders().find((item) => item.id === orderId) : undefined;
   const request = useMemo(() => {
     void operationsVersion;
     return requestId ? sourcingApi.getRequest(requestId) : undefined;
   }, [operationsVersion, requestId]);
   const [query, setQuery] = useState('');
   const [favouritesOnly, setFavouritesOnly] = useState(false);
-  const [selected, setSelected] = useState<AgentProfile | null>(null);
-  const [title, setTitle] = useState(request ? `Review ${request.title}` : 'Supplier sourcing and inspection');
-  const [scope, setScope] = useState(request ? `Confirm the supplier, review ${request.quantity} units, bargain where appropriate, inspect the agreed specifications, and upload evidence.` : 'Confirm the supplier, inspect the products, and upload evidence.');
-  const [deadline, setDeadline] = useState('2026-09-15');
+  const [page, setPage] = useState(1);
   const agents = useMemo(() => {
     void operationsVersion;
     return sourcingApi.listAgents();
@@ -40,27 +41,34 @@ export function AgentDirectoryPage() {
   }, [operationsVersion]);
   const recommendations = useMemo(() => {
     void operationsVersion;
-    return request ? sourcingApi.recommendAgents({ city: request.supplierCity ?? 'Guangzhou', category: request.category }) : [];
-  }, [operationsVersion, request]);
+    const city = request?.supplierCity ?? supplier?.city;
+    const category = request?.category ?? supplier?.category;
+    return city && category ? sourcingApi.recommendAgents({ city, category }) : [];
+  }, [operationsVersion, request, supplier]);
   const reasons = useMemo(() => new Map(recommendations.map((item) => [item.agent.id, item.reasons])), [recommendations]);
   const filtered = useMemo(() => agents.filter((agent) => {
-    const haystack = `${agent.name} ${agent.city} ${agent.expertise.join(' ')} ${agent.services.join(' ')}`.toLowerCase();
+    const haystack = `${agent.name} ${agent.businessName ?? ''} ${agent.profileType} ${agent.city} ${agent.secondaryCities.join(' ')} ${agent.expertise.join(' ')} ${agent.services.join(' ')}`.toLowerCase();
     return (!query.trim() || haystack.includes(query.toLowerCase())) && (!favouritesOnly || favouriteIds.includes(agent.id));
-  }).sort((left, right) => (reasons.has(right.id) ? 1 : 0) - (reasons.has(left.id) ? 1 : 0)), [agents, favouriteIds, favouritesOnly, query, reasons]);
+  }).sort((left, right) => {
+    const favouriteDifference = Number(favouriteIds.includes(right.id)) - Number(favouriteIds.includes(left.id));
+    if (favouriteDifference) return favouriteDifference;
+    if (left.available !== right.available) return left.available ? -1 : 1;
+    const recommendationDifference = (reasons.has(right.id) ? 1 : 0) - (reasons.has(left.id) ? 1 : 0);
+    return recommendationDifference || right.rating - left.rating;
+  }), [agents, favouriteIds, favouritesOnly, query, reasons]);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / AGENTS_PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const visibleAgents = filtered.slice((currentPage - 1) * AGENTS_PER_PAGE, currentPage * AGENTS_PER_PAGE);
 
-  const hire = () => {
-    if (!selected) return;
-    const assignment = sourcingApi.hireAgent({ agentId: selected.id, sourcingRequestId: request?.id, supplierName: request?.supplierName ?? 'Supplier to be confirmed', supplierCity: request?.supplierCity ?? selected.city, title, scope, deadline, productNames: [request?.title ?? title] });
-    toast.success(`${selected.name} has been invited.`);
-    setSelected(null);
-    navigate(`/app/agent-assignments/${assignment.id}`);
-  };
+  const openProfile = (agentId: string) => navigate(`/app/agents/${agentId}${params.toString() ? `?${params.toString()}` : ''}`);
 
-  return <DashboardLayout title="Sourcing agents"><div className="mx-auto w-full max-w-6xl space-y-5">
-    <OperationsHeader eyebrow="Nigerian agents in China" title={request ? `Agents near ${request.supplierCity}` : 'Find trusted help near your supplier'} description={request ? `Nigerian-led agents operating near ${request.supplierCity}. Compare expertise, evidence services, availability, and pricing before you choose.` : 'Search vetted Nigerian professionals and sourcing companies based in active China trade locations.'} icon={MapPinned} badge={request ? 'Recommended for this request' : 'Buyer chooses'} />
-    <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 sm:flex-row sm:items-center"><div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} /><Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-9" placeholder="Search city, service or expertise" /></div><Button variant={favouritesOnly ? 'default' : 'outline'} className="rounded-full" onClick={() => setFavouritesOnly((value) => !value)}><Heart size={14} className={favouritesOnly ? 'fill-current' : ''} /> Favourites</Button><Badge variant="outline"><SlidersHorizontal size={12} /> {filtered.length} agents</Badge></div>
+  return <DashboardLayout title="Sourcing agents"><div className="w-full space-y-5">
+    <section className="flex flex-col justify-between gap-4 border-b pb-5 lg:flex-row lg:items-end"><div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.14em] text-primary"><MapPinned size={15} /> Verified sourcing-agent network</div><h1 className="mt-2 text-2xl font-bold">{productTitle ? `Choose a sourcing agent for this product` : request || supplier ? `Sourcing agents near ${request?.supplierCity ?? supplier?.city}` : 'Sourcing agents in China'}</h1><p className="mt-1 max-w-2xl text-sm text-muted-foreground">Review each sourcing professional's identity, location, category experience and inspection service record before assigning supplier work.</p></div><div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{agents.length} verified profiles</Badge><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/partners/agent/apply')}><UserPlus size={14} /> Register as a sourcing agent</Button></div></section>
+    <div className="flex flex-wrap items-center gap-2"><div className="relative w-full sm:w-80"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} /><Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} className="h-9 pl-9" placeholder="City, category or service" /></div><Button size="sm" variant={favouritesOnly ? 'default' : 'outline'} className="rounded-full" onClick={() => setFavouritesOnly((value) => !value)}><Heart size={14} className={favouritesOnly ? 'fill-current' : ''} /> Saved</Button><Badge variant="secondary"><SlidersHorizontal size={12} /> {filtered.length} matches</Badge></div>
     {request && <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-primary/[.045] p-4 text-xs"><strong>{request.title}</strong><span className="text-muted-foreground">{request.quantity.toLocaleString()} units</span><span className="text-muted-foreground">{request.supplierCity}, China</span><Badge variant="secondary">{request.category}</Badge></div>}
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{filtered.map((agent) => <AgentCard key={agent.id} agent={agent} favourite={favouriteIds.includes(agent.id)} reasons={reasons.get(agent.id)} onFavourite={() => { const saved = sourcingApi.toggleFavouriteAgent(agent.id); toast.success(saved ? 'Agent saved to favourites.' : 'Agent removed from favourites.'); }} onHire={() => setSelected(agent)} />)}</div>
-    <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}><DialogContent className="max-h-[92svh] overflow-y-auto sm:max-w-lg"><DialogHeader><DialogTitle>Hire {selected?.name}</DialogTitle><DialogDescription>One assignment covers this supplier. Each product keeps its own inspection requirements and evidence.</DialogDescription></DialogHeader><div className="space-y-4"><div><Label htmlFor="agent-task-title">Assignment title</Label><Input id="agent-task-title" className="mt-2" value={title} onChange={(event) => setTitle(event.target.value)} /></div><div><Label htmlFor="agent-task-scope">Scope and required evidence</Label><Textarea id="agent-task-scope" className="mt-2 min-h-28" value={scope} onChange={(event) => setScope(event.target.value)} /></div><div><Label htmlFor="agent-task-deadline">Deadline</Label><Input id="agent-task-deadline" className="mt-2" type="date" value={deadline} onChange={(event) => setDeadline(event.target.value)} /></div><div className="rounded-2xl bg-muted/55 p-4 text-xs leading-5 text-muted-foreground">Estimated service range: {selected ? `${new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(selected.feeFromMinor / 100)}–${new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(selected.feeToMinor / 100)}` : ''}. The final fee is confirmed before payment. The agent cannot control supplier funds.</div></div><DialogFooter><Button className="w-full rounded-full" onClick={hire}>Create agent assignment</Button></DialogFooter></DialogContent></Dialog>
+    {!request && supplier && <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-primary/[.045] p-4 text-xs"><strong>{order?.itemSummary ?? 'Supplier order'}</strong><span className="text-muted-foreground">{supplier.name}</span><span className="text-muted-foreground">{supplier.city}, China</span><Badge variant="secondary">{supplier.category}</Badge></div>}
+    {productTitle && <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-primary/[.045] p-4 text-xs"><strong>{productTitle}</strong><span className="text-muted-foreground">{productSupplier}</span><span className="text-muted-foreground">{productCity}</span><Badge variant="secondary">Product inspection</Badge></div>}
+    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{visibleAgents.map((agent) => <AgentCard key={agent.id} agent={agent} favourite={favouriteIds.includes(agent.id)} reasons={reasons.get(agent.id)} onFavourite={() => { const saved = sourcingApi.toggleFavouriteAgent(agent.id); toast.success(saved ? 'Agent saved to favourites.' : 'Agent removed from favourites.'); }} onHire={() => openProfile(agent.id)} />)}</div>
+    {filtered.length > AGENTS_PER_PAGE && <nav aria-label="Agent directory pagination" className="flex items-center justify-between border-t pt-5"><Button variant="outline" className="rounded-full" disabled={currentPage === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}><ChevronLeft size={15} /> Previous</Button><span className="text-xs text-muted-foreground">Page {currentPage} of {totalPages}</span><Button variant="outline" className="rounded-full" disabled={currentPage === totalPages} onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>Next <ChevronRight size={15} /></Button></nav>}
   </div></DashboardLayout>;
 }

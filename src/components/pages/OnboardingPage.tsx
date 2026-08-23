@@ -58,17 +58,17 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 Start with the right profile
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                Start sourcing or start selling.
+                Buy wholesale from China as an individual or business.
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                Choose how you will use Naitrust Market. Both profiles support verified commerce and protected orders.
+                Choose the account that matches you. Both profiles can find a verified sourcing agent, compare China suppliers and manage wholesale orders to Nigeria.
               </p>
             </div>
 
             {/* Desktop only: on mobile these bullets move BELOW the choice cards. */}
             <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
-                'Verified suppliers and products from China and Nigeria',
+                'Verified sourcing agents operating in China',
                 'Confirmed landed-cost quotes before you pay',
                 'Protected orders, evidence, and delivery updates in one place',
               ].map((item) => (
@@ -136,14 +136,14 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                         </Button>
                       </div>
                       <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
-                        Discover verified suppliers, request a complete quote, hire sourcing help, and track protected orders to your door.
+                        Find a verified sourcing agent, request products from China and track wholesale orders to your door in Nigeria.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
-                          'Browse China and Nigeria markets',
-                          'See products and suppliers in clear English',
-                          'Confirm the landed cost before paying',
-                          'Track protected orders and delivery',
+                          'Choose a verified sourcing agent in China',
+                          'Share the product and quantity you need',
+                          'Review supplier options and inspection evidence',
+                          'Track the order and delivery to Nigeria',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
@@ -180,15 +180,15 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Publish a trusted showcase, receive quote requests, fulfil protected orders, and withdraw your earnings professionally.
+                        Source wholesale stock from China for your shop, company or growing retail operation with a verified agent.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
-                          'Verify your business and representatives',
-                          'Publish products, services, photos, and videos',
-                          'Respond to customer quote requests',
-                          'Manage protected orders and customers',
-                          'Build a reusable Trust Profile',
+                          'Verify your Nigerian business and representatives',
+                          'Choose a sourcing agent by location and expertise',
+                          'Compare supplier quotations and samples',
+                          'Approve inspection and shipping evidence',
+                          'Manage wholesale orders and landed costs',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-primary" />
@@ -203,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Choose Individual to source products and services. Choose Business to publish a showcase, respond to quotes, and fulfil orders.
+              Both account types follow the same sourcing journey. Choose Business when the wholesale order belongs to a registered or trading business.
             </div>
           </motion.div>
         </main>
@@ -211,7 +211,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
         {/* Mobile: supporting points + login link sit BELOW the choice cards. */}
         <section className="lg:hidden">
           {[
-            'Verified suppliers and products from China and Nigeria',
+            'Verified sourcing agents operating in China',
             'Confirmed landed-cost quotes before you pay',
             'Protected orders and delivery updates in one place',
           ].map((item) => (

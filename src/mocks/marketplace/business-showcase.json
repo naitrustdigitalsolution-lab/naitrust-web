@@ -1,0 +1,70 @@
+{
+  "default": {
+    "tagline": "Wholesale supply built around clear specifications and reliable fulfilment.",
+    "summary": "We supply growing businesses with documented product options, quantity guidance and delivery timelines before a quote is confirmed.",
+    "markets": ["Nigeria", "West Africa"],
+    "fulfilment": "Nationwide delivery and collection by arrangement",
+    "responseTime": "Usually replies within 3 hours",
+    "services": [
+      { "title": "Bulk product supply", "detail": "Stock and made-to-order options for growing businesses." },
+      { "title": "Custom specifications", "detail": "Colours, sizing, packaging and branding can be quoted." },
+      { "title": "Order fulfilment", "detail": "Clear preparation updates before dispatch or collection." }
+    ],
+    "products": [
+      { "id": "seller_default_1", "title": "Custom branded packaging", "description": "Printed packaging for retail and wholesale orders.", "priceMinor": 420000, "minimumOrder": 500, "unit": "piece", "leadTime": "12–18 days", "status": "published", "imageProductId": "prd_boxes" },
+      { "id": "seller_default_2", "title": "Wholesale carrier bags", "description": "Reusable branded bags in multiple sizes and colours.", "priceMinor": 185000, "minimumOrder": 1000, "unit": "piece", "leadTime": "10–14 days", "status": "published", "imageProductId": "prd_bags" },
+      { "id": "seller_default_3", "title": "Product label production", "description": "Roll labels with custom size, finish and adhesive.", "priceMinor": 8500, "minimumOrder": 5000, "unit": "label", "leadTime": "7–12 days", "status": "draft", "imageProductId": "prd_labels" }
+    ],
+    "media": [
+      { "id": "media_default_1", "title": "Product range", "caption": "Samples available for specification review", "imageProductId": "prd_boxes" },
+      { "id": "media_default_2", "title": "Custom finish", "caption": "Brand colours and sizing prepared to order", "imageProductId": "prd_bags" },
+      { "id": "media_default_3", "title": "Previous fulfilment", "caption": "Finished labels prepared for dispatch", "imageProductId": "prd_labels" }
+    ]
+  },
+  "accounts": {
+    "usr_mock_003": {
+      "tagline": "Property finishing and furnishing packages for homes, offices and hospitality projects.",
+      "summary": "Adaeze Homes helps property buyers and businesses source coordinated interior products with clear quantities, finishes and project delivery dates.",
+      "markets": ["Lagos", "Ogun", "Nationwide projects"],
+      "fulfilment": "Project delivery, installation and scheduled collection",
+      "responseTime": "Usually replies within 2 hours",
+      "services": [
+        { "title": "Interior product sourcing", "detail": "Coordinated furniture, storage and finishing items." },
+        { "title": "Project specification", "detail": "Materials, dimensions, colours and quantities documented." },
+        { "title": "Installation coordination", "detail": "Delivery and installation arranged around the project schedule." }
+      ],
+      "products": [
+        { "id": "seller_adaeze_1", "title": "Modular kitchen package", "description": "Custom cabinet layout, finish and storage configuration for residential projects.", "priceMinor": 185000000, "minimumOrder": 1, "unit": "project", "leadTime": "4–6 weeks", "status": "published", "imageProductId": "prd_kitchen" },
+        { "id": "seller_adaeze_2", "title": "Commercial seating package", "description": "Durable coordinated chairs for offices, restaurants and waiting areas.", "priceMinor": 8600000, "minimumOrder": 20, "unit": "chair", "leadTime": "14–21 days", "status": "published", "imageProductId": "prd_chair" },
+        { "id": "seller_adaeze_3", "title": "Custom office workstations", "description": "Made-to-measure desk sets with finish and cable-management options.", "priceMinor": 14500000, "minimumOrder": 8, "unit": "desk", "leadTime": "3–5 weeks", "status": "published", "imageProductId": "prd_desk" }
+      ],
+      "media": [
+        { "id": "media_adaeze_1", "title": "Kitchen storage project", "caption": "Completed residential cabinetry package", "imageProductId": "prd_kitchen" },
+        { "id": "media_adaeze_2", "title": "Hospitality seating", "caption": "Commercial chairs prepared for a Lagos venue", "imageProductId": "prd_chair" },
+        { "id": "media_adaeze_3", "title": "Office fit-out", "caption": "Workstations produced to an agreed layout", "imageProductId": "prd_desk" }
+      ]
+    },
+    "usr_mock_004": {
+      "tagline": "Wholesale stock, packing support and domestic distribution for Nigerian retailers.",
+      "summary": "Emeka Trade & Logistics combines wholesale procurement with practical packing and delivery coordination for shops and online sellers.",
+      "markets": ["Lagos", "South East", "Nationwide"],
+      "fulfilment": "Warehouse collection, scheduled dispatch and nationwide distribution",
+      "responseTime": "Usually replies within 90 minutes",
+      "services": [
+        { "title": "Wholesale procurement", "detail": "Mixed stock sourced against an agreed product list." },
+        { "title": "Packing and consolidation", "detail": "Cartons labelled and grouped for each destination." },
+        { "title": "Domestic distribution", "detail": "Dispatch coordination with delivery evidence." }
+      ],
+      "products": [
+        { "id": "seller_emeka_1", "title": "Printed shipping cartons", "description": "Strong corrugated cartons with custom dimensions and print.", "priceMinor": 480000, "minimumOrder": 500, "unit": "carton", "leadTime": "12–18 days", "status": "published", "imageProductId": "prd_boxes" },
+        { "id": "seller_emeka_2", "title": "Retail carrier bags", "description": "Reusable bags for boutiques, pharmacies and grocery stores.", "priceMinor": 195000, "minimumOrder": 1000, "unit": "piece", "leadTime": "10–14 days", "status": "published", "imageProductId": "prd_bags" },
+        { "id": "seller_emeka_3", "title": "Wholesale cleaning bundle", "description": "Mixed cleaning supplies packed for retail distribution.", "priceMinor": 3250000, "minimumOrder": 50, "unit": "carton", "leadTime": "5–8 days", "status": "published", "imageProductId": "prd_cleaning" }
+      ],
+      "media": [
+        { "id": "media_emeka_1", "title": "Packing range", "caption": "Carton options for wholesale distribution", "imageProductId": "prd_boxes" },
+        { "id": "media_emeka_2", "title": "Retail packaging", "caption": "Branded carrier bags prepared for a customer", "imageProductId": "prd_bags" },
+        { "id": "media_emeka_3", "title": "Distribution stock", "caption": "Cleaning bundles grouped for dispatch", "imageProductId": "prd_cleaning" }
+      ]
+    }
+  }
+}

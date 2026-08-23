@@ -41,10 +41,17 @@ function rankedAgents(city: string, category: string) {
   return database.agents
     .filter((agent) => agent.verified && agent.available)
     .map((agent) => {
-      const location = agent.city.toLowerCase() === city.toLowerCase() ? 45 : 12;
+      const primaryLocationMatch = agent.city.toLowerCase() === city.toLowerCase();
+      const secondaryLocationMatch = agent.secondaryCities.some((candidate) => candidate.toLowerCase() === city.toLowerCase());
+      const location = primaryLocationMatch ? 45 : secondaryLocationMatch ? 30 : 8;
       const expertise = agent.expertise.some((item) => item.toLowerCase().includes(category.toLowerCase()) || category.toLowerCase().includes(item.toLowerCase())) ? 35 : 8;
       const performance = Math.round(agent.rating * 4);
-      return { agent, score: location + expertise + performance, reasons: [location > 20 ? `Operates in ${city}` : `Can travel from ${agent.city}`, expertise > 20 ? `Specializes in ${category}` : 'General sourcing experience', `${agent.rating.toFixed(1)} rating across ${agent.completedTasks} tasks`] };
+      const locationReason = primaryLocationMatch
+        ? `Primary base in ${city}`
+        : secondaryLocationMatch
+          ? `Covers ${city} from ${agent.city}`
+          : `Can travel from ${agent.city}`;
+      return { agent, score: location + expertise + performance, reasons: [locationReason, expertise > 20 ? `Specializes in ${category}` : 'General sourcing experience', `${agent.rating.toFixed(1)} rating across ${agent.completedTasks} tasks`] };
     })
     .sort((left, right) => right.score - left.score);
 }
@@ -134,6 +141,8 @@ export const sourcingApi = {
         { id: makeId('mile'), label: 'Final inspection and custody', percent: 50, amountMinor: 0, currency: 'NGN', requiredEvidence: ['Final inspection', 'Custody or warehouse receipt'], status: 'pending' },
       ], certifications: [], createdAt: now(), updatedAt: now(),
     };
+    // Availability is controlled by the agent. Creating an assignment must
+    // never hide an individual or company from other buyers.
     operationsRepository.mutate((database) => ({ ...database, assignments: [assignment, ...database.assignments] }));
     return assignment;
   },

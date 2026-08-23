@@ -8,6 +8,7 @@ import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
+import { useTranslation } from 'react-i18next';
 
 interface ForgotPasswordFormProps {
   email: string;
@@ -19,24 +20,25 @@ interface ForgotPasswordFormProps {
 }
 
 export function ForgotPasswordForm({ email, error, isSending, onChange, onSubmit, onBack }: ForgotPasswordFormProps) {
+  const { t } = useTranslation('auth');
   return (
     <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
         <ArrowLeft size={16} />
-        Back to login
+        {t('backToLogin')}
       </button>
 
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-500/10 rounded-2xl mb-4">
           <KeyRound size={32} className="text-orange-500" />
         </div>
-        <h2 className="mb-2 text-2xl font-bold">Forgot Password?</h2>
-        <p className="text-muted-foreground">No worries! We'll send you a verification code</p>
+        <h2 className="mb-2 text-2xl font-bold">{t('forgotTitle')}</h2>
+        <p className="text-muted-foreground">{t('forgotDescription')}</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="reset-email">Email Address</Label>
+          <Label htmlFor="reset-email">{t('email')}</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <Input
@@ -55,11 +57,11 @@ export function ForgotPasswordForm({ email, error, isSending, onChange, onSubmit
           {isSending ? (
             <>
               <Loader2 size={18} className="mr-2 animate-spin" />
-              Sending...
+              {t('sending')}
             </>
           ) : (
             <>
-              Send Verification Code
+              {t('sendCode')}
               <ArrowRight size={18} className="ml-2" />
             </>
           )}

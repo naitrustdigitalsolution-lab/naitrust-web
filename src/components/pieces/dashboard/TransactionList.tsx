@@ -27,7 +27,7 @@ interface TransactionListProps {
 
 function LoadingRows() {
   return (
-    <Card className="gap-0 p-0 shadow-sm" aria-label="Loading Protected Deals">
+    <Card className="gap-0 p-0 shadow-sm" aria-label="Loading Order Rooms">
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="flex flex-col gap-3 border-b px-4 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5">
           <div className="flex items-center gap-3">
@@ -53,13 +53,13 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
         <ShieldPlus size={24} />
       </div>
-      <p className="font-semibold text-foreground">No active Protected Deals yet</p>
+      <p className="font-semibold text-foreground">No active Order Rooms yet</p>
       <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-        Create a Protected Deal to document terms, payment records, and supporting
-        evidence in one deal room.
+        Start a supplier order to keep the quote, specifications, messages,
+        evidence, money decisions and delivery in one place.
       </p>
       <Button onClick={onCreate} className="mt-2 rounded-full">
-        New Protected Deal
+        Start an order
       </Button>
     </Card>
   );
@@ -115,7 +115,7 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect,
   if (isError) {
     return (
       <Card className="p-6 text-center text-sm text-muted-foreground shadow-sm">
-        We could not load your Protected Deals. Please refresh to try again.
+        We could not load your Order Rooms. Please refresh to try again.
       </Card>
     );
   }
@@ -123,7 +123,7 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect,
   if (!deals || deals.length === 0) return <EmptyState onCreate={onCreate} />;
 
   const list = (
-    <Card className={`gap-0 overflow-hidden p-0 shadow-sm ${mobileOverflow ? 'min-w-[44rem]' : ''} ${compactMobile ? 'rounded-none border-x-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm' : ''}`} aria-label="Your Protected Deals">
+    <Card className={`gap-0 overflow-hidden p-0 shadow-sm ${mobileOverflow ? 'min-w-[44rem]' : ''} ${compactMobile ? 'rounded-none border-x-0 shadow-none sm:rounded-xl sm:border-x sm:shadow-sm' : ''}`} aria-label="Your Order Rooms">
       {deals.map((deal) => (
         <DealRow key={deal.id} deal={deal} onSelect={onSelect} mobileOverflow={mobileOverflow} compactMobile={compactMobile} />
       ))}
@@ -132,7 +132,7 @@ export function TransactionList({ deals, isLoading, isError, onCreate, onSelect,
 
   if (mobileOverflow) {
     return (
-      <div className="-mx-1 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]" role="region" aria-label="Scrollable Protected Deals table" tabIndex={0}>
+      <div className="-mx-1 overflow-x-auto px-1 pb-2 [scrollbar-width:thin]" role="region" aria-label="Scrollable Order Rooms table" tabIndex={0}>
         {list}
       </div>
     );

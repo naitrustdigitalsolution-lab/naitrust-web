@@ -120,7 +120,7 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
   return <div className={embedded ? 'w-full' : 'min-h-svh bg-[#f4f7f9] sm:px-4 sm:py-10 dark:bg-background'}>
     <SEOHead
       title={`${business.name} Trust Profile`}
-      description={`Review available verification information, completed deal activity, and customer feedback for ${business.name} on Naitrust.`}
+      description={`Review available verification information, completed order activity, and customer feedback for ${business.name} on Naitrust.`}
       canonicalPath={`/trust/${publicSlug}`}
       structuredData={{
         '@context': 'https://schema.org',
@@ -159,7 +159,7 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border p-4"><p className="flex items-center gap-2 font-semibold"><ShieldCheck size={17} className="text-emerald-600" /> Verification information</p><div className="mt-3 grid gap-3 text-sm text-muted-foreground"><div className="flex gap-2"><CheckCircle2 size={15} className="mt-0.5 shrink-0" /><span><strong className="block text-foreground">Business identity verified</strong>Business details were matched during verification.</span></div><div className="flex gap-2"><CheckCircle2 size={15} className="mt-0.5 shrink-0" /><span><strong className="block text-foreground">Representative verified</strong>An authorised representative completed identity checks.</span></div>{business.verificationExpiresAt && <p className="flex gap-2"><CalendarDays size={15} /> Verification current until {new Date(business.verificationExpiresAt).toLocaleDateString()}</p>}</div></div>
-            <div className="rounded-2xl border p-4"><p className="flex items-center gap-2 font-semibold"><Star size={17} className="fill-amber-400 text-amber-400" /> Feedback from completed transactions</p><p className="mt-3 text-3xl font-bold">{displayedRating?.toFixed(1) ?? 'Not available'} <span className="text-sm font-normal text-muted-foreground">from {displayedReviewCount} completed transactions</span></p><p className="mt-2 text-xs leading-5 text-muted-foreground">Only customers who completed a Naitrust transfer or Protected Deal with this business can review it.</p></div>
+            <div className="rounded-2xl border p-4"><p className="flex items-center gap-2 font-semibold"><Star size={17} className="fill-amber-400 text-amber-400" /> Feedback from completed orders</p><p className="mt-3 text-3xl font-bold">{displayedRating?.toFixed(1) ?? 'Not available'} <span className="text-sm font-normal text-muted-foreground">from {displayedReviewCount} completed orders</span></p><p className="mt-2 text-xs leading-5 text-muted-foreground">Only customers who completed an eligible marketplace order with this business can review it.</p></div>
           </div>
           <section className="rounded-2xl border p-4 sm:px-5 sm:py-4">
             <div className="sm:grid sm:grid-cols-[210px_minmax(0,1fr)] sm:items-center sm:gap-5">
@@ -209,9 +209,9 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
           )}
           <div><Label htmlFor="profile-pay-amount">Amount to pay (NGN)</Label><Input id="profile-pay-amount" type="number" min="1" className="mt-2 h-12 text-lg font-semibold" value={payAmount} onChange={(event) => setPayAmount(event.target.value)} placeholder="0.00" /></div>
           <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4">
-            <p className="flex items-center gap-2 text-sm font-semibold"><ShieldCheck size={16} className="text-primary" /> Recommended: Protected Deal</p>
+            <p className="flex items-center gap-2 text-sm font-semibold"><ShieldCheck size={16} className="text-primary" /> Start a documented supplier order</p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">Keep terms, evidence, delivery, and payment status together, with the payment held until you confirm. This is how Naitrust verification actually protects you.</p>
-            <Button className="mt-4 h-11 w-full rounded-full" onClick={startProtectedDeal}><ShieldCheck size={15} /> Start Protected Deal</Button>
+            <Button className="mt-4 h-11 w-full rounded-full" onClick={startProtectedDeal}><ShieldCheck size={15} /> Create supplier order</Button>
           </div>
           <details className="group rounded-2xl border p-4">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-foreground">

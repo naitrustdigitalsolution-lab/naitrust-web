@@ -37,9 +37,11 @@ export interface AgentProfile {
   name: string;
   profileType: 'individual' | 'company';
   businessName?: string;
-  nationality: 'NG';
+  /** ISO country code. Eligibility depends on verification and China operations, not nationality. */
+  nationality: string;
   yearsBasedInChina: number;
   city: string;
+  secondaryCities: [string, string];
   country: 'CN';
   serviceRadiusKm: number;
   languages: string[];
@@ -48,6 +50,7 @@ export interface AgentProfile {
   logisticsCapabilities: string[];
   verified: boolean;
   available: boolean;
+  availabilitySetBy: 'agent';
   rating: number;
   completedTasks: number;
   responseMinutes: number;

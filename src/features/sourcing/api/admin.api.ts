@@ -50,9 +50,9 @@ export const adminApi = {
       if (status === 'approved' && current.kind === 'sourcing_agent') {
         const agent: AgentProfile = {
           id: makeId('agt'), name: current.contactName, profileType: current.companyName ? 'company' : 'individual', businessName: current.companyName,
-          nationality: 'NG', yearsBasedInChina: 0, city: current.city, country: 'CN', serviceRadiusKm: 50,
+          nationality: 'UNSPECIFIED', yearsBasedInChina: 0, city: current.city, secondaryCities: ['Not set', 'Not set'], country: 'CN', serviceRadiusKm: 50,
           languages: current.languages, expertise: current.services, services: current.services, logisticsCapabilities: [],
-          verified: true, available: false, rating: 0, completedTasks: 0, responseMinutes: 0, feeFromMinor: 0,
+          verified: true, available: false, availabilitySetBy: 'agent', rating: 0, completedTasks: 0, responseMinutes: 0, feeFromMinor: 0,
           feeToMinor: 0, feeCurrency: 'NGN', verificationSummary: 'Application approved. Pricing and availability must be configured before matching.',
         };
         next = { ...next, agents: [agent, ...next.agents] };

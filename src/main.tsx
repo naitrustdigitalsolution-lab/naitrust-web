@@ -4,12 +4,16 @@ import "./styles/globals.css";
 import { registerWebMcpTools } from './libs/agent/webmcp';
 import { AuthProvider } from './libs/auth-context';
 import { registerServiceWorker } from './libs/pwa/register-service-worker';
+import { LocaleProvider } from './libs/locale-context';
+import './i18n';
 
 registerWebMcpTools();
 registerServiceWorker();
 
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
-    <App />
-  </AuthProvider>,
+  <LocaleProvider>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </LocaleProvider>,
 );

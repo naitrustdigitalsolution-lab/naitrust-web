@@ -94,6 +94,11 @@ export type OrderStatus = 'confirmed' | 'preparing' | 'inspection' | 'export_pic
 export interface LogisticsCharge { paidMinor: number; committedMinor: number; refundableMinor: number; currency: 'NGN'; status: 'not_required' | 'paid' | 'partially_used' | 'refunded' }
 export interface MarketOrder {
   id: string;
+  /** Rich managed room containing terms, evidence, messages and release controls. */
+  roomId?: string;
+  /** Compact catalogue summary used by order lists before quote details load. */
+  itemSummary?: string;
+  itemCount?: number;
   reference: string;
   quoteId: string;
   supplierId: string;

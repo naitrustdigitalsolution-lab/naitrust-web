@@ -57,7 +57,7 @@ export function DisputePanel({ dealId, dispute }: { dealId: string; dispute: Dea
           </div>
         )}
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
-          Possible outcomes are buyer refund, seller payout, partial settlement, replacement, or return. The final outcome and reason remain on the deal record.
+          Possible outcomes are buyer refund, supplier payout, partial settlement, replacement, or return. The final outcome and reason remain on the order record.
         </p>
       </div>
 

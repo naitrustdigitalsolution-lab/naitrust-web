@@ -3,6 +3,9 @@
     "orders": [
       {
         "id": "order_fatima_packaging",
+        "roomId": "txn_9c0e3114-ebd4-42f9-98c8-1e174d460747",
+        "itemSummary": "Custom corrugated shipping boxes and branded carrier bags",
+        "itemCount": 2,
         "reference": "NTM-8302147",
         "quoteId": "quote_fatima_packaging",
         "supplierId": "sup_cn_pack",
@@ -19,13 +22,126 @@
         "timeline": [
           { "status": "confirmed", "label": "Quote accepted", "detail": "Your supplier order and service allocation were recorded.", "complete": true, "at": "2026-08-12T09:30:00.000Z" },
           { "status": "preparing", "label": "Custom cartons in production", "detail": "Artwork is approved and the supplier is preparing the first production batch.", "complete": true, "at": "2026-08-15T07:10:00.000Z" },
-          { "status": "inspection", "label": "Agent quality review", "detail": "A Nigerian sourcing agent in Guangzhou checks print, dimensions and quantity.", "complete": false },
+          { "status": "inspection", "label": "Agent quality review", "detail": "A verified sourcing agent in Guangzhou checks print, dimensions and quantity.", "complete": false },
           { "status": "export_pickup", "label": "Export pickup", "detail": "Approved cartons move to the consolidation warehouse.", "complete": false },
           { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
           { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
           { "status": "local_delivery", "label": "Delivery", "detail": "The cleared shipment moves to the business address.", "complete": false },
           { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the order against the accepted quote.", "complete": false },
           { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      },
+      {
+        "id": "order_fatima_solar",
+        "roomId": "market_room_fatima_solar",
+        "itemSummary": "Portable solar lighting kits for retail",
+        "itemCount": 1,
+        "reference": "NTM-8462190",
+        "quoteId": "quote_fatima_solar",
+        "supplierId": "sup_cn_solar",
+        "deliveryMode": "international",
+        "status": "inspection",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 194800000,
+        "settlementCurrency": "CNY",
+        "settlementAmountMinor": 640000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 144500000,
+        "logistics": { "paidMinor": 50300000, "committedMinor": 18000000, "refundableMinor": 32300000, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-08-10T10:00:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Quote accepted", "detail": "The solar-kit supplier order was confirmed.", "complete": true, "at": "2026-08-10T10:00:00.000Z" },
+          { "status": "preparing", "label": "Supplier prepared batch", "detail": "The agreed kits and accessories were assembled.", "complete": true, "at": "2026-08-14T06:00:00.000Z" },
+          { "status": "inspection", "label": "Agent inspection underway", "detail": "Output, accessories, quantity and cartons are being checked in Shenzhen.", "complete": false },
+          { "status": "export_pickup", "label": "Export pickup", "detail": "Approved cartons move to consolidation.", "complete": false },
+          { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
+          { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
+          { "status": "local_delivery", "label": "Delivery", "detail": "The shipment moves to the business address.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the kits against the accepted quote.", "complete": false },
+          { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      },
+      {
+        "id": "order_fatima_textiles",
+        "roomId": "market_room_fatima_textiles",
+        "itemSummary": "Branded staff uniforms in three size runs",
+        "itemCount": 1,
+        "reference": "NTM-5164208",
+        "quoteId": "quote_fatima_textiles",
+        "supplierId": "sup_ng_textile",
+        "deliveryMode": "domestic",
+        "status": "preparing",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 128000000,
+        "settlementCurrency": "NGN",
+        "settlementAmountMinor": 118000000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 118000000,
+        "logistics": { "paidMinor": 10000000, "committedMinor": 0, "refundableMinor": 10000000, "currency": "NGN", "status": "paid" },
+        "createdAt": "2026-08-16T11:20:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Order confirmed", "detail": "Uniform quantities, sizes and branding were confirmed.", "complete": true, "at": "2026-08-16T11:20:00.000Z" },
+          { "status": "preparing", "label": "Local production", "detail": "Adebisi Textile Works is cutting and sewing the order.", "complete": false },
+          { "status": "inspection", "label": "Quality and size check", "detail": "Finished pieces are checked against the approved size run.", "complete": false },
+          { "status": "local_delivery", "label": "Delivery in Lagos", "detail": "The completed uniforms move to the buyer.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm quantity, sizes and branding.", "complete": false },
+          { "status": "released", "label": "Seller paid", "detail": "The eligible seller balance is settled.", "complete": false }
+        ]
+      },
+      {
+        "id": "order_fatima_furniture",
+        "roomId": "market_room_fatima_furniture",
+        "itemSummary": "Commercial office chairs and meeting-room tables",
+        "itemCount": 2,
+        "reference": "NTM-3927514",
+        "quoteId": "quote_fatima_furniture",
+        "supplierId": "sup_cn_furniture",
+        "deliveryMode": "international",
+        "status": "customs",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 742000000,
+        "settlementCurrency": "CNY",
+        "settlementAmountMinor": 2860000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 598000000,
+        "logistics": { "paidMinor": 144000000, "committedMinor": 118000000, "refundableMinor": 26000000, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-07-21T08:00:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Quote accepted", "detail": "Furniture specifications and landed cost were confirmed.", "complete": true, "at": "2026-07-21T08:00:00.000Z" },
+          { "status": "preparing", "label": "Production complete", "detail": "Frames, upholstery and finishes were completed.", "complete": true, "at": "2026-07-31T09:10:00.000Z" },
+          { "status": "inspection", "label": "Agent inspection passed", "detail": "Finishes, dimensions, quantity and export packing passed review.", "complete": true, "at": "2026-08-02T05:40:00.000Z" },
+          { "status": "export_pickup", "label": "Export pickup", "detail": "The order entered the consolidation warehouse.", "complete": true, "at": "2026-08-04T06:15:00.000Z" },
+          { "status": "international_transit", "label": "International transit", "detail": "The shipment arrived at the Nigerian port.", "complete": true, "at": "2026-08-17T13:00:00.000Z" },
+          { "status": "customs", "label": "Customs clearance", "detail": "Clearance documents and duties are being processed.", "complete": false },
+          { "status": "local_delivery", "label": "Local delivery", "detail": "The cleared shipment moves to the business address.", "complete": false },
+          { "status": "buyer_review", "label": "Buyer review", "detail": "Confirm the furniture against the accepted quote.", "complete": false },
+          { "status": "released", "label": "Supplier settlement complete", "detail": "The eligible supplier balance is settled.", "complete": false }
+        ]
+      },
+      {
+        "id": "order_fatima_foods",
+        "roomId": "market_room_fatima_foods",
+        "itemSummary": "Wholesale packaged spices and grain cartons",
+        "itemCount": 2,
+        "reference": "NTM-2708431",
+        "quoteId": "quote_fatima_foods",
+        "supplierId": "sup_ng_food",
+        "deliveryMode": "domestic",
+        "status": "buyer_review",
+        "paymentCurrency": "NGN",
+        "paymentAmountMinor": 216000000,
+        "settlementCurrency": "NGN",
+        "settlementAmountMinor": 198000000,
+        "settlementProvider": "provider_pending",
+        "protectedProductAmountMinor": 198000000,
+        "logistics": { "paidMinor": 18000000, "committedMinor": 18000000, "refundableMinor": 0, "currency": "NGN", "status": "partially_used" },
+        "createdAt": "2026-08-09T07:45:00.000Z",
+        "timeline": [
+          { "status": "confirmed", "label": "Order confirmed", "detail": "Products, carton quantities and delivery address were confirmed.", "complete": true, "at": "2026-08-09T07:45:00.000Z" },
+          { "status": "preparing", "label": "Order packed", "detail": "Food cartons were processed, labelled and packed.", "complete": true, "at": "2026-08-12T10:20:00.000Z" },
+          { "status": "local_delivery", "label": "Delivered", "detail": "The order reached the Lagos business address.", "complete": true, "at": "2026-08-18T09:15:00.000Z" },
+          { "status": "buyer_review", "label": "Review delivered goods", "detail": "Confirm carton quantity, labels and condition.", "complete": false },
+          { "status": "released", "label": "Seller paid", "detail": "The eligible seller balance is settled.", "complete": false }
         ]
       }
     ]
@@ -34,6 +150,9 @@
     "orders": [
       {
         "id": "order_aisha_solar",
+        "roomId": "market_room_aisha_solar",
+        "itemSummary": "Portable solar lighting kits",
+        "itemCount": 1,
         "reference": "NTM-4418206",
         "quoteId": "quote_aisha_solar",
         "supplierId": "sup_cn_solar",
@@ -50,7 +169,7 @@
         "timeline": [
           { "status": "confirmed", "label": "Quote accepted", "detail": "The portable solar-kit order was confirmed.", "complete": true, "at": "2026-08-10T10:00:00.000Z" },
           { "status": "preparing", "label": "Supplier prepared batch", "detail": "The supplier completed the agreed quantity.", "complete": true, "at": "2026-08-14T06:00:00.000Z" },
-          { "status": "inspection", "label": "Inspection underway", "detail": "A Nigerian agent in Shenzhen is checking output, accessories and cartons.", "complete": true, "at": "2026-08-17T08:20:00.000Z" },
+          { "status": "inspection", "label": "Inspection underway", "detail": "A verified agent in Shenzhen is checking output, accessories and cartons.", "complete": true, "at": "2026-08-17T08:20:00.000Z" },
           { "status": "export_pickup", "label": "Export pickup", "detail": "Pickup begins after buyer review of the inspection evidence.", "complete": false },
           { "status": "international_transit", "label": "International transit", "detail": "The shipment travels to Nigeria.", "complete": false },
           { "status": "customs", "label": "Customs clearance", "detail": "Import documents and clearance are processed.", "complete": false },
@@ -65,6 +184,9 @@
     "orders": [
       {
         "id": "order_sade_sneakers",
+        "roomId": "market_room_sade_sneakers",
+        "itemSummary": "Private-label casual sneakers with branded boxes",
+        "itemCount": 1,
         "reference": "NTM-9724018",
         "quoteId": "quote_sade_sneakers",
         "supplierId": "sup_cn_footwear",

@@ -11,6 +11,7 @@ import { Input, PasswordInput } from '../../ui/input';
 import { Label } from '../../ui/label';
 import Spinner from '../../ui/spinner';
 import icon from '../../../assets/naitrust-logo/naitrust-icon-3.png';
+import { useTranslation } from 'react-i18next';
 
 interface LoginFormProps {
   email: string;
@@ -35,15 +36,16 @@ export function LoginForm({
   onForgot,
   onRegister,
 }: LoginFormProps) {
+  const { t } = useTranslation('auth');
   return (
     <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
       <div className="text-center mb-8">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl p-2">
           <img src={icon} alt="Naitrust logo" className="h-full w-full" />
         </div>
-        <p className="mb-2 text-sm font-semibold text-primary">Secure sign in</p>
-        <h2 className="mb-2 text-2xl font-bold text-[#0b2b45] dark:text-white">Welcome back</h2>
-        <p className="text-sm leading-6 text-muted-foreground">Use the email or phone number connected to your account.</p>
+        <p className="mb-2 text-sm font-semibold text-primary">{t('signIn')}</p>
+        <h2 className="mb-2 text-2xl font-bold text-[#0b2b45] dark:text-white">{t('signInTitle')}</h2>
+        <p className="text-sm leading-6 text-muted-foreground">{t('signInDescription')}</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
@@ -54,7 +56,7 @@ export function LoginForm({
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email or phone number</Label>
+          <Label htmlFor="email">{t('email')}</Label>
           <div className="relative">
             <UserRound className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <Input
@@ -73,9 +75,9 @@ export function LoginForm({
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('password')}</Label>
             <button type="button" onClick={onForgot} className="text-xs text-primary hover:underline">
-              Forgot password?
+              {t('forgot')}
             </button>
           </div>
           <div className="relative">
@@ -95,11 +97,11 @@ export function LoginForm({
           {isLoading ? (
             <>
               <Spinner size="sm" colorClass="text-white" />
-              <span className="ml-2">Logging in...</span>
+              <span className="ml-2">{t('loggingIn')}</span>
             </>
           ) : (
             <>
-              Sign in securely
+              {t('signIn')}
               <ArrowRight size={18} className="ml-2" />
             </>
           )}
@@ -107,12 +109,12 @@ export function LoginForm({
       </form>
 
       <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-        Keep your password private. Naitrust will never ask for your password, OTP, or private account details outside secure sign-in.
+        {t('security')}
       </div>
 
       <div className="mt-6 text-center">
         <button onClick={onRegister} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-          Don't have an account? <strong className="text-primary">Sign up free</strong>
+          {t('noAccount')} <strong className="text-primary">{t('createAccount')}</strong>
         </button>
       </div>
     </Card>

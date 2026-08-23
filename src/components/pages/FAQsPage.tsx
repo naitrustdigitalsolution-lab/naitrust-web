@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, Search, Shield, CreditCard, Users, MessageCircle, Settings, Globe, ArrowRight, X } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
 
@@ -17,7 +17,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
     { id: 'all', name: 'All Questions', icon: HelpCircle },
     { id: 'getting-started', name: 'Getting Started', icon: Users },
     { id: 'verification', name: 'Verification', icon: Shield },
-    { id: 'payments', name: 'Protected Funding', icon: CreditCard },
+    { id: 'payments', name: 'Order Money', icon: CreditCard },
     { id: 'security', name: 'Security & Privacy', icon: Settings },
     { id: 'features', name: 'Features', icon: Globe },
     { id: 'troubleshooting', name: 'Troubleshooting', icon: MessageCircle },
@@ -28,7 +28,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 'gs-1',
       category: 'getting-started',
       question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust Market connects Nigerian individuals and businesses with verified local and Chinese suppliers. Browse products in English, request a confirmed landed-cost quote in Naira, and track the order to delivery.'
+      answer: 'Naitrust helps Nigerian individuals and businesses buy from China through verified sourcing agents. Choose an agent operating in China, share what you need, approve a clear landed-cost quote, and track the order to delivery in Nigeria.'
     },
     {
       id: 'gs-2',
@@ -46,7 +46,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 'gs-4',
       category: 'getting-started',
       question: 'How do I find a product or supplier?',
-      answer: 'Search Naitrust Market by product, supplier, category, source country, location, rating, price estimate, or minimum order quantity. Open the supplier Showcase and Trust Profile before adding products to your cart.'
+      answer: 'Browse verified sourcing agents by product expertise, services, operating location, experience and completed-order feedback. Choose an agent, then share the product, quantity, quality, budget and delivery requirements.'
     },
     {
       id: 'gs-5',
@@ -108,13 +108,13 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 'p-2',
       category: 'payments',
       question: 'Does Naitrust hold customer funds?',
-      answer: 'No. Naitrust coordinates the workflow and shows payment status. When protected funding is used, money is handled by regulated payment or banking partners through virtual accounts issued by those partners.'
+      answer: 'No. Naitrust coordinates the order workflow and shows payment status. Money movement is handled by regulated payment or banking partners through accounts issued by those partners.'
     },
     {
       id: 'p-3',
       category: 'payments',
       question: 'What is a virtual account issued by a payment partner?',
-      answer: 'It is an account issued by a regulated partner for a specific transaction. The buyer funds it for that deal, and both parties can track funding status and release conditions from the deal room.'
+      answer: 'It is an account issued by a regulated partner for a specific order. The buyer funds it, and authorised participants can track the amount received and supplier-payment stages from the Order Room.'
     },
     {
       id: 'p-4',
@@ -126,7 +126,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 'p-5',
       category: 'payments',
       question: 'How are product payment and logistics handled?',
-      answer: 'Supplier product funds remain protected until the agreed order stage. Buyer-paid logistics and service costs are collected separately upfront. If an order is cancelled, Naitrust refunds the unused portion and itemizes costs already committed.'
+      answer: 'Supplier payment remains tied to the agreed order stage. Buyer-paid logistics and service costs are recorded separately. If an order is cancelled, any refundable amount is shown alongside costs already committed.'
     },
 
     {
@@ -164,19 +164,19 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 'f-1',
       category: 'features',
       question: 'What is the shareable profile link?',
-      answer: 'A shareable profile link helps participants confirm they are dealing with the intended person or business. It can lead into a Deal Room where the roles, terms, payments, evidence, milestones, and documents are tracked.'
+      answer: 'A shareable Trust Profile helps buyers review the intended supplier or business. An Order Room then keeps the quote, roles, payment stages, evidence, milestones and documents together.'
     },
     {
       id: 'f-2',
       category: 'features',
       question: 'How do reviews and ratings work?',
-      answer: 'Only personal customers who complete a Naitrust transfer or Protected Deal with a business can rate or comment on that business. Each completed transaction can be reviewed once, and the feedback appears on the public Trust Profile. Fake or incentivised reviews are prohibited.'
+      answer: 'Customers who complete an eligible agent-supported order can rate or comment on their sourcing agent. Each completed order can be reviewed once, and the feedback appears on the agent’s profile. Fake or incentivised reviews are prohibited.'
     },
     {
       id: 'f-3',
       category: 'features',
       question: 'Can I message businesses on Naitrust?',
-      answer: 'Yes. Use messaging to clarify participant roles, terms, payment plan, evidence, and milestones. Important messages should stay attached to the Protected Deal where possible.'
+      answer: 'Yes. Use the Order Room to clarify products, specifications, payment stages, evidence, agent checks, shipping and delivery. Keeping these messages with the order gives every participant the same record.'
     },
     {
       id: 'f-4',
@@ -195,7 +195,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
       id: 't-1',
       category: 'troubleshooting',
       question: 'Why was my payment declined?',
-      answer: 'A funding attempt may fail because of insufficient funds, bank limits, blocked transfers, incorrect details, partner downtime, or transaction risk checks. Confirm the virtual account details in the deal room and contact support with the deal reference if the issue continues.'
+      answer: 'An order-funding attempt may fail because of insufficient funds, bank limits, incorrect details, partner downtime or risk checks. Confirm the funding details in the Order Room and contact support with the order reference if the issue continues.'
     },
     {
       id: 't-2',
@@ -223,15 +223,13 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
     },
   ];
 
-  const filteredFAQs = useMemo(() => {
-    return faqs.filter(faq => {
-      const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
-      const matchesSearch = searchQuery === '' || 
-        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [selectedCategory, searchQuery]);
+  const filteredFAQs = faqs.filter(faq => {
+    const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
+    const matchesSearch = searchQuery === '' ||
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
@@ -249,7 +247,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers about Naitrust Market, verified suppliers, landed-cost quotes, China logistics, agents, delivery, and withdrawals."
+        description="Find answers about verified sourcing agents, buying wholesale from China, landed-cost quotes, Order Rooms, logistics and delivery to Nigeria."
         keywords="Naitrust FAQ, business verification questions, CAC verification FAQ, fraud reporting help"
         canonicalPath="/faqs"
       />
@@ -378,7 +376,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
         <section className="mt-12 overflow-hidden rounded-3xl bg-foreground px-5 py-7 text-background sm:flex sm:items-center sm:justify-between sm:gap-8 sm:px-8 sm:py-8">
           <div>
             <h2 className="text-xl font-semibold sm:text-2xl">Still need help?</h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-background/70">Talk to support about your account, payment, or Protected Deal. Include a transaction reference when you have one.</p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-background/70">Talk to support about a supplier, quote, agent, order, delivery or account. Include the order reference when you have one.</p>
           </div>
           <button onClick={() => onNavigate('contact')} className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary/90 sm:mt-0 sm:w-auto sm:shrink-0">
             Contact support <ArrowRight className="h-4 w-4" />

@@ -94,7 +94,7 @@ import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
   { title: 'Deal setup', description: 'Choose what you are protecting and who is involved.' },
-  { title: 'Deal terms', description: 'Enter the money, recipients, timing, and release condition.' },
+  { title: 'Order terms', description: 'Enter the amount, supplier, timing and payment conditions.' },
   { title: 'Review agreement & send', description: 'Check the agreement and invite the other party.' },
 ];
 
@@ -582,7 +582,7 @@ export function CreateDealPage() {
     try {
       const nextRequest = paymentConditionsGeneratedByAi ? paymentConditionsRequest + 1 : paymentConditionsRequest;
       const conditionInput = {
-        useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
+        useCaseTitle: selectedUseCase?.title ?? 'Direct supplier order',
         title: form.title,
         description: form.description,
         deliveryDueDate: form.deliveryDueDate,
@@ -638,7 +638,7 @@ export function CreateDealPage() {
     try {
       const response = await agreementsApi.draft(
         {
-          useCaseTitle: selectedUseCase?.title ?? 'Protected Deal',
+          useCaseTitle: selectedUseCase?.title ?? 'Direct supplier order',
           workflowMode: form.workflowMode,
           partyModeLabel: form.partyMode ? partyModeLabel(form.partyMode) : 'Protected',
           buyerName,
@@ -849,9 +849,9 @@ export function CreateDealPage() {
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
       setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
-      toast.success('Protected Deal created. Your invitation link is ready.');
+      toast.success('Supplier order created. Your invitation link is ready.');
     } catch {
-      toast.error('Could not create the Protected Deal. Please try again.');
+      toast.error('Could not create the supplier order. Please try again.');
     }
   };
 
@@ -861,7 +861,7 @@ export function CreateDealPage() {
         <div className="mx-auto w-full max-w-2xl py-8">
           <Card className="rounded-3xl p-6 shadow-sm sm:p-8">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-700"><Check size={22} /></div>
-            <h1 className="mt-5 text-2xl font-bold">Protected Deal created</h1>
+            <h1 className="mt-5 text-2xl font-bold">Supplier order created</h1>
             <p className="mt-2 text-sm text-muted-foreground">{createdInvitation.title}</p>
             <div className="mt-6 rounded-2xl border bg-muted/30 p-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Deal invitation link</p>
@@ -902,14 +902,14 @@ export function CreateDealPage() {
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
   if (startBlocked) {
     return (
-      <DashboardLayout title="New Protected Deal">
+      <DashboardLayout title="New supplier order">
         <VerificationGate missing={security.missingForDeal} />
       </DashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout title={editDealId ? "Edit Protected Deal" : "New Protected Deal"}>
+    <DashboardLayout title={editDealId ? "Edit supplier order" : "New supplier order"}>
       <LivenessCheckModal
         open={showLiveness && !showProfileConfirmation}
         onOpenChange={setShowLiveness}
@@ -926,7 +926,7 @@ export function CreateDealPage() {
           setActionLiveness({ captureId: capture.captureId, verifiedAt: capture.capturedAt, photoDataUrl: capture.photoDataUrl });
           setShowLiveness(false);
         }}
-        reason="This live photo will be linked only to this Protected Deal. The other verified participant can view it to confirm who actively created the deal."
+        reason="This live photo will be linked only to this order. The other verified participant can view it to confirm who created the order."
         shareNotice="I understand that the other verified participant can view this live photo for the deal."
         footerText="Continuing confirms this photo for the deal may be viewed by the other verified participant. It remains valid for this draft for 24 hours."
       />
@@ -941,9 +941,9 @@ export function CreateDealPage() {
             <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <ShieldCheck size={20} />
             </div>
-            <DialogTitle>Start a Protected Deal?</DialogTitle>
+            <DialogTitle>Start this supplier order?</DialogTitle>
             <DialogDescription className="leading-6">
-              You are about to start a Protected Deal with <strong className="font-semibold text-foreground">{profileBusinessName || 'this business'}</strong>. Their verified profile has been added as the other party.
+              You are about to create a direct order with <strong className="font-semibold text-foreground">{profileBusinessName || 'this business'}</strong>. Their verified profile has been added as the supplier.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-2 gap-2 sm:gap-0">
@@ -957,7 +957,7 @@ export function CreateDealPage() {
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this Protected Deal'}.`}
+        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this supplier order'}.`}
       />
       <DraftSavedForPinModal
         open={showPinDraftSaved}
@@ -976,20 +976,20 @@ export function CreateDealPage() {
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-4 flex items-center justify-between gap-3 sm:hidden">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Protected Deals</p>
-            <h1 className="mt-1 text-lg font-bold tracking-tight">{editDealId ? 'Edit deal' : 'Create a deal'}</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Direct orders</p>
+            <h1 className="mt-1 text-lg font-bold tracking-tight">{editDealId ? 'Edit order' : 'Create an order'}</h1>
           </div>
           <Button variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full" aria-label="Back to deals" onClick={() => navigate('/app/deals')}><ArrowLeft size={15} /></Button>
         </div>
 
         <div className="hidden sm:block"><PageHero
-          eyebrow={editDealId ? "Editing existing invitation" : "Protected Deals"}
-          title={editDealId ? "Edit Protected Deal" : "Create a Protected Deal"}
-          description={editDealId ? "Update the original deal details. The same invitation will be returned to the other party for review." : "Turn an agreement into a clear, trackable payment journey for everyone involved."}
+          eyebrow={editDealId ? "Editing existing invitation" : "Direct supplier orders"}
+          title={editDealId ? "Edit supplier order" : "Create a supplier order"}
+          description={editDealId ? "Update the original order details. The same invitation will return to the supplier for review." : "Set the product or service, supplier, payment stages, evidence and completion terms in one Order Room."}
           icon={ShieldCheck}
           actions={
             <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
-              <ArrowLeft size={15} /> Active Deals
+              <ArrowLeft size={15} /> Direct orders
             </Button>
           }
         /></div>
@@ -1002,7 +1002,7 @@ export function CreateDealPage() {
                 <p className="truncate text-sm font-bold">{step === 2 && isMobileLayout ? MOBILE_TERM_STEPS[mobileTermStage - 1] : STEPS[step - 1].title}</p>
                 <p className="shrink-0 text-xs font-medium text-muted-foreground">{step === 2 && isMobileLayout ? `${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}</p>
               </div>
-              <div className={`mt-2 grid gap-1.5 ${step === 2 && isMobileLayout ? 'grid-cols-4' : 'grid-cols-3'}`} aria-label={step === 2 && isMobileLayout ? `Deal terms ${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}>
+              <div className={`mt-2 grid gap-1.5 ${step === 2 && isMobileLayout ? 'grid-cols-4' : 'grid-cols-3'}`} aria-label={step === 2 && isMobileLayout ? `Order terms ${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}>
                 {(step === 2 && isMobileLayout ? MOBILE_TERM_STEPS : STEPS).map((item, index) => <span key={typeof item === 'string' ? item : item.title} className={`h-1 rounded-full ${index < (step === 2 && isMobileLayout ? mobileTermStage : step) ? 'bg-primary' : 'bg-muted'}`} />)}
               </div>
             </div>
@@ -1288,7 +1288,7 @@ export function CreateDealPage() {
                       label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
                     />
-                    <ReviewRow label="Deal Room" value={form.workflowMode === 'delivery' ? 'Delivery and handover' : form.workflowMode === 'service' ? 'Work review and buyer-approved release' : 'Milestone progress and stage review'} />
+                    <ReviewRow label="Order Room" value={form.workflowMode === 'delivery' ? 'Delivery and handover' : form.workflowMode === 'service' ? 'Work review and buyer-approved payment' : 'Milestone progress and stage review'} />
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
                       <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
@@ -1325,14 +1325,14 @@ export function CreateDealPage() {
                         </span>
                         <div>
                           <p className="text-xs font-semibold text-foreground">3. Funding begins</p>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the deal from the Deal Room.</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the order from the Order Room.</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Money placed in a Protected Deal moves through an account issued by a regulated payment partner. Naitrust does not hold it directly.
+                    Order money moves through an account issued by a regulated payment partner. Naitrust coordinates the order record but does not hold the money directly.
                   </p>
                 </div>
                 )
@@ -1376,7 +1376,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           {editDealId ? <Pencil size={16} className="mr-1.5" /> : <ShieldCheck size={16} className="mr-1.5" />}
-                          {editDealId ? 'Update invitation' : 'Create Protected Deal'}
+                          {editDealId ? 'Update invitation' : 'Create supplier order'}
                         </>
                       )}
                     </Button>

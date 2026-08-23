@@ -8,11 +8,13 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { contactUs } from "../../services/publicService";
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onNavigate: (page: string) => void;
 }
 export function ContactUsPage({ onNavigate }: Props) {
+  const { t } = useTranslation('contact');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -27,10 +29,10 @@ export function ContactUsPage({ onNavigate }: Props) {
     try {
       await contactUs(form);
       setSent(true);
-      toast.success("Your message has been sent.");
+      toast.success(t('sentToast'));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Unable to send your message.",
+        error instanceof Error ? error.message : t('error'),
       );
     } finally {
       setLoading(false);
@@ -39,18 +41,16 @@ export function ContactUsPage({ onNavigate }: Props) {
   return (
     <>
       <SEOHead
-        title="Contact Naitrust"
-        description="Contact Naitrust about the waiting list, product, partnership or general enquiries."
+        title={t('seoTitle')}
+        description={t('seoDescription')}
         canonicalPath="/contact"
       />
       <PublicFormLayout
-        eyebrow="Contact Naitrust"
-        title="Let’s start the right conversation."
-        description="Naitrust is currently preparing for launch. Send a clear message and the right person can review it."
+        eyebrow={t('eyebrow')}
+        title={t('title')}
+        description={t('description')}
         highlights={[
-          "Questions about the waiting list or intended product",
-          "Partnership and business enquiries",
-          "Privacy and general support questions",
+          t('highlight1'), t('highlight2'), t('highlight3'),
         ]}
       >
         {sent ? (
@@ -58,12 +58,12 @@ export function ContactUsPage({ onNavigate }: Props) {
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-700">
               <CheckCircle2 size={30} />
             </div>
-            <h2 className="mt-5 text-2xl font-bold">Message received</h2>
+            <h2 className="mt-5 text-2xl font-bold">{t('received')}</h2>
             <p className="mt-3 text-muted-foreground">
-              Thank you. We have recorded your enquiry.
+              {t('thankYou')}
             </p>
             <Button className="mt-7" onClick={() => setSent(false)}>
-              Send another message
+              {t('another')}
             </Button>
           </div>
         ) : (
@@ -71,14 +71,14 @@ export function ContactUsPage({ onNavigate }: Props) {
             <div className="mb-7 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Mail />
             </div>
-            <h2 className="text-2xl font-bold">Send us a message</h2>
+            <h2 className="text-2xl font-bold">{t('sendTitle')}</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              All fields below help us understand where to direct your enquiry.
+              {t('sendText')}
             </p>
             <form onSubmit={handleSubmit} className="mt-7 space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <Label htmlFor="contact-name">Full name</Label>
+                  <Label htmlFor="contact-name">{t('fullName')}</Label>
                   <Input
                     id="contact-name"
                     required
@@ -88,7 +88,7 @@ export function ContactUsPage({ onNavigate }: Props) {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="contact-email">Email</Label>
+                  <Label htmlFor="contact-email">{t('email')}</Label>
                   <Input
                     id="contact-email"
                     type="email"
@@ -102,7 +102,7 @@ export function ContactUsPage({ onNavigate }: Props) {
                 </div>
               </div>
               <div>
-                <Label htmlFor="contact-subject">Subject</Label>
+                <Label htmlFor="contact-subject">{t('subject')}</Label>
                 <Input
                   id="contact-subject"
                   required
@@ -114,7 +114,7 @@ export function ContactUsPage({ onNavigate }: Props) {
                 />
               </div>
               <div>
-                <Label htmlFor="contact-message">Message</Label>
+                <Label htmlFor="contact-message">{t('message')}</Label>
                 <Textarea
                   id="contact-message"
                   required
@@ -132,10 +132,10 @@ export function ContactUsPage({ onNavigate }: Props) {
                 className="w-full"
               >
                 {loading ? (
-                  "Sending…"
+                  t('sending')
                 ) : (
                   <>
-                    Send message <Send />
+                    {t('send')} <Send />
                   </>
                 )}
               </Button>
@@ -144,7 +144,7 @@ export function ContactUsPage({ onNavigate }: Props) {
                 onClick={() => onNavigate("home")}
                 className="w-full text-sm font-semibold text-primary"
               >
-                Back to home
+                {t('backHome')}
               </button>
             </form>
           </>

@@ -4,12 +4,14 @@ import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { subscribe } from '../../../services/publicService';
 import { openWaitlistModal } from '../../modals/waitlist-events';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
+  const { t } = useTranslation('common');
   const [isSubscribing, setIsSubscribing] = useState(false);
   async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,44 +34,27 @@ export function Footer({ onNavigate }: FooterProps) {
 
   const footerGroups = [
     {
-      title: 'Platform',
+      id: 'platform', title: t('platform'),
       links: [
-        { label: 'Explore China Market', page: 'market' },
-        { label: 'Source for yourself', page: 'customer' },
-        { label: 'Sell on Naitrust', page: 'business' },
-        { label: 'Protected Orders', page: 'register', modal: true },
-        { label: 'Verified Agents', page: 'market' },
-        { label: 'Join Early Access', page: 'register', modal: true },
+        { label: t('exploreChina'), page: 'market' }, { label: t('sourceYourself'), page: 'customer' }, { label: t('protectedOrders'), page: 'register', modal: true }, { label: t('verifiedAgents'), page: '/partners' }, { label: t('earlyAccess'), page: 'register', modal: true },
       ],
     },
     {
-      title: 'Partners',
+      id: 'partners', title: t('partners'),
       links: [
-        { label: 'Become a sourcing agent', page: '/partners/agent/apply' },
-        { label: 'Register as a supplier', page: '/partners/supplier/apply' },
-        { label: 'Become a logistics partner', page: '/partners/logistics/apply' },
-        { label: 'Partner sign in', page: '/partners/login' },
+        { label: t('becomeAgent'), page: '/partners/agent/apply' }, { label: t('registerSupplier'), page: '/partners/supplier/apply' }, { label: t('becomeLogistics'), page: '/partners/logistics/apply' }, { label: t('partnerLogin'), page: '/partners/login' },
       ],
     },
     {
-      title: 'Company',
+      id: 'company', title: t('company'),
       links: [
-        { label: 'About Us', page: 'about' },
-        { label: 'Blog', page: 'blog' },
-        { label: 'Help Center', page: 'help' },
-        { label: 'FAQs', page: 'faqs' },
-        { label: 'Report a Concern', page: 'report-fraud' },
-        { label: 'Give Feedback', page: 'feedback' },
-        { label: 'Contact Us', page: 'contact' },
+        { label: t('aboutUs'), page: 'about' }, { label: t('blog'), page: 'blog' }, { label: t('help'), page: 'help' }, { label: t('faqs'), page: 'faqs' }, { label: t('report'), page: 'report-fraud' }, { label: t('giveFeedback'), page: 'feedback' }, { label: t('contactUs'), page: 'contact' },
       ],
     },
     {
-      title: 'Legal',
+      id: 'legal', title: t('legal'),
       links: [
-        { label: 'Terms of Service', page: 'terms' },
-        { label: 'Privacy Policy', page: 'privacy' },
-        { label: 'Verification Policy', page: 'verification-policy' },
-        { label: 'NDPR Compliance', page: 'compliance' },
+        { label: t('terms'), page: 'terms' }, { label: t('privacy'), page: 'privacy' }, { label: t('verification'), page: 'verification-policy' }, { label: t('compliance'), page: 'compliance' },
       ],
     },
   ];
@@ -82,7 +67,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <div className="mb-3">
               <NaitrustLogo size="sm" showText={true} textColor="text-white" />
             </div>
-            <p className="max-w-xs text-sm leading-6 text-white/60">Find verified suppliers, confirm the landed cost, pay through a protected order, and track delivery to Nigeria.</p>
+            <p className="max-w-xs text-sm leading-6 text-white/60">{t('footerText')}</p>
             <div className="mt-4 flex gap-2">
               <a aria-label="Naitrust on Instagram" href="https://instagram.com/naitrust_digitalsolutions" target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-colors hover:bg-white/10 hover:text-white">
                 <Instagram size={16} />
@@ -111,7 +96,7 @@ export function Footer({ onNavigate }: FooterProps) {
                       </button>
                     </li>
                   ))}
-                  {group.title === 'Legal' && (
+                  {group.id === 'legal' && (
                     <li>
                       <button 
                         onClick={() => {
@@ -121,7 +106,7 @@ export function Footer({ onNavigate }: FooterProps) {
                         }} 
                         className="text-left transition-colors hover:text-white"
                       >
-                        Cookie Preferences
+                        {t('cookiePreferences')}
                       </button>
                     </li>
                   )}
@@ -132,9 +117,9 @@ export function Footer({ onNavigate }: FooterProps) {
         </div>
 
         <div className="mt-7 flex flex-col gap-4 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
-          <div><h4 className="text-sm font-semibold text-white">Product updates, occasionally.</h4><p className="mt-1 text-xs text-white/50">Useful Naitrust news without the noise.</p></div>
+          <div><h4 className="text-sm font-semibold text-white">{t('updatesTitle')}</h4><p className="mt-1 text-xs text-white/50">{t('updatesText')}</p></div>
             <form onSubmit={handleSubscribe} className="flex w-full max-w-md gap-2">
-              <label className="sr-only" htmlFor="footer-subscriber-email">Email address</label>
+              <label className="sr-only" htmlFor="footer-subscriber-email">{t('email')}</label>
               <input
                 id="footer-subscriber-email"
                 name="subscriberEmail"
@@ -148,7 +133,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 disabled={isSubscribing}
                 className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
-                {isSubscribing ? 'Subscribing…' : 'Subscribe'}
+                {isSubscribing ? t('subscribing') : t('subscribe')}
                 <Send size={16} />
               </button>
             </form>
@@ -157,9 +142,9 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p>
-              © {new Date().getFullYear()} Naitrust Digital Solutions Ltd. All rights reserved.
+              © {new Date().getFullYear()} Naitrust Digital Solutions Ltd. {t('rights')}
             </p>
-            <p className="mt-1">RC 9001392 · Registered in Nigeria</p>
+            <p className="mt-1">RC 9001392 · {t('registered')}</p>
           </div>
           <div className="flex items-center gap-2">
             <Mail size={14} />

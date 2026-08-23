@@ -59,7 +59,7 @@ export function UploadEvidenceModal({ open, onOpenChange, submitting, initialKin
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Upload evidence</DialogTitle>
-          <DialogDescription>Attach proof to this deal for both parties to see. This upload will be saved as <strong>{kind}</strong>.</DialogDescription>
+          <DialogDescription>Attach evidence to this order for authorised participants to review. This upload will be saved as <strong>{kind}</strong>.</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div>

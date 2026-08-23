@@ -3,12 +3,14 @@ import { MessageSquare, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import { useTranslation } from 'react-i18next';
 
 interface FloatingFeedbackButtonProps {
   onNavigate: (page: string) => void;
 }
 
 export function FloatingFeedbackButton({ onNavigate }: FloatingFeedbackButtonProps) {
+  const { t } = useTranslation('common');
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -25,7 +27,7 @@ export function FloatingFeedbackButton({ onNavigate }: FloatingFeedbackButtonPro
             whileTap={{ scale: 0.95 }}
           >
             <MessageSquare size={14} className="transition-transform group-hover:rotate-12 sm:h-4 sm:w-4" />
-            <span className="whitespace-nowrap text-[10px] font-medium sm:text-xs">Feedback</span>
+            <span className="whitespace-nowrap text-[10px] font-medium sm:text-xs">{t('feedback')}</span>
           </motion.button>
         ) : (
           <motion.div
@@ -35,7 +37,7 @@ export function FloatingFeedbackButton({ onNavigate }: FloatingFeedbackButtonPro
             className="w-[calc(100vw-1.5rem)] max-w-56 rounded-xl border-2 border-primary/20 bg-card p-3 shadow-2xl sm:w-64 sm:max-w-none sm:p-4"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold sm:text-lg">Have feedback or suggestions?</h3>
+              <h3 className="text-sm font-semibold sm:text-lg">{t('feedbackTitle')}</h3>
               <button
                 onClick={() => setIsExpanded(false)}
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -44,7 +46,7 @@ export function FloatingFeedbackButton({ onNavigate }: FloatingFeedbackButtonPro
               </button>
             </div>
             <p className="mb-3 text-xs text-muted-foreground sm:mb-4 sm:text-sm">
-              We'd love to hear from you! Share your thoughts and help us improve.
+              {t('feedbackText')}
             </p>
             <Button
               onClick={() => {
@@ -54,7 +56,7 @@ export function FloatingFeedbackButton({ onNavigate }: FloatingFeedbackButtonPro
               size="sm"
               className="h-9 w-full text-xs sm:h-10 sm:text-sm"
             >
-              Share Your Feedback
+              {t('shareFeedback')}
             </Button>
           </motion.div>
         )}

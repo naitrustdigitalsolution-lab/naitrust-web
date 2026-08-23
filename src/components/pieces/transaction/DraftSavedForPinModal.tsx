@@ -31,7 +31,7 @@ export function DraftSavedForPinModal({
           </div>
           <DialogTitle>Your deal is saved</DialogTitle>
           <DialogDescription className="leading-6">
-            You have not set a transaction PIN yet, so we saved this deal to Drafts. No invitation has been sent.
+            You have not set a transaction PIN yet, so we saved this order to Drafts. No invitation has been sent.
           </DialogDescription>
         </DialogHeader>
 

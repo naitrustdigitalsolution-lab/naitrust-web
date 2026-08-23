@@ -208,7 +208,7 @@ export function NotificationsPage() {
           <PageHero
             eyebrow={unreadCount > 0 ? `${unreadCount} unread` : 'You are up to date'}
             title="Notifications"
-            description="Order updates, quote readiness, inspections, delivery, refunds, and wallet activity."
+            description="Supplier updates, quote readiness, agent checks, shipping, delivery, refunds and money activity."
             icon={Bell}
             actions={unreadCount > 0 ? (
               <Button
@@ -238,7 +238,7 @@ export function NotificationsPage() {
             </div>
             <p className="font-semibold text-foreground">You're all caught up</p>
             <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-              Updates about suppliers, quotes, protected orders, delivery, supporting evidence, refunds, and issues will appear here.
+              Updates about suppliers, quotes, agent checks, orders, shipping, delivery, refunds and issues will appear here.
             </p>
           </Card>
         ) : (

@@ -10,6 +10,7 @@ const verificationTypes = [
   { icon: UserCheck, title: 'Individual verification', text: 'Identity information and supporting documents may be checked to help confirm that a person is who they claim to be.' },
   { icon: Building2, title: 'Business verification', text: 'Business registration information and the authority of a representative may be checked before a business is marked as verified.' },
   { icon: ScanFace, title: 'Liveness checks', text: 'A short camera-based check may be used to reduce impersonation and confirm that a real person is present during verification.' },
+  { icon: ShieldCheck, title: 'Sourcing agent verification', text: 'Identity, business, experience and China operating details may be reviewed before a sourcing agent can offer services on Naitrust.' },
 ];
 
 export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPageProps) {
@@ -45,7 +46,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
         <section className="py-12">
           <h2 className="text-3xl font-bold">What Naitrust intends to verify</h2>
           <p className="mt-3 max-w-3xl text-muted-foreground">The check required will depend on the account and the level of risk involved. We will request only information relevant to the check being performed.</p>
-          <div className="mt-7 grid gap-5 md:grid-cols-3">
+          <div className="mt-7 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {verificationTypes.map(({ icon: Icon, title, text }) => (
               <article key={title} className="rounded-2xl border bg-card p-6 shadow-sm"><div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={22} /></div><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p></article>
             ))}
@@ -59,7 +60,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
 
         <section className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6">
           <h2 className="text-xl font-bold">What verification does not mean</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed particular checks at a particular time. It is not proof of property ownership, authority to sell, title quality, planning status, legal validity, honesty, creditworthiness, payment recovery, or the outcome of a transaction. Users must still review the property, participants, documents, terms, and evidence and obtain appropriate independent professional advice.</p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed particular checks at a particular time. It does not guarantee an agent’s performance, a supplier’s product quality, the accuracy of every representation, payment recovery, delivery timing, or the outcome of a transaction. Buyers must still review the participants, specifications, samples, quotes, documents, terms, evidence and approvals for each order.</p>
         </section>
 
         <section className="mt-8 rounded-2xl border bg-card p-6">

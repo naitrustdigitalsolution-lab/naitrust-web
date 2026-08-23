@@ -4,6 +4,7 @@ import flutterwaveLogo from 'figma:asset/7f5d6df5d7c8cc6439ec1a9a924166c1d5a08cb
 // Anchor brand mark (getanchor.co): colored icon with its own background, so it
 // reads on both the light and dark partner cards.
 import anchorMark from '../../../assets/partners/anchor-mark.svg';
+import vertoLogo from '../../../assets/partners/verto-logo.svg';
 
 export function PaystackLogo({ className = "h-6" }: { className?: string }) {
   return (
@@ -49,6 +50,10 @@ export function AnchorLogo({ className = "h-16" }: { className?: string }) {
       className={className}
     />
   );
+}
+
+export function VertoLogo({ className = "h-16" }: { className?: string }) {
+  return <img src={vertoLogo} alt="Verto Logo" className={className} />;
 }
 
 export function FlutterwaveLogo({ className = "h-16" }: { className?: string }) {

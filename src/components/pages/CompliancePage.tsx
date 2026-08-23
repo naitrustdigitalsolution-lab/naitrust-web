@@ -25,7 +25,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
     <div className="min-h-screen bg-background py-12">
       <SEOHead
         title="Compliance and Trust"
-        description="How Naitrust approaches privacy, verification, Protected Deal records, regulated payment partners, security, and user protection in Nigeria."
+        description="How Naitrust approaches privacy, supplier verification, Order Room records, regulated payment partners, security, and user protection in Nigeria."
         canonicalPath="/compliance"
       />
 
@@ -35,7 +35,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">Compliance and trust</p>
           <h1 className="text-3xl font-bold sm:text-4xl">How Naitrust supports safer transactions</h1>
           <p className="mx-auto mt-4 max-w-3xl leading-7 text-blue-100">
-            Naitrust brings identity and business checks, accepted terms, payment status, evidence, and issue records into one Protected Deal workflow. This page explains the controls that apply to the product as it is currently designed.
+            Naitrust brings supplier checks, accepted quotes, payment status, agent evidence, logistics and issue records into one Order Room workflow. This page explains the controls that apply to the product as it is currently designed.
           </p>
           <p className="mt-5 text-sm text-blue-200">Last updated: 11 July 2026</p>
         </header>
@@ -48,7 +48,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
               <li>Business checks may include CAC registration details, business contact information, ownership or representative information, and supporting documents.</li>
               <li>Checks may be completed through approved verification providers or reviewed by authorised Naitrust personnel when manual review is required.</li>
             </ul>
-            <p>A verification result shows that specified information passed the checks performed. It is not proof of property ownership, authority to sell, title quality, legal validity, solvency, character, or future behaviour.</p>
+            <p>A verification result shows that specified identity, business, experience or operating information passed the checks performed. It is not a guarantee of an agent’s performance, supplier product quality, delivery timing, solvency, character, or future behaviour.</p>
           </ComplianceSection>
 
           <ComplianceSection icon={<FileCheck2 size={22} />} title="2. Property transaction records and user responsibilities">
@@ -78,7 +78,7 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
 
           <ComplianceSection icon={<Building2 size={22} />} title="6. Product roles and transparency">
             <p>Naitrust provides property transaction-record and trust-workflow technology. Verification providers perform specified identity or business checks. Regulated financial partners handle applicable fund movement or custody. Property participants remain responsible for ownership, authority, legal advice, physical and document checks, statements, and performance.</p>
-            <p>Naitrust is not a property marketplace, estate agent, title registry, law firm, surveyor, regulator, bank, insurer, credit-rating agency, or guarantee service. Material changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
+            <p>Naitrust provides sourcing coordination and transaction tools, but is not a supplier, freight carrier, customs authority, regulator, bank, insurer, law firm, credit-rating agency, or guarantee service. Material changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
           </ComplianceSection>
         </div>
 

@@ -249,7 +249,7 @@ export function PublicBusinessPaymentPage() {
             {isPaid ? (
               <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-100">
                 <div className="flex items-center gap-2 font-semibold"><Check size={17} /> Transfer confirmed by payment provider</div>
-                <p className="mt-1 text-sm leading-5">Your ordinary business payment receipt is ready. This payment is not a Protected Deal.</p>
+                <p className="mt-1 text-sm leading-5">Your direct business payment receipt is ready. This payment is not connected to a supplier Order Room.</p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs"><Receipt size={13} /> Receipt {checkout?.paymentReference || `NT-PAY-${Date.now().toString().slice(-6)}`}</p>
                 {checkout && <div className="mt-3 rounded-xl bg-white/60 p-3 text-xs dark:bg-black/10"><p className="font-semibold">Next action</p><p className="mt-1">{checkout.deliveryExpectation ? `Wait for: ${checkout.deliveryExpectation}` : 'Keep this receipt and follow up with the recipient for delivery or completion.'}</p></div>}
               </div>
@@ -275,11 +275,11 @@ export function PublicBusinessPaymentPage() {
             <p className="flex gap-2 text-xs leading-5 text-muted-foreground"><ShieldCheck size={14} className="mt-0.5 shrink-0 text-emerald-600" /> Confirm the account name before paying. Screenshots are not proof of payment; Naitrust waits for provider confirmation.</p>
 
             {allowsProtected && !isUnavailable && !isPaid && <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-[#071b31] dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-foreground sm:rounded-2xl sm:p-5">
-              <div className="flex items-start gap-3"><span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background sm:flex"><LockKeyhole size={18} /></span><div><p className="font-semibold">Need payment protection?</p><p className="mt-1 text-xs leading-5 text-[#527086] dark:text-muted-foreground">Keep terms, evidence, messages, and payment status together in a Protected Deal.</p></div></div>
+              <div className="flex items-start gap-3"><span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm dark:bg-background sm:flex"><LockKeyhole size={18} /></span><div><p className="font-semibold">Buying a product or service?</p><p className="mt-1 text-xs leading-5 text-[#527086] dark:text-muted-foreground">Create a supplier order to keep specifications, evidence, messages and payment stages together.</p></div></div>
               {checkout && (checkout.evidenceRequirements.length > 0 || checkout.milestones.length > 0) && <div className="mt-4 grid gap-2 text-xs text-[#527086] dark:text-muted-foreground">{checkout.evidenceRequirements.map((item) => <p key={item}>Evidence: {item}</p>)}{checkout.milestones.map((item) => <p key={item}>Milestone: {item}</p>)}</div>}
               <Button className="mt-4 w-full rounded-full" onClick={startProtectedTransaction}>Protect this transaction <ArrowRight size={16} /></Button>
             </div>}
-            {allowsDirect && !isPaid && <p className="text-center text-[11px] text-muted-foreground">A direct transfer is not a Protected Deal.</p>}
+            {allowsDirect && !isPaid && <p className="text-center text-[11px] text-muted-foreground">A direct payment does not create an Order Room.</p>}
           </div>
         </Card>
       </div>

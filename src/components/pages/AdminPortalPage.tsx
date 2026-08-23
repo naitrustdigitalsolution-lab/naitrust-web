@@ -1,5 +1,5 @@
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { Activity, Boxes, ClipboardCheck, LayoutDashboard, MessageSquareWarning, Network, PackagePlus, Receipt, Ship, Store, Truck, UserRoundCheck, Users } from 'lucide-react';
+import { Activity, Boxes, ClipboardCheck, LayoutDashboard, MessageSquareWarning, Network, PackagePlus, Receipt, Ship, SlidersHorizontal, Store, Truck, UserRoundCheck, Users } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
 import { useAuth } from '../../libs/auth-context';
 import { AdminOverview } from '../../features/sourcing/components/admin/AdminOverview';
@@ -10,9 +10,11 @@ import { LedgerQueue, ReleaseQueue, ShipmentQueue, SourcingQueue } from '../../f
 import { OperationsHeader } from '../../features/sourcing/components/OperationsHeader';
 import { useOperationsRefresh } from '../../features/sourcing/hooks/use-operations-refresh';
 import { ProductCatalogueSection, SupplierCatalogueSection } from '../../features/sourcing/components/admin/AdminMarketplaceSection';
+import { FeatureControlSection } from '../../features/sourcing/components/admin/FeatureControlSection';
 
 const sections = {
   overview: { title: 'Operations overview', description: 'Urgent sourcing, partner, evidence, logistics, payment and moderation queues in one place.', icon: LayoutDashboard, content: AdminOverview },
+  features: { title: 'Feature control', description: 'Choose which customer-facing parts of Naitrust are available and apply the China wholesale launch focus.', icon: SlidersHorizontal, content: FeatureControlSection },
   sourcing: { title: 'Sourcing requests', description: 'Review extracted product briefs, supplier candidates, missing facts and verification readiness.', icon: ClipboardCheck, content: SourcingQueue },
   suppliers: { title: 'Supplier catalogue', description: 'Add verified China and Nigeria suppliers, control availability and keep operating records in one place.', icon: Store, content: SupplierCatalogueSection },
   products: { title: 'Product catalogue', description: 'Create supplier-linked product drafts and publish only after matching media and details are complete.', icon: PackagePlus, content: ProductCatalogueSection },

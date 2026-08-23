@@ -39,7 +39,7 @@ export function SecurityReminders() {
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">
-                Finish verification to create Protected Deals
+                Finish verification to pay for and manage supplier orders
               </p>
               <p className="mt-0.5 text-sm text-muted-foreground">
                 {hard.map((h) => HARD_LABEL[h]).join(' · ')}

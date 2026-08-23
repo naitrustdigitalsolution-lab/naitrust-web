@@ -64,6 +64,24 @@ export default defineConfig({
   build: {
     target: "esnext",
     outDir: "dist",
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-dom") || id.includes("react-router") || /node_modules\/(react|scheduler)\//.test(id)) return "react-core";
+          if (id.includes("@radix-ui")) return "radix-ui";
+          if (id.includes("lucide-react")) return "icons";
+          if (id.includes("motion") || id.includes("framer-motion")) return "motion";
+          if (id.includes("recharts") || id.includes("d3-")) return "charts";
+          if (id.includes("jspdf")) return "pdf";
+          if (id.includes("html2canvas")) return "canvas";
+          if (id.includes("supabase")) return "supabase";
+          if (id.includes("@tanstack")) return "query";
+          if (id.includes("react-hook-form") || id.includes("zod")) return "forms";
+          return;
+        },
+      },
+    },
   },
   server: {
     port: 5181,

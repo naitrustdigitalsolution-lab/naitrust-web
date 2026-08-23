@@ -27,8 +27,8 @@ export function TerminationPanel({ termination, responding, onAccept, onReject }
     status === 'accepted'
       ? { cls: 'border-destructive/30 bg-destructive/10 text-destructive', label: 'Deal terminated' }
       : status === 'rejected'
-        ? { cls: 'border-amber-500/30 bg-amber-500/10 text-foreground', label: 'Termination rejected' }
-        : { cls: 'border-amber-500/30 bg-amber-500/10 text-foreground', label: 'Termination requested' };
+        ? { cls: 'border-amber-500/30 bg-amber-500/10 text-foreground', label: 'Cancellation rejected' }
+        : { cls: 'border-amber-500/30 bg-amber-500/10 text-foreground', label: 'Cancellation requested' };
 
   return (
     <div className="space-y-4">
@@ -59,7 +59,7 @@ export function TerminationPanel({ termination, responding, onAccept, onReject }
 
       {status === 'accepted' && (
         <p className="text-sm text-muted-foreground">
-          {termination.respondedByName ?? 'The other party'} agreed to end this deal
+          {termination.respondedByName ?? 'The other party'} agreed to cancel this order
           {termination.respondedAt ? ` on ${format(new Date(termination.respondedAt), 'MMM d, yyyy')}` : ''}. This
           record is kept for both parties.
         </p>

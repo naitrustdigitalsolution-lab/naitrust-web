@@ -383,10 +383,10 @@ export function ReceiveMoneyPage() {
                 </span>
                 <div>
                   <p className="font-semibold">Request payment</p>
-                  <p className="hidden text-xs text-muted-foreground sm:block">Set the payment details, then share the link. This is a payment request, not a Protected Deal — there's no held payment, evidence, or dispute review.</p>
+                  <p className="hidden text-xs text-muted-foreground sm:block">Set the payment details, then share the link. Use a supplier order instead when products, evidence, milestones or delivery need to be tracked.</p>
                 </div>
                 </div>
-                <div className="hidden flex-wrap gap-2 sm:flex"><Button variant="ghost" size="sm" className="rounded-full" onClick={() => window.open(`/trust/${business?.slug || slugify(business?.name || '')}`, '_blank', 'noopener,noreferrer')}><BadgeCheck size={15} /> Trust Profile</Button><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={15} /> Protected Deal</Button></div>
+                <div className="hidden flex-wrap gap-2 sm:flex"><Button variant="ghost" size="sm" className="rounded-full" onClick={() => window.open(`/trust/${business?.slug || slugify(business?.name || '')}`, '_blank', 'noopener,noreferrer')}><BadgeCheck size={15} /> Trust Profile</Button><Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={15} /> Supplier order</Button></div>
               </div>
               <div className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
@@ -459,8 +459,8 @@ export function ReceiveMoneyPage() {
                 <div className="mt-5 flex items-start gap-3 rounded-xl border border-primary/25 bg-primary/5 p-4">
                   <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground">This amount may be better suited to a Protected Deal</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">A payment link only requests money — it doesn't hold the payment, collect evidence, or support a dispute review. For amounts above ₦50,000, a Protected Deal gives your customer that protection.</p>
+                    <p className="text-sm font-semibold text-foreground">This purchase may need a supplier Order Room</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">A payment link only requests money. A supplier order also records the product or service, evidence, completion checks and any issue review.</p>
                     <Button
                       type="button"
                       size="sm"
@@ -468,7 +468,7 @@ export function ReceiveMoneyPage() {
                       className="mt-3 rounded-full bg-background"
                       onClick={() => navigate(`/app/deals/new?amount=${encodeURIComponent(linkAmount)}${paymentCustomerName ? `&name=${encodeURIComponent(paymentCustomerName)}` : ''}`)}
                     >
-                      <ShieldCheck size={14} /> Start a Protected Deal instead
+                      <ShieldCheck size={14} /> Create a supplier order instead
                     </Button>
                   </div>
                 </div>

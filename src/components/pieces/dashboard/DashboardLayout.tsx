@@ -40,6 +40,8 @@ import {
   Ship,
   Truck,
   ChevronDown,
+  Sparkles,
+  SlidersHorizontal,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -73,6 +75,9 @@ import { useUnreadNotificationCount } from '../../../hooks/useNotifications';
 import { accountTypeLabel, accountTypeOf } from '../../../libs/utils/account';
 import { useMyBusiness } from '../../../hooks/useMyBusiness';
 import { marketplaceApi, MARKET_CART_UPDATED_EVENT } from '../../../libs/marketplace/marketplace.api';
+import { usePlatformFeatures } from '../../../libs/platform-features';
+import { AppLanguageToggle } from '../../utility/AppLanguageToggle';
+import { useAppLocale } from '../../../libs/locale-context';
 
 interface DashboardLayoutProps {
   title: string;
@@ -102,75 +107,50 @@ const SHARED_ACCOUNT_GROUP: NavGroup = {
 };
 
 const BUSINESS_NAV_GROUPS: NavGroup[] = [
-  { items: [{ label: 'Business home', path: '/app', icon: LayoutDashboard }] },
   {
-    label: 'Workspace',
+    label: 'Business',
     items: [
-      { label: 'Buy wholesale', path: '/app/market', icon: Search, children: [
-        { label: 'Find from a link', path: '/app/source', icon: Search, matchPrefix: true },
-        { label: 'Browse market', path: '/app/market', icon: Store, matchPrefix: true },
-        { label: 'Quotes', path: '/app/quotes', icon: ClipboardList, matchPrefix: true },
-        { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
-        { label: 'Production plan', path: '/app/production', icon: Workflow, matchPrefix: true },
-      ] },
-      { label: 'Agents & shipping', path: '/app/agents', icon: Network, children: [
-        { label: 'Nigerian agents in China', path: '/app/agents', icon: UserCheck, matchPrefix: true },
-        { label: 'Agent assignments', path: '/app/agent-assignments', icon: Network, matchPrefix: true },
-        { label: 'Logistics providers', path: '/app/logistics', icon: Truck, matchPrefix: true },
-        { label: 'Shipments', path: '/app/shipments', icon: Ship, matchPrefix: true },
-      ] },
-      { label: 'Sell locally', path: '/app/showcase', icon: Store, children: [
-        { label: 'Showcase', path: '/app/showcase', icon: Store, matchPrefix: true },
-        { label: 'Products', path: '/app/products', icon: Boxes, matchPrefix: true },
-        { label: 'Customers', path: '/app/network', icon: Users, matchPrefix: true },
-      ] },
+      { label: 'Home', path: '/app', icon: LayoutDashboard },
+      { label: 'Sourcing agents', path: '/app/agents', icon: UserCheck, matchPrefix: true },
+      { label: 'Agent-supported orders', path: '/app/agent-assignments', icon: ClipboardList, matchPrefix: true },
+      { label: 'Market', path: '/app/market', icon: Search, matchPrefix: true },
+      { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
+      { label: 'Supplier hub', path: '/app/showcase', icon: Store, matchPrefix: true },
     ],
   },
   {
-    label: 'Money & support',
+    label: 'Manage',
     items: [
-      { label: 'Earnings & wallet', path: '/app/wallet', icon: CircleDollarSign, matchPrefix: true },
-      { label: 'Transactions', path: '/app/transactions', icon: Receipt },
       { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
-      { label: 'Notifications', path: '/app/notifications', icon: Bell },
+      { label: 'Order money', path: '/app/wallet', icon: CircleDollarSign, matchPrefix: true },
+      { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
     ],
   },
-  SHARED_ACCOUNT_GROUP,
 ];
 
 const CUSTOMER_NAV_GROUPS: NavGroup[] = [
-  { items: [{ label: 'Home', path: '/app', icon: LayoutDashboard }] },
   {
-    label: 'Workspace',
+    label: 'Sourcing',
     items: [
-      { label: 'Buy wholesale', path: '/app/market', icon: Search, children: [
-        { label: 'Find from a link', path: '/app/source', icon: Search, matchPrefix: true },
-        { label: 'Browse market', path: '/app/market', icon: Store, matchPrefix: true },
-        { label: 'Quotes', path: '/app/quotes', icon: ClipboardList, matchPrefix: true },
-        { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
-      ] },
-      { label: 'Agents & shipping', path: '/app/agents', icon: Network, children: [
-        { label: 'Nigerian agents in China', path: '/app/agents', icon: UserCheck, matchPrefix: true },
-        { label: 'Agent assignments', path: '/app/agent-assignments', icon: Network, matchPrefix: true },
-        { label: 'Logistics providers', path: '/app/logistics', icon: Truck, matchPrefix: true },
-        { label: 'Shipments', path: '/app/shipments', icon: Ship, matchPrefix: true },
-      ] },
+      { label: 'Home', path: '/app', icon: LayoutDashboard },
+      { label: 'Market', path: '/app/market', icon: Search, matchPrefix: true },
+      { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
+      { label: 'Sourcing agents', path: '/app/agents', icon: UserCheck, matchPrefix: true },
+      { label: 'Agent-supported orders', path: '/app/agent-assignments', icon: ClipboardList, matchPrefix: true },
     ],
   },
   {
-    label: 'Money & support',
+    label: 'Manage',
     items: [
-      { label: 'Order wallet', path: '/app/wallet', icon: WalletCards, matchPrefix: true },
-      { label: 'Transactions', path: '/app/transactions', icon: Receipt },
       { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
-      { label: 'Notifications', path: '/app/notifications', icon: Bell },
+      { label: 'Order money', path: '/app/wallet', icon: WalletCards, matchPrefix: true },
+      { label: 'Settings', path: '/app/settings', icon: Settings, matchPrefix: true },
     ],
   },
-  SHARED_ACCOUNT_GROUP,
 ];
 
 const ADMIN_NAV_GROUPS: NavGroup[] = [
-  { items: [{ label: 'Admin overview', path: '/app/admin/overview', icon: LayoutDashboard }] },
+  { items: [{ label: 'Admin overview', path: '/app/admin/overview', icon: LayoutDashboard }, { label: 'Feature control', path: '/app/admin/features', icon: SlidersHorizontal }] },
   {
     label: 'Operations',
     items: [
@@ -211,6 +191,16 @@ function initialsOf(name: string | undefined): string {
     .join('');
 }
 
+const ZH_LABELS: Record<string, string> = {
+  Account: '账户', Business: '企业采购', Sourcing: '采购', Manage: '管理', Operations: '运营', 'Control centre': '控制中心',
+  Home: '首页', Rewards: '奖励', Settings: '设置', 'Sourcing agents': '采购代理', 'Agent-supported orders': '代理协助订单',
+  Market: '市场', Orders: '订单', 'Supplier hub': '供应商中心', Messages: '消息', 'Order money': '订单资金',
+  'Admin overview': '管理概览', 'Feature control': '功能控制', Marketplace: '市场', 'Sourcing requests': '采购需求',
+  Suppliers: '供应商', Products: '产品', Partners: '合作伙伴', Applications: '申请', 'Logistics providers': '物流服务商',
+  'Orders & releases': '订单与放款', 'Supplier releases': '供应商放款', 'Shipment batches': '运输批次', Payments: '付款',
+  Moderation: '内容审核', 'Waitlist & leads': '候补名单与线索', 'Audit log': '审计日志', Overview: '概览', Requests: '需求',
+};
+
 export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const { user, logout } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
@@ -220,12 +210,45 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
   const unreadNotifications = useUnreadNotificationCount();
   const { data: business, isLoading: isBusinessLoading } = useMyBusiness();
   const accountType = accountTypeOf(user);
+  const platformFeatures = usePlatformFeatures();
+  const { locale } = useAppLocale();
   const isBusinessAccount = accountType === 'business';
   const displayName = isBusinessAccount ? business?.name : user?.name;
   const accountIdentityLoading = isBusinessAccount && isBusinessLoading;
-  const navGroups = accountType === 'admin' ? ADMIN_NAV_GROUPS : isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
+  const baseNavGroups = accountType === 'admin' ? ADMIN_NAV_GROUPS : isBusinessAccount ? BUSINESS_NAV_GROUPS : CUSTOMER_NAV_GROUPS;
+  const enabledPath = (path: string) => {
+    if (path.startsWith('/app/market')) return platformFeatures.marketplace;
+    if (path.startsWith('/app/agents') || path.startsWith('/app/agent-assignments')) return platformFeatures.sourcingAgents;
+    if (path.startsWith('/app/source')) return platformFeatures.productFinder;
+    if (path.startsWith('/app/rewards')) return platformFeatures.rewards;
+    if (path.startsWith('/app/bills')) return platformFeatures.bills;
+    if (path.startsWith('/app/showcase')) return platformFeatures.sellerShowcase;
+    return true;
+  };
+  const localize = (label: string) => locale === 'zh-CN' ? ZH_LABELS[label] ?? label : label;
+  const navGroups = baseNavGroups.map((group) => ({
+    ...group,
+    label: group.label ? localize(group.label) : undefined,
+    items: group.items.filter((item) => {
+      if (accountType === 'admin' && item.label === 'Marketplace') return platformFeatures.marketplace;
+      return accountType === 'admin' || enabledPath(item.path);
+    }).map((item) => ({ ...item, label: localize(item.label), children: item.children?.map((child) => ({ ...child, label: localize(child.label) })) })),
+  })).filter((group) => group.items.length > 0);
   const navItems = navGroups.flatMap((group) => group.items.flatMap((item) => item.children ?? [item]));
   const [cartCount, setCartCount] = useState(() => marketplaceApi.getCart()?.items.length ?? 0);
+  const [quickActionsOpen, setQuickActionsOpen] = useState(false);
+  const baseMobileTabs: NavItem[] = accountType === 'admin' ? [
+    { label: 'Overview', path: '/app/admin/overview', icon: LayoutDashboard },
+    { label: 'Requests', path: '/app/admin/sourcing', icon: Search, matchPrefix: true },
+    { label: 'Partners', path: '/app/admin/applications', icon: Network, matchPrefix: true },
+    { label: 'Payments', path: '/app/admin/payments', icon: Receipt, matchPrefix: true },
+  ] : [
+    { label: 'Home', path: '/app', icon: LayoutDashboard },
+    { label: 'Market', path: '/app/market', icon: Store, matchPrefix: true },
+    { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
+    { label: 'Messages', path: '/app/messages', icon: MessageCircle, matchPrefix: true },
+  ];
+  const mobileTabs = (accountType === 'admin' ? baseMobileTabs : baseMobileTabs.filter((item) => enabledPath(item.path))).map((item) => ({ ...item, label: localize(item.label) }));
 
   useEffect(() => {
     const updateCartCount = () => setCartCount(marketplaceApi.getCart()?.items.length ?? 0);
@@ -380,10 +403,11 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
         <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-background/90 px-3 backdrop-blur sm:gap-3 sm:px-4">
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-5" />
-          <h1 className="min-w-0 truncate text-sm font-semibold text-foreground sm:text-base">{title}</h1>
+          <h1 className="min-w-0 truncate text-sm font-semibold text-foreground sm:text-base">{localize(title)}</h1>
 
           <div className="ml-auto flex items-center gap-1">
-            {accountType !== 'admin' && <Button
+            <AppLanguageToggle compact />
+            {accountType !== 'admin' && platformFeatures.marketplace && <Button
               variant="ghost"
               size="icon"
               aria-label={cartCount > 0 ? `Cart with ${cartCount} items` : 'Cart'}
@@ -419,7 +443,14 @@ export function DashboardLayout({ title, children }: DashboardLayoutProps) {
             </Button>
           </div>
         </header>
-        <main className="min-w-0 flex-1 overflow-x-hidden bg-muted/40 p-3 sm:p-4 md:p-6">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#f4f7fa] p-3 pb-24 dark:bg-background sm:p-5 sm:pb-5 lg:p-7 xl:p-8">{children}</main>
+        {accountType !== 'admin' && <div className="fixed bottom-20 right-4 z-30 flex flex-col items-end gap-2 sm:bottom-7 sm:right-7">{quickActionsOpen && <div className="flex flex-col items-end gap-2 rounded-2xl border bg-background/95 p-2 shadow-xl backdrop-blur">{platformFeatures.sourcingAgents && <Button size="sm" variant="ghost" className="justify-start rounded-xl" onClick={() => navigate('/app/agents')}><UserCheck size={15} /> Find sourcing agent</Button>}<Button size="sm" variant="ghost" className="justify-start rounded-xl" onClick={() => navigate('/app/messages')}><MessageCircle size={15} /> Open messages</Button></div>}<Button size="icon" className="h-14 w-14 rounded-full shadow-[0_16px_45px_rgba(24,119,242,.35)]" aria-label="Open quick actions" onClick={() => setQuickActionsOpen((value) => !value)}><PlusCircle size={22} /></Button></div>}
+        <nav aria-label="Mobile dashboard navigation" className="fixed inset-x-0 bottom-0 z-40 grid border-t bg-background/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-8px_30px_rgba(7,27,49,.08)] backdrop-blur sm:hidden" style={{ gridTemplateColumns: `repeat(${mobileTabs.length}, minmax(0, 1fr))` }}>
+          {mobileTabs.map((item) => {
+            const active = isActive(item);
+            return <button key={item.path} type="button" onClick={() => navigate(item.path)} className={`flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-1.5 text-[10px] font-medium transition ${active ? 'bg-primary/[.08] text-primary' : 'text-muted-foreground'}`}><item.icon size={19} strokeWidth={active ? 2.5 : 2} /><span className="truncate">{item.label}</span></button>;
+          })}
+        </nav>
       </SidebarInset>
     </SidebarProvider>
   );

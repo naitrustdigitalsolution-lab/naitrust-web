@@ -88,7 +88,12 @@ export const transactionsApi = {
       const fixture = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
       const created = listMockCreatedDeals().map((deal) => deal.summary);
       const userId = useAuthStore.getState().user?.id;
-      const visibleDeals = [...created, ...fixture]
+      const dealsById = new Map<string, SafeDealSummary>(created.map((deal) => [deal.id, deal]));
+      // Curated fixtures are the source of truth for demo marketplace rooms.
+      // This prevents stale local Protected Deal records from replacing a
+      // room that has since been repurposed as a supplier purchase order.
+      fixture.forEach((deal) => dealsById.set(deal.id, deal));
+      const visibleDeals = [...dealsById.values()]
         .filter((deal) => canMockUserAccessDeal(deal, userId))
         .map((deal) => {
           const runtime = getMockDealRuntime(deal.id);

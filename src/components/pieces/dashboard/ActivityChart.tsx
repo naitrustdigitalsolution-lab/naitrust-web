@@ -70,20 +70,19 @@ function Frame({ children }: { children: React.ReactNode }) {
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
             <BarChart3 size={18} className="text-primary" />
-            Protected value by month
-            <HelpHint title="Protected value by month">
+            Order value by month
+            <HelpHint title="Order value by month">
               <p>
-                Each point is the total value of Protected Deals you created or joined that month , 
-                money held safely with a regulated partner until the agreed conditions are met.
+                Each point is the total value of supplier orders you created or joined that month.
               </p>
               <p>
                 It's a quick read on your monthly activity. Hover a point to see the exact amount and
-                number of Protected Deals.
+                number of orders.
               </p>
             </HelpHint>
           </h2>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            The value recorded through your Protected Deals each month.
+            The value recorded through your supplier orders each month.
           </p>
         </div>
       </div>
@@ -108,7 +107,7 @@ export function ActivityChart({ deals, isLoading, currency = 'NGN' }: ActivityCh
         <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
           <p className="text-sm font-medium text-foreground">No activity yet</p>
           <p className="max-w-xs text-sm text-muted-foreground">
-            Your monthly recorded value will appear here as you create and fund Protected Deals.
+            Your monthly recorded value will appear here as you create and fund supplier orders.
           </p>
         </div>
       </Frame>

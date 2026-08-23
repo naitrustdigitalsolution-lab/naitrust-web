@@ -17,8 +17,8 @@ const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_ATTACHMENT_TYPES = new Set(['application/pdf', 'image/jpeg', 'image/png', 'image/webp']);
 const SUPPORT_CATEGORIES = [
   { value: 'account', label: 'Account & verification', detail: 'Profile, access or identity checks' },
-  { value: 'payment', label: 'Payment or transfer', detail: 'Money sent, received or pending' },
-  { value: 'protected-deal', label: 'Protected Deal', detail: 'Terms, evidence or completion' },
+  { value: 'payment', label: 'Order money', detail: 'Funding, supplier payments, refunds or withdrawals' },
+  { value: 'protected-deal', label: 'Order Room', detail: 'Quote, evidence, agent check, shipping or completion' },
   { value: 'security', label: 'Security concern', detail: 'Suspicious activity or account safety' },
   { value: 'other', label: 'Something else', detail: 'Any other question for our team' },
 ] as const;
@@ -83,7 +83,7 @@ export function SupportRequestPage() {
         <div className="hidden sm:block"><PageHero
           eyebrow="Naitrust support"
           title="How can we help?"
-          description="Send your question directly to Naitrust. Include a transaction reference when your request concerns a payment or Protected Deal."
+          description="Ask about a supplier, quote, agent, order, delivery or money movement. Include the order reference when you have one."
           icon={Headphones}
           image={getAppImage('support', 'A Naitrust support specialist reviewing a customer request')}
           actions={<Button variant="outline" className="rounded-md bg-background" onClick={() => navigate('/app/messages')}><MessageCircle size={15} /> Messages</Button>}

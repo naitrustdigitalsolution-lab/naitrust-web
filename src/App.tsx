@@ -17,6 +17,8 @@ import { RequireAuth } from './components/utility/RequireAuth';
 import { RequireBusinessAccount } from './components/utility/RequireBusinessAccount';
 import { PWAInstallPrompt } from './components/utility/PWAInstallPrompt';
 import { PWAUpdatePrompt } from './components/utility/PWAUpdatePrompt';
+import { usePlatformFeatures, type PlatformFeatures } from './libs/platform-features';
+import { AppLanguageToggle } from './components/utility/AppLanguageToggle';
 
 /**
  * Minimum time the branded AuthPageLoader stays on screen before a lazy route
@@ -76,6 +78,8 @@ const BusinessCommercePage = lazyWithMinDelay(() => import("./pages/BusinessComm
 const ProductionWorkflowPage = lazyWithMinDelay(() => import("./pages/ProductionWorkflowPage"));
 const FindProductPage = lazyWithMinDelay(() => import("./pages/FindProductPage"));
 const AgentDirectoryPage = lazyWithMinDelay(() => import("./pages/AgentDirectoryPage"));
+const AgentProfilePage = lazyWithMinDelay(() => import("./pages/AgentProfilePage"));
+const SourcedProductPage = lazyWithMinDelay(() => import("./pages/SourcedProductPage"));
 const AgentAssignmentPage = lazyWithMinDelay(() => import("./pages/AgentAssignmentPage"));
 const LogisticsPage = lazyWithMinDelay(() => import("./pages/LogisticsPage"));
 const AdminPortalPage = lazyWithMinDelay(() => import("./pages/AdminPortalPage"));
@@ -107,6 +111,11 @@ const PartnerNetworkPage = lazy(() => import("./pages/PartnerNetworkPage"));
 const PartnerApplicationPage = lazy(() => import("./pages/PartnerApplicationPage"));
 
 const queryClient = new QueryClient();
+
+function FeatureGate({ feature, children, redirectTo = '/app' }: { feature: keyof PlatformFeatures; children: ReactNode; redirectTo?: string }) {
+  const features = usePlatformFeatures();
+  return features[feature] ? children : <Navigate to={redirectTo} replace />;
+}
 
 // A dashboard URL loaded directly by the browser (including refresh) gets the
 // full-screen loader. Client-side navigation, even the first trip into /app from
@@ -271,6 +280,15 @@ function PublicAppContent() {
     location.pathname.startsWith("/partners/") ||
     (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
+  // Public, authenticated and partner layouts provide their own header control.
+  // Standalone routes deliberately skip those layouts, so keep the language
+  // switch fixed within easy reach on every one of those screens.
+  const needsStandaloneLanguageToggle =
+    usesStandaloneHome &&
+    !location.pathname.startsWith('/app') &&
+    location.pathname !== '/partners' &&
+    !location.pathname.startsWith('/partners/');
+
   const handleNavigate = (page: string) => {
     routerNavigate(pagePaths[page] ?? page);
   };
@@ -279,6 +297,11 @@ function PublicAppContent() {
     <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <ScrollToRoutePosition />
       {!usesStandaloneHome && <Header onNavigate={handleNavigate} currentPage={currentPage} />}
+      {needsStandaloneLanguageToggle && (
+        <div className="fixed right-3 top-[max(.75rem,env(safe-area-inset-top))] z-50 sm:right-5">
+          <AppLanguageToggle compact />
+        </div>
+      )}
 
       <main>
         <Suspense fallback={<AuthPageLoader />}>
@@ -317,10 +340,10 @@ function PublicAppContent() {
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
-          <Route path="/market" element={<MarketPage />} />
-          <Route path="/market/products/:productId" element={<MarketPage />} />
-          <Route path="/market/suppliers" element={<MarketPage />} />
-          <Route path="/market/suppliers/:supplierId" element={<MarketPage />} />
+          <Route path="/market" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
+          <Route path="/market/products/:productId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
+          <Route path="/market/suppliers" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
+          <Route path="/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/partners" element={<PartnerNetworkPage />} />
           <Route path="/partners/:kind/apply" element={<PartnerApplicationPage />} />
           <Route path="/partners/login" element={<PartnerNetworkPage />} />
@@ -342,39 +365,41 @@ function PublicAppContent() {
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<Navigate to="/app/settings?tab=security" replace />} />
-            <Route path="/app/rewards" element={<DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/rewards" element={<FeatureGate feature="rewards"><DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/wallet" element={<DashboardRouteSuspense><CommerceWalletPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/beneficiaries" element={<DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense>} />
             <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/bills" element={<DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/bills" element={<FeatureGate feature="bills"><DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
             <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/network/:counterpartyId" element={<RequireBusinessAccount><DashboardRouteSuspense><CounterpartyDetailPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
             <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
-            <Route path="/app/market" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
-            <Route path="/app/market/products/:productId" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
-            <Route path="/app/market/suppliers" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
-            <Route path="/app/market/suppliers/:supplierId" element={<DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense>} />
-            <Route path="/app/cart" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
-            <Route path="/app/source" element={<DashboardRouteSuspense><FindProductPage /></DashboardRouteSuspense>} />
+            <Route path="/app/market" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/market/products/:productId" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/market/suppliers" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/cart" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/source" element={<FeatureGate feature="productFinder"><DashboardRouteSuspense><FindProductPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/quotes" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
             <Route path="/app/orders" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
             <Route path="/app/orders/:orderId" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
-            <Route path="/app/agents" element={<DashboardRouteSuspense><AgentDirectoryPage /></DashboardRouteSuspense>} />
-            <Route path="/app/agent-assignments" element={<DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense>} />
-            <Route path="/app/agent-assignments/:assignmentId" element={<DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense>} />
-            <Route path="/app/logistics" element={<DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/shipments" element={<DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/agents" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentDirectoryPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/agents/:agentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentProfilePage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/source/product/:productId" element={<DashboardRouteSuspense><SourcedProductPage /></DashboardRouteSuspense>} />
+            <Route path="/app/agent-assignments" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/agent-assignments/:assignmentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/logistics" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/shipments" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/production" element={<RequireBusinessAccount><DashboardRouteSuspense><ProductionWorkflowPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
             <Route path="/app/admin/:section?" element={<DashboardRouteSuspense><AdminPortalPage /></DashboardRouteSuspense>} />
             <Route path="/app/partner-admin" element={<Navigate to="/app/admin/applications" replace />} />
-            <Route path="/app/showcase" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/products" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/showcase" element={<FeatureGate feature="sellerShowcase"><RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount></FeatureGate>} />
+            <Route path="/app/products" element={<FeatureGate feature="sellerShowcase"><RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount></FeatureGate>} />
           </Route>
           <Route path="/resources" element={<SimpleRoutePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -10,7 +10,7 @@ import { Card } from '../ui/card';
 import { useAuth } from '../../libs/auth-context';
 import { clearDealDraft, listDealDrafts } from '../../libs/utils/deal-draft';
 
-const DRAFT_STEP_LABELS = ['Deal setup', 'Deal terms', 'Review agreement & send'] as const;
+const DRAFT_STEP_LABELS = ['Order setup', 'Order terms', 'Review agreement & send'] as const;
 const PAGE_SIZE = 10;
 
 export function DealDraftsPage() {
@@ -35,20 +35,20 @@ export function DealDraftsPage() {
   };
 
   return (
-    <DashboardLayout title="Deal drafts">
+    <DashboardLayout title="Order drafts">
       <div className="mx-auto w-full max-w-9xl">
         <Button variant="ghost" size="sm" className="mb-3 -ml-2 rounded-full" onClick={() => navigate('/app/deals')}>
-          <ArrowLeft size={15} className="mr-1.5" /> Back to Your Deals
+          <ArrowLeft size={15} className="mr-1.5" /> Back to orders
         </Button>
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Deal drafts</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Order drafts</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Continue saved work. Drafts become abandoned after 7 days and are deleted after 30 days.
             </p>
           </div>
           <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-            <Plus size={16} className="mr-1" /> New Protected Deal
+            <Plus size={16} className="mr-1" /> New supplier order
           </Button>
         </div>
 
@@ -56,7 +56,7 @@ export function DealDraftsPage() {
           <Card className="flex flex-col items-center gap-3 p-10 text-center shadow-sm">
             <FileClock size={28} className="text-muted-foreground" />
             <p className="font-semibold text-foreground">No saved drafts</p>
-            <p className="max-w-sm text-sm text-muted-foreground">Start a new deal and your progress will appear here.</p>
+            <p className="max-w-sm text-sm text-muted-foreground">Start a supplier order and your saved progress will appear here.</p>
           </Card>
         ) : (
           <>

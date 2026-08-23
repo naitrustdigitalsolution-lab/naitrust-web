@@ -157,7 +157,7 @@ export function BusinessNetworkPage() {
         {filter === 'blocked' && filtered.some((contact) => contact.isBlocked) && (
           <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
             <Ban size={12} />
-            Blocked counterparties cannot invite you to a Protected Deal or send you a payment request.
+            Blocked contacts cannot invite you to an order, send a quote request, or message you.
           </p>
         )}
       </div>

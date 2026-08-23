@@ -13,7 +13,7 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust helps Nigerians discover verified suppliers in China and Nigeria, browse products in English, receive confirmed landed-cost quotes, pay through protected orders, and track delivery.';
+const DEFAULT_DESCRIPTION = 'Naitrust helps Nigerians discover verified suppliers in China and Nigeria, browse products in English, receive complete landed-cost quotes, coordinate checks, pay for orders, and track delivery.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS = 'Naitrust Market, source products from China to Nigeria, verified China suppliers, Nigerian marketplace, China sourcing Nigeria, landed cost quote, import from China, protected supplier payment, international order tracking, product inspection China, sourcing agents China, customs and delivery Nigeria, domestic suppliers Nigeria, supplier showcase, Trust Profile';
 

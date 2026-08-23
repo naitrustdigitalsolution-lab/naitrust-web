@@ -15,6 +15,7 @@ import { NaitrustLogo } from '../utility/NaitrustLogo';
 import { SEOHead } from '../utility/SEOHead';
 import spiralBackground from '../../assets/spiral.svg';
 import { pageImages } from '../../libs/images/image-manifest';
+import { useTranslation } from 'react-i18next';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -30,6 +31,7 @@ type AuthView =
   | 'reset-password';
 
 export function LoginPage({ onNavigate, initialView = 'login', initialEmail = '' }: LoginPageProps) {
+  const { t } = useTranslation('auth');
   const { login, verify2FALogin } = useAuth();
   const location = useLocation();
   const routerNavigate = useNavigate();
@@ -58,11 +60,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [view, setView] = useState<AuthView>(initialView);
 
-  const trustHighlights = [
-    'Return to quotes, protected orders, and deliveries in progress',
-    'Keep supplier checks, documents, messages, and evidence together',
-    'Review landed costs, protected funds, and order activity',
-  ];
+  const trustHighlights = [t('highlight1'), t('highlight2'), t('highlight3')];
 
   // Shared so the same trust points sit in the desktop side panel AND, on
   // mobile, in a card BELOW the form (split copy: intro up top, detail down low).
@@ -130,12 +128,12 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
           }
         }
       } else {
-        setError('Invalid email or password. Please try again or register a new account.');
+        setError(t('invalidCredentials'));
       }
     } catch (error: any) {
-      const errorMessage = error.message || 'Login failed. Please try again.';
+      const errorMessage = error.message || t('loginFailed');
       if (errorMessage.includes('Invalid email') || errorMessage.includes('password')) {
-        setError('Invalid email or password. If you haven\'t registered yet, please create an account first.');
+        setError(t('invalidCredentialsRegister'));
       } else {
         setError(errorMessage);
       }
@@ -149,7 +147,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setError('');
 
     if (!twoFactorCode || twoFactorCode.length !== 6) {
-      setError('Please enter a valid 6-digit code');
+      setError(t('validCode'));
       return;
     }
 
@@ -184,11 +182,11 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               onNavigate('home');
           }
         } else {
-          setError('Login successful but user data not found. Please try logging in again.');
+          setError(t('missingUser'));
         }
       }
     } catch (error: any) {
-      const errorMessage = error.message || 'Invalid code. Please try again.';
+      const errorMessage = error.message || t('invalidCode');
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -200,7 +198,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setError('');
 
     if (!resetEmail) {
-      setError('Please enter your email address');
+      setError(t('enterEmail'));
       return;
     }
 
@@ -208,13 +206,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     try {
       const response = await authApi.forgotPassword(resetEmail);
       if (response.success) {
-        toast.success('OTP has been sent to your email');
+        toast.success(t('otpSent'));
         setView('verify-otp');
       } else {
-        setError(response.message || 'Failed to send OTP. Please try again.');
+        setError(response.message || t('otpSendFailed'));
       }
     } catch {
-      toast.success('If the email exists, an OTP has been sent.');
+      toast.success(t('otpMaybeSent'));
       setView('verify-otp');
     } finally {
       setIsSendingOtp(false);
@@ -226,7 +224,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setError('');
 
     if (!otp || otp.length !== 6) {
-      setError('Please enter a valid 6-digit OTP');
+      setError(t('validOtp'));
       return;
     }
 
@@ -235,13 +233,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
       const response = await authApi.verifyOtp(resetEmail, otp);
       if (response.success && response.data?.resetToken) {
         setResetToken(response.data.resetToken);
-        toast.success('OTP verified successfully');
+        toast.success(t('otpVerified'));
         setView('reset-password');
       } else {
-        setError(response.message || 'Invalid OTP. Please try again.');
+        setError(response.message || t('invalidOtp'));
       }
     } catch (error: any) {
-      setError(error.message || 'Invalid or expired OTP. Please request a new one.');
+      setError(error.message || t('expiredOtp'));
     } finally {
       setIsVerifyingOtp(false);
     }
@@ -252,19 +250,19 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     setError('');
 
     if (!newPassword || !confirmPassword) {
-      setError('Please enter both password fields');
+      setError(t('bothPasswords'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('passwordsMismatch'));
       return;
     }
     if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError(t('passwordLength'));
       return;
     }
     if (!resetToken) {
-      setError('Reset token is missing. Please start the reset process again.');
+      setError(t('missingResetToken'));
       setView('forgot-password');
       return;
     }
@@ -273,7 +271,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     try {
       const response = await authApi.resetPassword(resetEmail, resetToken, newPassword);
       if (response.success) {
-        toast.success('Password reset successfully! Please login with your new password.');
+        toast.success(t('resetSuccess'));
         setView('login');
         setError('');
         setEmail(resetEmail);
@@ -283,10 +281,10 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
         setConfirmPassword('');
         setResetToken('');
       } else {
-        setError(response.error || response.message || 'Failed to reset password. Please try again.');
+        setError(response.error || response.message || t('resetFailed'));
       }
     } catch (error: any) {
-      setError(error.message || error.response?.data?.error || 'Failed to reset password. Please try again.');
+      setError(error.message || error.response?.data?.error || t('resetFailed'));
     } finally {
       setIsResettingPassword(false);
     }
@@ -295,8 +293,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
-        title="Sign in to Naitrust Market"
-        description="Sign in to browse saved suppliers, manage carts and quotes, pay for protected orders, and track delivery to Nigeria."
+        title={t('signInTitle')}
+        description={t('seoDescription')}
         canonicalPath="/login"
       />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
@@ -319,7 +317,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               type="button"
               onClick={() => onNavigate('home')}
               className="mb-6 inline-flex items-center lg:mb-12"
-              aria-label="Go to Naitrust home"
+              aria-label={t('goHome')}
             >
               <NaitrustLogo size="postMd" textColor="text-primary" />
             </button>
@@ -327,13 +325,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
             <div className="max-w-md">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">
-                  Continue with confidence
+                  {t('continue')}
                 </p>
                 <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                  Welcome back. Pick up with confidence.
+                  {t('welcome')}
                 </h1>
                 <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                  Continue your supplier cart, review a landed-cost quote, or track a protected order from China to your door.
+                  {t('sideDescription')}
                 </p>
               </div>
 
@@ -343,13 +341,13 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
             </div>
           </motion.div>
           <div className="mt-10 hidden text-sm leading-6 text-muted-foreground lg:block">
-            Don't have an account?{' '}
+            {t('noAccount')}{' '}
             <button
               type="button"
               onClick={() => onNavigate('register')}
               className="font-semibold text-primary hover:underline"
             >
-              Sign up free
+              {t('signUpFree')}
             </button>
           </div>
         </aside>
@@ -443,7 +441,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
 
         {/* Mobile: the supporting trust points sit BELOW the form (split copy). */}
         <section className="hidden">
-          <p className="mb-3 text-sm font-semibold text-foreground">Why sign in with Naitrust</p>
+          <p className="mb-3 text-sm font-semibold text-foreground">{t('why')}</p>
           {highlightsBlock}
         </section>
       </div>

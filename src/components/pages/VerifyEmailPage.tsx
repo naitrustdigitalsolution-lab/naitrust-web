@@ -126,7 +126,7 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
             <div className="max-w-md">
               <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-primary">Confirm your account</p>
               <h1 className="text-4xl font-bold leading-tight text-[#0b2b45] dark:text-white">One quick check before you continue.</h1>
-              <p className="mt-4 text-base leading-7 text-[#496274] dark:text-slate-300">Confirm the email connected to your account so important payment and Protected Deal updates reach the right person.</p>
+              <p className="mt-4 text-base leading-7 text-[#496274] dark:text-slate-300">Confirm the email connected to your account so supplier, quote, order, delivery and money updates reach the right person.</p>
             </div>
             <div className="mt-10 max-w-md space-y-4">
               {['Confirm the email connected to your profile', 'Keep account and payment notifications reliable', 'Continue with your identity and business records'].map((item) => (

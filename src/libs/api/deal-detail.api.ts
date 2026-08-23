@@ -51,6 +51,8 @@ import { hasRequiredProductEvidence, supportsDeliveryReview } from '../protected
 import { activateDisputeWithEvidence } from './dispute.api';
 import { recommendedWorkflowForUseCase } from '../features/use-case-features';
 import { notificationsApi } from './notifications.api';
+import { marketplaceApi, marketSuppliers } from '../marketplace/marketplace.api';
+import type { MarketOrder } from '../marketplace/types';
 
 const MOCK_LATENCY_MS = 400;
 
@@ -61,14 +63,39 @@ function delay(ms: number): Promise<void> {
 const summaries = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
 
 function allSummaries(): SafeDealSummary[] {
-  return [...listMockCreatedDeals().map((deal) => deal.summary), ...summaries];
+  const byId = new Map<string, SafeDealSummary>(
+    listMockCreatedDeals().map((deal) => [deal.summary.id, deal.summary]),
+  );
+  // Curated marketplace-room fixtures replace stale records created by the
+  // retired Protected Deal demo when both happen to share an id.
+  summaries.forEach((summary) => byId.set(summary.id, summary));
+  return [...byId.values()];
 }
 
 function findSummary(id: string): SafeDealSummary | undefined {
   const userId = useAuthStore.getState().user?.id;
-  return allSummaries().find(
+  const knownSummary = allSummaries().find(
     (summary) => (summary.id === id || summary.reference === id) && canMockUserAccessDeal(summary, userId),
   );
+  if (knownSummary) return knownSummary;
+
+  // Compatibility for marketplace orders saved before room summaries were
+  // introduced. The account-scoped order itself is enough to open a complete
+  // room while a future backend will return this summary from the order API.
+  const order = marketplaceApi.listOrders().find((candidate) => candidate.roomId === id);
+  if (!order) return undefined;
+  const supplier = marketSuppliers.find((candidate) => candidate.id === order.supplierId);
+  return {
+    id,
+    reference: order.reference,
+    title: order.itemSummary ?? `${supplier?.name ?? 'Supplier'} order`,
+    counterpartyName: supplier?.name ?? 'Marketplace supplier',
+    amountMinor: order.protectedProductAmountMinor,
+    currency: 'NGN',
+    status: safeStatusForOrder(order),
+    createdAt: order.createdAt,
+    createdByUserId: userId,
+  };
 }
 
 interface DetailOverlay {
@@ -89,6 +116,14 @@ interface DetailOverlay {
  * never shows a different name than the row that was clicked.
  */
 const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
+  'txn_9c0e3114-ebd4-42f9-98c8-1e174d460747': {
+    description: 'Custom branded cartons ordered from Guangzhou BrightPack Manufacturing. Artwork, dimensions, print quality, quantity and export packing are checked before the shipment leaves China.',
+    useCase: 'import-export',
+    releaseConditions: 'The assigned sourcing agent confirms the products match the approved artwork, dimensions and quantity, uploads readiness evidence, and the buyer approves the eligible supplier release.',
+    dealType: 'milestone',
+    partyMode: 'b2b',
+    youAreSeller: false,
+  },
   txn_mock_001: {
     description: 'Two-bedroom apartment reservation with Adaeze Homes & Properties Ltd, held safely until the offer letter, allocation details, and deposit receipt are confirmed.',
     useCase: 'property-agent-payments',
@@ -247,6 +282,68 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
     youAreSeller: false,
   },
 };
+
+function safeStatusForOrder(order: MarketOrder): SafeDealStatus {
+  if (order.status === 'buyer_review') return 'buyer_review';
+  if (order.status === 'released') return 'paid_out';
+  if (order.status === 'cancelled') return 'cancelled';
+  return 'in_progress';
+}
+
+function milestonesForOrder(order: MarketOrder): DealMilestone[] {
+  const firstIncomplete = order.timeline.findIndex((step) => !step.complete);
+  return order.timeline.map((step, index) => ({
+    id: `order_${order.id}_${index}`,
+    title: step.label,
+    description: step.detail,
+    status: step.complete ? 'done' : index === firstIncomplete ? 'current' : 'pending',
+    updatedByName: step.complete ? 'Naitrust order operations' : undefined,
+    at: step.at,
+  }));
+}
+
+function activityForOrder(order: MarketOrder): DealActivityEvent[] {
+  return order.timeline
+    .filter((step) => step.complete)
+    .map((step, index) => ({
+      id: `market_order_${order.id}_${index}`,
+      kind: index === 0 ? 'created' as const : step.status === 'inspection' ? 'evidence' as const : 'delivery' as const,
+      message: `${step.label}. ${step.detail}`,
+      createdAt: step.at ?? order.createdAt,
+    }));
+}
+
+function agreementForOrder(order: MarketOrder, supplierName: string): AgreementDraft {
+  const orderValue = formatMinorAmount(order.protectedProductAmountMinor, 'NGN');
+  return {
+    version: 1,
+    generatedByAi: false,
+    sections: [
+      {
+        heading: 'Order and supplier',
+        body: `This purchase order records the agreed products and specifications with ${supplierName}. The supplier quote, messages, documents, evidence and decisions remain connected in this Order Room.`,
+      },
+      {
+        heading: 'Production and verification',
+        body: 'The supplier must complete the recorded specifications and quantity. The assigned sourcing agent documents relevant production readiness, quality and packing checks before an eligible supplier payment is approved.',
+      },
+      {
+        heading: 'Supplier payment',
+        body: `${orderValue} is allocated to the products in this order. The supplier is paid through Naitrust operations only after the applicable evidence and buyer approval requirements are satisfied.`,
+      },
+      {
+        heading: 'Shipping and delivery',
+        body: order.deliveryMode === 'international'
+          ? 'Export pickup, consolidation, international transit, customs clearance and delivery in Nigeria are recorded as separate journey stages.'
+          : 'Domestic dispatch, delivery and buyer review are recorded as separate journey stages.',
+      },
+      {
+        heading: 'Issues and changes',
+        body: 'A reported issue pauses any affected payment decision while the order record, evidence and participant responses are reviewed.',
+      },
+    ],
+  };
+}
 
 function fundingFor(status: SafeDealStatus, amountMinor: number, currency: string): DealFunding {
   let fundingStatus: FundingStatus = 'unfunded';
@@ -590,8 +687,14 @@ const trackingOverrides: Record<string, DealMilestone[]> = {};
 const evidenceExtra: Record<string, DealEvidenceItem[]> = {};
 
 function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
+  const marketOrder = marketplaceApi.listOrders().find((order) => order.roomId === summary.id);
+  const marketSupplier = marketOrder
+    ? marketSuppliers.find((supplier) => supplier.id === marketOrder.supplierId)
+    : undefined;
   const createdDeal = findMockCreatedDeal(summary.id);
-  const input = createdDeal?.input;
+  // A linked marketplace order owns this room. Ignore stale create-deal input
+  // left in localStorage by the retired demo flow.
+  const input = marketOrder ? undefined : createdDeal?.input;
   const overlay = DETAIL_OVERLAY[summary.id];
   const created = new Date(summary.createdAt).getTime();
   const dealType: DealType = input?.dealType ?? overlay?.dealType ?? (summary.remainingPaymentMinor ? 'milestone' : 'single');
@@ -629,10 +732,14 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     initialPaymentMinor: summary.initialPaymentMinor ?? input?.initialPaymentMinor,
     remainingPaymentMinor: summary.remainingPaymentMinor ?? input?.remainingPaymentMinor,
     nextPaymentReleaseConditions: summary.nextPaymentReleaseConditions ?? input?.nextPaymentReleaseConditions,
-    counterpartyName: productBuyerView ? 'Ayo Mobile Supplies Ltd' : viewingSeededDealAsParticipant ? (seededOwnerNames[seededOwnerId ?? ''] ?? summary.counterpartyName) : summary.counterpartyName,
+    title: marketOrder ? (summary.title || `${marketSupplier?.name ?? 'Supplier'} order`) : summary.title,
+    reference: marketOrder?.reference ?? summary.reference,
+    amountMinor: marketOrder?.protectedProductAmountMinor ?? summary.amountMinor,
+    createdAt: marketOrder?.createdAt ?? summary.createdAt,
+    counterpartyName: marketSupplier?.name ?? (productBuyerView ? 'Ayo Mobile Supplies Ltd' : viewingSeededDealAsParticipant ? (seededOwnerNames[seededOwnerId ?? ''] ?? summary.counterpartyName) : summary.counterpartyName),
     // Compatibility for invitations accepted before acceptance advanced the
     // mock lifecycle to awaiting_funding.
-    status: runtime?.invitationStatus === 'accepted' && runtime.status === 'terms_agreed'
+    status: marketOrder ? safeStatusForOrder(marketOrder) : runtime?.invitationStatus === 'accepted' && runtime.status === 'terms_agreed'
       ? 'awaiting_funding'
       : runtime?.status ?? summary.status,
   };
@@ -653,9 +760,11 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   // The Tracking tab is available to every Protected Deal, but single-release
   // deals begin empty. Their seller adds only the delivery/work updates that
   // fit the deal; preset stages belong to explicit milestone-tracking deals.
-  const useCase = input?.useCase ?? overlay?.useCase ?? 'supplier-orders';
+  const useCase = marketOrder
+    ? marketOrder.deliveryMode === 'international' ? 'import-export' : 'wholesale-order'
+    : input?.useCase ?? overlay?.useCase ?? 'supplier-orders';
   const workflowMode = input?.workflowMode ?? recommendedWorkflowForUseCase(useCase);
-  const milestones = trackingOverrides[summary.id] ?? (dealType === 'milestone' || workflowMode === 'milestone'
+  const milestones = marketOrder ? milestonesForOrder(marketOrder) : trackingOverrides[summary.id] ?? (dealType === 'milestone' || workflowMode === 'milestone'
     ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName, workflowMode)
     : []);
   const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
@@ -663,14 +772,19 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     ...effectiveSummary,
     publicInvitePath: viewerIsCreator ? createdDeal?.summary.publicInvitePath : undefined,
     title: summary.title ?? `Protected Deal with ${summary.counterpartyName}`,
-    description: input?.description ?? overlay?.description ?? 'Protected transaction with agreed terms, evidence, and release conditions.',
+    description: marketOrder
+      ? `${marketOrder.itemSummary ?? effectiveSummary.title} from ${marketSupplier?.name ?? effectiveSummary.counterpartyName}. Supplier updates, checks, documents, payment decisions and delivery progress stay connected to this order.`
+      : input?.description ?? overlay?.description ?? 'Transaction with agreed terms, evidence, and release conditions.',
     useCase,
     workflowMode,
     dealType,
     partyMode: input?.partyMode ?? overlay?.partyMode ?? inferredPartyMode,
     deliveryDueDate: input?.deliveryDueDate ?? new Date(created + 10 * 86400000).toISOString().slice(0, 10),
-    releaseConditions:
-      input?.releaseConditions ?? overlay?.releaseConditions ?? 'Handover and funding review complete without a dispute, or the buyer approves early release.',
+    releaseConditions: marketOrder
+      ? marketOrder.deliveryMode === 'international'
+        ? 'The assigned sourcing agent submits satisfactory product, quantity and readiness evidence, then the buyer approves the eligible supplier payment.'
+        : 'The delivered products match the accepted order and the buyer approves the eligible seller payment.'
+      : input?.releaseConditions ?? overlay?.releaseConditions ?? 'Handover and funding review complete without a dispute, or the buyer approves early release.',
     extendedProductTestingDays,
     expiresAt: new Date(created + (input?.expiresInDays ?? 14) * 86400000).toISOString(),
     recurring: overlay?.recurring ?? dealType === 'recurring',
@@ -678,7 +792,9 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     parties: input
       ? partiesForCreatedDeal(effectiveSummary, input, viewerIsCreator, creatorName, viewerParticipantIndex, roleContext.creatorRole, roleContext.selfParticipantIndex)
       : partiesFor(effectiveSummary, youAreSeller),
-    agreement: input?.agreement ?? agreementFor(effectiveSummary, overlay, youAreSeller),
+    agreement: marketOrder
+      ? agreementForOrder(marketOrder, marketSupplier?.name ?? effectiveSummary.counterpartyName)
+      : input?.agreement ?? agreementFor(effectiveSummary, overlay, youAreSeller),
     funding: fundingFor(
       effectiveSummary.status,
       runtime?.activePaymentStage === 2
@@ -687,7 +803,9 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
       effectiveSummary.currency,
     ),
     evidence,
-    activity: [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
+    activity: marketOrder
+      ? activityForOrder(marketOrder)
+      : [...(runtime?.activity ?? []), ...activityFor(effectiveSummary)],
     milestones,
     delivery: runtime?.delivery ?? reconcileDeliveryLifecycle(summary.id, extendedProductTestingDays),
     completion: runtime?.completion ?? { status: 'in_progress' },

@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../hooks/useTheme';
 import { openWaitlistModal } from '../../modals/waitlist-events';
+import { usePlatformFeatures } from '../../../libs/platform-features';
+import { AppLanguageToggle } from '../../utility/AppLanguageToggle';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
   onNavigate: (page: string, params?: any) => void;
@@ -23,6 +26,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
+  const platformFeatures = usePlatformFeatures();
+  const { t } = useTranslation('common');
 
   // On the homepage, the header floats transparently over the hero photo
   // until the user scrolls past it, then becomes a normal solid header.
@@ -59,12 +64,12 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
 
   // Nav items for unauthenticated users (public pages)
   const publicNavItems = [
-    { label: 'Home', page: 'home' },
-    { label: 'Market', page: '/market' },
-    { label: 'For Buyers', page: 'customer' },
-    { label: 'For Sellers', page: 'business' },
-    { label: 'About', page: 'about' },
-    { label: 'Contact', page: 'contact' },
+    { label: t('home'), page: 'home' },
+    ...(platformFeatures.marketplace ? [{ label: t('market'), page: '/market' }] : []),
+    { label: t('buyers'), page: 'customer' },
+    { label: t('agents'), page: '/partners' },
+    { label: t('about'), page: 'about' },
+    { label: t('contact'), page: 'contact' },
   ];
 
   // Determine where logo should navigate
@@ -93,9 +98,9 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
             className="hidden w-full min-h-14 bg-primary/15 hover:bg-[#c4e9fdb3] px-4 py-2 text-center text-sm font-medium text-[#0b2b45] transition dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#1a1a1a]/80 sm:block"
           >
             <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-              <span className='text-sm text-black dark:text-white md:text-base'>Find verified suppliers in China and receive your order in Nigeria.</span>
+              <span className='text-sm text-black dark:text-white md:text-base'>{t('announcement')}</span>
               <span className="inline-flex items-center gap-1 text-primary text-xs sm:text-sm md:text-lg font-semibold">
-                Join the waiting list
+                {t('waitlist')}
                 <ArrowRight size={15} />
               </span>
             </span>
@@ -125,7 +130,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                 className="gap-2 shrink-0 hidden md:flex"
               >
                 <ArrowLeft size={18} />
-                Back
+                {t('back')}
               </Button>
             )}
 
@@ -139,7 +144,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                   className="gap-1 shrink-0 -ml-2"
                 >
                   <ArrowLeft size={18} />
-                  <span className="text-sm">Back</span>
+                  <span className="text-sm">{t('back')}</span>
                 </Button>
               ) : (
                 <button
@@ -197,6 +202,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
 
             {/* Right side actions */}
             <div className="flex items-center gap-2 ml-auto">
+              <AppLanguageToggle compact />
               {/* Desktop: User/Business Info - Show when authenticated */}
               {isAuthenticated && currentPage !== 'business-profile' && (
                 <div className="hidden md:flex items-center gap-3 px-3 py-1.5 bg-muted/50 rounded-lg">
@@ -242,7 +248,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {isAuthenticated && showNavItems && (
                 <Button variant="outline" size="lg" onClick={() => { logout(); onNavigate('login'); }} className="hidden md:flex">
                   <LogOut size={16} className="mr-2" />
-                  Logout
+                  {t('logout')}
                 </Button>
               )}
 
@@ -250,7 +256,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {!isAuthenticated && (
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                  aria-label={mobileMenuOpen ? t('closeMenu') : t('openMenu')}
                   aria-expanded={mobileMenuOpen}
                   className={`rounded-lg p-1.5 lg:hidden ${isHomeHero ? 'text-white hover:bg-white/10' : 'hover:bg-muted'} ${mobileMenuOpen ? 'bg-primary/15' : ''}`}
                 >
@@ -267,10 +273,10 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                     onClick={() => window.open('/login', '_blank', 'noopener,noreferrer')}
                     className={isHomeHero ? 'border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white' : ''}
                   >
-                    Login
+                    {t('login')}
                   </Button>
-                  <Button size="lg" onClick={() => window.open('/register', '_blank', 'noopener,noreferrer')}>
-                    Get Started
+                  <Button size="lg" onClick={() => window.open('/register?returnTo=/app/agents', '_blank', 'noopener,noreferrer')}>
+                    {t('getStarted')}
                   </Button>
                 </div>
               )}
@@ -315,17 +321,17 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       setMobileMenuOpen(false);
                     }}
                   >
-                    Login
+                    {t('login')}
                   </Button>
                   <Button
                     size="sm"
                     className="h-10 min-w-0 flex-1 text-xs"
                     onClick={() => {
-                      window.open('/register', '_blank', 'noopener,noreferrer');
+                      window.open('/register?returnTo=/app/agents', '_blank', 'noopener,noreferrer');
                       setMobileMenuOpen(false);
                     }}
                   >
-                    Sign Up
+                    {t('signUp')}
                   </Button>
                 </div>
               </div>

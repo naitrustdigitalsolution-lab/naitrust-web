@@ -19,6 +19,7 @@ import type {
   WaitlistPayload,
   WaitlistUserType,
 } from '../../types/global';
+import { interestsForWaitlistRoles, WAITLIST_ROLE_OPTIONS } from '../../libs/waitlist/marketplace-options';
 
 type WaitlistFormState = {
   firstName: string;
@@ -61,24 +62,6 @@ const transactionRanges: Array<{ value: TransactionRange; label: string }> = [
   { value: 'above_50m', label: 'Above NGN 50m' },
 ];
 
-const userTypes: Array<{ value: WaitlistUserType; label: string }> = [
-  { value: 'informal_business', label: 'Market trader or stall owner' },
-  { value: 'business_buyer', label: 'Shop, retail business or company' },
-  { value: 'supplier_vendor', label: 'Wholesaler, supplier or distributor' },
-  { value: 'marketplace_social_seller', label: 'Online or social seller' },
-  { value: 'contractor_service_provider', label: 'Service business or contractor' },
-  { value: 'individual_customer', label: 'Individual sourcing products or services' },
-  { value: 'other', label: 'Another kind of Nigerian business' },
-];
-
-const paymentNeeds = [
-  { slug: 'china-products', title: 'Find products and verified suppliers in China' },
-  { slug: 'landed-cost', title: 'Receive a complete landed-cost quote before paying' },
-  { slug: 'protected-orders', title: 'Fund and track a protected supplier order' },
-  { slug: 'sourcing-agents', title: 'Hire sourcing or inspection help in China' },
-  { slug: 'nigeria-selling', title: 'Publish products and fulfil orders in Nigeria' },
-] as const;
-
 export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const [formState, setFormState] = useState<WaitlistFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,6 +70,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const dragStartY = useRef<number | null>(null);
   const dragDistance = useRef(0);
+  const interestOptions = interestsForWaitlistRoles(formState.userType);
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) setRangeOpen(false);
@@ -133,12 +117,17 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
   };
 
   const toggleUserType = (value: WaitlistUserType) => {
-    setFormState((current) => ({
-      ...current,
-      userType: current.userType.includes(value)
+    setFormState((current) => {
+      const userType = current.userType.includes(value)
         ? current.userType.filter((item) => item !== value)
-        : [...current.userType, value],
-    }));
+        : [...current.userType, value];
+      const allowedInterests = new Set(interestsForWaitlistRoles(userType).map((item) => item.value));
+      return {
+        ...current,
+        userType,
+        useCase: current.useCase.filter((item) => allowedInterests.has(item)),
+      };
+    });
   };
 
   const toggleUseCase = (value: string) => {
@@ -323,7 +312,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               </PopoverTrigger>
               <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
                 <div className="grid gap-0.5">
-                  {userTypes.map((type) => (
+                  {WAITLIST_ROLE_OPTIONS.map((type) => (
                     <label
                       key={type.value}
                       className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
@@ -332,7 +321,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
                         checked={formState.userType.includes(type.value)}
                         onCheckedChange={() => toggleUserType(type.value)}
                       />
-                      {type.label}
+                      <span><span className="block">{type.label}</span><span className="mt-0.5 block text-[10px] font-normal text-muted-foreground">{type.detail}</span></span>
                     </label>
                   ))}
                 </div>
@@ -340,7 +329,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             </Popover>
             {formState.userType.length > 0 && (
               <div className="scrollbar-none flex gap-1 overflow-x-auto pb-0.5">
-                {userTypes
+                {WAITLIST_ROLE_OPTIONS
                   .filter((type) => formState.userType.includes(type.value))
                   .map((type) => (
                     <span
@@ -355,7 +344,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
           </div>
 
           <div className="grid min-w-0 gap-2 text-sm font-medium">
-            What would help your business most?
+            What do you want to do on Naitrust?
             <Popover>
               <PopoverTrigger asChild>
                 <button
@@ -372,33 +361,25 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               </PopoverTrigger>
               <PopoverContent align="start" className="w-[min(22rem,90vw)] max-h-64 overflow-y-auto p-1.5">
                 <div className="grid gap-0.5">
-                  {paymentNeeds.map((item) => (
+                  {interestOptions.map((item) => (
                     <label
-                      key={item.slug}
+                      key={item.value}
                       className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted"
                     >
                       <Checkbox
-                        checked={formState.useCase.includes(item.slug)}
-                        onCheckedChange={() => toggleUseCase(item.slug)}
+                        checked={formState.useCase.includes(item.value)}
+                        onCheckedChange={() => toggleUseCase(item.value)}
                       />
-                      {item.title}
+                      {item.label}
                     </label>
                   ))}
-                  <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium leading-snug hover:bg-muted">
-                    <Checkbox
-                      checked={formState.useCase.includes('other')}
-                      onCheckedChange={() => toggleUseCase('other')}
-                    />
-                    Something else
-                  </label>
                 </div>
               </PopoverContent>
             </Popover>
             {formState.useCase.length > 0 && (
               <div className="scrollbar-none flex gap-1 overflow-x-auto pb-0.5">
                 {[
-                  ...paymentNeeds.filter((item) => formState.useCase.includes(item.slug)).map((item) => item.title),
-                  ...(formState.useCase.includes('other') ? ['Something else'] : []),
+                  ...interestOptions.filter((item) => formState.useCase.includes(item.value)).map((item) => item.label),
                 ].map((label) => (
                   <span
                     key={label}
@@ -453,7 +434,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
 
           <label className="grid gap-2 text-sm font-medium">
             <span className="flex items-baseline gap-1">
-              What would make your business payments clearer? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              What should Naitrust help you do? <span className="text-xs font-normal text-muted-foreground">(optional)</span>
             </span>
             <Textarea
               value={formState.transactionNeed}
@@ -470,7 +451,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
               type="checkbox"
               onChange={(event) => updateField('consent', event.target.checked)}
             />
-            Naitrust can contact me about business-payments early access and product updates.
+            Naitrust can contact me about marketplace early access and useful product updates.
           </label>
 
           <Button type="submit" size="lg" disabled={isSubmitting} className="mt-1 h-12 rounded-lg">

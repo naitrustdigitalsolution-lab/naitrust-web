@@ -207,7 +207,7 @@ export function CreateDealDetailsStep({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="min-w-0">
-            <Label htmlFor="title">What is this deal for? <span className="text-destructive" aria-hidden="true">*</span></Label>
+            <Label htmlFor="title">What is this order for? <span className="text-destructive" aria-hidden="true">*</span></Label>
             <div className="relative mt-1.5">
               <Input id="title" required aria-required="true" className="pr-11" placeholder="e.g. 20 cartons of cooking oil" value={form.title} onChange={(event) => onFieldChange('title', event.target.value)} />
               <button type="button" disabled={suggestingDetails} onClick={() => { if (titleSuggestions.length) { const currentIndex = titleSuggestions.findIndex((suggestion) => suggestion === form.title); onFieldChange('title', titleSuggestions[(currentIndex + 1) % titleSuggestions.length]); } else setSuggestionRequest((current) => current + 1); }} className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-primary transition hover:bg-primary/10 disabled:opacity-50" aria-label="Generate deal title with AI" title="Generate with AI">
@@ -228,7 +228,7 @@ export function CreateDealDetailsStep({
             <div className="min-w-0 sm:col-span-2">
               <div className="relative">
                 <Textarea id="description" className="h-24 min-h-24 resize-y overflow-y-auto pr-12 text-sm leading-6" placeholder="Quantity, model, colour, size, location, or the exact work agreed." value={form.description} onChange={(event) => { setAiDetailError(''); onFieldChange('description', event.target.value); }} autoFocus />
-                <button type="button" disabled={suggestingDetails || refreshingDetail} onClick={() => void refreshDescription()} className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-lg text-primary transition hover:bg-primary/10 disabled:opacity-40" aria-label="Generate deal details with AI" title="Generate with AI">{refreshingDetail ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}</button>
+                <button type="button" disabled={suggestingDetails || refreshingDetail} onClick={() => void refreshDescription()} className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-lg text-primary transition hover:bg-primary/10 disabled:opacity-40" aria-label="Generate order details with AI" title="Generate with AI">{refreshingDetail ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}</button>
               </div>
               <FieldError message={aiDetailError} />
               <FieldError message={errors.description} />
@@ -255,7 +255,7 @@ export function CreateDealDetailsStep({
                 )}
               </div>
               <p className={`mt-1 text-xs ${recipientSelectionReady ? 'text-muted-foreground' : 'font-medium text-amber-700 dark:text-amber-400'}`}>
-                {recipientSelectionReady ? 'Choose who will receive this protected payment.' : 'Enter the total amount and expected date first.'}
+                {recipientSelectionReady ? 'Choose the supplier or provider for this order.' : 'Enter the total amount and expected date first.'}
               </p>
             </div>
             <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">

@@ -51,8 +51,7 @@ function EmptyState() {
       </div>
       <p className="font-semibold text-[#071b31] dark:text-foreground">No invitations right now</p>
       <p className="max-w-sm text-sm leading-6 text-[#35546f] dark:text-muted-foreground">
-        When a Protected Deal participant invites you, it shows up here for you to review and
-        accept.
+        When a buyer or supplier invites you to a direct order, it appears here for review.
       </p>
     </Card>
   );
@@ -116,17 +115,17 @@ export function InvitationsPage() {
     <DashboardLayout title="Invitations">
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
-          <h1 className="text-lg font-bold tracking-tight">Deal invitations</h1>
-          <Button size="icon" className="h-8 w-8 rounded-full" aria-label="New deal" onClick={() => navigate('/app/deals/new')}><Plus size={14} /></Button>
+          <h1 className="text-lg font-bold tracking-tight">Order invitations</h1>
+          <Button size="icon" className="h-8 w-8 rounded-full" aria-label="New order" onClick={() => navigate('/app/deals/new')}><Plus size={14} /></Button>
         </div>
         <div className="hidden sm:block"><PageHero
-          eyebrow="Protected Deals"
-          title="Deal invitations"
-          description="Review Protected Deals you have been invited to, then accept to agree the terms."
+          eyebrow="Direct supplier orders"
+          title="Order invitations"
+          description="Review the products, participants, payment stages and delivery terms before accepting an order."
           icon={Inbox}
           actions={
             <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-              <Plus size={15} /> Create a deal
+              <Plus size={15} /> Create an order
             </Button>
           }
         /></div>

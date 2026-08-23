@@ -100,7 +100,7 @@ export function DealChat({ dealId, counterpartyName, className }: DealChatProps)
         </div>
         <p className="mt-2 flex items-center gap-1.5 text-[0.7rem] text-muted-foreground">
           <Lock size={11} />
-          Messages are kept with the deal record as part of its evidence trail.
+          Messages are kept with the order as part of its evidence trail.
         </p>
       </div>
     </div>

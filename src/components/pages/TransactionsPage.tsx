@@ -86,8 +86,8 @@ export function TransactionsPage() {
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-primary">Wallet and orders</p>
-            <h1 className="mt-0.5 text-lg font-bold tracking-tight">Account activity</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-primary">Order money</p>
+            <h1 className="mt-0.5 text-lg font-bold tracking-tight">Money activity</h1>
           </div>
           <div className="flex gap-1">
             <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" aria-label="Search account activity" onClick={() => setShowMobileSearch((value) => !value)}><Search size={14} /></Button>
@@ -95,11 +95,11 @@ export function TransactionsPage() {
           </div>
         </div>
         <div className="hidden sm:block"><PageHero
-          eyebrow="Wallet and orders"
-          title="Account activity"
+          eyebrow="Order money"
+          title="Money activity"
           description={isCustomer
-            ? 'Track order funding, refunds, earnings and withdrawals from your Naira balance.'
-            : 'Track order funding, supplier releases, customer earnings, refunds and withdrawals in one place.'}
+            ? 'Follow deposits, supplier payments, agent and shipping fees, refunds, and withdrawals across your wholesale orders.'
+            : 'Follow buyer payments, supplier settlements, agent and shipping fees, seller earnings, refunds, and withdrawals.'}
           icon={Receipt}
         /></div>
 
@@ -128,8 +128,8 @@ export function TransactionsPage() {
         <Tabs value={method} onValueChange={(v) => setMethod(v as typeof method)} className={`${showMobileFilters ? 'block' : 'hidden'} mb-4 sm:block`}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="all">All activity</TabsTrigger>
-            <TabsTrigger value="instant">Wallet</TabsTrigger>
-            <TabsTrigger value="protected">Protected orders</TabsTrigger>
+            <TabsTrigger value="instant">Balance</TabsTrigger>
+            <TabsTrigger value="protected">Order payments</TabsTrigger>
           </TabsList>
         </Tabs>
 
@@ -231,7 +231,7 @@ export function TransactionsPage() {
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Activity group</span>
-                <span className="font-medium text-foreground">{selected.method === 'protected' ? 'Protected order' : 'Wallet'}</span>
+                <span className="font-medium text-foreground">{selected.method === 'protected' ? 'Supplier order' : 'Naira balance'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Status</span>

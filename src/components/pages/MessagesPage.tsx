@@ -9,6 +9,8 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { getAppImage } from '../../libs/images/image-manifest';
+import { sourcingApi } from '../../features/sourcing/api/sourcing.api';
+import { useOperationsRefresh } from '../../features/sourcing/hooks/use-operations-refresh';
 
 const CONVERSATIONS = [
   { id: 'general_001', name: 'Naitrust Support', preview: 'Get help with a supplier, quote, order, delivery, or account.', time: 'Support', unread: 0, order: false, support: true, link: '/app/messages/support' },
@@ -17,12 +19,22 @@ const CONVERSATIONS = [
 ];
 
 export function MessagesPage() {
+  const operationsVersion = useOperationsRefresh();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const conversations = useMemo(() => {
+    void operationsVersion;
+    const agentAssignments = sourcingApi.listAssignments().map((assignment) => {
+      const agent = sourcingApi.listAgents().find((item) => item.id === assignment.agentId);
+      const lastMessage = assignment.messages[assignment.messages.length - 1];
+      return { id: `agent_${assignment.id}`, name: `${agent?.profileType === 'company' ? agent.businessName ?? agent.name : agent?.name ?? 'Sourcing agent'} · ${assignment.supplierName}`, preview: lastMessage?.body ?? 'Open the order-room conversation.', time: lastMessage ? new Date(lastMessage.createdAt).toLocaleDateString() : 'Order room', unread: 0, order: true, support: false, link: `/app/agent-assignments/${assignment.id}` };
+    });
+    return [...CONVERSATIONS, { id: 'private_agent_chidi', name: 'Chidi Adebayo', preview: 'Tell me what product you need and where you found it.', time: 'Private chat', unread: 0, order: false, support: false, link: '/app/agents' }, ...agentAssignments];
+  }, [operationsVersion]);
   const filtered = useMemo(
-    () => CONVERSATIONS.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())),
-    [search],
+    () => conversations.filter((item) => `${item.name} ${item.preview}`.toLowerCase().includes(search.toLowerCase())),
+    [conversations, search],
   );
 
   return (
@@ -36,9 +48,9 @@ export function MessagesPage() {
           </div>
         </div>
         <div className="hidden sm:block"><PageHero
-          eyebrow="Orders and support"
+          eyebrow="Every conversation in one place"
           title="Messages"
-          description="Talk with suppliers, sourcing agents, and Naitrust support from one inbox."
+          description="Private agent chats, supplier conversations, order-room updates and Naitrust support are referenced in one inbox."
           icon={MessageCircle}
           image={getAppImage('messages', 'Supplier and customer order conversations')}
           actions={<Button className="rounded-md" onClick={() => navigate('/app/support/new')}>

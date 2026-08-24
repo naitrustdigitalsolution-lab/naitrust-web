@@ -59,8 +59,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const { t } = useTranslation('home');
   const platformFeatures = usePlatformFeatures();
   const [allowAmbientMotion, setAllowAmbientMotion] = useState(false);
-  const [allowHeroVideo, setAllowHeroVideo] = useState(false);
-  const [heroVideoPlaying, setHeroVideoPlaying] = useState(true);
+  const [allowHeroVideo, setAllowHeroVideo] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
+  const [heroVideoPlaying, setHeroVideoPlaying] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const [useHeroViewportHeight, setUseHeroViewportHeight] = useState(true);
 
@@ -173,18 +173,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section
         className={`relative isolate min-h-[112svh] overflow-hidden bg-[#04162f] text-white sm:min-h-[110svh] lg:min-h-[105svh] ${useHeroViewportHeight ? "xl:min-h-[94vh]" : ""}`}
       >
-        <ImageWithFallback
+        {!allowHeroVideo && <ImageWithFallback
           src={pageImages.homeHero.src}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 -z-30 h-full w-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
           decoding="async"
-        />
+        />}
         {allowHeroVideo && (
           <video
             ref={heroVideoRef}
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
-            poster={pageImages.homeHero.src}
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center] filter-none sm:object-[58%_center] lg:object-center"
+            style={{ filter: 'none', WebkitFilter: 'none' }}
             autoPlay
             muted
             loop
@@ -223,7 +223,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={() => onNavigate("/waitlist")}
                 className="group h-12 w-full rounded-full bg-[#1e90ff] px-6 text-sm font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] min-[420px]:w-auto sm:px-7"
               >
-                Join the waiting list
+                {t('common:waitlist')}
                 <ArrowRight
                   size={18}
                   className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6"

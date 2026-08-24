@@ -348,7 +348,7 @@ function PublicAppContent() {
           <Route path="/market/suppliers" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/partners" element={<PartnerNetworkPage />} />
-          <Route path="/partners/:kind/apply" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/partners/:kind/apply" element={<PartnerNetworkPage />} />
           <Route path="/partners/login" element={<PartnerNetworkPage />} />
           <Route path="/partners/portal" element={<PartnerNetworkPage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />

@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Factory,
+  FileCheck2,
   Globe2,
   Languages,
   Lock,
@@ -175,7 +176,9 @@ export function PartnerNetworkPage() {
     ? "agent"
     : pathname.includes("/supplier/")
       ? "supplier"
-      : null;
+      : pathname.includes("/logistics/")
+        ? "logistics"
+        : null;
   const details = locale === "zh-CN" ? {
     overviewEyebrow: "合作要求",
     overviewTitle: "申请前，请先了解各角色的责任。",
@@ -260,6 +263,14 @@ export function PartnerNetworkPage() {
     }
   };
 
+  const openPartnerLogin = () => {
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      window.open("/partners/login", "_blank", "noopener,noreferrer");
+      return;
+    }
+    navigate("/partners/login");
+  };
+
   if (isPortal)
     return (
       <PartnerPortal
@@ -290,7 +301,6 @@ export function PartnerNetworkPage() {
       <PartnerApplicationForm
         role={applicationRole}
         locale={locale}
-        onLocale={changeLocale}
       />
     );
 
@@ -301,12 +311,6 @@ export function PartnerNetworkPage() {
         description={t.seoDescription}
         canonicalPath="/partners"
       />
-      <header className="border-b bg-background/95 px-4 backdrop-blur sm:px-6 lg:px-8">
-        <div className="mx-auto flex h-16 max-w-[90rem] items-center justify-between gap-3 sm:h-20">
-          <button type="button" onClick={() => navigate('/')} aria-label={t.homeLabel}><NaitrustLogo size="sm" showText /></button>
-          <div className="flex items-center gap-2"><AppLanguageToggle compact /><Button variant="ghost" size="sm" className="hidden rounded-full sm:inline-flex" onClick={() => navigate('/partners/login')}><LockKeyhole size={14} /> {t.login}</Button></div>
-        </div>
-      </header>
       <main>
         <section className="overflow-hidden bg-[#04162f] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="mx-auto grid max-w-[90rem] items-center gap-10 lg:grid-cols-[.92fr_1.08fr] lg:gap-16">
@@ -330,7 +334,7 @@ export function PartnerNetworkPage() {
                 <Button
                   variant="outline"
                   className="h-11 rounded-full border-white/20 bg-white/[.07] px-6 text-white hover:bg-white/15 hover:text-white"
-                  onClick={() => navigate("/partners/login")}
+                  onClick={openPartnerLogin}
                 >
                   {t.login} <ArrowRight size={15} />
                 </Button>
@@ -460,7 +464,7 @@ export function PartnerNetworkPage() {
             </div>
             <Button
               className="h-11 shrink-0 rounded-full px-6"
-              onClick={() => navigate("/partners/login")}
+              onClick={openPartnerLogin}
             >
               {t.portalAction} <ArrowRight size={16} />
             </Button>
@@ -526,21 +530,6 @@ function PartnerStep({
   );
 }
 
-function PartnerTopbar({
-  locale,
-  onLocale,
-}: {
-  locale: Locale;
-  onLocale: (locale: Locale) => void;
-}) {
-  return (
-    <header className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-      <NaitrustLogo size="md" />
-      <AppLanguageToggle compact />
-    </header>
-  );
-}
-
 function LanguageToggle({
   locale,
   onLocale,
@@ -574,16 +563,14 @@ function PartnerBenefit({
 function PartnerApplicationForm({
   role,
   locale,
-  onLocale,
 }: {
   role: PartnerRole;
   locale: Locale;
-  onLocale: (locale: Locale) => void;
 }) {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [companyName, setCompanyName] = useState(
-    role === "supplier" ? "" : undefined,
+    role === "agent" ? undefined : "",
   );
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
@@ -592,9 +579,12 @@ function PartnerApplicationForm({
   const [services, setServices] = useState(
     role === "agent"
       ? "Market sourcing, factory visits, inspection"
-      : "Products, custom manufacturing, export fulfilment",
+      : role === "supplier"
+        ? "Products, custom manufacturing, export fulfilment"
+        : "China pickup, warehousing, freight, customs coordination",
   );
   const [experience, setExperience] = useState("");
+  const [verificationDocument, setVerificationDocument] = useState<File | null>(null);
 
   const submit = () => {
     if (
@@ -602,7 +592,8 @@ function PartnerApplicationForm({
       !email.trim() ||
       !phone.trim() ||
       !experience.trim() ||
-      (role === "supplier" && !companyName?.trim())
+      !verificationDocument ||
+      (role !== "agent" && !companyName?.trim())
     ) {
       toast.error(
         locale === "zh-CN"
@@ -624,17 +615,42 @@ function PartnerApplicationForm({
         .map((item) => item.trim())
         .filter(Boolean),
       experience: experience.trim(),
+      verificationDocumentName: verificationDocument.name,
+      verificationDocumentType: verificationDocument.type,
+      verificationDocumentSize: verificationDocument.size,
     });
     setSubmitted(true);
   };
 
   return (
-    <div className="min-h-svh bg-[#f2f6f9] px-4 py-6 dark:bg-background sm:px-6">
-      <PartnerTopbar locale={locale} onLocale={onLocale} />
-      <main className="mx-auto mt-6 max-w-2xl">
+    <div className="relative min-h-[calc(100svh-4rem)] overflow-hidden bg-white text-foreground dark:bg-background sm:min-h-[calc(100svh-5rem)]">
+      <div className="absolute inset-y-0 left-0 hidden w-[45%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
+      <div className="pointer-events-none absolute inset-0 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <img src={spiralBackground} alt="" aria-hidden="true" className="absolute -left-48 top-1/2 hidden h-[900px] w-[900px] max-w-none -translate-y-1/2 rotate-180 opacity-70 lg:block" />
+      </div>
+      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-7xl gap-8 px-4 py-8 sm:min-h-[calc(100svh-5rem)] sm:px-6 lg:grid-cols-[.78fr_1.22fr] lg:px-8">
+        <aside className="hidden self-start px-8 py-12 lg:block">
+          <p className="text-xs font-semibold uppercase tracking-[.18em] text-primary">Partner verification</p>
+          <h1 className="mt-3 max-w-sm text-4xl font-bold leading-tight text-[#0b2b45] dark:text-white">
+            Build a partner profile buyers can trust.
+          </h1>
+          <p className="mt-4 max-w-sm text-sm leading-7 text-[#496274] dark:text-slate-300">
+            Tell us how you operate and provide evidence Naitrust can review before access is approved.
+          </p>
+          <div className="mt-8 max-w-sm space-y-3">
+            {["Identity and contact review", "Operating capability and service coverage", "Legal or registration document verification"].map((item) => (
+              <div key={item} className="flex gap-3 rounded-xl border border-white/70 bg-white/70 p-4 text-sm text-muted-foreground shadow-sm dark:border-white/10 dark:bg-card">
+                <ShieldCheck size={18} className="shrink-0 text-primary" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
+        <main className="flex min-h-full items-center justify-center py-2 lg:py-8">
+          <div className="w-full max-w-2xl">
         <Button
           variant="ghost"
-          className="mb-3 rounded-full"
+          className="mb-3 rounded-full px-2 text-muted-foreground"
           onClick={() => navigate("/partners")}
         >
           Back
@@ -658,25 +674,33 @@ function PartnerApplicationForm({
             </Button>
           </Card>
         ) : (
-          <Card className="rounded-3xl p-5 sm:p-8">
+          <Card className="rounded-2xl border-border/70 p-5 shadow-xl sm:p-8">
             <Badge>
-              {role === "agent" ? "Sourcing agent" : "Chinese supplier"}
+              {role === "agent"
+                ? "Sourcing agent"
+                : role === "supplier"
+                  ? "Chinese supplier"
+                  : "Logistics company"}
             </Badge>
             <h1 className="mt-4 text-3xl font-bold">
               {role === "agent"
                 ? locale === "zh-CN"
                   ? "采购代理申请"
                   : "Sourcing agent application"
-                : locale === "zh-CN"
-                  ? "中国供应商注册"
-                  : "Chinese supplier registration"}
+                : role === "supplier"
+                  ? locale === "zh-CN"
+                    ? "中国供应商注册"
+                    : "Chinese supplier registration"
+                  : locale === "zh-CN"
+                    ? "物流合作伙伴申请"
+                    : "Logistics partner application"}
             </h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               Applications are reviewed by Naitrust. Registration does not
               create immediate platform access.
             </p>
             <div className="mt-6 space-y-4">
-              {role === "supplier" && (
+              {role !== "agent" && (
                 <div>
                   <Label htmlFor="partner-company">Company legal name</Label>
                   <Input
@@ -732,7 +756,9 @@ function PartnerApplicationForm({
                 <Label htmlFor="partner-services">
                   {role === "agent"
                     ? "Services offered"
-                    : "Products and capabilities"}
+                    : role === "supplier"
+                      ? "Products and capabilities"
+                      : "Logistics services and routes"}
                 </Label>
                 <Input
                   id="partner-services"
@@ -753,8 +779,43 @@ function PartnerApplicationForm({
                   placeholder={
                     role === "agent"
                       ? "Tell Naitrust about sourcing, quality control, markets, and cities you cover."
-                      : "Describe your factory, products, customization, production capacity, and export experience."
+                      : role === "supplier"
+                        ? "Describe your factory, products, customization, production capacity, and export experience."
+                        : "Describe your pickup coverage, warehousing, freight routes, customs experience, licences, and delivery capabilities."
                   }
+                />
+              </div>
+              <div>
+                <Label htmlFor="partner-verification-document">Legal or verification document</Label>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                  {role === "agent"
+                    ? "Upload a government ID or document showing your lawful basis to operate in China."
+                    : role === "supplier"
+                      ? "Upload your Chinese business licence or company registration document."
+                      : "Upload your company registration, logistics licence, or relevant operating permit."}
+                </p>
+                <label htmlFor="partner-verification-document" className="mt-3 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border px-4 py-4 transition hover:border-primary hover:bg-primary/[.03]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><FileCheck2 size={19} /></span>
+                  <span className="min-w-0 text-sm">
+                    <strong className="block truncate font-semibold">{verificationDocument?.name ?? "Choose a document"}</strong>
+                    <span className="text-xs text-muted-foreground">PDF, JPG or PNG · maximum 10 MB</span>
+                  </span>
+                </label>
+                <input
+                  id="partner-verification-document"
+                  type="file"
+                  className="sr-only"
+                  accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    if (file && file.size > 10 * 1024 * 1024) {
+                      toast.error("The document must be 10 MB or smaller.");
+                      event.currentTarget.value = "";
+                      setVerificationDocument(null);
+                      return;
+                    }
+                    setVerificationDocument(file);
+                  }}
                 />
               </div>
               <Button className="h-11 w-full rounded-full" onClick={submit}>
@@ -763,7 +824,9 @@ function PartnerApplicationForm({
             </div>
           </Card>
         )}
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

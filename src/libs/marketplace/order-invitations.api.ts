@@ -120,6 +120,7 @@ export const orderInvitationsApi = {
 
     if (current.kind === 'buyer_request') {
       const order = await marketplaceApi.createCustomOrder({
+        title: current.orderSummary,
         links: current.links,
         destination: current.destination ?? 'Nigeria',
         notes: `Sourced by ${current.invitedByName}.`,

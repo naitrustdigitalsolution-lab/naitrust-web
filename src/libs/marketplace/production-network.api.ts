@@ -88,7 +88,7 @@ export const productionNetworkApi = {
     const applications = listApplications();
     const current = applications.find((application) => application.id === applicationId);
     if (!current) throw new Error('Partner application not found.');
-    const prefix = current.role === 'agent' ? 'AGENT' : 'SUPPLIER';
+    const prefix = current.role === 'agent' ? 'AGENT' : current.role === 'supplier' ? 'SUPPLIER' : 'LOGISTICS';
     const updated: PartnerApplication = { ...current, status, inviteCode: status === 'approved' ? `${prefix}-${String(Date.now()).slice(-6)}` : undefined };
     write(applicationsKey, applications.map((application) => application.id === applicationId ? updated : application));
     return updated;

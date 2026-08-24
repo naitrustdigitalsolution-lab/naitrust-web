@@ -174,20 +174,22 @@ export const marketplaceApi = {
    * the order room; pricing and supplier details are confirmed once the
    * agent reviews the links.
    */
-  createCustomOrder: async (input: { links: { url: string; note?: string; quantity?: number }[]; destination: string; notes?: string }): Promise<MarketOrder> => {
+  createCustomOrder: async (input: { title: string; links: { url: string; note?: string; quantity?: number }[]; destination: string; notes?: string; assignedAgentIds?: string[] }): Promise<MarketOrder> => {
     await wait();
-    if (!input.links.length) throw new Error('Add at least one product link.');
+    if (!input.links.length && !input.notes?.trim()) throw new Error('Describe what you want the sourcing agent to find.');
     const order: MarketOrder = {
       id: `order_${Date.now()}`,
       reference: `NTM-${String(Date.now()).slice(-7)}`,
-      itemSummary: `${input.links.length} product link${input.links.length === 1 ? '' : 's'} to review`,
-      itemCount: input.links.length,
+      itemSummary: input.title.trim(),
+      itemCount: input.links.length || 1,
       deliveryMode: 'international',
       status: 'confirmed',
       createdAt: new Date().toISOString(),
       customLinks: input.links,
       destination: input.destination,
       requestNotes: input.notes,
+      assignedAgentId: input.assignedAgentIds?.[0],
+      assignedAgentIds: input.assignedAgentIds,
     };
     write(key('orders'), [order, ...marketplaceApi.listOrders()]);
     return order;

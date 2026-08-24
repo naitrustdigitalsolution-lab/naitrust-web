@@ -3,7 +3,7 @@ import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { useAuth } from '../../../libs/auth-context';
 import { useBusinessStore } from '../../../libs/store/business.store';
 import { Button } from '../../ui/button';
-import { User, LogOut, Menu, X, Sun, Moon, ArrowLeft, ArrowRight, Building2 } from 'lucide-react';
+import { User, LogOut, Menu, X, Sun, Moon, ArrowLeft, ArrowRight, Building2, LockKeyhole } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../../hooks/useTheme';
@@ -270,7 +270,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {!isAuthenticated && showNavItems && (
                 <div className="hidden lg:flex items-center gap-2">
                   {isPartnersPage ? (
-                    <Button size="lg" onClick={() => onNavigate('/partners/login')}>
+                    <Button size="lg" onClick={() => window.open('/partners/login', '_blank', 'noopener,noreferrer')}>
+                      <LockKeyhole size={16} />
                       {t('partnerLogin')}
                     </Button>
                   ) : (
@@ -278,7 +279,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       <Button
                         variant="outline"
                         size="lg"
-                        onClick={() => onNavigate('/login')}
+                        onClick={() => window.open('/login', '_blank', 'noopener,noreferrer')}
                         className={isHomeHero ? 'border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white' : ''}
                       >
                         {t('login')}
@@ -332,6 +333,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                         setMobileMenuOpen(false);
                       }}
                     >
+                      <LockKeyhole size={14} />
                       {t('partnerLogin')}
                     </Button>
                   ) : (

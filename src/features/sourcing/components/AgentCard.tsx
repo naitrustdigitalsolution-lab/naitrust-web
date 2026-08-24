@@ -8,12 +8,14 @@ import { getAgentRepresentativeImage } from '../../../libs/images/image-manifest
 
 const money = (minor: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(minor / 100);
 
-export function AgentCard({ agent, favourite, reasons, onFavourite, onHire }: {
+export function AgentCard({ agent, favourite, reasons, onFavourite, onViewProfile, onPrimaryAction, primaryActionLabel = 'Hire' }: {
   agent: AgentProfile;
   favourite: boolean;
   reasons?: string[];
   onFavourite: () => void;
-  onHire: () => void;
+  onViewProfile: () => void;
+  onPrimaryAction: () => void;
+  primaryActionLabel?: 'Hire' | 'Choose';
 }) {
   const representativePhoto = getAgentRepresentativeImage(agent.id);
   const displayName = agent.profileType === 'company' ? agent.businessName ?? agent.name : agent.name;
@@ -31,7 +33,10 @@ export function AgentCard({ agent, favourite, reasons, onFavourite, onHire }: {
       {reasons?.length ? <p className="mt-3 line-clamp-1 text-[10px] font-medium text-primary">Match: {reasons.join(' · ')}</p> : null}
       <div className="mt-auto pt-4">
         <div className="flex items-center justify-between border-t pt-3 text-[11px]"><span className="flex items-center gap-1"><Star size={12} className="fill-amber-400 text-amber-400" /> {agent.rating || 'New'} · {agent.completedTasks} jobs</span><span className="font-semibold">From {money(agent.feeFromMinor)}</span></div>
-        <Button size="sm" className="mt-3 w-full rounded-full" disabled={!agent.available} onClick={onHire}>{agent.available ? 'View profile & assign' : 'Currently unavailable'}</Button>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <Button size="sm" variant="outline" className="rounded-full" onClick={onViewProfile}>View profile</Button>
+          <Button size="sm" className="rounded-full" disabled={!agent.available} onClick={onPrimaryAction}>{agent.available ? primaryActionLabel : 'Unavailable'}</Button>
+        </div>
       </div>
     </Card>
   );

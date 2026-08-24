@@ -109,6 +109,10 @@ export interface MarketOrder {
    */
   quoteId?: string;
   supplierId?: string;
+  /** Verified sourcing agent selected by the buyer when the order was created. */
+  assignedAgentId?: string;
+  /** All verified sourcing agents invited to cover this order across locations. */
+  assignedAgentIds?: string[];
   deliveryMode: DeliveryMode;
   status: OrderStatus;
   paymentCurrency?: CustomerPaymentCurrency;
@@ -209,7 +213,7 @@ export interface ProductionWorkflow {
   updatedAt: string;
 }
 
-export type PartnerRole = 'agent' | 'supplier';
+export type PartnerRole = 'agent' | 'supplier' | 'logistics';
 export type PartnerApplicationStatus = 'pending' | 'approved' | 'rejected';
 
 export interface PartnerApplication {
@@ -224,6 +228,9 @@ export interface PartnerApplication {
   languages: string[];
   services: string[];
   experience: string;
+  verificationDocumentName?: string;
+  verificationDocumentType?: string;
+  verificationDocumentSize?: number;
   status: PartnerApplicationStatus;
   inviteCode?: string;
   createdAt: string;

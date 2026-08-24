@@ -5,7 +5,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     common: {
-      language: 'Language', home: 'Home', market: 'Market', buyers: 'For Nigerian Buyers', agents: 'Sourcing Agents', about: 'About', contact: 'Contact',
+      language: 'Language', home: 'Home', market: 'Market', buyers: 'For Buyers', agents: 'Sourcing Agents', about: 'About', contact: 'Contact',
       signIn: 'Sign in', signOut: 'Sign out', back: 'Back', settings: 'Settings', messages: 'Messages', orders: 'Orders', notifications: 'Notifications',
       announcement: 'Find verified suppliers in China and receive your order in Nigeria.', waitlist: 'Join the waiting list', login: 'Login', getStarted: 'Get Started', signUp: 'Sign Up', logout: 'Logout', openMenu: 'Open navigation menu', closeMenu: 'Close navigation menu',
       footerText: 'Find verified suppliers, confirm the complete cost, coordinate checks, pay for the order, and track delivery to Nigeria.', platform: 'Platform', partners: 'Partners', company: 'Company', legal: 'Legal', exploreChina: 'Explore China Market', sourceYourself: 'Source for yourself', protectedOrders: 'Protected Orders', verifiedAgents: 'Verified Agents', earlyAccess: 'Join Early Access', becomeAgent: 'Become a sourcing agent', registerSupplier: 'Register as a supplier', becomeLogistics: 'Become a logistics partner', partnerLogin: 'Partner sign in', aboutUs: 'About Us', blog: 'Blog', help: 'Help Center', faqs: 'FAQs', report: 'Report a Concern', giveFeedback: 'Give Feedback', contactUs: 'Contact Us', terms: 'Terms of Service', privacy: 'Privacy Policy', verification: 'Verification Policy', compliance: 'NDPR Compliance', cookiePreferences: 'Cookie Preferences', updatesTitle: 'Product updates, occasionally.', updatesText: 'Useful Naitrust news without the noise.', email: 'Email address', subscribe: 'Subscribe', subscribing: 'Subscribing…', rights: 'All rights reserved.', registered: 'Registered in Nigeria',
@@ -56,7 +56,7 @@ const resources = {
     auth: {
       signInTitle: 'Sign in to Naitrust', signInDescription: 'Access your sourcing requests, Order Rooms, payments and delivery updates.',
       email: 'Email address', password: 'Password', accessCode: 'Access code', forgot: 'Forgot password?', signIn: 'Sign in', noAccount: "Don't have an account?", createAccount: 'Create account',
-      continue: 'Continue with confidence', welcome: 'Welcome back. Pick up with confidence.', sideDescription: 'Continue your supplier cart, review a landed-cost quote, or follow an order from the supplier to your door.', signUpFree: 'Sign up free', why: 'Why sign in with Naitrust',
+      continue: 'Continue with confidence', welcome: 'Welcome back. Pick up with confidence.', sideDescription: 'Continue your supplier cart, review a landed-cost quote, or follow an order from the supplier to your door.', signUpFree: 'Sign up free', why: 'Why sign in with Naitrust', partnerPrompt: 'Sourcing agent or supplier?', partnerSignIn: 'Partner sign in',
       highlight1: 'Return to quotes, supplier orders, agent checks, and deliveries in progress', highlight2: 'Keep supplier checks, documents, messages, and evidence together', highlight3: 'Review landed costs, protected funds, and order activity', loggingIn: 'Logging in...', security: 'Keep your password private. Naitrust will never ask for your password, OTP, or private account details outside secure sign-in.',
       backToLogin: 'Back to login', forgotTitle: 'Forgot Password?', forgotDescription: "No worries! We'll send you a verification code", sendCode: 'Send Verification Code', sending: 'Sending...',
       twoFactorTitle: 'Two-Factor Authentication', twoFactorDescription: 'Enter the current 6-digit code shown in your authenticator app.', authenticatorCode: 'Six-digit authenticator code', verifying: 'Verifying...', verifyCode: 'Verify code',
@@ -74,7 +74,7 @@ const resources = {
   },
   'zh-CN': {
     common: {
-      language: '语言', home: '首页', market: '市场', buyers: '尼日利亚买家', agents: '采购代理', about: '关于我们', contact: '联系我们',
+      language: '语言', home: '首页', market: '市场', buyers: '买家', agents: '采购代理', about: '关于我们', contact: '联系我们',
       signIn: '登录', signOut: '退出登录', back: '返回', settings: '设置', messages: '消息', orders: '订单', notifications: '通知',
       announcement: '寻找已验证的中国供应商，并在尼日利亚接收订单。', waitlist: '加入候补名单', login: '登录', getStarted: '立即开始', signUp: '注册', logout: '退出登录', openMenu: '打开导航菜单', closeMenu: '关闭导航菜单',
       footerText: '寻找已验证供应商，确认完整成本，协调核查，支付订单并跟踪配送至尼日利亚。', platform: '平台', partners: '合作伙伴', company: '公司', legal: '法律', exploreChina: '浏览中国市场', sourceYourself: '为自己采购', protectedOrders: '受保护订单', verifiedAgents: '已验证代理', earlyAccess: '加入早期体验', becomeAgent: '成为采购代理', registerSupplier: '注册供应商', becomeLogistics: '成为物流合作伙伴', partnerLogin: '合作伙伴登录', aboutUs: '关于我们', blog: '博客', help: '帮助中心', faqs: '常见问题', report: '报告问题', giveFeedback: '提供反馈', contactUs: '联系我们', terms: '服务条款', privacy: '隐私政策', verification: '验证政策', compliance: 'NDPR 合规', cookiePreferences: 'Cookie 设置', updatesTitle: '偶尔发送产品动态。', updatesText: '只发送有用的 Naitrust 消息，不打扰您。', email: '电子邮箱', subscribe: '订阅', subscribing: '正在订阅…', rights: '保留所有权利。', registered: '在尼日利亚注册',
@@ -118,7 +118,7 @@ const resources = {
     },
     auth: {
       signInTitle: '登录 Naitrust', signInDescription: '查看采购需求、订单室、付款和配送进度。', email: '电子邮箱', password: '密码', accessCode: '访问码', forgot: '忘记密码？', signIn: '登录', noAccount: '还没有账户？', createAccount: '创建账户',
-      continue: '安心继续', welcome: '欢迎回来，继续安心采购。', sideDescription: '继续处理供应商购物车、查看到岸成本报价，或跟踪订单从供应商送达您的门口。', signUpFree: '免费注册', why: '为什么登录 Naitrust',
+      continue: '安心继续', welcome: '欢迎回来，继续安心采购。', sideDescription: '继续处理供应商购物车、查看到岸成本报价，或跟踪订单从供应商送达您的门口。', signUpFree: '免费注册', why: '为什么登录 Naitrust', partnerPrompt: '采购代理或供应商？', partnerSignIn: '合作伙伴登录',
       highlight1: '继续查看进行中的报价、供应商订单、代理核查和配送', highlight2: '集中保存供应商核查、文件、消息和证据', highlight3: '查看到岸成本、受保护资金和订单动态', loggingIn: '正在登录…', security: '请妥善保管密码。Naitrust 绝不会在安全登录流程之外索要您的密码、验证码或私人账户信息。',
       backToLogin: '返回登录', forgotTitle: '忘记密码？', forgotDescription: '不用担心，我们会向您发送验证码。', sendCode: '发送验证码', sending: '发送中…',
       twoFactorTitle: '双重身份验证', twoFactorDescription: '请输入身份验证器应用中显示的当前六位验证码。', authenticatorCode: '六位身份验证器验证码', verifying: '验证中…', verifyCode: '验证代码',

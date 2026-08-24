@@ -134,8 +134,8 @@ function ComingSoonPage() {
                 <dd>Create agreement-backed transactions</dd>
               </div>
               <div>
-                <dt>Real estate first</dt>
-                <dd>For buyers, sellers, agents, developers, and companies</dd>
+                <dt>China sourcing</dt>
+                <dd>For Nigerian buyers</dd>
               </div>
               <div>
                 <dt>{modeLabel}</dt>

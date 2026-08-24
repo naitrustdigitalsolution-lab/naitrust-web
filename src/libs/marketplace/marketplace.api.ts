@@ -168,11 +168,37 @@ export const marketplaceApi = {
     marketplaceApi.clearCart();
     return order;
   },
+  /**
+   * Start an order directly from pasted product links, before any supplier
+   * or sourcing agent is attached. The buyer assigns an agent afterward from
+   * the order room; pricing and supplier details are confirmed once the
+   * agent reviews the links.
+   */
+  createCustomOrder: async (input: { links: { url: string; note?: string; quantity?: number }[]; destination: string; notes?: string }): Promise<MarketOrder> => {
+    await wait();
+    if (!input.links.length) throw new Error('Add at least one product link.');
+    const order: MarketOrder = {
+      id: `order_${Date.now()}`,
+      reference: `NTM-${String(Date.now()).slice(-7)}`,
+      itemSummary: `${input.links.length} product link${input.links.length === 1 ? '' : 's'} to review`,
+      itemCount: input.links.length,
+      deliveryMode: 'international',
+      status: 'confirmed',
+      createdAt: new Date().toISOString(),
+      customLinks: input.links,
+      destination: input.destination,
+      requestNotes: input.notes,
+    };
+    write(key('orders'), [order, ...marketplaceApi.listOrders()]);
+    return order;
+  },
   listOrders: () => readDemoList<MarketOrder>('orders').map((order) => ({
     ...order,
-    // Orders created before rich rooms were introduced are migrated at read
-    // time so old localStorage records follow the same modern interface.
-    roomId: order.roomId ?? `market_room_${order.id}`,
+    // Quoted catalogue orders created before rich rooms were introduced are
+    // migrated at read time so old localStorage records follow the same
+    // modern interface. Custom orders with no quote/agent yet have no room
+    // to migrate to and correctly stay roomless until one is created.
+    roomId: order.roomId ?? (order.quoteId ? `market_room_${order.id}` : undefined),
   })),
   advanceOrder: (orderId: string): MarketOrder => {
     const orders = marketplaceApi.listOrders();

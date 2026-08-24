@@ -340,15 +340,27 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               <img src={pageImages.login.src} alt={pageImages.login.alt} loading="lazy" className="mt-5 aspect-[3/2] w-full rounded-2xl object-cover shadow-sm" />
             </div>
           </motion.div>
-          <div className="mt-10 hidden text-sm leading-6 text-muted-foreground lg:block">
-            {t('noAccount')}{' '}
-            <button
-              type="button"
-              onClick={() => onNavigate('register')}
-              className="font-semibold text-primary hover:underline"
-            >
-              {t('signUpFree')}
-            </button>
+          <div className="mt-10 hidden space-y-2 text-sm leading-6 text-muted-foreground lg:block">
+            <p>
+              {t('noAccount')}{' '}
+              <button
+                type="button"
+                onClick={() => onNavigate('register')}
+                className="font-semibold text-primary hover:underline"
+              >
+                {t('signUpFree')}
+              </button>
+            </p>
+            <p>
+              {t('partnerPrompt')}{' '}
+              <button
+                type="button"
+                onClick={() => window.open('/partners/login', '_blank', 'noopener,noreferrer')}
+                className="font-semibold text-primary hover:underline"
+              >
+                {t('partnerSignIn')}
+              </button>
+            </p>
           </div>
         </aside>
 

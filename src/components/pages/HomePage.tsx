@@ -220,23 +220,23 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-2 sm:gap-3 xl:justify-start">
               <Button
                 size="sm"
-                onClick={() => onNavigate("/register?returnTo=/app/agents")}
+                onClick={() => onNavigate("/waitlist")}
                 className="group h-10 w-auto rounded-full bg-[#1e90ff] px-6 text-xs font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-12 sm:px-7 sm:text-sm"
               >
-                {t('findAgent')}
+                Join the waiting list
                 <ArrowRight
                   size={18}
                   className="ml-1 transition-transform group-hover:translate-x-1 sm:ml-2 sm:h-6 sm:w-6"
                 />
               </Button>
-              {platformFeatures.marketplace && <button
+              <button
                 type="button"
-                onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
+                onClick={() => onNavigate("/register")}
                 className="inline-flex h-10 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-6 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-12 sm:gap-2 sm:px-7 sm:text-sm"
               >
-                {t('exploreChina', { ns: 'common' })}
+                {t('findAgent')}
                 <ChevronRight size={18} />
-              </button>}
+              </button>
             </div>
 
             <div className="mx-auto mt-8 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] font-semibold text-white/70 sm:gap-x-5 sm:text-xs xl:mx-0 xl:justify-start">

@@ -112,7 +112,6 @@ const BUSINESS_NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Home', path: '/app', icon: LayoutDashboard },
       { label: 'Sourcing agents', path: '/app/agents', icon: UserCheck, matchPrefix: true },
-      { label: 'Agent-supported orders', path: '/app/agent-assignments', icon: ClipboardList, matchPrefix: true },
       { label: 'Market', path: '/app/market', icon: Search, matchPrefix: true },
       { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
       { label: 'Supplier hub', path: '/app/showcase', icon: Store, matchPrefix: true },
@@ -136,7 +135,6 @@ const CUSTOMER_NAV_GROUPS: NavGroup[] = [
       { label: 'Market', path: '/app/market', icon: Search, matchPrefix: true },
       { label: 'Orders', path: '/app/orders', icon: PackageSearch, matchPrefix: true },
       { label: 'Sourcing agents', path: '/app/agents', icon: UserCheck, matchPrefix: true },
-      { label: 'Agent-supported orders', path: '/app/agent-assignments', icon: ClipboardList, matchPrefix: true },
     ],
   },
   {

@@ -1,9 +1,7 @@
-import { type FormEvent, useState } from 'react';
+import { type FormEvent } from 'react';
 import { Instagram, Twitter, Linkedin, Mail, Send } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
-import { subscribe } from '../../../services/publicService';
 import { openWaitlistModal } from '../../modals/waitlist-events';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
 interface FooterProps {
@@ -12,24 +10,12 @@ interface FooterProps {
 
 export function Footer({ onNavigate }: FooterProps) {
   const { t } = useTranslation('common');
-  const [isSubscribing, setIsSubscribing] = useState(false);
-  async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
+  function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get('subscriberEmail') || '').trim();
 
-    if (!email) return;
-
-    setIsSubscribing(true);
-    try {
-      await subscribe({ email });
-      event.currentTarget.reset();
-      toast.success('You are subscribed to Naitrust updates.');
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not subscribe.');
-    } finally {
-      setIsSubscribing(false);
-    }
+    onNavigate(email ? `/waitlist?email=${encodeURIComponent(email)}` : '/waitlist');
   }
 
   const footerGroups = [
@@ -130,10 +116,9 @@ export function Footer({ onNavigate }: FooterProps) {
               />
               <button
                 type="submit"
-                disabled={isSubscribing}
                 className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
-                {isSubscribing ? t('subscribing') : t('subscribe')}
+                {t('waitlist')}
                 <Send size={16} />
               </button>
             </form>

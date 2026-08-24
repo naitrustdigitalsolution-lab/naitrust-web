@@ -1,10 +1,19 @@
 # Naitrust Product Guardrails
 
-Last updated: 17 August 2026
+Last updated: 24 August 2026
 
 ## 1. Product Positioning and Language
 
 Naitrust is a protected-commerce and sourcing platform for Nigerian individuals and businesses. China and Nigeria are the active launch markets. Naitrust is not presented as a bank, courier, insurer, customs authority, employer of independent agents, or guaranteed supplier marketplace.
+
+### Current early-access brand and conversion mode
+
+- Lead public positioning with: **Buy wholesale from China. Without travelling.** Explain that a Nigerian buyer can share what they need in English, work with a vetted sourcing agent operating in China, review supplier and inspection evidence, approve a clear landed-cost quote, and follow delivery to Nigeria.
+- The public website is in waiting-list mode. The homepage hero must always include a prominent **Join the waiting list** action.
+- All public acquisition, account-registration, newsletter, supplier, sourcing-agent, and logistics-application entry points must lead to the single `/waitlist` journey. Do not expose competing sign-up forms during this phase.
+- The waiting list is the canonical lead form and must support buyers, businesses/importers, China and Nigeria suppliers, sourcing or inspection agents, online sellers, packaging partners, and logistics providers.
+- Preserve contact, feedback, report-a-concern, privacy/consent, and other safety or legal forms. Authenticated operational forms for orders, evidence, messages, payments, support, and administration also remain functional; they are not acquisition forms.
+- Public copy may describe planned early-access capabilities, but must not imply that supplier fulfilment, payments, FX, inspections, customs, or delivery are live before their operational launch gates pass.
 
 ### Product hierarchy
 

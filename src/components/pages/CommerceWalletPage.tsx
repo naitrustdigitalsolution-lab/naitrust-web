@@ -12,10 +12,7 @@ import {
   Loader2,
   Plus,
   ReceiptText,
-  Repeat2,
   Settings,
-  ShieldCheck,
-  WalletCards,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -143,76 +140,55 @@ export function CommerceWalletPage() {
   };
 
   return (
-    <DashboardLayout title="Order money">
-      <div className="w-full">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[.16em] text-primary">Order money</p>
-            <h1 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">Your Naira account</h1>
-            <p className="mt-1.5 text-sm text-muted-foreground">Add money for quotes and services, receive refunds or seller earnings, and withdraw to your verified bank.</p>
-          </div>
-          <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/transactions')}>
-            <ReceiptText size={15} /> View all activity
-          </Button>
+    <DashboardLayout title="Wallet">
+      <div className="mx-auto w-full max-w-5xl">
+        <header className="mb-5">
+          <p className="text-xs font-bold uppercase tracking-[.16em] text-primary">Wallet</p>
+          <h1 className="mt-1.5 text-2xl font-bold tracking-tight">Naira balance</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">Add money, then use it for sourcing agents and supplier orders, or withdraw to your bank.</p>
         </header>
 
-        <Card className="mb-5 overflow-hidden rounded-3xl border-sky-500/15 bg-gradient-to-r from-sky-500/[.07] to-emerald-500/[.05] p-5 sm:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.14em] text-primary"><ShieldCheck size={15} /> Simulated partner flow</div><h2 className="mt-2 text-lg font-bold">Collect in NGN or USD. Release by approved order stage.</h2><p className="mt-1 max-w-3xl text-xs leading-5 text-muted-foreground">This frontend models virtual-account funding, FX conversion and separate supplier, agent and logistics beneficiaries. A licensed payment partner must approve custody and production payouts before real funds are enabled.</p></div>
-            <div className="flex shrink-0 items-center gap-2 text-[11px] font-semibold"><span className="rounded-full border bg-card px-3 py-2">NGN / USD</span><Repeat2 size={14} className="text-primary" /><span className="rounded-full border bg-card px-3 py-2">USD / CNY payout</span></div>
+        <Card className="rounded-2xl p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Available balance</p>
+              {isLoading ? (
+                <Skeleton className="mt-2 h-9 w-48" />
+              ) : (
+                <p className="mt-1 text-3xl font-bold tracking-tight">{formatMinorAmount(ngnAccount.availableMinor, 'NGN')}</p>
+              )}
+            </div>
+            <Badge variant="outline">NGN</Badge>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Button className="rounded-full" onClick={openFunding}><Plus size={15} /> Add money</Button>
+            <Button variant="outline" className="rounded-full" onClick={() => document.querySelector('#withdraw-naira')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}><ArrowUpRight size={15} /> Withdraw</Button>
           </div>
         </Card>
 
-        <section className="grid overflow-hidden rounded-[2rem] border bg-card shadow-[0_18px_55px_rgba(7,27,49,.08)] lg:grid-cols-[minmax(0,1.35fr)_minmax(19rem,.65fr)]">
-          <div className="relative overflow-hidden bg-[#071b31] p-5 text-white sm:p-7 lg:p-8">
-            <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-sky-400/15 blur-3xl" />
-            <div className="absolute -bottom-28 left-1/4 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
-            <div className="relative">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-white/65">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white"><WalletCards size={17} /></span>
-                  Available balance
-                </div>
-                <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">NGN</Badge>
-              </div>
-              {isLoading ? (
-                <Skeleton className="mt-7 h-12 w-64 bg-white/10" />
-              ) : (
-                <p className="mt-7 text-4xl font-bold tracking-[-.04em] sm:text-5xl">{formatMinorAmount(ngnAccount.availableMinor, 'NGN')}</p>
-              )}
-              <p className="mt-3 max-w-lg text-xs leading-5 text-white/55">Use this balance for accepted quotes, sourcing agents, logistics, or withdrawal to your verified Nigerian bank.</p>
-              <div className="mt-7 flex flex-wrap gap-2.5">
-                <Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={openFunding}><Plus size={15} /> Add money</Button>
-                <Button variant="outline" className="rounded-full border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white" onClick={() => document.querySelector('#withdraw-naira')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}><ArrowUpRight size={15} /> Withdraw</Button>
-                <Button variant="ghost" className="rounded-full text-white/75 hover:bg-white/10 hover:text-white" onClick={() => navigate('/app/quotes')}>Pay a quote</Button>
-              </div>
+        <Card className="mt-4 rounded-2xl p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold">Funding account</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">Transfer Naira here from any Nigerian bank.</p>
             </div>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Landmark size={17} /></span>
           </div>
-
-          <div className="p-5 sm:p-6">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-semibold">Your funding account</p>
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">Transfer Naira here from any Nigerian bank.</p>
-              </div>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><Landmark size={17} /></span>
-            </div>
-            <div className="mt-3">
-              {ngnAccount.fundingAccount ? (
-                <>
-                  <FundingDetail label="Bank" value={ngnAccount.fundingAccount.bankName} />
-                  <FundingDetail label="Account number" value={ngnAccount.fundingAccount.accountNumber} />
-                  <FundingDetail label="Account name" value={ngnAccount.fundingAccount.accountName} />
-                </>
-              ) : (
-                <div className="mt-4 rounded-2xl border border-dashed p-4 text-xs leading-5 text-muted-foreground">Complete account verification to receive your funding details.</div>
-              )}
-            </div>
+          <div className="mt-3">
+            {ngnAccount.fundingAccount ? (
+              <>
+                <FundingDetail label="Bank" value={ngnAccount.fundingAccount.bankName} />
+                <FundingDetail label="Account number" value={ngnAccount.fundingAccount.accountNumber} />
+                <FundingDetail label="Account name" value={ngnAccount.fundingAccount.accountName} />
+              </>
+            ) : (
+              <div className="mt-4 rounded-2xl border border-dashed p-4 text-xs leading-5 text-muted-foreground">Complete account verification to receive your funding details.</div>
+            )}
           </div>
-        </section>
+        </Card>
 
-        <div className="mt-5 grid items-start gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(21rem,.8fr)]">
-          <Card className="overflow-hidden rounded-3xl p-0 shadow-sm">
+        <div className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(21rem,.8fr)]">
+          <Card className="overflow-hidden rounded-2xl p-0">
             <div className="flex items-center justify-between border-b px-5 py-4 sm:px-6">
               <div>
                 <h2 className="font-semibold">Recent activity</h2>
@@ -244,7 +220,7 @@ export function CommerceWalletPage() {
             )}
           </Card>
 
-          <Card id="withdraw-naira" className="rounded-3xl border-primary/10 p-5 shadow-sm sm:p-6">
+          <Card id="withdraw-naira" className="rounded-2xl p-5 sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h2 className="font-semibold">Withdraw to your bank</h2>
@@ -294,7 +270,7 @@ export function CommerceWalletPage() {
         <DialogContent className="max-h-[92svh] overflow-y-auto sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add money</DialogTitle>
-            <DialogDescription>Transfer Naira to your order balance.</DialogDescription>
+            <DialogDescription>Transfer Naira to your wallet.</DialogDescription>
           </DialogHeader>
 
           <div className="rounded-2xl border px-4">

@@ -10,7 +10,7 @@ export const audienceContent = {
       useCases: [
         { icon: Store, title: 'Verified sourcing agents', text: 'Compare professionals operating in China by services, location and completed-order feedback.' },
         { icon: PackageCheck, title: 'Products and quotes', text: 'Share specifications and quantities, then review a complete sourcing and landed-cost quote.' },
-        { icon: Building2, title: 'Supplier coordination', text: 'Keep supplier checks, samples, production evidence and approvals connected to the order.' },
+        { icon: Building2, title: 'Supplier coordination', text: 'Once your agent sources a supplier, they invite the supplier into the Order Room, so pricing, evidence, approvals and payments stay clear for everyone.' },
         { icon: Users, title: 'Team visibility', text: 'Give your business one clear record of conversations, documents, payments and delivery progress.' },
       ],
       steps: [

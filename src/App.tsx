@@ -73,6 +73,7 @@ const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage
 const RewardsPage = lazyWithMinDelay(() => import("./pages/RewardsPage"));
 const MarketPage = lazyWithMinDelay(() => import("./pages/MarketPage"));
 const CommerceWorkspacePage = lazyWithMinDelay(() => import("./pages/CommerceWorkspacePage"));
+const CreateOrderPage = lazyWithMinDelay(() => import("./pages/CreateOrderPage"));
 const CommerceWalletPage = lazyWithMinDelay(() => import("./pages/CommerceWalletPage"));
 const BusinessCommercePage = lazyWithMinDelay(() => import("./pages/BusinessCommercePage"));
 const ProductionWorkflowPage = lazyWithMinDelay(() => import("./pages/ProductionWorkflowPage"));
@@ -105,6 +106,8 @@ const ReportConcernPage = lazy(() => import("./components/pages/ReportConcernPag
 const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBusinessPaymentPage").then((module) => ({ default: module.PublicBusinessPaymentPage })));
 const PublicTrustProfilePage = lazy(() => import("./components/pages/PublicTrustProfilePage").then((module) => ({ default: module.PublicTrustProfilePage })));
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
+const PublicOrderInvitationPage = lazyWithMinDelay(() => import("./pages/PublicOrderInvitationPage"));
+const InvitedOrderPage = lazyWithMinDelay(() => import("./pages/InvitedOrderPage"));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 const AudiencePage = lazy(() => import("./components/pages/AudiencePage").then((module) => ({ default: module.AudiencePage })));
 const PartnerNetworkPage = lazy(() => import("./pages/PartnerNetworkPage"));
@@ -274,10 +277,7 @@ function PublicAppContent() {
     location.pathname.startsWith("/app") ||
     location.pathname.startsWith("/pay/") ||
     location.pathname.startsWith("/trust/") ||
-    location.pathname.startsWith("/invite/") ||
     location.pathname.startsWith("/delivery/") ||
-    location.pathname === "/partners" ||
-    location.pathname.startsWith("/partners/") ||
     (location.pathname === "/" && (!isHydrated || isAuthenticated));
 
   // Public, authenticated and partner layouts provide their own header control.
@@ -330,13 +330,13 @@ function PublicAppContent() {
           <Route path="/verification-policy" element={<VerificationPolicyPage onNavigate={handleNavigate} />} />
           <Route path="/compliance" element={<CompliancePage onNavigate={handleNavigate} />} />
           <Route path="/pricing" element={<Navigate to="/" replace />} />
-          <Route path="/login" element={<Suspense fallback={<AuthPageLoader />}><LoginPage /></Suspense>} />
-          <Route path="/register" element={<Suspense fallback={<AuthPageLoader />}><SignupPage /></Suspense>} />
-          <Route path="/register-business" element={<Suspense fallback={<AuthPageLoader />}><SignupPage initialType="business" /></Suspense>} />
-          <Route path="/register-customer" element={<Suspense fallback={<AuthPageLoader />}><SignupPage initialType="customer" /></Suspense>} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/verify-code" element={<VerifyCodePage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<SignupPage />} />
+          <Route path="/register-business" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/register-customer" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/forgot-password" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/verify-code" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/verify-email" element={<Navigate to="/waitlist" replace />} />
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
@@ -345,10 +345,11 @@ function PublicAppContent() {
           <Route path="/market/suppliers" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/partners" element={<PartnerNetworkPage />} />
-          <Route path="/partners/:kind/apply" element={<PartnerApplicationPage />} />
+          <Route path="/partners/:kind/apply" element={<Navigate to="/waitlist" replace />} />
           <Route path="/partners/login" element={<PartnerNetworkPage />} />
           <Route path="/partners/portal" element={<PartnerNetworkPage />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
+          <Route path="/invite/order/:token" element={<PublicOrderInvitationPage />} />
           <Route path="/delivery/:token" element={<DeliveryHandoverPage />} />
           <Route element={<RequireAuth />}>
             <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
@@ -387,11 +388,13 @@ function PublicAppContent() {
             <Route path="/app/source" element={<FeatureGate feature="productFinder"><DashboardRouteSuspense><FindProductPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/quotes" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
             <Route path="/app/orders" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
+            <Route path="/app/orders/new" element={<DashboardRouteSuspense><CreateOrderPage /></DashboardRouteSuspense>} />
+            <Route path="/app/orders/invited/:token" element={<DashboardRouteSuspense><InvitedOrderPage /></DashboardRouteSuspense>} />
             <Route path="/app/orders/:orderId" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
             <Route path="/app/agents" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentDirectoryPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/agents/:agentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentProfilePage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/source/product/:productId" element={<DashboardRouteSuspense><SourcedProductPage /></DashboardRouteSuspense>} />
-            <Route path="/app/agent-assignments" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense></FeatureGate>} />
+            <Route path="/app/agent-assignments" element={<Navigate to="/app/orders" replace />} />
             <Route path="/app/agent-assignments/:assignmentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/logistics" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />
             <Route path="/app/shipments" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />

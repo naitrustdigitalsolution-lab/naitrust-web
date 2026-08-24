@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronDown, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -22,11 +22,12 @@ const RANGES: Array<{ value: TransactionRange; label: string }> = [
 
 export default function WaitlistPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [complete, setComplete] = useState(false);
   const [form, setForm] = useState({
-    fullName: '', businessName: '', email: '', phone: '',
+    fullName: '', businessName: '', email: searchParams.get('email') ?? '', phone: '',
     userTypes: [] as WaitlistUserType[], needs: [] as string[],
     range: '' as TransactionRange | '', note: '', consent: true,
   });
@@ -88,7 +89,7 @@ export default function WaitlistPage() {
 
   return (
     <div className="relative min-h-svh overflow-hidden bg-white text-foreground dark:bg-background">
-      <SEOHead title="Join the Naitrust AI Sourcing Waitlist" description="Join early access to turn Chinese product evidence into English research, compare suppliers, work with verified agents and manage bilingual sourcing orders." canonicalPath="/waitlist" />
+      <SEOHead title="Join the Naitrust China Sourcing Waiting List" description="Join early access to source wholesale products from China with vetted sourcing agents, clear landed-cost quotes, inspection evidence and delivery tracking to Nigeria." canonicalPath="/waitlist" />
       <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-7xl px-8 lg:block">
         <img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-8 top-1/2 h-[900px] w-[900px] max-w-none -translate-y-1/2 rotate-180 opacity-70" />
@@ -105,12 +106,12 @@ export default function WaitlistPage() {
         <aside className="py-5 lg:pr-12">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust early access</p>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust China sourcing · early access</p>
           </div>
-          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">China sourcing, explained in English and managed without travelling.</h1>
-          <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Discover China and Nigeria suppliers, request complete quotes, work with vetted agents, and follow every supplier order clearly.</p>
+          <h1 className="mt-6 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white sm:text-4xl lg:text-5xl">Buy wholesale from China. Without travelling.</h1>
+          <p className="mt-4 max-w-md text-sm leading-6 text-[#496274] dark:text-slate-300 sm:text-base lg:leading-7">Join early access to find products, work with a vetted sourcing agent, approve a clear landed-cost quote, and follow your order to Nigeria.</p>
           <div className="mt-7 hidden space-y-3 text-sm text-[#496274] dark:text-slate-300 lg:block">
-            {['Browse wholesale products and supplier showcases', 'Coordinate independent product and factory checks', 'Track separate orders, consolidation, shipping, and delivery'].map((item) => (
+            {['Share what you need in English', 'Follow supplier checks and inspection evidence', 'Know the landed cost before you approve the order'].map((item) => (
               <p key={item} className="flex items-start gap-2.5"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</p>
             ))}
           </div>
@@ -135,7 +136,7 @@ export default function WaitlistPage() {
                   <span className="ml-2 text-xs font-semibold text-muted-foreground">{step}/2</span>
                 </div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">{step === 1 ? 'About you' : 'Your early access'}</p>
-                <h2 className="mt-2 text-2xl font-bold">{step === 1 ? 'Save your place' : 'What fits you best?'}</h2>
+                <h2 className="mt-2 text-2xl font-bold">{step === 1 ? 'Join the waiting list' : 'What fits you best?'}</h2>
                 <p className="mt-2 text-sm text-muted-foreground">{step === 1 ? 'It takes less than a minute.' : 'Select every role that applies to you.'}</p>
               </div>
 
@@ -174,7 +175,7 @@ export default function WaitlistPage() {
                 ) : (
                   <div className="flex gap-2">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="h-11 flex-1 rounded-md">Back</Button>
-                    <Button type="submit" disabled={isSubmitting} className="h-11 flex-[1.7] rounded-md">{isSubmitting ? 'Saving…' : 'Join waitlist'} <ArrowRight size={17} /></Button>
+                    <Button type="submit" disabled={isSubmitting} className="h-11 flex-[1.7] rounded-md">{isSubmitting ? 'Saving…' : 'Join the waiting list'} <ArrowRight size={17} /></Button>
                   </div>
                 )}
                 <p className="mt-2 text-center text-xs text-muted-foreground">No spam. Only early-access updates.</p>

@@ -61,6 +61,11 @@ export type TransactionRange =
   | '100k_500k'
   | '500k_5m'
   | '5m_50m'
+  | 'below_500k'
+  | '500k_2m'
+  | '2m_5m'
+  | '5m_20m'
+  | '20m_50m'
   | 'above_50m';
 
 export interface WaitlistPayload {

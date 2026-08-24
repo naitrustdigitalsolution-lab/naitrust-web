@@ -10,8 +10,10 @@ import {
   Factory,
   Globe2,
   Languages,
+  Lock,
   LockKeyhole,
   LogOut,
+  Mail,
   MapPin,
   PackageCheck,
   ShieldCheck,
@@ -29,10 +31,11 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { NaitrustLogo } from "../utility/NaitrustLogo";
 import { SEOHead } from "../utility/SEOHead";
-import { pageImages } from "../../libs/images/image-manifest";
+import { getAppImage, pageImages } from "../../libs/images/image-manifest";
 import { useAppLocale } from "../../libs/locale-context";
 import { AppLanguageToggle } from "../utility/AppLanguageToggle";
 import { SourcingAgentPortal } from "./SourcingAgentPortal";
+import spiralBackground from "../../assets/spiral.svg";
 
 type Locale = PartnerSession["locale"];
 
@@ -173,6 +176,81 @@ export function PartnerNetworkPage() {
     : pathname.includes("/supplier/")
       ? "supplier"
       : null;
+  const details = locale === "zh-CN" ? {
+    overviewEyebrow: "合作要求",
+    overviewTitle: "申请前，请先了解各角色的责任。",
+    overviewIntro: "Naitrust 只批准能够提供可验证身份、真实运营能力和清晰证据记录的合作伙伴。申请和审核不收取保证金，也不保证获得订单。",
+    requirements: [
+      { title: "采购代理", items: ["在中国合法居住或运营", "能够用中文与供应商沟通", "提供报价、验货和现场证据", "披露费用、利益冲突和可服务区域"] },
+      { title: "中国供应商", items: ["可核验的企业注册和经营地址", "清晰的产品、起订量、产能和交期", "接受样品、生产和交接进度记录", "报价与收款主体信息一致"] },
+      { title: "物流合作伙伴", items: ["可核验的公司、许可和保险信息", "明确中国提货、仓储、货运或尼日利亚配送能力", "提供可追踪的交接和运输文件", "透明列明费用、时效和责任边界"] },
+    ],
+    workflowEyebrow: "合作流程",
+    workflowTitle: "从买家需求到尼日利亚交付，全程保留记录。",
+    workflow: [
+      ["01", "接收明确需求", "仅查看分配给您的询价、规格、数量、时间和证据要求。"],
+      ["02", "提交透明报价", "分开列明产品、服务、验货、包装、物流和其他费用。"],
+      ["03", "记录执行证据", "上传带时间的照片、视频、文件、检查结果和进度更新。"],
+      ["04", "等待买家确认", "规格、报价、变更和付款节点必须由授权方确认。"],
+      ["05", "完成交接与复核", "记录货物交接、运输文件、问题处理和最终结果。"],
+    ],
+    standardsEyebrow: "验证与标准",
+    standardsTitle: "验证是持续责任，不是永久认证。",
+    standards: ["身份和授权代表", "企业注册和受益所有权", "经营地址与设施", "服务能力和历史证据", "银行或结算收款人一致性", "投诉、表现和定期复核"],
+    boundaryTitle: "合作伙伴不能控制买家的采购资金。",
+    boundaryText: "采购代理、供应商和物流公司只能执行其获批范围内的工作。合作伙伴不能自行更换供应商、修改已接受报价、批准自己的费用、转移买家资金或代表 Naitrust 作出保证。受监管的支付合作伙伴处理资金流转；Naitrust 管理订单工作流、记录和授权。",
+    paymentTitle: "费用与结算",
+    paymentText: "每项费用必须在买家确认前显示。供应商货款、代理服务费、验货费和物流费分别记录。可用币种、汇率、扣费、退款和结算时间取决于获批的支付通道、合规审查和订单状态。",
+    faqEyebrow: "常见问题",
+    faqTitle: "申请前需要了解的信息",
+    faqs: [
+      ["提交申请后会立即获得订单吗？", "不会。申请须经人工审核，批准也不保证订单数量或收入。任务取决于买家需求、地点、能力、表现和可用性。"],
+      ["个人可以申请成为采购代理吗？", "可以，但必须提供身份、在华运营依据、经验、服务范围和可核验的工作证据。"],
+      ["Naitrust 是否雇佣采购代理？", "除非书面合同另有说明，合作伙伴是独立服务提供者，不是 Naitrust 员工，也无权代表 Naitrust 作出承诺。"],
+      ["验证标签代表什么？", "它表示页面列出的检查已完成，并不保证产品质量、交付结果或未来行为。"],
+      ["如何加入？", "在当前早期体验阶段，请加入候补名单并选择您的合作伙伴角色。Naitrust 会联系符合当前运营需求的申请人。"],
+    ],
+    joinTitle: "准备建立可信赖的中尼订单？",
+    joinText: "加入合作伙伴候补名单，告诉我们您的角色、运营地点、能力和服务范围。",
+    joinAction: "加入合作伙伴候补名单",
+  } : {
+    overviewEyebrow: "Partner requirements",
+    overviewTitle: "Know what each role is accountable for before applying.",
+    overviewIntro: "Naitrust approves only partners who can demonstrate verifiable identity, genuine operating capability and clear evidence practices. Applying or being reviewed requires no security deposit and does not guarantee work.",
+    requirements: [
+      { title: "Sourcing agents", items: ["Legally based or operating in China", "Able to communicate with Chinese suppliers", "Can provide quote, inspection and on-site evidence", "Discloses fees, conflicts and service coverage"] },
+      { title: "China suppliers", items: ["Verifiable business registration and operating address", "Clear products, MOQ, capacity and lead times", "Supports sample, production and handover records", "Quoted seller matches the approved settlement recipient"] },
+      { title: "Logistics partners", items: ["Verifiable company, licence and insurance information", "Defined pickup, warehousing, freight or Nigeria-delivery capability", "Traceable custody and shipping documentation", "Transparent charges, timelines and responsibility boundaries"] },
+    ],
+    workflowEyebrow: "Operating workflow",
+    workflowTitle: "Documented from the buyer brief to delivery in Nigeria.",
+    workflow: [
+      ["01", "Receive a defined brief", "See only assigned enquiries, specifications, quantities, deadlines and evidence requirements."],
+      ["02", "Submit a transparent quote", "Separate product, service, inspection, packaging, logistics and other charges."],
+      ["03", "Record execution evidence", "Upload dated photos, videos, documents, findings and progress updates."],
+      ["04", "Wait for buyer approval", "Specifications, quotes, changes and payment stages require authorised approval."],
+      ["05", "Complete handover and review", "Record custody transfer, shipping documents, issues and the final outcome."],
+    ],
+    standardsEyebrow: "Verification and standards",
+    standardsTitle: "Verification is an ongoing responsibility, not a permanent endorsement.",
+    standards: ["Identity and authorised representative", "Business registration and beneficial ownership", "Operating address and facilities", "Capability and prior-work evidence", "Bank or settlement-recipient matching", "Complaints, performance and periodic review"],
+    boundaryTitle: "Partners never control a buyer's supplier funds.",
+    boundaryText: "Agents, suppliers and logistics companies work only within an approved scope. A partner cannot replace a supplier, change an accepted quote, approve its own fee, redirect buyer money or make guarantees for Naitrust. Regulated payment partners handle money movement; Naitrust manages the order workflow, records and approvals.",
+    paymentTitle: "Fees and settlement",
+    paymentText: "Every charge must be visible before buyer approval. Supplier funds, agent service fees, inspection fees and logistics charges are recorded separately. Available currencies, FX, deductions, refunds and settlement timing depend on the approved payment corridor, compliance review and order status.",
+    faqEyebrow: "Partner FAQ",
+    faqTitle: "What to know before applying",
+    faqs: [
+      ["Does approval guarantee assignments or sales?", "No. Applications are manually reviewed, and approval does not guarantee order volume or income. Opportunities depend on buyer demand, location, capability, performance and availability."],
+      ["Can an individual apply as a sourcing agent?", "Yes, but the applicant must provide identity, a lawful basis for operating in China, experience, service coverage and verifiable work evidence."],
+      ["Are sourcing agents Naitrust employees?", "Unless a written agreement says otherwise, partners are independent service providers. They are not Naitrust employees and cannot make commitments on Naitrust's behalf."],
+      ["What does a verification badge mean?", "It means the checks listed on the profile were completed. It is not a guarantee of product quality, delivery outcome or future conduct."],
+      ["How do I join during early access?", "Join the waiting list and select your partner role. Naitrust will contact applicants whose location and capabilities fit current operating needs."],
+    ],
+    joinTitle: "Ready to help build accountable China-to-Nigeria orders?",
+    joinText: "Join the partner waiting list and tell us your role, operating location, capabilities and service coverage.",
+    joinAction: "Join the partner waiting list",
+  };
 
   const changeLocale = (next: Locale) => {
     setLocale(next);
@@ -223,6 +301,12 @@ export function PartnerNetworkPage() {
         description={t.seoDescription}
         canonicalPath="/partners"
       />
+      <header className="border-b bg-background/95 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-[90rem] items-center justify-between gap-3 sm:h-20">
+          <button type="button" onClick={() => navigate('/')} aria-label={t.homeLabel}><NaitrustLogo size="sm" showText /></button>
+          <div className="flex items-center gap-2"><AppLanguageToggle compact /><Button variant="ghost" size="sm" className="hidden rounded-full sm:inline-flex" onClick={() => navigate('/partners/login')}><LockKeyhole size={14} /> {t.login}</Button></div>
+        </div>
+      </header>
       <main>
         <section className="overflow-hidden bg-[#04162f] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="mx-auto grid max-w-[90rem] items-center gap-10 lg:grid-cols-[.92fr_1.08fr] lg:gap-16">
@@ -276,6 +360,20 @@ export function PartnerNetworkPage() {
             </div>
           </div>
         </section>
+
+        <section className="border-y bg-[#f7f9fc] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 dark:bg-card/30">
+          <div className="mx-auto max-w-[90rem]"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">{details.overviewEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-[-.04em] sm:text-4xl">{details.overviewTitle}</h2><p className="mt-4 leading-7 text-muted-foreground">{details.overviewIntro}</p></div>
+            <div className="mt-10 grid gap-4 lg:grid-cols-3">{details.requirements.map((role, index) => <Card key={role.title} className="rounded-3xl p-6"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">{index === 0 ? <UserCheck size={20}/> : index === 1 ? <Factory size={20}/> : <Truck size={20}/>}</span><h3 className="mt-5 text-xl font-bold">{role.title}</h3><ul className="mt-5 space-y-3">{role.items.map((item) => <li key={item} className="flex gap-2.5 text-sm leading-6 text-muted-foreground"><CheckCircle2 size={16} className="mt-1 shrink-0 text-emerald-600"/>{item}</li>)}</ul></Card>)}</div>
+          </div>
+        </section>
+
+        <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8"><div className="mx-auto max-w-[90rem]"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">{details.workflowEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-[-.04em] sm:text-4xl">{details.workflowTitle}</h2></div><div className="mt-10 grid overflow-hidden rounded-3xl border md:grid-cols-5">{details.workflow.map(([number,title,text]) => <article key={number} className="border-b p-5 last:border-0 md:border-b-0 md:border-r md:last:border-r-0"><span className="text-3xl font-black text-primary/20">{number}</span><h3 className="mt-5 font-bold">{title}</h3><p className="mt-3 text-xs leading-5 text-muted-foreground">{text}</p></article>)}</div></div></section>
+
+        <section className="bg-[#071a32] px-4 py-16 text-white sm:px-6 sm:py-20 lg:px-8"><div className="mx-auto grid max-w-[90rem] gap-10 lg:grid-cols-[1fr_.9fr]"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-sky-300">{details.standardsEyebrow}</p><h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-[-.04em] sm:text-4xl">{details.standardsTitle}</h2><div className="mt-8 grid gap-3 sm:grid-cols-2">{details.standards.map((item) => <p key={item} className="flex gap-2 rounded-2xl border border-white/10 bg-white/[.05] p-4 text-sm text-white/75"><ShieldCheck size={17} className="shrink-0 text-emerald-300"/>{item}</p>)}</div></div><div className="space-y-4"><Card className="rounded-3xl border-white/10 bg-white/[.07] p-6 text-white"><Lock size={22} className="text-sky-300"/><h3 className="mt-5 text-xl font-bold">{details.boundaryTitle}</h3><p className="mt-3 text-sm leading-7 text-white/65">{details.boundaryText}</p></Card><Card className="rounded-3xl border-white/10 bg-white/[.07] p-6 text-white"><Building2 size={22} className="text-sky-300"/><h3 className="mt-5 text-xl font-bold">{details.paymentTitle}</h3><p className="mt-3 text-sm leading-7 text-white/65">{details.paymentText}</p></Card></div></div></section>
+
+        <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8"><div className="mx-auto grid max-w-[90rem] gap-10 lg:grid-cols-[.65fr_1.35fr]"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">{details.faqEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-[-.04em] sm:text-4xl">{details.faqTitle}</h2></div><div className="divide-y rounded-3xl border px-5 sm:px-7">{details.faqs.map(([question,answer], index) => <details key={question} open={index === 0} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold marker:hidden">{question}<span className="text-xl text-primary transition group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">{answer}</p></details>)}</div></div></section>
+
+        <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8"><div className="mx-auto flex max-w-[90rem] flex-col items-start justify-between gap-6 rounded-[2rem] bg-primary p-7 text-white sm:p-10 lg:flex-row lg:items-center"><div><h2 className="text-2xl font-bold sm:text-3xl">{details.joinTitle}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/75">{details.joinText}</p></div><Button className="h-11 shrink-0 rounded-full bg-white px-6 text-primary hover:bg-white/90" onClick={() => navigate('/waitlist')}>{details.joinAction}<ArrowRight size={16}/></Button></div></section>
 
         <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="mx-auto max-w-[90rem]">
@@ -691,76 +789,119 @@ function PartnerLogin({
       );
     }
   };
+  const partnerHighlights = locale === "zh-CN"
+    ? ["查看进行中的采购任务、订单室和交付进度", "集中保存供应商核查、文件、消息和证据", "查看结算货币和已批准的付款记录"]
+    : ["Return to assignments, Order Rooms and delivery progress in one place", "Keep supplier checks, documents, messages and evidence together", "Review payout currencies and approved payment records"];
+  const partnerLoginImage = getAppImage("agents", "A verified sourcing agent reviewing product requirements for a Nigerian buyer");
+
   return (
-    <div className="min-h-svh bg-[#f2f6f9] px-4 py-6 dark:bg-background sm:px-6">
-      <PartnerTopbar locale={locale} onLocale={onLocale} />
-      <main className="mx-auto mt-12 max-w-md">
-        <Card className="rounded-3xl p-6 sm:p-8">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <LockKeyhole size={21} />
-          </span>
-          <h1 className="mt-5 text-2xl font-bold">{copy[locale].login}</h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {copy[locale].invite}
-          </p>
-          <div className="mt-6 space-y-4">
-            <div>
-              <Label htmlFor="partner-login-email">Email</Label>
-              <Input
-                id="partner-login-email"
-                className="mt-2"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
+    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+      <SEOHead title={copy[locale].login} description={copy[locale].seoDescription} canonicalPath="/partners/login" />
+      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
+      <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8">
+        <img
+          src={spiralBackground}
+          alt=""
+          aria-hidden="true"
+          className="absolute left-4 top-1/2 bottom-0 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-100 sm:left-6 lg:left-8"
+        />
+      </div>
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
+        <aside className="auth-balanced-panel hidden flex-col justify-between rounded-2xl p-5 sm:p-8 lg:flex lg:rounded-none lg:p-10">
+          <div>
+            <button type="button" onClick={() => navigate("/")} className="mb-6 inline-flex items-center lg:mb-12" aria-label={copy[locale].homeLabel}>
+              <NaitrustLogo size="postMd" textColor="text-primary" />
+            </button>
+            <div className="max-w-md">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary sm:text-sm">Partner workspace</p>
+              <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">Welcome back. Continue with confidence.</h1>
+              <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">{copy[locale].invite}</p>
+              <div className="mt-10 grid gap-2.5 lg:gap-3">
+                {partnerHighlights.map((item) => (
+                  <div key={item} className="flex gap-3 rounded-xl border border-white/70 bg-white/70 p-4 text-sm leading-6 text-muted-foreground shadow-sm dark:border-white/10 dark:bg-card dark:text-slate-300">
+                    <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <img src={partnerLoginImage.src} alt={partnerLoginImage.alt} loading="lazy" className="mt-5 aspect-3/2 w-full rounded-2xl object-cover shadow-sm" />
             </div>
-            <div>
-              <Label htmlFor="partner-login-code">Partner access code</Label>
-              <Input
-                id="partner-login-code"
-                className="mt-2"
-                type="password"
-                value={code}
-                onChange={(event) => setCode(event.target.value)}
-              />
-            </div>
-            <Button className="h-11 w-full rounded-full" onClick={login}>
-              Sign in
-            </Button>
-            <div className="rounded-2xl bg-muted/60 p-3 text-xs leading-5 text-muted-foreground">
-              <p className="font-semibold text-foreground">Demo access only</p>
-              <button
-                type="button"
-                className="mt-1 text-left text-primary"
-                onClick={() => {
-                  setEmail("amina.yusuf@naitrust.test");
-                  setCode("AGENT-AMINA-2026");
-                }}
-              >
-                Use Amina Yusuf sourcing-agent demo
-              </button>
-              <br />
-              <button
-                type="button"
-                className="text-left text-primary"
-                onClick={() => {
-                  setEmail("brightpack.partner@naitrust.test");
-                  setCode("SUPPLIER-BRIGHT-2026");
-                }}
-              >
-                Use approved supplier demo
-              </button>
-            </div>
-            <Button
-              variant="ghost"
-              className="w-full rounded-full"
-              onClick={() => navigate("/partners")}
-            >
-              Back to partner network
-            </Button>
           </div>
-        </Card>
-      </main>
+          <div className="mt-10 text-sm leading-6 text-muted-foreground">
+            Not a partner yet?{' '}
+            <button type="button" onClick={() => navigate("/partners")} className="font-semibold text-primary hover:underline">
+              See how to apply
+            </button>
+          </div>
+        </aside>
+
+        <main className="auth-balanced-form flex min-h-full items-center justify-center py-4 lg:py-10">
+          <div className="w-full max-w-md">
+            <Card className="mx-auto w-full max-w-md border-none bg-card/95 p-0 sm:rounded-2xl sm:border sm:border-border/70 sm:p-8 sm:shadow-2xl">
+              <div className="mb-8 text-center">
+                <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <LockKeyhole size={22} />
+                </span>
+                <p className="mb-2 text-sm font-semibold text-primary">{copy[locale].login}</p>
+                <h1 className="mb-2 text-2xl font-bold text-[#0b2b45] dark:text-white">{copy[locale].portal}</h1>
+                <p className="text-sm leading-6 text-muted-foreground">{copy[locale].invite}</p>
+              </div>
+
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="partner-login-email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <Input id="partner-login-email" className="h-11 pl-10" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="partner-login-code">Partner access code</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-muted-foreground" size={18} />
+                    <Input id="partner-login-code" className="h-11 pl-10" type="password" value={code} onChange={(event) => setCode(event.target.value)} />
+                  </div>
+                </div>
+                <Button className="h-12 w-full rounded-lg" size="lg" onClick={login}>
+                  Sign in <ArrowRight size={18} className="ml-2" />
+                </Button>
+              </div>
+
+              <div className="mt-6 rounded-xl border border-dashed border-primary/25 bg-primary/5 p-3 text-xs leading-5 text-muted-foreground">
+                <p className="font-semibold text-foreground">Sandbox demo credentials</p>
+                <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+                  <button
+                    type="button"
+                    className="text-primary hover:underline"
+                    onClick={() => {
+                      setEmail("amina.yusuf@naitrust.test");
+                      setCode("AGENT-AMINA-2026");
+                    }}
+                  >
+                    Sourcing agent
+                  </button>
+                  <button
+                    type="button"
+                    className="text-primary hover:underline"
+                    onClick={() => {
+                      setEmail("brightpack.partner@naitrust.test");
+                      setCode("SUPPLIER-BRIGHT-2026");
+                    }}
+                  >
+                    Approved supplier
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button type="button" onClick={() => navigate("/partners")} className="text-sm text-muted-foreground transition-colors hover:text-primary">
+                  <ArrowLeft size={13} className="mr-1 inline" /> Back to partner network
+                </button>
+              </div>
+            </Card>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

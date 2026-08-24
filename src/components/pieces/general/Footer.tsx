@@ -47,7 +47,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
   return (
     <footer className="relative border-t border-white/10 bg-[#04162f] py-8 text-white">
-      <div className="relative z-10 mx-auto max-w-440 px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
         <div className="grid gap-7 lg:grid-cols-[1.15fr_2fr]">
           <div className="max-w-sm">
             <div className="mb-3">

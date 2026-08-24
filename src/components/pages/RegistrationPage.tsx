@@ -921,6 +921,16 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
             </div>
           </div>
 
+          <div className="mt-5 text-center">
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
+            >
+              Return to Naitrust homepage
+            </button>
+          </div>
+
           {/* Mobile: the requirements card sits BELOW the form (split copy). */}
           <div className="mt-6 grid w-full max-w-xl gap-5 lg:hidden">
             <BeforeYouStartCard registrationType={registrationType} />

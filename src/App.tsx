@@ -202,6 +202,7 @@ const standalonePaths = [
   "/verify-code",
   "/verify-email",
   "/waitlist",
+  "/partners/login",
   "/app",
 ];
 
@@ -282,12 +283,14 @@ function PublicAppContent() {
 
   // Public, authenticated and partner layouts provide their own header control.
   // Standalone routes deliberately skip those layouts, so keep the language
-  // switch fixed within easy reach on every one of those screens.
+  // switch fixed within easy reach on every one of those screens. Partner
+  // sign-in uses the same standalone auth layout as /login, so it gets the
+  // same fixed toggle; other /partners/* routes manage their own.
   const needsStandaloneLanguageToggle =
     usesStandaloneHome &&
     !location.pathname.startsWith('/app') &&
-    location.pathname !== '/partners' &&
-    !location.pathname.startsWith('/partners/');
+    (location.pathname === '/partners/login' ||
+      (location.pathname !== '/partners' && !location.pathname.startsWith('/partners/')));
 
   const handleNavigate = (page: string) => {
     routerNavigate(pagePaths[page] ?? page);

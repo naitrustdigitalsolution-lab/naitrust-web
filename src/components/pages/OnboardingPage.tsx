@@ -205,6 +205,15 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
               Both account types follow the same sourcing journey. Choose Business when the wholesale order belongs to a registered or trading business.
             </div>
+            <div className="mt-5 text-center">
+              <button
+                type="button"
+                onClick={() => onNavigate('home')}
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
+              >
+                Return to Naitrust homepage
+              </button>
+            </div>
           </motion.div>
         </main>
 

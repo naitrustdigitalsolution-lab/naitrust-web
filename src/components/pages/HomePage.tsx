@@ -171,19 +171,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
       {/* The video remains beneath a strong Naitrust-blue treatment so copy stays readable. */}
       <section
-        className={`relative isolate overflow-hidden bg-[#04162f] text-white ${useHeroViewportHeight ? "xl:min-h-[94vh]" : ""}`}
+        className={`relative isolate min-h-[112svh] overflow-hidden bg-[#04162f] text-white sm:min-h-[110svh] lg:min-h-[105svh] ${useHeroViewportHeight ? "xl:min-h-[94vh]" : ""}`}
       >
         <ImageWithFallback
           src={pageImages.homeHero.src}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 -z-30 h-full w-full object-cover object-center"
+          className="absolute inset-0 -z-30 h-full w-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
           decoding="async"
         />
         {allowHeroVideo && (
           <video
             ref={heroVideoRef}
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
             poster={pageImages.homeHero.src}
             autoPlay
             muted
@@ -200,28 +200,28 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <source src={wholesaleJourneyDesktopMp4} type="video/mp4" />
           </video>
         )}
-        <div className="absolute inset-0 -z-10 bg-[#04162f]/60 sm:bg-[#04162f]/45" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,22,47,.96)_0%,rgba(4,22,47,.78)_44%,rgba(4,22,47,.30)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[#04162f]/60 sm:bg-[#04162f]/50 lg:bg-[#04162f]/45" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(4,22,47,.76)_0%,rgba(4,22,47,.46)_34%,rgba(4,22,47,.94)_100%)] lg:bg-[linear-gradient(90deg,rgba(4,22,47,.96)_0%,rgba(4,22,47,.78)_44%,rgba(4,22,47,.30)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-[#04162f] to-transparent" />
 
         <div
-          className={`relative z-10 mx-auto flex w-full max-w-[90rem] items-center px-4 pb-14 pt-24 sm:px-6 sm:pb-16 sm:pt-28 xl:px-8 ${useHeroViewportHeight ? "xl:min-h-[100svh] xl:py-28" : "xl:pb-24 xl:pt-32"}`}
+          className={`relative z-10 mx-auto flex min-h-[112svh] w-full max-w-[90rem] items-center px-4 pb-10 pt-24 sm:min-h-[110svh] sm:px-8 sm:pb-14 sm:pt-28 lg:min-h-[105svh] lg:px-10 lg:pb-16 xl:px-8 ${useHeroViewportHeight ? "xl:min-h-[100svh] xl:py-28" : "xl:pb-24 xl:pt-32"}`}
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative z-20 mx-auto min-w-0 max-w-3xl text-center xl:mx-0 xl:text-left"
+            className="relative z-20 mx-auto min-w-0 max-w-[48rem] text-center lg:mx-0 lg:text-left"
           >
-            <p className="mx-auto mb-4 w-fit rounded-full border border-sky-300/20 bg-sky-300/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-sky-200 sm:text-xs xl:mx-0">{t('heroEyebrow')}</p>
-            <h1 className="text-4xl font-bold leading-[1.02] tracking-[-.05em] sm:text-6xl lg:text-7xl">{t('heroTitle')}</h1>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/72 sm:text-lg xl:mx-0">{t('heroDescription')}</p>
+            <p className="mx-auto mb-4 w-fit max-w-full rounded-full border border-sky-300/20 bg-sky-300/10 px-3.5 py-2 text-[9px] font-bold uppercase tracking-[.14em] text-sky-200 backdrop-blur-sm sm:mb-5 sm:px-4 sm:text-xs lg:mx-0">{t('heroEyebrow')}</p>
+            <h1 className="text-[clamp(2.5rem,9.5vw,4.75rem)] font-bold leading-[1.02] tracking-[-.05em] sm:text-[clamp(3.75rem,7vw,4.75rem)]">{t('heroTitle')}</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-[0.9375rem] leading-6 text-white/75 sm:mt-6 sm:text-lg sm:leading-8 lg:mx-0">{t('heroDescription')}</p>
 
-            <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-2 sm:gap-3 xl:justify-start">
+            <div className="mt-7 flex w-full flex-col items-stretch justify-center gap-3 min-[420px]:flex-row min-[420px]:items-center sm:mt-8 lg:justify-start">
               <Button
                 size="sm"
                 onClick={() => onNavigate("/waitlist")}
-                className="group h-10 w-auto rounded-full bg-[#1e90ff] px-6 text-xs font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] sm:h-12 sm:px-7 sm:text-sm"
+                className="group h-12 w-full rounded-full bg-[#1e90ff] px-6 text-sm font-bold text-white shadow-[0_8px_22px_rgba(30,144,255,.24)] transition-all hover:-translate-y-0.5 hover:bg-[#42a2ff] min-[420px]:w-auto sm:px-7"
               >
                 Join the waiting list
                 <ArrowRight
@@ -232,17 +232,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <button
                 type="button"
                 onClick={() => onNavigate("/register")}
-                className="inline-flex h-10 w-auto items-center justify-center gap-1 rounded-full border border-white/20 bg-white/[0.06] px-6 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/10 sm:h-12 sm:gap-2 sm:px-7 sm:text-sm"
+                className="inline-flex h-12 w-full items-center justify-center gap-1 rounded-full border border-white/25 bg-white/[0.08] px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10 min-[420px]:w-auto sm:gap-2 sm:px-7"
               >
                 {t('findAgent')}
                 <ChevronRight size={18} />
               </button>
             </div>
 
-            <div className="mx-auto mt-8 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] font-semibold text-white/70 sm:gap-x-5 sm:text-xs xl:mx-0 xl:justify-start">
-              <span>{t('flowRequest')}</span><ChevronRight size={13} />
-              <span>{t('flowAgent')}</span><ChevronRight size={13} />
-              <span>{t('flowStages')}</span><ChevronRight size={13} />
+            <div className="mx-auto mt-7 flex max-w-xl flex-wrap items-center justify-center gap-x-2 gap-y-2 text-[10px] font-semibold text-white/70 sm:mt-8 sm:gap-x-3 sm:text-xs lg:mx-0 lg:justify-start">
+              <span className="inline-flex items-center gap-2">{t('flowRequest')}<ChevronRight size={13} /></span>
+              <span className="inline-flex items-center gap-2">{t('flowAgent')}<ChevronRight size={13} /></span>
+              <span className="inline-flex items-center gap-2">{t('flowStages')}<ChevronRight size={13} /></span>
               <span>{t('flowRoom')}</span>
             </div>
           </motion.div>

@@ -16,33 +16,23 @@ export interface WaitlistInterestOption {
 }
 
 export const WAITLIST_ROLE_OPTIONS: WaitlistRoleOption[] = [
-  { value: 'individual_customer', label: 'Individual buyer', detail: 'Buying wholesale or custom products.', audiences: ['buyer'] },
-  { value: 'business_buyer', label: 'Business buyer or importer', detail: 'Sourcing stock, equipment or packaging.', audiences: ['buyer'] },
-  { value: 'buyer_and_seller', label: 'I want to buy and sell', detail: 'Source products and sell through a showcase.', audiences: ['buyer', 'supplier'] },
-  { value: 'nigeria_supplier', label: 'Nigeria supplier', detail: 'Manufacturer, wholesaler or distributor.', audiences: ['supplier'] },
-  { value: 'china_supplier', label: 'China supplier', detail: 'Manufacturer or export supplier in China.', audiences: ['supplier'] },
-  { value: 'marketplace_social_seller', label: 'Online or social seller', detail: 'Reselling products to local customers.', audiences: ['buyer', 'supplier'] },
-  { value: 'sourcing_inspection_agent', label: 'Sourcing or inspection agent', detail: 'A verified professional or company operating in China.', audiences: ['agent'] },
-  { value: 'logistics_provider', label: 'Logistics provider', detail: 'Freight, consolidation, customs or delivery.', audiences: ['logistics'] },
-  { value: 'packaging_service_partner', label: 'Packaging or customization partner', detail: 'Branding, labels, cartons or production support.', audiences: ['supplier'] },
-  { value: 'other', label: 'Another marketplace role', detail: 'Tell us more before submitting.', audiences: ['buyer', 'supplier', 'agent', 'logistics'] },
+  { value: 'business_buyer', label: 'Buyer or importer', detail: 'I want to source products, stock, equipment or packaging from China.', audiences: ['buyer'] },
+  { value: 'sourcing_inspection_agent', label: 'China sourcing agent', detail: 'I operate in China and provide sourcing, supplier visits or inspections.', audiences: ['agent'] },
+  { value: 'china_supplier', label: 'China supplier or manufacturer', detail: 'I want to receive clear requirements and quote Nigerian buyers.', audiences: ['supplier'] },
+  { value: 'logistics_provider', label: 'China–Nigeria logistics partner', detail: 'I provide pickup, consolidation, freight, customs or delivery services.', audiences: ['logistics'] },
+  { value: 'other', label: 'Something else', detail: 'My role does not fit the options above.', audiences: ['buyer', 'supplier', 'agent', 'logistics'] },
 ];
 
 export const WAITLIST_INTEREST_OPTIONS: WaitlistInterestOption[] = [
   { value: 'china-products', label: 'Find wholesale products and suppliers in China', audiences: ['buyer'] },
-  { value: 'nigeria-products', label: 'Buy wholesale products within Nigeria', audiences: ['buyer'] },
-  { value: 'custom-production', label: 'Request custom production, packaging or branding', audiences: ['buyer'] },
-  { value: 'landed-quotes', label: 'Receive a confirmed landed-cost quote', audiences: ['buyer'] },
-  { value: 'sourcing-agents', label: 'Hire sourcing or inspection support in China', audiences: ['buyer'] },
-  { value: 'consolidated-shipping', label: 'Combine ready orders and arrange delivery', audiences: ['buyer'] },
-  { value: 'supplier-showcase', label: 'Publish a supplier showcase and catalogue', audiences: ['supplier'] },
-  { value: 'supplier-enquiries', label: 'Receive wholesale enquiries and quote requests', audiences: ['supplier'] },
-  { value: 'agent-network', label: 'Join the vetted sourcing and inspection network', audiences: ['agent'] },
-  { value: 'agent-assignments', label: 'Receive paid sourcing, visit or inspection assignments', audiences: ['agent'] },
-  { value: 'logistics-network', label: 'List freight, consolidation or delivery services', audiences: ['logistics'] },
-  { value: 'shipping-quotes', label: 'Receive managed shipment quote requests', audiences: ['logistics'] },
-  { value: 'updates', label: 'Follow the Naitrust marketplace launch', audiences: ['all'] },
-  { value: 'other', label: 'Something else', audiences: ['all'] },
+  { value: 'custom-production', label: 'Custom production, packaging or branding', audiences: ['buyer'] },
+  { value: 'landed-quotes', label: 'A confirmed landed-cost quote', audiences: ['buyer'] },
+  { value: 'sourcing-agents', label: 'Sourcing or inspection help in China', audiences: ['buyer'] },
+  { value: 'consolidated-shipping', label: 'Consolidation and delivery to Nigeria', audiences: ['buyer'] },
+  { value: 'supplier-enquiries', label: 'Receive product enquiries and submit quotes', audiences: ['supplier'] },
+  { value: 'supplier-showcase', label: 'Present products and manufacturing capabilities', audiences: ['supplier'] },
+  { value: 'agent-assignments', label: 'Receive sourcing, visit or inspection assignments', audiences: ['agent'] },
+  { value: 'shipping-quotes', label: 'Receive China-to-Nigeria shipment requests', audiences: ['logistics'] },
 ];
 
 export function interestsForWaitlistRoles(userTypes: WaitlistUserType[]): WaitlistInterestOption[] {

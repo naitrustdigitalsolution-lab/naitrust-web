@@ -121,7 +121,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               : 'border-b border-border/70'
           }`}
         >
-          <div className="relative mx-auto flex h-16 min-w-0 max-w-360 items-center gap-3 px-4 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
+          <div className="px-4 sm:px-6 lg:px-8">
+          <div className="relative mx-auto flex h-16 w-full min-w-0 max-w-[90rem] items-center gap-3 sm:h-20 sm:gap-4">
             {/* Back Button - Show for pages 2 screens deep when sidebar is active (desktop) */}
             {shouldShowBackButton && (
               <Button
@@ -192,7 +193,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                           : 'text-white/75 hover:text-white'
                         : currentPage === item.page
                           ? 'font-semibold text-primary'
-                          : 'text-muted-foreground hover:text-primary'
+                          : 'text-foreground hover:text-primary'
                     }`}
                   >
                     {item.label}
@@ -269,7 +270,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {!isAuthenticated && showNavItems && (
                 <div className="hidden lg:flex items-center gap-2">
                   {isPartnersPage ? (
-                    <Button size="lg" onClick={() => window.open('/partners/login', '_blank', 'noopener,noreferrer')}>
+                    <Button size="lg" onClick={() => onNavigate('/partners/login')}>
                       {t('partnerLogin')}
                     </Button>
                   ) : (
@@ -277,7 +278,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       <Button
                         variant="outline"
                         size="lg"
-                        onClick={() => window.open('/login', '_blank', 'noopener,noreferrer')}
+                        onClick={() => onNavigate('/login')}
                         className={isHomeHero ? 'border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white' : ''}
                       >
                         {t('login')}
@@ -290,6 +291,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
 
@@ -326,7 +328,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       size="sm"
                       className="h-10 min-w-0 flex-1 text-xs"
                       onClick={() => {
-                        window.open('/partners/login', '_blank', 'noopener,noreferrer');
+                        onNavigate('/partners/login');
                         setMobileMenuOpen(false);
                       }}
                     >
@@ -339,7 +341,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                         size="sm"
                         className="h-10 min-w-0 flex-1 border-white/25 bg-white/6 text-xs text-white hover:bg-white/12 hover:text-white"
                         onClick={() => {
-                          window.open('/login', '_blank', 'noopener,noreferrer');
+                          onNavigate('/login');
                           setMobileMenuOpen(false);
                         }}
                       >
@@ -349,7 +351,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                         size="sm"
                         className="h-10 min-w-0 flex-1 text-xs"
                         onClick={() => {
-                          window.open('/register?returnTo=/app/agents', '_blank', 'noopener,noreferrer');
+                          routerNavigate('/register?returnTo=/app/agents');
                           setMobileMenuOpen(false);
                         }}
                       >

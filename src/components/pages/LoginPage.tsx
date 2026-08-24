@@ -355,7 +355,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
               {t('partnerPrompt')}{' '}
               <button
                 type="button"
-                onClick={() => window.open('/partners/login', '_blank', 'noopener,noreferrer')}
+                onClick={() => routerNavigate('/partners/login')}
                 className="font-semibold text-primary hover:underline"
               >
                 {t('partnerSignIn')}
@@ -448,6 +448,15 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                 </motion.div>
               )}
             </AnimatePresence>
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => onNavigate('home')}
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
+              >
+                Return to Naitrust homepage
+              </button>
+            </div>
           </motion.div>
         </main>
 

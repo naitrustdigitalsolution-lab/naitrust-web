@@ -24,7 +24,7 @@ function AwaitingAgentOrderRoom({ order }: OrderRoomProps) {
 
   const sendInvite = async () => {
     const value = contact.trim();
-    if (!value) { toast.error('Enter an email or phone number to invite.'); return; }
+    if (!value) { toast.error('Enter the agent’s Naitrust ID or email address.'); return; }
     try {
       const { url } = await inviteAgent.mutateAsync({
         orderReference: order.reference,
@@ -79,11 +79,11 @@ function AwaitingAgentOrderRoom({ order }: OrderRoomProps) {
             <Button className="mt-4 w-full rounded-full" onClick={() => navigate(`/app/agents?order=${order.id}`)}><UserCheck size={16} /> Choose from verified agents</Button>
           </Card>
           <Card className="rounded-2xl p-5">
-            <p className="flex items-center gap-2 font-semibold"><Mail size={16} className="text-primary" /> Invite an agent by email</p>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">Not yet on Naitrust? They'll register through the invite link and land straight on this order.</p>
+            <p className="flex items-center gap-2 font-semibold"><Mail size={16} className="text-primary" /> Invite a specific agent</p>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">Use their Naitrust ID if they already have an account, or their email if they need an invitation.</p>
             <div className="mt-3 space-y-2">
-              <Label htmlFor="agent-invite-contact" className="sr-only">Agent email or phone</Label>
-              <Input id="agent-invite-contact" value={contact} onChange={(event) => setContact(event.target.value)} placeholder="agent@example.com" />
+              <Label htmlFor="agent-invite-contact" className="sr-only">Agent Naitrust ID or email</Label>
+              <Input id="agent-invite-contact" value={contact} onChange={(event) => setContact(event.target.value)} placeholder="NT-AGENT-… or agent@example.com" />
               <Button variant="outline" className="w-full rounded-full" disabled={inviteAgent.isPending} onClick={() => void sendInvite()}>
                 <Copy size={14} /> {inviteAgent.isPending ? 'Sending…' : 'Create and copy invite link'}
               </Button>

@@ -39,6 +39,8 @@
         "reference": "NTM-8462190",
         "quoteId": "quote_fatima_solar",
         "supplierId": "sup_cn_solar",
+        "assignedAgentId": "agt_chen",
+        "assignedAgentIds": ["agt_chen"],
         "deliveryMode": "international",
         "status": "inspection",
         "paymentCurrency": "NGN",

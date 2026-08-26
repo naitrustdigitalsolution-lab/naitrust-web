@@ -113,6 +113,8 @@ export interface MarketOrder {
   assignedAgentId?: string;
   /** All verified sourcing agents invited to cover this order across locations. */
   assignedAgentIds?: string[];
+  /** Display snapshot for an agent-originated invitation before profile linkage is resolved. */
+  assignedAgentName?: string;
   deliveryMode: DeliveryMode;
   status: OrderStatus;
   paymentCurrency?: CustomerPaymentCurrency;
@@ -151,11 +153,12 @@ export interface OrderAgentInvitation {
   orderSummary: string;
   destination?: string;
   links: CustomOrderLink[];
+  requestNotes?: string;
   contact: string;
   invitedByName: string;
   createdAt: string;
   expiresAt: string;
-  status: 'pending' | 'claimed' | 'expired' | 'withdrawn';
+  status: 'pending' | 'claimed' | 'declined' | 'expired' | 'withdrawn';
   claimedByUserId?: string;
   claimedByName?: string;
 }

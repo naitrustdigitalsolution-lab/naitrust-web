@@ -8,7 +8,6 @@
  * unscoped localStorage key rather than `marketplaceStorageKey`.
  */
 import type { CustomOrderLink, OrderAgentInvitation } from './types';
-import { marketplaceApi } from './marketplace.api';
 
 const STORAGE_KEY = 'naitrust:order-invitations:v1';
 const EXPIRY_DAYS = 14;
@@ -32,6 +31,15 @@ function withComputedStatus(invitation: OrderAgentInvitation): OrderAgentInvitat
   return invitation;
 }
 
+function normalise(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function isRecipient(invitation: OrderAgentInvitation, identifiers: string[]): boolean {
+  const contact = normalise(invitation.contact);
+  return identifiers.some((identifier) => normalise(identifier) === contact);
+}
+
 const wait = () => new Promise((resolve) => setTimeout(resolve, 250));
 
 export const orderInvitationsApi = {
@@ -42,6 +50,7 @@ export const orderInvitationsApi = {
     orderSummary: string;
     destination?: string;
     links: CustomOrderLink[];
+    requestNotes?: string;
     contact: string;
     invitedByName: string;
   }): Promise<{ token: string; url: string }> => {
@@ -55,6 +64,7 @@ export const orderInvitationsApi = {
       orderSummary: input.orderSummary,
       destination: input.destination,
       links: input.links,
+      requestNotes: input.requestNotes,
       contact: input.contact,
       invitedByName: input.invitedByName,
       createdAt: new Date().toISOString(),
@@ -74,6 +84,7 @@ export const orderInvitationsApi = {
     orderSummary: string;
     destination?: string;
     links: CustomOrderLink[];
+    requestNotes?: string;
     contact: string;
     invitedByName: string;
   }): Promise<{ token: string; url: string }> => {
@@ -87,6 +98,7 @@ export const orderInvitationsApi = {
       orderSummary: input.orderSummary,
       destination: input.destination,
       links: input.links,
+      requestNotes: input.requestNotes,
       contact: input.contact,
       invitedByName: input.invitedByName,
       createdAt: new Date().toISOString(),
@@ -104,6 +116,9 @@ export const orderInvitationsApi = {
   listSentByName: (invitedByName: string): OrderAgentInvitation[] =>
     read().map(withComputedStatus).filter((invitation) => invitation.invitedByName === invitedByName),
 
+  listForRecipient: (identifiers: string[], kind?: OrderAgentInvitation['kind']): OrderAgentInvitation[] =>
+    read().map(withComputedStatus).filter((invitation) => isRecipient(invitation, identifiers) && (!kind || invitation.kind === kind)),
+
   getPublicPreview: (token: string): OrderAgentInvitation | null => {
     const invitation = read().find((item) => item.token === token);
     return invitation ? withComputedStatus(invitation) : null;
@@ -119,20 +134,40 @@ export const orderInvitationsApi = {
     if (current.status === 'claimed') throw new Error('This invitation has already been claimed.');
 
     if (current.kind === 'buyer_request') {
-      const order = await marketplaceApi.createCustomOrder({
-        title: current.orderSummary,
-        links: current.links,
-        destination: current.destination ?? 'Nigeria',
-        notes: `Sourced by ${current.invitedByName}.`,
-      });
-      const claimed: OrderAgentInvitation = { ...invitation, orderId: order.id, status: 'claimed', claimedByUserId: user.id, claimedByName: user.name };
+      const claimed: OrderAgentInvitation = { ...invitation, status: 'claimed', claimedByUserId: user.id, claimedByName: user.name };
       write(list.map((item) => item.token === token ? claimed : item));
-      return { destination: `/app/orders/${order.id}` };
+      return { destination: `/app/orders/new?invitation=${encodeURIComponent(token)}` };
     }
 
     const claimed: OrderAgentInvitation = { ...invitation, status: 'claimed', claimedByUserId: user.id, claimedByName: user.name };
     write(list.map((item) => item.token === token ? claimed : item));
     return { destination: `/app/orders/invited/${token}` };
+  },
+
+  completeBuyerRequest: (token: string, orderId: string): void => {
+    write(read().map((item) => item.token === token && item.kind === 'buyer_request' ? { ...item, orderId } : item));
+  },
+
+  claimForAgent: async (token: string, agent: { id: string; name: string; identifiers: string[] }): Promise<void> => {
+    await wait();
+    const list = read();
+    const invitation = list.find((item) => item.token === token);
+    if (!invitation || invitation.kind !== 'agent_invite') throw new Error('This agent invitation could not be found.');
+    if (!isRecipient(invitation, agent.identifiers)) throw new Error('This invitation was sent to another sourcing-agent account.');
+    const current = withComputedStatus(invitation);
+    if (current.status !== 'pending') throw new Error(`This invitation is already ${current.status}.`);
+    write(list.map((item) => item.token === token ? { ...item, status: 'claimed' as const, claimedByUserId: agent.id, claimedByName: agent.name } : item));
+  },
+
+  decline: async (token: string, identifiers: string[]): Promise<void> => {
+    await wait();
+    const list = read();
+    const invitation = list.find((item) => item.token === token);
+    if (!invitation) throw new Error('This invitation could not be found.');
+    if (!isRecipient(invitation, identifiers)) throw new Error('This invitation was sent to another account.');
+    const current = withComputedStatus(invitation);
+    if (current.status !== 'pending') throw new Error(`This invitation is already ${current.status}.`);
+    write(list.map((item) => item.token === token ? { ...item, status: 'declined' as const } : item));
   },
 
   withdraw: (token: string): void => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, Copy, Link2, Loader2, Mail, MapPin, Plus, Search, ShieldCheck, Star, Trash2, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
@@ -16,6 +16,7 @@ import { useInviteBuyerToOrder } from '../../hooks/useOrderInvitations';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { clearCreateOrderDraft, readCreateOrderDraft, saveCreateOrderDraft } from '../../libs/marketplace/create-order-draft';
+import { orderInvitationsApi } from '../../libs/marketplace/order-invitations.api';
 
 interface LinkRow { url: string; note: string; quantity: string }
 
@@ -24,16 +25,19 @@ const emptyRow = (): LinkRow => ({ url: '', note: '', quantity: '' });
 export function CreateOrderPage() {
   const savedDraft = readCreateOrderDraft();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const invitationToken = searchParams.get('invitation');
+  const acceptedInvitation = invitationToken ? orderInvitationsApi.getPublicPreview(invitationToken) : null;
   const { user } = useAuth();
   const inviteBuyer = useInviteBuyerToOrder();
-  const [orderTitle, setOrderTitle] = useState(savedDraft?.orderTitle ?? '');
-  const [titleConfirmed, setTitleConfirmed] = useState(Boolean(savedDraft?.orderTitle.trim()));
+  const [orderTitle, setOrderTitle] = useState(acceptedInvitation?.orderSummary ?? savedDraft?.orderTitle ?? '');
+  const [titleConfirmed, setTitleConfirmed] = useState(Boolean(acceptedInvitation?.orderSummary.trim() || savedDraft?.orderTitle.trim()));
   const [titleError, setTitleError] = useState('');
-  const [startingFor, setStartingFor] = useState<'myself' | 'a-buyer'>(savedDraft?.startingFor ?? 'myself');
+  const [startingFor] = useState<'myself' | 'a-buyer'>('myself');
   const [buyerContact, setBuyerContact] = useState(savedDraft?.buyerContact ?? '');
   const [rows, setRows] = useState<LinkRow[]>(savedDraft?.rows.length ? savedDraft.rows : [emptyRow()]);
   const [destination, setDestination] = useState(savedDraft?.destination ?? '');
-  const [notes, setNotes] = useState(savedDraft?.notes ?? '');
+  const [notes, setNotes] = useState(acceptedInvitation?.requestNotes ?? savedDraft?.notes ?? '');
   const [errors, setErrors] = useState<Record<number, string>>({});
   const [buyerContactError, setBuyerContactError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -103,7 +107,9 @@ export function CreateOrderPage() {
         destination: destination.trim() || 'Nigeria',
         notes: notes.trim() || undefined,
         assignedAgentIds: selectedAgentIds.length ? selectedAgentIds : undefined,
+        assignedAgentName: acceptedInvitation?.kind === 'buyer_request' ? acceptedInvitation.invitedByName : undefined,
       });
+      if (invitationToken && acceptedInvitation?.kind === 'buyer_request') orderInvitationsApi.completeBuyerRequest(invitationToken, order.id);
       clearCreateOrderDraft();
       toast.success(selectedAgents.length ? `Order started with ${selectedAgents.length} sourcing agent${selectedAgents.length === 1 ? '' : 's'}.` : 'Order started. You can choose a sourcing agent next.');
       navigate(`/app/orders/${order.id}`);
@@ -146,10 +152,7 @@ export function CreateOrderPage() {
           </aside>
 
           <main className="min-w-0">
-        {titleConfirmed && <div className="inline-flex rounded-full border bg-muted/40 p-1 text-sm">
-          <button type="button" onClick={() => setStartingFor('myself')} className={`rounded-full px-4 py-2 font-semibold transition ${startingFor === 'myself' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}>I'm the buyer</button>
-          <button type="button" onClick={() => setStartingFor('a-buyer')} className={`rounded-full px-4 py-2 font-semibold transition ${startingFor === 'a-buyer' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}>I'm sourcing for a buyer</button>
-        </div>}
+        {titleConfirmed && <div className="inline-flex items-center gap-2 rounded-full border bg-muted/40 px-4 py-2 text-xs font-semibold"><UserCheck size={14} className="text-primary" /> Buyer-owned sourcing order</div>}
 
         <Card className="mt-3 overflow-hidden rounded-none border-x-0 p-0 shadow-none sm:rounded-3xl sm:border-x sm:shadow-[0_16px_45px_rgba(7,27,49,.08)]">
           <div className="border-b bg-gradient-to-br from-primary/[.09] via-background to-background px-5 py-5 sm:px-7">

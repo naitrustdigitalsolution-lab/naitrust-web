@@ -54,6 +54,7 @@ const TransactionRoomPage = lazyWithMinDelay(() => import("./pages/TransactionRo
 const DeliveryHandoverPage = lazyWithMinDelay(() => import("./pages/DeliveryHandoverPage"));
 const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage"));
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
+const OrderInvitationsPage = lazyWithMinDelay(() => import("./pages/OrderInvitationsPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
 const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
 const SupportChatPage = lazyWithMinDelay(() => import("./pages/SupportChatPage"));
@@ -276,6 +277,7 @@ function PublicAppContent() {
   const usesStandaloneHome =
     standalonePaths.includes(location.pathname) ||
     location.pathname.startsWith("/app") ||
+    location.pathname === "/partners/portal" ||
     location.pathname.startsWith("/pay/") ||
     location.pathname.startsWith("/trust/") ||
     location.pathname.startsWith("/delivery/") ||
@@ -362,6 +364,7 @@ function PublicAppContent() {
             <Route path="/app/deals/:id" element={<DashboardRouteSuspense><TransactionRoomPage /></DashboardRouteSuspense>} />
             <Route path="/app/invitations" element={<DashboardRouteSuspense><InvitationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
+            <Route path="/app/order-invitations" element={<DashboardRouteSuspense><OrderInvitationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/messages" element={<DashboardRouteSuspense><MessagesPage /></DashboardRouteSuspense>} />
             <Route path="/app/messages/support" element={<DashboardRouteSuspense><SupportChatPage /></DashboardRouteSuspense>} />

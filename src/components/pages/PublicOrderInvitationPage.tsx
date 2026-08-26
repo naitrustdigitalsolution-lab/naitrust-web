@@ -93,6 +93,8 @@ export function PublicOrderInvitationPage() {
                 </div>
               </div>
 
+              {preview.requestNotes && <div className="rounded-2xl border p-4"><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sourcing brief</p><p className="mt-2 text-sm leading-6">{preview.requestNotes}</p></div>}
+
               <div className="rounded-xl border border-primary/15 bg-primary/[0.04] p-4 text-sm leading-6">
                 <p className="flex gap-2 font-semibold"><LockKeyhole size={17} className="mt-1 shrink-0 text-primary" /> Sign in to accept</p>
                 <p className="mt-1 text-muted-foreground">

@@ -174,7 +174,7 @@ export const marketplaceApi = {
    * the order room; pricing and supplier details are confirmed once the
    * agent reviews the links.
    */
-  createCustomOrder: async (input: { title: string; links: { url: string; note?: string; quantity?: number }[]; destination: string; notes?: string; assignedAgentIds?: string[] }): Promise<MarketOrder> => {
+  createCustomOrder: async (input: { title: string; links: { url: string; note?: string; quantity?: number }[]; destination: string; notes?: string; assignedAgentIds?: string[]; assignedAgentName?: string }): Promise<MarketOrder> => {
     await wait();
     if (!input.links.length && !input.notes?.trim()) throw new Error('Describe what you want the sourcing agent to find.');
     const order: MarketOrder = {
@@ -190,6 +190,7 @@ export const marketplaceApi = {
       requestNotes: input.notes,
       assignedAgentId: input.assignedAgentIds?.[0],
       assignedAgentIds: input.assignedAgentIds,
+      assignedAgentName: input.assignedAgentName,
     };
     write(key('orders'), [order, ...marketplaceApi.listOrders()]);
     return order;

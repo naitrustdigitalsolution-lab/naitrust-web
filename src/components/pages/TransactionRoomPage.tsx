@@ -425,6 +425,10 @@ function OverviewTab({ deal, marketOrder }: { deal: SafeDealDetail; marketOrder?
         )}
       </div>
 
+      {marketOrder && ((marketOrder.customLinks?.length ?? 0) > 0 || marketOrder.requestNotes) && <div className="rounded-2xl border p-4 sm:p-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-primary">Original sourcing request</p>{marketOrder.requestNotes && <p className="mt-3 whitespace-pre-line text-sm leading-6">{marketOrder.requestNotes}</p>}{Boolean(marketOrder.customLinks?.length) && <div className="mt-4 space-y-2 border-t pt-4">{marketOrder.customLinks?.map((link, index) => <div key={`${link.url}-${index}`} className="flex items-start justify-between gap-3 text-xs"><a href={link.url} target="_blank" rel="noreferrer" className="min-w-0 truncate font-semibold text-primary hover:underline">{link.url}</a>{link.quantity && <Badge variant="outline">Qty {link.quantity}</Badge>}</div>)}</div>}</div>}
+
+      {marketOrder?.deliveryMode === 'international' && <BuyerAgentAgreement order={marketOrder} buyerName={buyer?.name ?? 'Buyer'} />}
+
       {deal.description && (
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -494,6 +498,15 @@ function OverviewTab({ deal, marketOrder }: { deal: SafeDealDetail; marketOrder?
   );
 }
 
+function BuyerAgentAgreement({ order, buyerName }: { order: MarketOrder; buyerName: string }) {
+  const assignment = sourcingApi.listAssignments().find((item) => item.relatedOrderId === order.id);
+  const agentId = assignment?.agentId ?? order.assignedAgentId ?? order.assignedAgentIds?.[0];
+  const agent = agentId ? sourcingApi.listAgents().find((item) => item.id === agentId) : undefined;
+  const agentName = agent ? (agent.profileType === 'company' ? agent.businessName ?? agent.name : agent.name) : order.assignedAgentName;
+  if (!agentName) return <div className="rounded-2xl border border-dashed p-4 sm:p-5"><div className="flex items-start gap-3"><ScrollText size={18} className="mt-0.5 shrink-0 text-primary" /><div><p className="text-sm font-semibold">Buyer–agent agreement pending</p><p className="mt-1 text-xs leading-5 text-muted-foreground">The bilingual service agreement is generated when a sourcing agent accepts this order. Product payment and the agent’s service quote remain separate approvals.</p></div></div></div>;
+  return <div className="overflow-hidden rounded-2xl border"><div className="flex flex-wrap items-center justify-between gap-3 border-b bg-primary/[.045] p-4"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-primary">Generated buyer–agent agreement</p><h3 className="mt-1 font-bold">{buyerName} ↔ {agentName}</h3></div><Badge variant="success">English + 中文</Badge></div><div className="grid md:grid-cols-2"><div className="space-y-3 p-4 text-xs leading-5 sm:p-5"><p className="font-bold">English</p><p><strong>Order:</strong> {order.itemSummary ?? order.reference}</p><p>The agent will review the sourcing brief, investigate or confirm suitable China suppliers, record material findings and provide requested inspection evidence inside this Order Room.</p><p>The buyer must approve the agent’s service quote, supplier choice, specifications and any payment instruction before work or money moves to the next protected stage.</p><p>Either party must keep order communication and evidence attached to this record. Changes require the other party’s approval.</p></div><div className="space-y-3 border-t p-4 text-xs leading-5 md:border-l md:border-t-0 sm:p-5"><p className="font-bold">中文</p><p><strong>订单：</strong>{order.itemSummary ?? order.reference}</p><p>采购代理将在本订单室内审核采购需求、调查或确认合适的中国供应商、记录重要调查结果，并提交约定的验货证据。</p><p>在工作或资金进入下一受保护阶段前，买家必须批准代理服务报价、供应商选择、产品规格及任何付款指令。</p><p>双方应将订单沟通和证据保存在本记录中。任何变更均需另一方批准。</p></div></div><div className="border-t bg-muted/30 px-4 py-3 text-[10px] leading-4 text-muted-foreground">Generated from the accepted order invitation and current sourcing scope. Supplier purchase terms remain in the separate order agreement.</div></div>;
+}
+
 function OverviewFact({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0 border-b px-4 py-3 last:border-b-0 sm:border-r lg:[&:nth-child(3n)]:border-r-0">
@@ -507,7 +520,8 @@ function SourcingSupportPanel({ order }: { order: MarketOrder }) {
   const navigate = useNavigate();
   const supplier = marketSuppliers.find((candidate) => candidate.id === order.supplierId);
   const assignment = sourcingApi.listAssignments().find((candidate) => candidate.relatedOrderId === order.id);
-  const agent = assignment ? sourcingApi.listAgents().find((candidate) => candidate.id === assignment.agentId) : undefined;
+  const agentId = assignment?.agentId ?? order.assignedAgentId ?? order.assignedAgentIds?.[0];
+  const agent = agentId ? sourcingApi.listAgents().find((candidate) => candidate.id === agentId) : undefined;
   const agentDisplayName = agent?.profileType === 'company' ? agent.businessName ?? agent.name : agent?.name;
 
   return (

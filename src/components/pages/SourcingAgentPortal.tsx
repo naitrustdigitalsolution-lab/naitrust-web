@@ -16,13 +16,16 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { NaitrustLogo } from '../utility/NaitrustLogo';
+import { orderInvitationsApi } from '../../libs/marketplace/order-invitations.api';
 
 type Locale = PartnerSession['locale'];
-type Section = 'overview' | 'orders' | 'customers' | 'network' | 'documents' | 'money';
+type Section = 'overview' | 'create_order' | 'invitations' | 'orders' | 'customers' | 'network' | 'documents' | 'money';
 type Currency = 'NGN' | 'USD' | 'CNY';
 
 const nav: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { id: 'create_order', label: 'Invite buyer', icon: Plus },
+  { id: 'invitations', label: 'Order invitations', icon: MailPlus },
   { id: 'orders', label: 'Order Rooms', icon: Boxes },
   { id: 'customers', label: 'Customers', icon: Users },
   { id: 'network', label: 'My network', icon: Network },
@@ -65,9 +68,88 @@ export function SourcingAgentPortal({ session, locale, onLocale, onLogout }: { s
     {menuOpen && <button aria-label="Close menu" className="fixed inset-0 z-40 bg-black/45 lg:hidden" onClick={() => setMenuOpen(false)} />}
     <div className="lg:pl-72">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 px-4 backdrop-blur sm:px-6"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMenuOpen(true)}><Menu size={20} /></Button><div><p className="text-sm font-bold">{nav.find((item) => item.id === section)?.label}</p><p className="hidden text-[10px] text-muted-foreground sm:block">Sourcing Agent Operations</p></div></div><div className="flex items-center gap-1"><Button variant="ghost" size="icon" className="relative rounded-full"><Bell size={17} /><span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-rose-500" /></Button><Button variant="ghost" size="sm" className="rounded-full text-xs" onClick={() => onLocale(locale === 'en' ? 'zh-CN' : 'en')}><Globe2 size={14} /> {locale === 'en' ? '中文' : 'English'}</Button></div></header>
-      <main className="mx-auto max-w-[1500px] p-4 sm:p-6 lg:p-8">{section === 'overview' && <Overview go={select} />}{section === 'orders' && <Orders />}{section === 'customers' && <Customers />}{section === 'network' && <NetworkSection />}{section === 'documents' && <Documents />}{section === 'money' && <Money />}</main>
+      <main className="w-full p-4 sm:p-6 lg:p-8 xl:p-10">{section !== 'create_order' && <div className="mb-5 flex justify-end"><Button className="rounded-full" onClick={() => select('create_order')}><Plus size={15} /> Invite buyer</Button></div>}{section === 'overview' && <Overview go={select} />}{section === 'create_order' && <AgentCreateOrderScreen session={session} go={select} />}{section === 'invitations' && <AgentInvitations session={session} go={select} />}{section === 'orders' && <Orders />}{section === 'customers' && <Customers />}{section === 'network' && <NetworkSection />}{section === 'documents' && <Documents />}{section === 'money' && <Money />}</main>
     </div>
   </div>;
+}
+
+function AgentInvitations({ session, go }: { session: PartnerSession; go: (section: Section) => void }) {
+  const [version, setVersion] = useState(0);
+  const [busy, setBusy] = useState('');
+  // Name matching keeps the current mock agent directory usable; production resolves the profile's immutable Naitrust ID.
+  const identifiers = [session.applicationId, session.email, session.name];
+  const invitations = orderInvitationsApi.listForRecipient(identifiers, 'agent_invite');
+  void version;
+  const respond = async (token: string, accept: boolean) => {
+    setBusy(token);
+    try {
+      if (accept) await orderInvitationsApi.claimForAgent(token, { id: session.applicationId, name: session.name, identifiers });
+      else await orderInvitationsApi.decline(token, identifiers);
+      setVersion((value) => value + 1);
+      toast.success(accept ? 'Order invitation accepted. The buyer can now continue with you.' : 'Order invitation declined.');
+    } catch (error) { toast.error(error instanceof Error ? error.message : 'Could not update this invitation.'); }
+    finally { setBusy(''); }
+  };
+  return <div><PageHead eyebrow="Buyer requests" title="Order invitations" copy="Review every order before it is added to your workload. Accepting connects you to the buyer; it does not collect a fee or release product money." /><div className="mt-6 space-y-3">{invitations.map((invitation) => <Card key={invitation.token} className="rounded-3xl p-5 sm:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-start"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"><BriefcaseBusiness size={19} /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap gap-2"><Badge variant={invitation.status === 'pending' ? 'default' : invitation.status === 'claimed' ? 'success' : 'outline'} className="capitalize">{invitation.status}</Badge><Badge variant="outline">{invitation.orderReference}</Badge></div><h2 className="mt-3 text-lg font-bold">{invitation.orderSummary}</h2><p className="mt-1 text-sm text-muted-foreground">Buyer: {invitation.invitedByName}{invitation.destination ? ` · ${invitation.destination}` : ''}</p>{invitation.requestNotes && <p className="mt-3 rounded-2xl bg-muted/50 p-4 text-sm leading-6">{invitation.requestNotes}</p>}<p className="mt-3 text-xs text-muted-foreground">{invitation.links.length} product link{invitation.links.length === 1 ? '' : 's'} · Sent {new Intl.DateTimeFormat('en-NG', { dateStyle: 'medium' }).format(new Date(invitation.createdAt))}</p>{invitation.status === 'pending' && <div className="mt-5 flex flex-wrap gap-2"><Button disabled={busy === invitation.token} onClick={() => void respond(invitation.token, true)}><CheckCircle2 size={15} /> Accept order</Button><Button variant="outline" disabled={busy === invitation.token} onClick={() => void respond(invitation.token, false)}><X size={15} /> Decline</Button></div>}{invitation.status === 'claimed' && <Button className="mt-5" variant="outline" onClick={() => go('orders')}>Open Order Rooms <ArrowRight size={14} /></Button>}</div></div></Card>)}{!invitations.length && <Card className="rounded-3xl border-dashed p-10 text-center"><MailPlus className="mx-auto text-muted-foreground" size={30} /><h2 className="mt-4 font-bold">No order invitations yet</h2><p className="mt-2 text-sm text-muted-foreground">When a buyer hires you from your profile or invites your Naitrust ID, the request appears here.</p></Card>}</div></div>;
+}
+
+function AgentCreateOrderScreenLegacy({ session, go }: { session: PartnerSession; go: (section: Section) => void }) {
+  const [buyerContact, setBuyerContact] = useState('');
+  const [title, setTitle] = useState('');
+  const [productLink, setProductLink] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [brief, setBrief] = useState('');
+  const [destination, setDestination] = useState('');
+  const [sending, setSending] = useState(false);
+  const [titleConfirmed, setTitleConfirmed] = useState(false);
+
+  const send = async () => {
+    if (!buyerContact.trim() || !title.trim()) {
+      toast.error('Add the buyer and a suggested order title.');
+      return;
+    }
+    setSending(true);
+    try {
+      const { url } = await orderInvitationsApi.createBuyerRequest({
+        orderSummary: title.trim(),
+        links: [],
+        requestNotes: brief.trim() || undefined,
+        contact: buyerContact.trim(),
+        invitedByName: session.name,
+      });
+      await navigator.clipboard.writeText(url).catch(() => undefined);
+      toast.success('Buyer invitation created and copied. The order opens only after the buyer accepts.');
+      setBuyerContact(''); setTitle(''); setBrief(''); setTitleConfirmed(false);
+      go('invitations');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not create the buyer invitation.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return <div className="mx-auto w-full max-w-[90rem]"><PageHead eyebrow="Customer sourcing" title="Create an order invitation" copy="Start a sourcing request for a buyer. Find an existing buyer with their Naitrust ID, or invite them by email. The buyer owns the order only after reviewing and accepting it." /><div className="mt-6 grid items-start gap-6 xl:grid-cols-[300px_minmax(0,1fr)]"><aside className="rounded-3xl border bg-card p-5 shadow-sm xl:sticky xl:top-24"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-primary">Order setup</p><h2 className="mt-1 font-bold">Invite the buyer safely</h2><div className="mt-5 space-y-5">{[['1', 'Name the order', 'Use a short title the buyer will recognise.'], ['2', 'Add the request', 'Identify the buyer and describe what they need.'], ['3', 'Buyer reviews', 'The order starts only after they accept.']].map(([number, heading, copy], index) => <div key={number} className="flex gap-3"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${index === 0 || titleConfirmed ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{number}</span><div><p className="text-sm font-semibold">{heading}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{copy}</p></div></div>)}</div></aside><Card className="overflow-hidden rounded-3xl p-0 shadow-sm"><div className="border-b bg-gradient-to-br from-primary/[.09] via-background to-background p-5 sm:p-7"><p className="text-[11px] font-bold uppercase tracking-[.15em] text-primary">Agent-created order</p><h2 className="mt-1 text-xl font-bold">{titleConfirmed ? title : 'Name this order first'}</h2><p className="mt-1 text-sm text-muted-foreground">Nothing is sent, activated, or paid until the buyer reviews and accepts.</p></div><div className="p-5 sm:p-7">{!titleConfirmed ? <div className="mx-auto max-w-xl py-5 sm:py-8"><Badge variant="secondary">Step 1 of 3</Badge><h2 className="mt-4 text-xl font-bold">What should this order be called?</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Start with a clear title before adding buyer and product details.</p><Label htmlFor="agent-order-title" className="mt-6 block">Order name or title</Label><Input id="agent-order-title" autoFocus className="mt-1.5" value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && title.trim()) setTitleConfirmed(true); }} placeholder="e.g. 500 branded travel mugs" /><Button className="mt-5 w-full rounded-full" disabled={!title.trim()} onClick={() => setTitleConfirmed(true)}>Continue to order details <ArrowRight size={15} /></Button></div> : <div className="space-y-5"><div className="flex items-center justify-between rounded-2xl border bg-muted/30 p-4"><div><p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Order</p><p className="font-semibold">{title}</p></div><Button variant="ghost" size="sm" onClick={() => setTitleConfirmed(false)}>Edit title</Button></div><div><Label htmlFor="agent-buyer-contact">Buyer Naitrust ID or email</Label><Input id="agent-buyer-contact" className="mt-1.5" value={buyerContact} onChange={(event) => setBuyerContact(event.target.value)} placeholder="NT-BUYER-… or buyer@example.com" /></div><div className="grid gap-3 sm:grid-cols-[1fr_8rem]"><div><Label htmlFor="agent-product-link">Product link <span className="font-normal text-muted-foreground">(optional)</span></Label><Input id="agent-product-link" className="mt-1.5" value={productLink} onChange={(event) => setProductLink(event.target.value)} placeholder="https://…" /></div><div><Label htmlFor="agent-product-quantity">Quantity</Label><Input id="agent-product-quantity" className="mt-1.5" type="number" min="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></div></div><div><Label htmlFor="agent-order-brief">What the buyer needs</Label><Textarea id="agent-order-brief" className="mt-1.5 min-h-28" value={brief} onChange={(event) => setBrief(event.target.value)} placeholder="Product specification, quality, packaging, target quantity and anything still to confirm." /></div><div><Label htmlFor="agent-order-destination">Delivery destination</Label><Input id="agent-order-destination" className="mt-1.5" value={destination} onChange={(event) => setDestination(event.target.value)} placeholder="e.g. Lagos, Nigeria" /></div><div className="rounded-2xl border border-primary/15 bg-primary/[.04] p-4 text-xs leading-5 text-muted-foreground"><ShieldCheck size={15} className="mr-2 inline text-primary" />The buyer receives this in their Order invitations screen and can accept or decline it.</div><div className="flex flex-col-reverse gap-2 border-t pt-5 sm:flex-row sm:justify-end"><Button variant="outline" onClick={() => go('overview')}>Cancel</Button><Button disabled={sending} onClick={() => void send()}>{sending ? 'Creating invitation…' : 'Create and send invitation'}</Button></div></div>}</div></Card></div></div>;
+}
+
+function AgentCreateOrderScreen({ session, go }: { session: PartnerSession; go: (section: Section) => void }) {
+  const [buyerContact, setBuyerContact] = useState('');
+  const [title, setTitle] = useState('');
+  const [note, setNote] = useState('');
+  const [titleConfirmed, setTitleConfirmed] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const send = async () => {
+    if (!buyerContact.trim() || !title.trim()) return toast.error('Add the buyer and a suggested order title.');
+    setSending(true);
+    try {
+      await orderInvitationsApi.createBuyerRequest({ orderSummary: title.trim(), links: [], requestNotes: note.trim() || undefined, contact: buyerContact.trim(), invitedByName: session.name });
+      toast.success('Order invitation sent. The buyer will complete the order details after accepting.');
+      go('invitations');
+    } catch (error) { toast.error(error instanceof Error ? error.message : 'Could not create the invitation.'); }
+    finally { setSending(false); }
+  };
+
+  return <div className="mx-auto w-full max-w-[90rem]"><PageHead eyebrow="Customer invitation" title="Invite a buyer to start an order" copy="Send only the starting context. After accepting, the buyer completes the normal Create Order form and owns the final request." /><div className="mt-6 grid items-start gap-6 xl:grid-cols-[300px_minmax(0,1fr)]"><aside className="rounded-3xl border bg-card p-5 shadow-sm xl:sticky xl:top-24"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-primary">Invitation flow</p><div className="mt-5 space-y-5">{[['1', 'Suggest a title', 'Give the buyer a clear starting point.'], ['2', 'Choose the buyer', 'Use their Naitrust ID or account email.'], ['3', 'Buyer completes it', 'They add products, quantity, destination and specifications.']].map(([number, heading, copy], index) => <div key={number} className="flex gap-3"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${index === 0 || titleConfirmed ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{number}</span><div><p className="text-sm font-semibold">{heading}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{copy}</p></div></div>)}</div></aside><Card className="overflow-hidden rounded-3xl p-0 shadow-sm"><div className="border-b bg-gradient-to-br from-primary/[.09] via-background to-background p-5 sm:p-7"><p className="text-[11px] font-bold uppercase tracking-[.15em] text-primary">Order invitation</p><h2 className="mt-1 text-xl font-bold">{titleConfirmed ? title : 'Name the proposed order'}</h2><p className="mt-1 text-sm text-muted-foreground">This is an invitation, not an order. The buyer creates the order after accepting.</p></div><div className="p-5 sm:p-7">{!titleConfirmed ? <div className="mx-auto max-w-xl py-6"><Badge variant="secondary">Step 1 of 3</Badge><Label htmlFor="invite-title" className="mt-6 block">Suggested order name</Label><Input id="invite-title" autoFocus className="mt-1.5" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="e.g. 500 branded travel mugs" /><Button className="mt-5 w-full rounded-full" disabled={!title.trim()} onClick={() => setTitleConfirmed(true)}>Continue <ArrowRight size={15} /></Button></div> : <div className="space-y-5"><div className="flex items-center justify-between rounded-2xl border bg-muted/30 p-4"><div><p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Suggested order</p><p className="font-semibold">{title}</p></div><Button variant="ghost" size="sm" onClick={() => setTitleConfirmed(false)}>Edit</Button></div><div><Label htmlFor="invite-buyer">Buyer Naitrust ID or email</Label><Input id="invite-buyer" className="mt-1.5" value={buyerContact} onChange={(event) => setBuyerContact(event.target.value)} placeholder="NT-BUYER-… or buyer@example.com" /></div><div><Label htmlFor="invite-note">Note to the buyer <span className="font-normal text-muted-foreground">(optional)</span></Label><Textarea id="invite-note" className="mt-1.5 min-h-24" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add a short reason for this invitation." /></div><div className="rounded-2xl border border-primary/15 bg-primary/[.04] p-4 text-xs leading-5 text-muted-foreground"><ShieldCheck size={15} className="mr-2 inline text-primary" />Product links, quantities, specifications, budget and delivery destination are intentionally left for the buyer to complete.</div><div className="flex flex-col-reverse gap-2 border-t pt-5 sm:flex-row sm:justify-end"><Button variant="outline" onClick={() => go('overview')}>Cancel</Button><Button disabled={sending || !buyerContact.trim()} onClick={() => void send()}>{sending ? 'Sending invitation…' : 'Send order invitation'}</Button></div></div>}</div></Card></div></div>;
 }
 
 function Overview({ go }: { go: (section: Section) => void }) {

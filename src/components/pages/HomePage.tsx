@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Shield,
   CheckCircle2,
@@ -22,8 +22,6 @@ import {
   Languages,
   PackageCheck,
   Store,
-  Pause,
-  Play,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -43,10 +41,7 @@ import { openWaitlistModal } from "../modals/waitlist-events";
 import { pageImages } from "../../libs/images/image-manifest";
 import tradersLocalBusinessesImage from "../../assets/home/traders-local-businesses.jpg";
 import localTailoringBusinessImage from "../../assets/home/local-tailoring-business.jpg";
-import wholesaleJourneyDesktopMp4 from "../../assets/home/wholesale-sourcing-journey-desktop.mp4";
-import wholesaleJourneyDesktopWebm from "../../assets/home/wholesale-sourcing-journey-desktop.webm";
-import wholesaleJourneyMobileMp4 from "../../assets/home/wholesale-sourcing-journey-mobile.mp4";
-import wholesaleJourneyMobileWebm from "../../assets/home/wholesale-sourcing-journey-mobile.webm";
+import providerAiHero from "../../assets/home/provider-ai-hero.png";
 import { usePlatformFeatures } from "../../libs/platform-features";
 import { useTranslation } from "react-i18next";
 
@@ -59,9 +54,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const { t } = useTranslation('home');
   const platformFeatures = usePlatformFeatures();
   const [allowAmbientMotion, setAllowAmbientMotion] = useState(false);
-  const [allowHeroVideo, setAllowHeroVideo] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
-  const [heroVideoPlaying, setHeroVideoPlaying] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const [useHeroViewportHeight, setUseHeroViewportHeight] = useState(true);
 
   useEffect(() => {
@@ -73,29 +65,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
     media.addEventListener("change", updateMotionPreference);
     return () => media.removeEventListener("change", updateMotionPreference);
   }, []);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: no-preference)");
-    const updateVideoPreference = () => {
-      setAllowHeroVideo(media.matches);
-      setHeroVideoPlaying(media.matches);
-    };
-    updateVideoPreference();
-    media.addEventListener("change", updateVideoPreference);
-    return () => media.removeEventListener("change", updateVideoPreference);
-  }, []);
-
-  const toggleHeroVideo = async () => {
-    const video = heroVideoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      await video.play();
-      setHeroVideoPlaying(true);
-      return;
-    }
-    video.pause();
-    setHeroVideoPlaying(false);
-  };
 
   useEffect(() => {
     const updateHeroHeight = () => {
@@ -169,41 +138,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Floating Feedback Button */}
       <FloatingFeedbackButton onNavigate={onNavigate} />
 
-      {/* The video remains beneath a strong Naitrust-blue treatment so copy stays readable. */}
+      {/* Single static hero image across mobile and desktop. */}
       <section
         className={`relative isolate min-h-[112svh] overflow-hidden bg-[#04162f] text-white sm:min-h-[110svh] lg:min-h-[105svh] ${useHeroViewportHeight ? "xl:min-h-[94vh]" : ""}`}
       >
-        {!allowHeroVideo && <ImageWithFallback
-          src={pageImages.homeHero.src}
+        <ImageWithFallback
+          src={providerAiHero}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 -z-30 h-full w-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
+          className="absolute inset-0 -z-30 h-full w-full object-cover object-[62%_center] filter-none sm:object-[58%_center] lg:object-center"
+          style={{ filter: 'none', WebkitFilter: 'none' }}
           decoding="async"
-        />}
-        {allowHeroVideo && (
-          <video
-            ref={heroVideoRef}
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center] filter-none sm:object-[58%_center] lg:object-center"
-            style={{ filter: 'none', WebkitFilter: 'none' }}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label={t('videoLabel')}
-            onPlay={() => setHeroVideoPlaying(true)}
-            onPause={() => setHeroVideoPlaying(false)}
-          >
-            <source media="(max-width: 767px)" src={wholesaleJourneyMobileWebm} type="video/webm" />
-            <source media="(max-width: 767px)" src={wholesaleJourneyMobileMp4} type="video/mp4" />
-            <source src={wholesaleJourneyDesktopWebm} type="video/webm" />
-            <source src={wholesaleJourneyDesktopMp4} type="video/mp4" />
-          </video>
-        )}
-        <div className="absolute inset-0 -z-10 bg-[#04162f]/60 sm:bg-[#04162f]/50 lg:bg-[#04162f]/45" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(4,22,47,.76)_0%,rgba(4,22,47,.46)_34%,rgba(4,22,47,.94)_100%)] lg:bg-[linear-gradient(90deg,rgba(4,22,47,.96)_0%,rgba(4,22,47,.78)_44%,rgba(4,22,47,.30)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-[#04162f] to-transparent" />
-
+        />
         <div
           className={`relative z-10 mx-auto flex min-h-[112svh] w-full max-w-[90rem] items-center px-4 pb-10 pt-24 sm:min-h-[110svh] sm:px-8 sm:pb-14 sm:pt-28 lg:min-h-[105svh] lg:px-10 lg:pb-16 xl:px-8 ${useHeroViewportHeight ? "xl:min-h-[100svh] xl:py-28" : "xl:pb-24 xl:pt-32"}`}
         >
@@ -247,16 +193,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
           </motion.div>
         </div>
-        {/* {allowHeroVideo && (
-          <button
-            type="button"
-            onClick={() => void toggleHeroVideo()}
-            className="absolute bottom-4 right-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#04162f]/70 text-white backdrop-blur transition hover:bg-[#04162f]/90 sm:bottom-6 sm:right-6"
-            aria-label={heroVideoPlaying ? "Pause background video" : "Play background video"}
-          >
-            {heroVideoPlaying ? <Pause size={16} /> : <Play size={16} />}
-          </button>
-        )} */}
       </section>
 
       {/* Clear customer/business positioning */}

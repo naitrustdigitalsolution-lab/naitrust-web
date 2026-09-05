@@ -189,8 +189,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                     className={`whitespace-nowrap text-sm transition-colors duration-300 ${
                       isHomeHero
                         ? currentPage === item.page
-                          ? 'font-semibold text-white'
-                          : 'text-white/75 hover:text-white'
+                          ? 'font-semibold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,.45)]'
+                          : 'font-medium text-white drop-shadow-[0_1px_4px_rgba(0,0,0,.45)] hover:text-white/85'
                         : currentPage === item.page
                           ? 'font-semibold text-primary'
                           : 'text-foreground hover:text-primary'

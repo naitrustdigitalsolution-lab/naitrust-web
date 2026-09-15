@@ -6,33 +6,33 @@ export type Audience = 'business' | 'customer';
 export const audienceContent = {
   en: {
     business: {
-      eyebrow: 'Naitrust for business', title: 'Source wholesale products from China for your Nigerian business.', titleHighlight: 'for your Nigerian business.', description: 'A buying account for Nigerian retailers, traders, wholesalers and companies to work with a verified sourcing agent and manage China orders.', heroImage: pageImages.businessHero.src, heroAlt: pageImages.businessHero.alt, primary: 'Open a business account', register: 'register-business', sectionLabel: 'Who it is for', whoTitle: 'Give your business a clearer way to buy from China.', whoCopy: 'Choose a verified sourcing agent, share your requirements, approve quotes and follow each wholesale order from supplier checks to delivery in Nigeria.',
+      eyebrow: 'Naitrust for business', title: 'Control business payments from agreement to settlement.', titleHighlight: 'from agreement to settlement.', description: 'A protected-payment account for companies, merchants and growing teams that need verified beneficiaries, clear approvals and auditable releases.', heroImage: pageImages.businessHero.src, heroAlt: 'A business team reviewing a protected payment', primary: 'Open a business account', register: 'register-business', sectionLabel: 'Built for business payments', whoTitle: 'Give every important payment a clear purpose and approval trail.', whoCopy: 'Use Protected Deals for vendor deposits, procurement, services, projects and milestone-based work while keeping funds, evidence and decisions connected.',
       useCases: [
-        { icon: Store, title: 'Verified sourcing agents', text: 'Compare professionals operating in China by services, location and completed-order feedback.' },
-        { icon: PackageCheck, title: 'Products and quotes', text: 'Share specifications and quantities, then review a complete sourcing and landed-cost quote.' },
-        { icon: Building2, title: 'Supplier coordination', text: 'Once your agent sources a supplier, they invite the supplier into the Order Room, so pricing, evidence, approvals and payments stay clear for everyone.' },
-        { icon: Users, title: 'Team visibility', text: 'Give your business one clear record of conversations, documents, payments and delivery progress.' },
+        { icon: Store, title: 'Vendor payments', text: 'Verify the beneficiary and protect supplier deposits until the agreed conditions are met.' },
+        { icon: PackageCheck, title: 'Procurement and delivery', text: 'Connect purchase terms, invoices and delivery evidence to each release decision.' },
+        { icon: Building2, title: 'Projects and contractors', text: 'Break commercial work into accountable milestones with documented approval.' },
+        { icon: Users, title: 'Team controls', text: 'Give authorized team members visibility into terms, evidence, payment status and decisions.' },
       ],
       steps: [
-        { icon: Fingerprint, title: 'Verify your business', text: 'Complete identity and business checks so agents and suppliers know who they are working with.' },
-        { icon: Store, title: 'Choose a sourcing agent', text: 'Find a verified agent operating in China whose services match your product and order.' },
-        { icon: ReceiptText, title: 'Approve your quote', text: 'Review quantities, specifications, agent services and the complete landed cost before paying.' },
-        { icon: PackageCheck, title: 'Follow the order', text: 'Track supplier checks, production, shipping, customs and delivery in one Order Room.' },
+        { icon: Fingerprint, title: 'Verify your business', text: 'Complete identity and business checks and define who may authorize payments.' },
+        { icon: Store, title: 'Create a Protected Deal', text: 'Invite the other party and agree the amount, scope, deadline and release conditions.' },
+        { icon: ReceiptText, title: 'Protect the funds', text: 'Fund through supported regulated payment rails and confirm the beneficiary.' },
+        { icon: PackageCheck, title: 'Approve settlement', text: 'Review the required evidence before release, refund or dispute resolution.' },
       ],
     },
     customer: {
-      eyebrow: 'Naitrust for customers', title: 'Find verified China suppliers and receive your order in Nigeria.', titleHighlight: 'receive your order in Nigeria.', description: 'Choose a verified sourcing agent operating in China, understand the complete landed cost, and track the order to your door in Nigeria.', heroImage: pageImages.customerHero.src, heroAlt: pageImages.customerHero.alt, primary: 'Open a customer account', register: 'register-customer', sectionLabel: 'More ways to use Naitrust', whoTitle: 'Import without relying on unknown suppliers or scattered agents.', whoCopy: 'Your sourcing agent helps find and check suitable China suppliers while Naitrust keeps quotes, approvals, evidence, payments and logistics together.',
+      eyebrow: 'Naitrust for individuals', title: 'Protect important payments before money changes hands.', titleHighlight: 'before money changes hands.', description: 'Use clear terms, verified identities and controlled release for purchases, services, deposits and other high-trust transactions.', heroImage: pageImages.customerHero.src, heroAlt: 'An individual making a protected digital payment', primary: 'Open an individual account', register: 'register-customer', sectionLabel: 'More ways to use Naitrust', whoTitle: 'Pay with more confidence when trust alone is not enough.', whoCopy: 'A Protected Deal keeps the agreement, evidence, funding status and release decision together for both sides.',
       useCases: [
-        { icon: Search, title: 'Find a sourcing agent', text: 'Compare verified agents operating in China by product expertise, services and location.' },
-        { icon: Store, title: 'Share what you need', text: 'Give your agent the product, quantity, quality, budget and delivery requirements.' },
-        { icon: ReceiptText, title: 'Receive a landed-cost quote', text: 'See products, inspection, customs, handling, insurance and logistics before paying.' },
-        { icon: PackageCheck, title: 'Track delivery', text: 'Follow preparation, inspection, export, transit, customs and delivery from one Order Room.' },
+        { icon: Search, title: 'Online purchases', text: 'Agree exactly what is being bought and when payment may be released.' },
+        { icon: Store, title: 'Services and freelance work', text: 'Protect deposits or milestone payments while work is completed.' },
+        { icon: ReceiptText, title: 'Vehicle and property deposits', text: 'Record the purpose, recipient, documents and refund conditions before funding.' },
+        { icon: PackageCheck, title: 'Delivery-based payments', text: 'Confirm receipt, review evidence and report a problem before release.' },
       ],
       steps: [
-        { icon: Search, title: 'Build a supplier cart', text: 'Choose products from one supplier, quantities, variants and delivery destination.' },
-        { icon: ReceiptText, title: 'Approve the confirmed quote', text: 'Review the original supplier cost and the complete Naira payment total.' },
-        { icon: Shield, title: 'Pay for the order', text: 'Pay the confirmed Naira quote while logistics costs remain clearly itemized.' },
-        { icon: CheckCircle2, title: 'Review delivery', text: 'Confirm the delivered products at the agreed stage before supplier funds release.' },
+        { icon: Search, title: 'Create the terms', text: 'Describe the item or service, amount, deadline and release conditions.' },
+        { icon: ReceiptText, title: 'Invite the other party', text: 'Both sides review the same agreement and verified participant details.' },
+        { icon: Shield, title: 'Protect the payment', text: 'Fund the deal through supported regulated rails instead of paying directly.' },
+        { icon: CheckCircle2, title: 'Approve the outcome', text: 'Release when satisfied or report an issue through the documented process.' },
       ],
     },
   },
@@ -71,6 +71,6 @@ export const audienceContent = {
 } as const;
 
 export const audienceUi = {
-  en: { how: 'See how it works', identity: 'Verified identity', quotes: 'Confirmed quotes', tracking: 'Order tracking', sourcing: 'Naitrust sourcing', tagline: 'Choose an agent. Source. Track.', howLabel: 'How it works', howTitle: 'A clear path from product idea to evidence-backed order.', imageCaption: 'The right order flow depends on where the supplier and delivery are located.', supportLabel: 'Agent-supported sourcing', routeTitle: 'One clear route from China to Nigeria.', chooseTitle: 'Choose a verified sourcing agent', chooseText: 'Compare agents operating in China and choose the right product expertise, services and location for your order.', recordTitle: 'Buy from China with a clear record', recordText: 'Keep supplier options, checks, quotes, approvals, payments, evidence and delivery progress in a shared Order Room.', ready: 'Ready to source without travelling?', readyText: 'Join a platform built around understandable evidence, verified human help and visible buyer approvals.' },
+  en: { how: 'See how it works', identity: 'Verified identity', quotes: 'Clear terms', tracking: 'Payment tracking', sourcing: 'Protected payments', tagline: 'Agree. Protect. Approve.', howLabel: 'How it works', howTitle: 'A clear path from agreement to protected settlement.', imageCaption: 'The right payment flow depends on the agreement, evidence and release conditions.', supportLabel: 'Escrow-style protection', routeTitle: 'One clear route from commitment to settlement.', chooseTitle: 'Verify who you are paying', chooseText: 'Review the individual, business and beneficiary details connected to the transaction.', recordTitle: 'Protect payment with a clear record', recordText: 'Keep terms, invoices, messages, approvals, evidence and settlement status in a shared Deal Room.', ready: 'Ready to protect an important payment?', readyText: 'Join a platform built around clear agreements, verified participants and visible human approvals.' },
   'zh-CN': { how: '查看运作方式', identity: '身份已验证', quotes: '报价已确认', tracking: '订单跟踪', sourcing: 'Naitrust 采购', tagline: '选择代理，采购并跟踪。', howLabel: '运作方式', howTitle: '从产品想法到有证据支持的订单，路径清晰。', imageCaption: '正确的订单流程取决于供应商和配送地点。', supportLabel: '代理协助采购', routeTitle: '从中国到尼日利亚，一条清晰路径。', chooseTitle: '选择已验证采购代理', chooseText: '比较在中国运营的代理，为订单选择合适的产品专长、服务和地点。', recordTitle: '从中国采购并保留清晰记录', recordText: '在共享订单室中保存供应商选项、核查、报价、审批、付款、证据和配送进度。', ready: '准备好无需出行即可采购？', readyText: '加入一个围绕易懂证据、已验证人工协助和清晰买家审批打造的平台。' },
 } as const;

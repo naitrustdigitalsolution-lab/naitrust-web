@@ -15,13 +15,13 @@ const STORAGE_KEY = 'naitrust:admin:platform-features:v2';
 export const PLATFORM_FEATURES_CHANGED = 'naitrust:platform-features-changed';
 
 export const defaultPlatformFeatures: PlatformFeatures = {
-  chinaWholesaleFocus: true,
+  chinaWholesaleFocus: false,
   marketplace: false,
-  sourcingAgents: true,
+  sourcingAgents: false,
   productFinder: false,
-  logistics: true,
-  rewards: false,
-  bills: false,
+  logistics: false,
+  rewards: true,
+  bills: true,
   sellerShowcase: false,
 };
 

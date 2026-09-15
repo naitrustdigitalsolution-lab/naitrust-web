@@ -78,30 +78,31 @@ Do not describe Naitrust as a bank or imply that Naitrust directly provides a re
 
 Do not call Naitrust a full CRM, accounting, invoicing, payroll, tax, or enterprise resource planning platform unless those capabilities are implemented to that standard.
 
-## Marketplace and sourcing search language
+## Protected payment search language
 
-- Source products from China to Nigeria
-- Verified China suppliers for Nigerian businesses
-- China wholesale products in English
-- Landed-cost quote Nigeria
-- Product inspection in China
-- China sourcing agents for Nigerian buyers
-- Track import orders to Nigeria
-- Protected supplier payments
-- Nigerian supplier marketplace
+- Protected payment Nigeria
+- Escrow-style payment workflow
+- Payment protection for buyers and sellers
+- Milestone payment Nigeria
+- Supplier and vendor payment protection
+- Contractor payment protection
+- Protect an online purchase
+- Verified business payment
+- Controlled payment release
+- Payment dispute evidence
 
-These terms describe the target staged experience, not proof of live international fulfilment. Public pages must identify curated fixtures, pilots, coming-soon operations, or partner dependencies accurately.
+These terms describe customer intent, not proof of a regulated or live capability. Public pages must identify pilots, coming-soon operations and provider dependencies accurately.
 
 ## Product hierarchy
 
 Even when a secondary feature is available, Naitrust's public hierarchy remains:
 
-1. Discover a product, service, supplier, or sourcing agent in China or Nigeria.
-2. Review translated listings, supplier verification, showcases, and Trust Profiles.
-3. Request and approve a confirmed landed-cost quote.
-4. Pay through a protected order and track inspection, logistics, customs, delivery, evidence, and release.
+1. Define the payment purpose, terms and release conditions.
+2. Verify the participants and beneficiary.
+3. Fund through a supported regulated provider.
+4. Review evidence and approve release, refund or dispute handling in the Deal Room.
 
-Legacy transfers, bill payment, airtime, rewards, virtual cards, and similar utilities remain secondary and outside the primary navigation story.
+Transfers, bill payment, airtime, rewards, virtual cards and similar utilities remain secondary to the protected-payment story.
 
 ## SEO integrity rules
 

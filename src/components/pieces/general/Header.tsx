@@ -68,7 +68,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
     { label: t('home'), page: 'home' },
     ...(platformFeatures.marketplace ? [{ label: t('market'), page: '/market' }] : []),
     { label: t('buyers'), page: 'customer' },
-    { label: t('agents'), page: '/partners' },
+    { label: t('agents'), page: 'business' },
     { label: t('about'), page: 'about' },
     { label: t('contact'), page: 'contact' },
   ];

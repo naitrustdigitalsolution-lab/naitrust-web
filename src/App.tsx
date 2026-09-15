@@ -157,10 +157,10 @@ const simplePages: Record<
 > = {
   "/resources": {
     eyebrow: "Resources",
-    title: "Practical guides for sourcing and protected commerce.",
+    title: "Practical guides for protected payments.",
     description:
-      "Learn how to compare suppliers, understand landed costs, use optional inspection support, and track protected orders to Nigeria.",
-    points: ["How landed-cost quotes work", "Supplier and product checklists", "Inspection and delivery evidence", "Protected order guide"],
+      "Learn how to create clear terms, verify the other party, protect funds, submit evidence and approve payment release.",
+    points: ["How Protected Deals work", "Release conditions and milestones", "Evidence and dispute guidance", "Refund and settlement guide"],
   },
 };
 

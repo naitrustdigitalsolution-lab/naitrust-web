@@ -1,23 +1,21 @@
 # Naitrust Web
 
-Frontend for Naitrust as a protected-commerce and sourcing platform.
+Frontend for Naitrust trusted payment rails and protected transactions.
 
-This app helps Nigerian individuals and businesses discover verified suppliers in China and Nigeria, browse products in English, request a confirmed landed-cost quote, pay through a protected order, and track delivery. Business accounts use the same sourcing journey and can additionally publish a Showcase, sell products, fulfil customer orders, and receive earnings.
+This app helps individuals and businesses create clear transaction agreements, verify participants, fund payments through regulated providers, approve milestone releases, preserve evidence and manage disputes or refunds through one shared record.
 
-The default first screen is the China-sourcing and protected-commerce home. The coming-soon and be-back screens still exist and are controlled by environment.
+The default first screen presents Naitrust as an escrow-style payment workflow. Naitrust provides the agreement, evidence and approval experience; regulated financial partners handle custody and money movement.
 
 ## Product model
 
-- Public browsing: markets, products, suppliers, Showcases, and Trust Profiles.
-- Authenticated buying: Cart, Buying Quotes, Buying Orders, Agents, Messages, and Wallet.
-- Business selling: Showcase, Products, customers, fulfilment, and earnings.
-- Protected commerce: supplier product funds and logistics charges are recorded separately.
-- Optional agents: AI may suggest a suitable agent, but the user decides whether to hire under a separate service scope and fee.
-- Production workflows: business buyers can connect a main product, packaging, labels, inspection, consolidation, and shipping across several suppliers. A missing stage can become an agent sourcing request.
-- Payment choice: confirmed quotes are Naira-first, with optional USD checkout for eligible business orders. Chinese supplier settlement is modelled separately in CNY or USD through a regulated provider.
-- Partner network: China-based agents and suppliers apply through a separate reviewed onboarding flow and receive revocable partner access only after admin approval.
-- Localisation: the partner experience starts with English and Simplified Chinese, defaulting from the partner locale. The typed locale boundary can be extended as new markets launch.
-- Account isolation: authenticated mock carts, quotes, orders, agent tasks, and seller products are namespaced by account. Production APIs must enforce ownership server-side.
+- Public positioning: protected payments for individuals and businesses.
+- Individual accounts: purchases, service deposits, vehicle/property deposits and delivery-based payments.
+- Business accounts: vendor payments, customer collections, procurement, contractors and approval visibility.
+- Protected Deals: verified parties, clear terms, protected funding, evidence and controlled release.
+- Deal Rooms: shared agreements, files, messages, events and payment status.
+- Money: funding, protected balance, release, refund and settlement activity confirmed by regulated providers.
+- Safety: deal-specific checks, transaction PINs, dispute freezes, immutable audit records and account isolation.
+- Provider boundary: Naitrust orchestrates the workflow but does not claim to directly hold customer funds.
 
 ## Stack
 

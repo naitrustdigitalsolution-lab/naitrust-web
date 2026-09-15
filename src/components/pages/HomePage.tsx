@@ -131,7 +131,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <SEOHead
         title={t('heroTitle')}
         description={t('heroDescription')}
-        keywords="Naitrust, source from China Nigeria, China sourcing agents, product inspection China, supplier order room, freight and clearing Nigeria"
+        keywords="Naitrust, trusted payments, protected payments, escrow-style payments, milestone payments, business payment rails, payment protection Nigeria"
         canonicalPath="/"
       />
 
@@ -869,7 +869,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   className="w-auto rounded-full px-5"
                   onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
                 >
-                  {platformFeatures.marketplace ? 'Explore China Market' : t('browseAgents')}
+                  {platformFeatures.marketplace ? 'Explore protected payments' : t('browseAgents')}
                   <ArrowRight size={15} className="ml-1.5" />
                 </Button>
               </div>
@@ -1181,7 +1181,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={() => onNavigate(platformFeatures.marketplace ? "/market" : "/login?returnTo=/app/agents")}
                 className="h-10 w-auto flex-none rounded-full bg-primary px-6 text-xs font-bold text-white ring-1 ring-white/15 hover:-translate-y-0.5 hover:bg-primary/90 sm:h-12 sm:px-8 sm:text-base"
               >
-                {platformFeatures.marketplace ? 'Explore Naitrust Market' : t('findAgent')}
+                {platformFeatures.marketplace ? 'Explore protected payments' : t('findAgent')}
                 <ArrowRight size={14} className="ml-1 sm:h-5 sm:w-5" />
               </Button>
               <Button

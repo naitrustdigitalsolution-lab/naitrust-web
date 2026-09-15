@@ -4,32 +4,32 @@ Last updated: 24 August 2026
 
 ## 1. Product Positioning and Language
 
-Naitrust is a protected-commerce and sourcing platform for Nigerian individuals and businesses. China and Nigeria are the active launch markets. Naitrust is not presented as a bank, courier, insurer, customs authority, employer of independent agents, or guaranteed supplier marketplace.
+Naitrust is a protected-payment fintech platform for Nigerian individuals and businesses. It helps parties define transaction terms, verify participants, protect funds through regulated payment partners and control release through documented approvals. Naitrust is not presented as a bank, insurer, licensed escrow trustee or guarantor.
 
 ### Current early-access brand and conversion mode
 
-- Lead public positioning with: **Buy wholesale from China. Without travelling.** Explain that a Nigerian buyer can share what they need in English, work with a vetted sourcing agent operating in China, review supplier and inspection evidence, approve a clear landed-cost quote, and follow delivery to Nigeria.
+- Lead public positioning with: **Pay with terms. Release with confidence.** Explain that an individual or business can create a Protected Deal, verify the other party, agree release conditions, fund through regulated rails and approve settlement against evidence.
 - The public website is in waiting-list mode. The homepage hero must always include a prominent **Join the waiting list** action.
 - All public acquisition, account-registration, newsletter, supplier, sourcing-agent, and logistics-application entry points must lead to the single `/waitlist` journey. Do not expose competing sign-up forms during this phase.
-- The waiting list is the canonical lead form and must support buyers, businesses/importers, China and Nigeria suppliers, sourcing or inspection agents, online sellers, packaging partners, and logistics providers.
+- The waiting list is the canonical lead form and must support individuals, businesses, merchants, vendors, contractors and prospective payment or technology partners.
 - Preserve contact, feedback, report-a-concern, privacy/consent, and other safety or legal forms. Authenticated operational forms for orders, evidence, messages, payments, support, and administration also remain functional; they are not acquisition forms.
-- Public copy may describe planned early-access capabilities, but must not imply that supplier fulfilment, payments, FX, inspections, customs, or delivery are live before their operational launch gates pass.
+- Public copy may describe planned early-access capabilities, but must not imply that custody, escrow, payment holding, settlement, refunds or dispute adjudication are live before their legal, provider and operational launch gates pass.
 
 ### Product hierarchy
 
 Naitrust must be presented in this order:
 
-1. Discover products, services, sourcing agents, and verified suppliers in China or Nigeria.
-2. Review translated listings, supplier showcases, verification facts, and Trust Profiles.
-3. Request and approve a confirmed quote showing product cost, exchange rate, logistics, inspection, customs, handling, insurance, and delivery where applicable.
-4. Pay through a protected order and track preparation, inspection, export, customs, delivery, evidence, messages, refunds, and release in one Order Room.
+1. Define the transaction, amount, deliverables, deadline and release conditions.
+2. Verify the payer, payee, business and exact beneficiary as required.
+3. Fund through an approved regulated payment provider with fees and status disclosed.
+4. Review evidence and approve release, request a refund or follow the documented dispute process in one Deal Room.
 
-Payments, balances, Protected Deals, and withdrawals support this commerce journey. Legacy transfers, payment requests, bills, airtime, rewards, and virtual cards must not lead the homepage, onboarding, dashboard, or primary navigation.
+Protected Deals, Money, payment requests and settlement activity form the core journey. Bills, airtime, rewards and virtual cards may remain secondary utilities but must not displace protected payments as the primary proposition.
 
 - Keep secondary utilities accessible when they are operationally supported; do not describe them as Naitrust's main purpose.
 - Do not promote bill payment or airtime in the homepage hero or primary feature story.
-- The first dashboard actions must help an account discover products, build a cart, review quotes, track orders, or manage selling activity.
-- Individual and business accounts may both source products from China and Nigeria. Business accounts additionally publish showcases, sell products, fulfil customer orders, and withdraw eligible earnings.
+- The first dashboard actions must help an account protect a payment, review invitations, manage active deals, inspect money status or request payment.
+- Individual accounts support purchases, deposits and services. Business accounts additionally support vendor payments, customer collections, team visibility and commercial approvals.
 - “Verified” means the displayed checks were completed. It is not a guarantee, endorsement, insurance policy, or promise that a deal cannot go wrong.
 
 ### Account and mock-data isolation

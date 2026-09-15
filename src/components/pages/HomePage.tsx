@@ -196,6 +196,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Clear customer/business positioning */}
+      {false && (
       <section className="relative overflow-hidden border-b bg-background py-12 sm:py-20">
         <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
@@ -278,6 +279,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </div>
         </div>
       </section>
+      )}
 
       {false && <>{/* Legacy local-business section hidden while Naitrust focuses on Nigeria-to-China sourcing. */}
       {/* Traders and local businesses */}
@@ -643,6 +645,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Account capabilities */}
+      {false && (
       <section className="relative overflow-hidden bg-[#04162f] py-12 text-white sm:py-20 lg:py-28">
         <div className="pointer-events-none absolute right-[-10%] top-[-25%] h-[34rem] w-[34rem] rounded-full" />
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
@@ -722,6 +725,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* Order money: funding, supplier payments, refunds and withdrawals */}
       <section className="bg-[#f5f8fc] py-12 dark:bg-[#0d0f13] sm:py-20 lg:py-28">
@@ -1007,6 +1011,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Partners Section */}
+      {false && (
       <section className="border-b bg-background py-12 sm:py-20">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -1096,6 +1101,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* FAQ Section */}
       <section className="bg-[#f5f8fc] py-12 dark:bg-[#0d0f13] sm:py-20 lg:py-28">

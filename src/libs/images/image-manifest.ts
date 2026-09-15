@@ -28,9 +28,9 @@ function image(path: string, alt: string, aspect: ImageAspect = '4/3', focalPoin
 
 export const pageImages = {
   homeHero: image('hero/china-sourcing-agent-hero-v2.webp', 'A Nigerian business owner coordinating a China product inspection with a sourcing agent', '16/9', 'right', true),
-  homeImportInspection: image('home/import-order-inspection-v1.webp', 'A Nigerian business owner inspecting products received from an import order'),
-  aboutHero: image('pages/about-cross-border-v2.webp', 'A Nigerian commerce operator and Chinese sourcing specialist reviewing product requirements'),
-  customerHero: image('pages/customer-hero-v2.webp', 'A Nigerian customer comparing product samples with a Chinese supplier representative', '4/3', 'center', true),
+  homeImportInspection: image('pages/payment-received-success-v1.png', 'A Nigerian customer and business owner confirming that a protected payment was received successfully'),
+  aboutHero: image('pages/about-protected-payment-v1.png', 'Two Nigerian business participants reviewing a protected payment agreement'),
+  customerHero: image('pages/payment-received-success-v1.png', 'A Nigerian customer confirming that money from a protected transaction was received successfully', '4/3', 'center', true),
   customerDelivery: image('pages/customer-delivery-v1.webp', 'A Nigerian shop owner inspecting products received from an international order'),
   businessHero: image('pages/business-hero-v2.webp', 'A Nigerian manufacturer preparing products for a supplier showcase', '4/3', 'center', true),
   businessFulfilment: image('pages/business-fulfilment-v1.webp', 'A Nigerian business team packing a domestic customer order'),

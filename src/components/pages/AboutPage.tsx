@@ -16,7 +16,7 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { SEOHead } from '../utility/SEOHead';
 import { openWaitlistModal } from '../modals/waitlist-events';
-import aboutHeroImage from '../../assets/home/nigerian-buyer-truck-hero-v1.png';
+import aboutHeroImage from '../../assets/pages/about-protected-payment-v1.png';
 import { useTranslation } from 'react-i18next';
 
 interface AboutPageProps {
@@ -62,7 +62,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/5 shadow-2xl shadow-black/30">
                 <img
                   src={aboutHeroImage}
-                  alt="A Nigerian business buyer receiving imported products from a delivery truck"
+                  alt="Two Nigerian business participants reviewing a protected payment agreement"
                   className="aspect-[4/3] w-full object-cover object-center"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#04162f]/25 via-transparent to-transparent" />

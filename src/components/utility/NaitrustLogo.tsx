@@ -27,7 +27,7 @@ export function NaitrustLogo({ size = 'md', showText = true, className = '', tex
       </div>
       
       {showText && (
-        <span className={`${currentSize.text} font-bold ${textColor}`}>
+        <span className={`nt-logo-wordmark ${currentSize.text} font-bold ${textColor}`}>
           Naitrust
         </span>
       )}

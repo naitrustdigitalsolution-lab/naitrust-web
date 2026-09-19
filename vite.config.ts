@@ -76,7 +76,8 @@ export default defineConfig({
           if (id.includes("jspdf")) return "pdf";
           if (id.includes("html2canvas")) return "canvas";
           if (id.includes("supabase")) return "supabase";
-          if (id.includes("@tanstack")) return "query";
+          // Use a fresh chunk URL after a CDN cached HTML at the former query asset URL.
+          if (id.includes("@tanstack")) return "react-query";
           if (id.includes("react-hook-form") || id.includes("zod")) return "forms";
           return;
         },

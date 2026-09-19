@@ -13,9 +13,9 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust helps Nigerians discover verified suppliers in China and Nigeria, browse products in English, receive complete landed-cost quotes, coordinate checks, pay for orders, and track delivery.';
+const DEFAULT_DESCRIPTION = 'Naitrust is building secure payments for buyers and sellers in Nigeria, with clear terms, shared evidence and controlled release. Join early access.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
-const DEFAULT_KEYWORDS = 'Naitrust Market, source products from China to Nigeria, verified China suppliers, Nigerian marketplace, China sourcing Nigeria, landed cost quote, import from China, protected supplier payment, international order tracking, product inspection China, sourcing agents China, customs and delivery Nigeria, domestic suppliers Nigeria, supplier showcase, Trust Profile';
+const DEFAULT_KEYWORDS = 'Naitrust, protected payments Nigeria, buyer protection, secure business payments, seller payments, payment agreements, verified beneficiaries, payment disputes, controlled settlement, Protected Deals';
 
 export function SEOHead({
   title,
@@ -27,7 +27,7 @@ export function SEOHead({
   noindex = false,
   structuredData,
 }: SEOHeadProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: Source from China with Confidence`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME}: Protected Payments with Clear Terms`;
   const canonicalUrl = noindex ? undefined : canonicalPath
     ? `${SITE_URL}${canonicalPath}`
     : typeof window !== 'undefined'
@@ -53,7 +53,7 @@ export function SEOHead({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:secure_url" content={ogImage} />
-      <meta property="og:image:alt" content="Naitrust verified suppliers, landed-cost quotes and protected delivery to Nigeria" />
+      <meta property="og:image:alt" content="Naitrust protected payments from agreement to settlement" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={SITE_NAME} />
@@ -65,7 +65,7 @@ export function SEOHead({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
-      <meta name="twitter:image:alt" content="Source from China with confidence through Naitrust" />
+      <meta name="twitter:image:alt" content="Protect important payments with Naitrust" />
       {structuredData && (Array.isArray(structuredData) ? structuredData : [structuredData]).map((data, index) => (
         <script key={index} type="application/ld+json">{JSON.stringify(data)}</script>
       ))}

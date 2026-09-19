@@ -22,13 +22,13 @@ export function Footer({ onNavigate }: FooterProps) {
     {
       id: 'platform', title: t('platform'),
       links: [
-        { label: t('exploreChina'), page: 'market' }, { label: t('sourceYourself'), page: 'customer' }, { label: t('protectedOrders'), page: 'register', modal: true }, { label: t('verifiedAgents'), page: '/partners' }, { label: t('earlyAccess'), page: 'register', modal: true },
+        { label: t('exploreChina'), page: 'customer' }, { label: t('sourceYourself'), page: 'customer' }, { label: t('protectedOrders'), page: 'register', modal: true }, { label: 'For businesses', page: 'business' }, { label: t('earlyAccess'), page: 'register', modal: true },
       ],
     },
     {
       id: 'partners', title: t('partners'),
       links: [
-        { label: t('becomeAgent'), page: '/partners/agent/apply' }, { label: t('registerSupplier'), page: '/partners/supplier/apply' }, { label: t('becomeLogistics'), page: '/partners/logistics/apply' }, { label: t('partnerLogin'), page: '/partners/login' },
+        { label: t('becomeAgent'), page: 'contact' }, { label: t('becomeLogistics'), page: 'contact' },
       ],
     },
     {

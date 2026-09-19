@@ -1,3 +1,4 @@
+import { protectedPaymentFAQs } from '../../content/protected-payment-faqs';
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, Search, Shield, CreditCard, Users, MessageCircle, Settings, Globe, ArrowRight, X } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
@@ -17,211 +18,13 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
     { id: 'all', name: 'All Questions', icon: HelpCircle },
     { id: 'getting-started', name: 'Getting Started', icon: Users },
     { id: 'verification', name: 'Verification', icon: Shield },
-    { id: 'payments', name: 'Order Money', icon: CreditCard },
+    { id: 'payments', name: 'Payments', icon: CreditCard },
     { id: 'security', name: 'Security & Privacy', icon: Settings },
     { id: 'features', name: 'Features', icon: Globe },
     { id: 'troubleshooting', name: 'Troubleshooting', icon: MessageCircle },
   ];
 
-  const faqs = [
-    {
-      id: 'gs-1',
-      category: 'getting-started',
-      question: 'What is Naitrust and how does it work?',
-      answer: 'Naitrust helps Nigerian individuals and businesses buy from China through verified sourcing agents. Choose an agent operating in China, share what you need, approve a clear landed-cost quote, and track the order to delivery in Nigeria.'
-    },
-    {
-      id: 'gs-2',
-      category: 'getting-started',
-      question: 'How do I create an account?',
-      answer: 'Tap "Sign Up" and select your account type. Individuals provide basic profile details, email, and phone number. Businesses provide business details and may complete CAC, ownership, identity, and document checks before joining higher-risk transactions.'
-    },
-    {
-      id: 'gs-3',
-      category: 'getting-started',
-      question: 'Is Naitrust free for customers?',
-      answer: 'Customers can create an account, review business profiles, and use Naitrust to understand who they are dealing with. Public package details are not shown here while the product offer is being finalised.'
-    },
-    {
-      id: 'gs-4',
-      category: 'getting-started',
-      question: 'How do I find a product or supplier?',
-      answer: 'Browse verified sourcing agents by product expertise, services, operating location, experience and completed-order feedback. Choose an agent, then share the product, quantity, quality, budget and delivery requirements.'
-    },
-    {
-      id: 'gs-5',
-      category: 'getting-started',
-      question: 'Who is eligible to use Naitrust?',
-      answer: 'Naitrust is being built for Nigerian businesses and individuals: informal traders, independent contractors, suppliers, agents, developers, and registered companies. Users must be able to enter transactions and may need stronger verification for higher-risk activity.'
-    },
-
-    {
-      id: 'v-1',
-      category: 'verification',
-      question: 'What does Naitrust verification cover?',
-      answer: 'Verification may include email, phone, individual identity, facial liveness, CAC registration, owner or director identity, business address, ownership proof, and supporting documents. Naitrust asks for stronger proof when the transaction risk is higher.'
-    },
-    {
-      id: 'v-2',
-      category: 'verification',
-      question: 'What documents do I need for verification?',
-      answer: 'Depending on the transaction, Naitrust may request CAC registration details, TIN where available, government-issued ID, selfie or liveness capture, proof of address, CAC certificate, ownership documents, bank ownership evidence through a regulated partner, invoices, waybills, or other supporting files.'
-    },
-    {
-      id: 'v-3',
-      category: 'verification',
-      question: 'How long does verification take?',
-      answer: 'Some checks can complete quickly when provider data matches. Manual review may take longer if documents are unclear, ownership is hard to prove, or the deal requires stronger checks. You will receive updates as verification progresses.'
-    },
-    {
-      id: 'v-4',
-      category: 'verification',
-      question: 'Can my verification be rejected or revoked?',
-      answer: 'Yes. Verification can be denied if documents are incomplete, forged, or don\'t match official records, or if the business is not in good standing with CAC. Once granted, verification can be revoked if Naitrust discovers false information, receives credible fraud reports, or is directed to do so by a regulatory authority. You\'ll receive written reasons for any rejection and may appeal within 14 days.'
-    },
-    {
-      id: 'v-5',
-      category: 'verification',
-      question: 'Do I need to renew my verification?',
-      answer: 'Verification may need to be refreshed when it expires, when business or identity details change, when provider data conflicts, when fraud signals appear, or when a high-risk transaction requires fresh proof. Liveness may also be required after inactivity or unusual account activity.'
-    },
-    {
-      id: 'v-6',
-      category: 'verification',
-      question: 'Why might Naitrust ask for fresh liveness?',
-      answer: 'Identity verification can remain valid, but liveness proves the person is present right now. Naitrust may request fresh liveness after inactivity, account recovery, unusual device or location risk, high-value transactions, or dispute actions.'
-    },
-    {
-      id: 'v-7',
-      category: 'verification',
-      question: 'What happens if my business information changes?',
-      answer: 'You should update business changes promptly. Material changes such as legal name, address, ownership, directors, CAC details, phone, or email may require re-verification before they appear as trusted details.'
-    },
-
-    {
-      id: 'p-1',
-      category: 'payments',
-      question: 'What does Naitrust charge for?',
-      answer: 'A confirmed quote itemizes products, inspection, customs, handling, insurance and logistics where applicable. Catalogue prices are estimates until Naitrust confirms the landed cost for your quantity and Nigerian delivery address.'
-    },
-    {
-      id: 'p-2',
-      category: 'payments',
-      question: 'Does Naitrust hold customer funds?',
-      answer: 'No. Naitrust coordinates the order workflow and shows payment status. Money movement is handled by regulated payment or banking partners through accounts issued by those partners.'
-    },
-    {
-      id: 'p-3',
-      category: 'payments',
-      question: 'What is a virtual account issued by a payment partner?',
-      answer: 'It is an account issued by a regulated partner for a specific order. The buyer funds it, and authorised participants can track the amount received and supplier-payment stages from the Order Room.'
-    },
-    {
-      id: 'p-4',
-      category: 'payments',
-      question: 'Can I pay in Naira or US dollars?',
-      answer: 'Yes. Quotes are shown and paid in Naira. For Chinese products, Naitrust may also display the original supplier subtotal in CNY for transparency.'
-    },
-    {
-      id: 'p-5',
-      category: 'payments',
-      question: 'How are product payment and logistics handled?',
-      answer: 'Supplier payment remains tied to the agreed order stage. Buyer-paid logistics and service costs are recorded separately. If an order is cancelled, any refundable amount is shown alongside costs already committed.'
-    },
-
-    {
-      id: 's-1',
-      category: 'security',
-      question: 'How does Naitrust protect my data?',
-      answer: 'We use encryption in transit and at rest, role-based access controls, monitoring, and security reviews. We design verification and transaction data handling around Nigerian privacy requirements and only show sensitive verification evidence to authorised parties.'
-    },
-    {
-      id: 's-2',
-      category: 'security',
-      question: 'What personal information do you collect?',
-      answer: 'For customers: name, email, and phone number. For businesses: CAC registration number, TIN, government-issued ID details, business details, contact info, and uploaded documents. We also collect usage data (pages visited, features used) and billing records. Identity data is used solely for verification through QoreId, a NITDA-compliant provider. Full details are in our Privacy Policy.'
-    },
-    {
-      id: 's-3',
-      category: 'security',
-      question: 'Can businesses see my personal information?',
-      answer: 'No. Businesses can only see your display name and any information you voluntarily share in messages. Your personal ID details, payment card details, and contact information are never shared with businesses. Your personal data is protected in accordance with the NDPA 2023.'
-    },
-    {
-      id: 's-4',
-      category: 'security',
-      question: 'What should I do if my account is compromised?',
-      answer: 'Change your password immediately, then contact contact@naitrust.com. Review your recent account activity for anything suspicious. We\'ll investigate, secure your account, and help reverse any unauthorised changes if possible. We strongly recommend enabling two-factor authentication from your security settings.'
-    },
-    {
-      id: 's-5',
-      category: 'security',
-      question: 'How do I report fraud or a suspicious business?',
-      answer: 'Use the "Report" button on any business profile, visit the Report a Concern page from the menu, or email contact@naitrust.com. Include the business name or account number, screenshots, and a description of the issue. All reports are reviewed internally by the Naitrust team, typically within 24-48 hours.'
-    },
-
-    {
-      id: 'f-1',
-      category: 'features',
-      question: 'What is the shareable profile link?',
-      answer: 'A shareable Trust Profile helps buyers review the intended supplier or business. An Order Room then keeps the quote, roles, payment stages, evidence, milestones and documents together.'
-    },
-    {
-      id: 'f-2',
-      category: 'features',
-      question: 'How do reviews and ratings work?',
-      answer: 'Customers who complete an eligible agent-supported order can rate or comment on their sourcing agent. Each completed order can be reviewed once, and the feedback appears on the agent’s profile. Fake or incentivised reviews are prohibited.'
-    },
-    {
-      id: 'f-3',
-      category: 'features',
-      question: 'Can I message businesses on Naitrust?',
-      answer: 'Yes. Use the Order Room to clarify products, specifications, payment stages, evidence, agent checks, shipping and delivery. Keeping these messages with the order gives every participant the same record.'
-    },
-    {
-      id: 'f-4',
-      category: 'features',
-      question: 'What is AI fraud detection?',
-      answer: 'AI can help surface suspicious patterns, summarise evidence, suggest risk explanations, or flag possible impersonation. AI is advisory only; final verification, dispute, and enforcement decisions require appropriate review.'
-    },
-    {
-      id: 'f-5',
-      category: 'features',
-      question: 'Can I save favourite businesses?',
-      answer: 'Yes. Save a business or professional profile to your Business Network for later review. A saved profile is a convenience feature and is not an endorsement, ownership confirmation, or guarantee.'
-    },
-
-    {
-      id: 't-1',
-      category: 'troubleshooting',
-      question: 'Why was my payment declined?',
-      answer: 'An order-funding attempt may fail because of insufficient funds, bank limits, incorrect details, partner downtime or risk checks. Confirm the funding details in the Order Room and contact support with the order reference if the issue continues.'
-    },
-    {
-      id: 't-2',
-      category: 'troubleshooting',
-      question: 'I can\'t find a business: what should I do?',
-      answer: 'Check the account number, email, or phone number and try again. You can also search by business name or category. If the business should be listed, contact it directly to confirm the details registered on Naitrust.'
-    },
-    {
-      id: 't-3',
-      category: 'troubleshooting',
-      question: 'My verification is taking longer than expected',
-      answer: 'Delays usually happen when documents are incomplete, blurry, inconsistent, or require manual ownership review. Check your email and dashboard for requests from the verification team. If it has been longer than expected, contact contact@naitrust.com using your registered email or phone number.'
-    },
-    {
-      id: 't-4',
-      category: 'troubleshooting',
-      question: 'I\'m not receiving emails from Naitrust',
-      answer: 'Check your spam or junk folder first. Add contact@naitrust.com and hello@hello.naitrust.com to your contacts or safe senders list. Verify that your email address is correct in Settings. Check if you have email filters that might be redirecting our messages. If still not receiving emails, contact us with an alternative email or phone number.'
-    },
-    {
-      id: 't-5',
-      category: 'troubleshooting',
-      question: 'How do I delete my account?',
-      answer: 'Go to Settings → Account → Delete Account. Deletion is permanent, but Naitrust may retain records required for legal, security, transaction, dispute, fraud-prevention, or financial reporting purposes. If you want a temporary break, consider deactivating your account instead.'
-    },
-  ];
+  const faqs = protectedPaymentFAQs;
 
   const filteredFAQs = faqs.filter(faq => {
     const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
@@ -247,8 +50,8 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers about verified sourcing agents, buying wholesale from China, landed-cost quotes, Order Rooms, logistics and delivery to Nigeria."
-        keywords="Naitrust FAQ, business verification questions, CAC verification FAQ, fraud reporting help"
+        description="Answers about Protected Deals, buyer and seller payments, verification, release conditions and early access to Naitrust."
+        keywords="Naitrust, protected payments, buyer protection, seller payments, Deal Room"
         canonicalPath="/faqs"
       />
       <section className="border-b border-border/70 bg-gradient-to-b from-primary/[0.08] to-background">

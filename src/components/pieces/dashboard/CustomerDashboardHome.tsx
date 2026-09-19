@@ -38,7 +38,7 @@ export function CustomerDashboardHome({
   const orderRooms = deals?.filter((deal) => commerceRoomIds.has(deal.id));
   const pendingReleaseDeal = orderRooms?.find((deal) => deal.status === 'buyer_review');
   const activeOrder = orders.find((order) => !['released', 'cancelled'].includes(order.status));
-  const heroImage = getAppImage('dashboard', 'Products, supplier checks and wholesale orders managed from one sourcing dashboard');
+  const heroImage = getAppImage('wallet', 'Protected payments and release decisions in one dashboard');
 
   return (
     <DashboardLayout title="Home">
@@ -49,14 +49,14 @@ export function CustomerDashboardHome({
           <div className="absolute inset-0 bg-gradient-to-r from-[#04162f] via-[#04162f]/95 to-[#04162f]/35" />
           <div className="relative max-w-3xl p-5 sm:p-8 lg:p-10">
             <div className="flex flex-wrap items-center gap-2 text-xs text-white/65"><span>Good day, {firstName}</span>{identityVerified && <Badge className="border-emerald-300/20 bg-emerald-400/15 text-emerald-200"><BadgeCheck size={12} /> Verified account</Badge>}</div>
-            <h1 className="mt-4 text-3xl font-bold tracking-[-.04em] sm:text-5xl">Find products. Know the complete cost. Track delivery.</h1>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">Source from verified suppliers in China or Nigeria, approve the complete cost, and follow every order from supplier checks to delivery.</p>
-            <div className="mt-6 flex flex-wrap gap-2"><Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => navigate('/app/market')}><Search size={16} /> Explore market</Button><Button variant="outline" className="rounded-full border-white/20 bg-white/[.07] text-white hover:bg-white/15 hover:text-white" onClick={() => navigate('/app/orders')}>Track orders <ArrowRight size={15} /></Button></div>
+            <h1 className="mt-4 text-3xl font-bold tracking-[-.04em] sm:text-5xl">Agree the terms. Protect the funds. Approve the outcome.</h1>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">Create protected payments for purchases, services and deposits with verified participants, shared evidence and controlled release.</p>
+            <div className="mt-6 flex flex-wrap gap-2"><Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => navigate('/app/deals/new')}><ShieldCheck size={16} /> Create Protected Deal</Button><Button variant="outline" className="rounded-full border-white/20 bg-white/[.07] text-white hover:bg-white/15 hover:text-white" onClick={() => navigate('/app/deals')}>View payments <ArrowRight size={15} /></Button></div>
           </div>
         </section>
 
         <section className="grid grid-cols-3 overflow-hidden rounded-2xl border bg-card shadow-sm">
-          {[{ icon: Store, title: 'Choose a supplier', copy: 'Browse products in English.' }, { icon: ClipboardList, title: 'Approve the quote', copy: 'See the complete landed cost.' }, { icon: PackageCheck, title: 'Track the order', copy: 'Follow inspection to delivery.' }].map((step, index) => <div key={step.title} className="border-r p-3 last:border-r-0 sm:p-5"><div className="flex items-center gap-2"><span className="hidden text-xs font-bold text-primary sm:block">0{index + 1}</span><step.icon size={18} className="text-primary" /></div><p className="mt-3 text-xs font-semibold sm:text-sm">{step.title}</p><p className="mt-1 hidden text-xs text-muted-foreground sm:block">{step.copy}</p></div>)}
+          {[{ icon: ClipboardList, title: 'Agree the terms', copy: 'Set amount and release conditions.' }, { icon: ShieldCheck, title: 'Protect payment', copy: 'Fund through regulated rails.' }, { icon: PackageCheck, title: 'Approve or dispute', copy: 'Review evidence before release.' }].map((step, index) => <div key={step.title} className="border-r p-3 last:border-r-0 sm:p-5"><div className="flex items-center gap-2"><span className="hidden text-xs font-bold text-primary sm:block">0{index + 1}</span><step.icon size={18} className="text-primary" /></div><p className="mt-3 text-xs font-semibold sm:text-sm">{step.title}</p><p className="mt-1 hidden text-xs text-muted-foreground sm:block">{step.copy}</p></div>)}
         </section>
 
         <section className="grid grid-cols-3 gap-3">
@@ -68,7 +68,7 @@ export function CustomerDashboardHome({
         {activeOrder && <button type="button" onClick={() => navigate(`/app/orders/${activeOrder.id}`)} className="flex w-full items-center gap-4 rounded-3xl border border-primary/20 bg-primary/[.04] p-4 text-left sm:p-5"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"><PackageSearch size={20} /></span><span className="min-w-0 flex-1"><span className="block text-xs text-muted-foreground">Order in progress · {activeOrder.reference}</span><span className="mt-1 block font-semibold">{marketSuppliers.find((supplier) => supplier.id === activeOrder.supplierId)?.name}</span><span className="mt-1 block text-xs capitalize text-muted-foreground">Current stage: {activeOrder.status.replace(/_/g, ' ')}</span></span><ArrowRight size={16} className="shrink-0" /></button>}
 
         <section className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
-          <Card className="rounded-2xl p-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><UserCheck size={17} /></span><div className="min-w-0 flex-1"><h2 className="text-sm font-bold">Need a sourcing agent?</h2><p className="mt-0.5 text-xs text-muted-foreground">Browse Naitrust-verified sourcing and product inspection professionals.</p></div><Button variant="outline" size="sm" className="shrink-0 rounded-full" onClick={() => navigate('/app/agents')}>Browse</Button></div></Card>
+          <Card className="rounded-2xl p-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><UserCheck size={17} /></span><div className="min-w-0 flex-1"><h2 className="text-sm font-bold">Paying someone new?</h2><p className="mt-0.5 text-xs text-muted-foreground">Verify the participant and beneficiary before funding.</p></div><Button variant="outline" size="sm" className="shrink-0 rounded-full" onClick={() => navigate('/app/deals/new')}>Start</Button></div></Card>
           <Card className="rounded-3xl p-5 sm:p-6"><div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600"><WalletCards size={18} /></span><Button variant="ghost" size="sm" onClick={() => navigate('/app/wallet')}>View money</Button></div><p className="mt-5 text-xs text-muted-foreground">Available for quotes, services and refunds</p>{walletLoading || !wallet ? <Skeleton className="mt-2 h-9 w-40" /> : <p className="mt-1 text-2xl font-bold">{formatMinorAmount(wallet.balance.availableMinor, wallet.balance.currency)}</p>}<p className="mt-3 text-xs leading-5 text-muted-foreground">See supplier payments, agent fees, shipping charges and refunds in one money record.</p></Card>
         </section>
 

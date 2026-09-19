@@ -269,13 +269,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
               {/* Unauthenticated: Desktop login/signup */}
               {!isAuthenticated && showNavItems && (
                 <div className="hidden lg:flex items-center gap-2">
-                  {isPartnersPage ? (
-                    <Button size="lg" onClick={() => window.open('/partners/login', '_blank', 'noopener,noreferrer')}>
-                      <LockKeyhole size={16} />
-                      {t('partnerLogin')}
-                    </Button>
-                  ) : (
-                    <>
+                  <>
                       <Button
                         variant="outline"
                         size="lg"
@@ -287,8 +281,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       <Button size="lg" onClick={() => onNavigate('/register')}>
                         {t('signUp')}
                       </Button>
-                    </>
-                  )}
+                  </>
                 </div>
               )}
             </div>
@@ -324,20 +317,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                 ))}
 
                 <div className="mt-3 flex w-full gap-2 border-t border-white/10 pt-4">
-                  {isPartnersPage ? (
-                    <Button
-                      size="sm"
-                      className="h-10 min-w-0 flex-1 text-xs"
-                      onClick={() => {
-                        onNavigate('/partners/login');
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      <LockKeyhole size={14} />
-                      {t('partnerLogin')}
-                    </Button>
-                  ) : (
-                    <>
+                  <>
                       <Button
                         variant="outline"
                         size="sm"
@@ -359,8 +339,7 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
                       >
                         {t('signUp')}
                       </Button>
-                    </>
-                  )}
+                  </>
                 </div>
               </div>
             </motion.div>

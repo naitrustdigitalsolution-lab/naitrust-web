@@ -86,7 +86,7 @@ export function TransactionsPage() {
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-primary">Order money</p>
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-primary">Payment activity</p>
             <h1 className="mt-0.5 text-lg font-bold tracking-tight">Money activity</h1>
           </div>
           <div className="flex gap-1">
@@ -95,17 +95,17 @@ export function TransactionsPage() {
           </div>
         </div>
         <div className="hidden sm:block"><PageHero
-          eyebrow="Order money"
+          eyebrow="Payment activity"
           title="Money activity"
           description={isCustomer
-            ? 'Follow deposits, supplier payments, agent and shipping fees, refunds, and withdrawals across your wholesale orders.'
-            : 'Follow buyer payments, supplier settlements, agent and shipping fees, seller earnings, refunds, and withdrawals.'}
+            ? 'Follow funding, payment releases, fees, refunds and withdrawals across your Protected Deals.'
+            : 'Follow customer funding, payment releases, seller earnings, fees, refunds and withdrawals.'}
           icon={Receipt}
         /></div>
 
         <div className={`${showMobileSearch || showMobileFilters ? 'flex' : 'hidden'} mb-4 flex-col gap-3 sm:flex sm:flex-row sm:items-center`}>
           <Input
-            placeholder="Search supplier, order, or reference"
+            placeholder="Search participant, deal, or reference"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={`${showMobileSearch ? 'block' : 'hidden'} h-11 rounded-xl sm:block sm:h-10 sm:max-w-xs`}

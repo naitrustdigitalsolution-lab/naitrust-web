@@ -87,7 +87,7 @@ export function DealBreakdown({ deals, isLoading, currency = 'NGN' }: DealBreakd
       {total === 0 ? (
         <div className="flex h-40 flex-col items-center justify-center gap-1 text-center">
           <p className="text-sm font-medium text-foreground">No orders yet</p>
-          <p className="text-sm text-muted-foreground">Create or accept a supplier order to see your breakdown.</p>
+          <p className="text-sm text-muted-foreground">Create or accept a Protected Deal to see your breakdown.</p>
         </div>
       ) : (
         <>

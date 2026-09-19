@@ -32,8 +32,13 @@ const ROUTES = [
   '/',
   '/about',
   '/business',
+  '/customer',
+  '/waitlist',
   '/resources',
   '/blog',
+  '/blog/clear-terms-before-payment',
+  '/blog/payment-confidence-for-sellers',
+  '/blog/one-shared-deal-room',
   '/help',
   '/faqs',
   '/report-concern',
@@ -81,7 +86,7 @@ async function main() {
   let browser;
   try {
     await waitForServer(BASE);
-    browser = await chromium.launch();
+    browser = await chromium.launch(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {});
     const page = await browser.newPage();
 
     let ok = 0;

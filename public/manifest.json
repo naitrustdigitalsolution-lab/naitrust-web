@@ -1,7 +1,7 @@
 {
   "name": "Naitrust: Payments and Protected Deals",
   "short_name": "Naitrust",
-  "description": "A Nigerian fintech app for payments, verified business discovery, participant verification, and Protected Deals for protected transactions.",
+  "description": "Secure payments for buyers and sellers. Clear terms, shared evidence and controlled release. Join Naitrust early access.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -38,21 +38,21 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Access your Naitrust dashboard",
+      "description": "Secure payments for buyers and sellers. Clear terms, shared evidence and controlled release. Join Naitrust early access.",
       "url": "/app",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Create a Protected Deal",
       "short_name": "Protect",
-      "description": "Create a Protected Deal with shared terms, evidence, delivery updates, and payment status",
+      "description": "Secure payments for buyers and sellers. Clear terms, shared evidence and controlled release. Join Naitrust early access.",
       "url": "/app/deals/new",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Report a Concern",
       "short_name": "Report",
-      "description": "Report a suspicious claim or impersonation attempt",
+      "description": "Secure payments for buyers and sellers. Clear terms, shared evidence and controlled release. Join Naitrust early access.",
       "url": "/report-concern",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }

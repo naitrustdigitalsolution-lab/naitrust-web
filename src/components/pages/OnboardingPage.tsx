@@ -58,19 +58,19 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                 Start with the right profile
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
-                Buy wholesale from China as an individual or business.
+                Protect important payments as an individual or business.
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
-                Choose the account that matches you. Both profiles can find a verified sourcing agent, compare China suppliers and manage wholesale orders to Nigeria.
+                Choose the account that matches you. Both profiles can create clear agreements, protect funds through regulated payment rails, review evidence and control release.
               </p>
             </div>
 
             {/* Desktop only: on mobile these bullets move BELOW the choice cards. */}
             <div className="mt-10 hidden max-w-md space-y-4 lg:block">
               {[
-                'Verified sourcing agents operating in China',
-                'Confirmed landed-cost quotes before you pay',
-                'Protected orders, evidence, and delivery updates in one place',
+                'Verified participants and beneficiaries',
+                'Clear terms and release conditions before funding',
+                'Protected funds, evidence and decisions in one Deal Room',
               ].map((item) => (
                 <div
                   key={item}
@@ -136,14 +136,14 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                         </Button>
                       </div>
                       <p className="mt-2 text-sm lg:text-xs xl:text-sm leading-6 text-muted-foreground">
-                        Find a verified sourcing agent, request products from China and track wholesale orders to your door in Nigeria.
+                        Protect purchases, services, deposits and other important payments with clear terms and controlled release.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
-                          'Choose a verified sourcing agent in China',
-                          'Share the product and quantity you need',
-                          'Review supplier options and inspection evidence',
-                          'Track the order and delivery to Nigeria',
+                          'Create or accept a clear payment agreement',
+                          'Verify who you are paying',
+                          'Fund through supported regulated rails',
+                          'Approve release or report a problem',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm lg:text-xs xl:text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-blue-500" />
@@ -180,15 +180,15 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
                       </div>
                         {/* <Badge className="absolute right-4 top-4 border border-amber-300 bg-amber-100 text-amber-900 shadow-sm hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">Popular</Badge> */}
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Source wholesale stock from China for your shop, company or growing retail operation with a verified agent.
+                        Control vendor, procurement, contractor and service payments with shared records and approval trails.
                       </p>
                       <div className="mt-4 grid gap-2 sm:grid-cols-1">
                         {[
                           'Verify your Nigerian business and representatives',
-                          'Choose a sourcing agent by location and expertise',
-                          'Compare supplier quotations and samples',
-                          'Approve inspection and shipping evidence',
-                          'Manage wholesale orders and landed costs',
+                          'Set payment terms, deliverables and beneficiaries',
+                          'Review invoices and completion evidence',
+                          'Release, refund or dispute with an audit trail',
+                          'Keep every payment decision visible to your team',
                         ].map((feature) => (
                           <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle size={15} className="shrink-0 text-primary" />
@@ -203,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Both account types follow the same sourcing journey. Choose Business when the wholesale order belongs to a registered or trading business.
+              Both account types use the same protected-payment journey. Choose Business when payments belong to a company, merchant or trading operation.
             </div>
             <div className="mt-5 text-center">
               <button
@@ -220,9 +220,9 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
         {/* Mobile: supporting points + login link sit BELOW the choice cards. */}
         <section className="lg:hidden">
           {[
-            'Verified sourcing agents operating in China',
-            'Confirmed landed-cost quotes before you pay',
-            'Protected orders and delivery updates in one place',
+            'Verified participants and beneficiaries',
+            'Clear terms and release conditions before funding',
+            'Protected funds and payment decisions in one place',
           ].map((item) => (
             <div
               key={item}

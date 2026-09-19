@@ -10,7 +10,7 @@ const verificationTypes = [
   { icon: UserCheck, title: 'Individual verification', text: 'Identity information and supporting documents may be checked to help confirm that a person is who they claim to be.' },
   { icon: Building2, title: 'Business verification', text: 'Business registration information and the authority of a representative may be checked before a business is marked as verified.' },
   { icon: ScanFace, title: 'Liveness checks', text: 'A short camera-based check may be used to reduce impersonation and confirm that a real person is present during verification.' },
-  { icon: ShieldCheck, title: 'Sourcing agent verification', text: 'Identity, business, experience and China operating details may be reviewed before a sourcing agent can offer services on Naitrust.' },
+  { icon: ShieldCheck, title: 'Beneficiary checks', text: 'The intended payment recipient and account details must be checked through supported provider processes before funding or release.' },
 ];
 
 export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPageProps) {
@@ -60,7 +60,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
 
         <section className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6">
           <h2 className="text-xl font-bold">What verification does not mean</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed particular checks at a particular time. It does not guarantee an agent’s performance, a supplier’s product quality, the accuracy of every representation, payment recovery, delivery timing, or the outcome of a transaction. Buyers must still review the participants, specifications, samples, quotes, documents, terms, evidence and approvals for each order.</p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification confirms only that specified information passed particular checks at a particular time. It does not guarantee participant performance, a supplier’s product quality, the accuracy of every representation, payment recovery, delivery timing, or the outcome of a transaction. Buyers must still review the participants, specifications, samples, quotes, documents, terms, evidence and approvals for each order.</p>
         </section>
 
         <section className="mt-8 rounded-2xl border bg-card p-6">

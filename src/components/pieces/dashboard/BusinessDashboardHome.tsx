@@ -28,10 +28,10 @@ interface BusinessDashboardHomeProps {
 }
 
 const actions = [
-  { label: 'Find a product', detail: 'Search the wholesale market', icon: Search, path: '/app/market' },
-  { label: 'Find a sourcing agent', detail: 'Work with a verified agent in China', icon: ClipboardList, path: '/app/agents' },
-  { label: 'Build a product', detail: 'Plan product, packaging and labels', icon: Workflow, path: '/app/production' },
-  { label: 'Supplier showcase', detail: 'Manage your public catalogue', icon: Store, path: '/app/showcase' },
+  { label: 'Create Protected Deal', detail: 'Set terms and protect a payment', icon: ClipboardList, path: '/app/deals/new' },
+  { label: 'Review payments', detail: 'Track approvals and settlement', icon: Workflow, path: '/app/deals' },
+  { label: 'Manage beneficiaries', detail: 'Verify who your business pays', icon: UserCheck, path: '/app/beneficiaries' },
+  { label: 'View money', detail: 'See funding, releases and refunds', icon: WalletCards, path: '/app/wallet' },
 ] as const;
 
 export function BusinessDashboardHome({
@@ -66,9 +66,9 @@ export function BusinessDashboardHome({
           <div className="relative grid min-h-[21rem] items-end gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(18rem,.7fr)] lg:p-10">
             <div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-white/65"><span>Good day, {firstName}</span>{verified && <Badge className="border-emerald-300/20 bg-emerald-400/15 text-emerald-200"><BadgeCheck size={12} /> Verified business</Badge>}</div>
-            {businessLoading ? <Skeleton className="mt-4 h-9 w-64 bg-white/15" /> : <h1 className="mt-3 max-w-3xl text-3xl font-bold tracking-[-.045em] sm:text-5xl">Source, build and sell from one business account.</h1>}
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{businessName} can source from China or Nigeria, coordinate checks and shipping, and manage a supplier catalogue from one account.</p>
-            <div className="mt-5 flex flex-wrap gap-2"><Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => navigate('/app/agents')}><Search size={16} /> Find a verified sourcing agent</Button></div>
+            {businessLoading ? <Skeleton className="mt-4 h-9 w-64 bg-white/15" /> : <h1 className="mt-3 max-w-3xl text-3xl font-bold tracking-[-.045em] sm:text-5xl">Control business payments from agreement to settlement.</h1>}
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{businessName} can protect vendor deposits, procurement, services and milestone payments with evidence-based approvals.</p>
+            <div className="mt-5 flex flex-wrap gap-2"><Button className="rounded-full bg-white text-[#071b31] hover:bg-white/90" onClick={() => navigate('/app/deals/new')}><Search size={16} /> Create Protected Deal</Button></div>
             </div>
             <button type="button" onClick={() => navigate(activeOrder ? `/app/orders/${activeOrder.id}` : '/app/market')} className="rounded-3xl border border-white/15 bg-white/[.09] p-5 text-left backdrop-blur-md transition hover:bg-white/[.13]">
               <div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10"><PackageSearch size={19} /></span><Badge className="border-white/15 bg-white/10 text-white">{activeOrders.length} active</Badge></div>
@@ -85,7 +85,7 @@ export function BusinessDashboardHome({
 
         <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(20rem,.55fr)]">
           <Card className="rounded-3xl p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-primary">China sourcing activity</p><h2 className="mt-2 text-xl font-bold">Track every supplier and manufacturer separately</h2><p className="mt-1 text-xs text-muted-foreground">Work with a verified sourcing agent, then open a dedicated Order Room for the supplier you choose.</p></div><Button variant="ghost" size="sm" onClick={() => navigate('/app/agents')}>Sourcing agents <ArrowRight size={14} /></Button></div>
+            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-primary">Protected payment activity</p><h2 className="mt-2 text-xl font-bold">Track every counterparty and payment separately</h2><p className="mt-1 text-xs text-muted-foreground">Keep terms, evidence, approvals and settlement status together in each Deal Room.</p></div><Button variant="ghost" size="sm" onClick={() => navigate('/app/deals')}>View deals <ArrowRight size={14} /></Button></div>
             <div className="mt-5 divide-y rounded-2xl border">{activeOrders.length ? activeOrders.slice(0, 3).map((order) => <button key={order.id} type="button" onClick={() => navigate(`/app/orders/${order.id}`)} className="flex w-full items-center gap-4 p-4 text-left transition first:rounded-t-2xl last:rounded-b-2xl hover:bg-muted/45"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><PackageSearch size={18} /></span><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{marketSuppliers.find((item) => item.id === order.supplierId)?.name}</strong><span className="mt-1 block text-xs text-muted-foreground">{order.reference}</span></span><Badge variant="outline" className="capitalize">{order.status.replace(/_/g, ' ')}</Badge><ArrowRight size={14} className="text-muted-foreground" /></button>) : <div className="p-6 text-sm text-muted-foreground">No active supplier orders. Choose a verified sourcing agent to find suppliers, confirm product details and coordinate the next wholesale order.</div>}</div>
           </Card>
 

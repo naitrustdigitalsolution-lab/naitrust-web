@@ -7,16 +7,15 @@ const STORAGE_KEY = 'naitrust:locale';
 
 function initialLocale(): AppLocale {
   if (typeof window === 'undefined') return 'en';
-  const saved = window.localStorage.getItem(STORAGE_KEY);
-  if (saved === 'en' || saved === 'zh-CN') return saved;
-  return window.navigator.language.toLowerCase().startsWith('zh') ? 'zh-CN' : 'en';
+  // The public launch uses reviewed English copy, including for returning visitors.
+  return 'en';
 }
 
 const LocaleContext = createContext<{ locale: AppLocale; setLocale: (locale: AppLocale) => void } | null>(null);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<AppLocale>(() => i18n.resolvedLanguage === 'zh-CN' ? 'zh-CN' : initialLocale());
-  const setLocale = (next: AppLocale) => { setLocaleState(next); void i18n.changeLanguage(next); };
+  const setLocale = (_next: AppLocale) => { setLocaleState('en'); void i18n.changeLanguage('en'); };
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, locale);
     document.documentElement.lang = locale;

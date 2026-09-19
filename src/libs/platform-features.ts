@@ -11,7 +11,7 @@ export interface PlatformFeatures {
   sellerShowcase: boolean;
 }
 
-const STORAGE_KEY = 'naitrust:admin:platform-features:v2';
+const STORAGE_KEY = 'naitrust:admin:platform-features:v3-protected-payments';
 export const PLATFORM_FEATURES_CHANGED = 'naitrust:platform-features-changed';
 
 export const defaultPlatformFeatures: PlatformFeatures = {

@@ -27,17 +27,17 @@ function image(path: string, alt: string, aspect: ImageAspect = '4/3', focalPoin
 }
 
 export const pageImages = {
-  homeHero: image('hero/china-sourcing-agent-hero-v2.webp', 'A Nigerian business owner coordinating a China product inspection with a sourcing agent', '16/9', 'right', true),
-  homeImportInspection: image('pages/payment-received-success-v1.png', 'A Nigerian customer and business owner confirming that a protected payment was received successfully'),
+  homeHero: image('home/provider-ai-hero.png', 'Nigerian business owners using Naitrust protected payments', '16/9', 'right', true),
+  homeImportInspection: image('pages/protected-payment-success-v1.png', 'A protected payment confirmed and released successfully'),
   aboutHero: image('pages/about-protected-payment-v1.png', 'Two Nigerian business participants reviewing a protected payment agreement'),
-  customerHero: image('pages/payment-received-success-v1.png', 'A Nigerian customer confirming that money from a protected transaction was received successfully', '4/3', 'center', true),
-  customerDelivery: image('pages/customer-delivery-v1.webp', 'A Nigerian shop owner inspecting products received from an international order'),
-  businessHero: image('pages/business-hero-v2.webp', 'A Nigerian manufacturer preparing products for a supplier showcase', '4/3', 'center', true),
-  businessFulfilment: image('pages/business-fulfilment-v1.webp', 'A Nigerian business team packing a domestic customer order'),
-  marketHero: image('pages/market-hero-v2.webp', 'A Nigerian buyer reviewing wholesale product samples with a Chinese supplier', '16/9', 'center', true),
-  login: image('pages/login-sourcing-v2.webp', 'Product samples and order-planning tools on an importer desk'),
-  registerCustomer: image('pages/register-customer-v1.webp', 'A Nigerian entrepreneur documenting a product sample for sourcing'),
-  registerBusiness: image('pages/register-business-v1.webp', 'A Nigerian manufacturer standing beside finished products in a workshop'),
+  customerHero: image('pages/individual-protected-payment-hero-v1.png', 'A Nigerian woman confidently approving a protected payment', '4/3', 'center', true),
+  customerDelivery: image('pages/protected-payment-success-v1.png', 'Protected funds released after the agreed conditions were completed'),
+  businessHero: image('pages/business-protected-payment-hero-v1.png', 'A Nigerian business team reviewing a protected vendor payment', '4/3', 'center', true),
+  businessFulfilment: image('pages/protected-payment-success-v1.png', 'Protected business funds released after the agreed conditions were completed'),
+  marketHero: image('pages/protected-payment-success-v1.png', 'A successful transaction protected by Naitrust', '16/9', 'center', true),
+  login: image('pages/protected-payment-success-v1.png', 'A secure Naitrust payment completing successfully'),
+  registerCustomer: image('pages/agree-protect-approve-v1.png', 'A clear protected-payment flow from agreement to approval'),
+  registerBusiness: image('pages/protected-payment-success-v1.png', 'A protected business payment completing successfully'),
 } as const;
 
 const agentImageKeys = ['aboutHero', 'customerHero', 'registerCustomer', 'businessHero', 'customerDelivery'] as const;

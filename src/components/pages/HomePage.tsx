@@ -131,7 +131,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <SEOHead
         title={t('heroTitle')}
         description={t('heroDescription')}
-        keywords="Naitrust, trusted payments, protected payments, escrow-style payments, milestone payments, business payment rails, payment protection Nigeria"
+        keywords="Naitrust, trusted payments, protected payments, buyer protection, seller payments, business payments, payment protection Nigeria"
         canonicalPath="/"
       />
 
@@ -143,7 +143,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         className={`relative isolate min-h-[112svh] overflow-hidden bg-[#04162f] text-white sm:min-h-[110svh] lg:min-h-[105svh] ${useHeroViewportHeight ? "xl:min-h-[94vh]" : ""}`}
       >
         <ImageWithFallback
-          src={providerAiHero}
+              src={providerAiHero}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 -z-30 h-full w-full object-cover object-[62%_center] filter-none sm:object-[58%_center] lg:object-center"
@@ -177,7 +177,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button>
               <button
                 type="button"
-                onClick={() => onNavigate("/register")}
+                onClick={() => document.getElementById("payment-journey")?.scrollIntoView({ behavior: "smooth" })}
                 className="inline-flex h-12 w-full items-center justify-center gap-1 rounded-full border border-white/25 bg-white/[0.08] px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10 min-[420px]:w-auto sm:gap-2 sm:px-7"
               >
                 {t('findAgent')}
@@ -192,6 +192,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <span>{t('flowRoom')}</span>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section id="payment-journey" className="scroll-mt-24 border-b bg-background px-4 py-14 sm:px-8">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary">Built for both sides of the deal</p>
+          <h2 className="mt-3 text-3xl font-bold">A clear agreement. A shared record. A safer payment.</h2>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {[
+              ['For buyers', 'Know who you are paying and what you should receive. Agree the price, delivery or service requirements, and release conditions before funding.'],
+              ['For sellers', 'See confirmed funding before fulfilling a deal. Keep proof of delivery or completed work attached to the agreement, with clear conditions for payment.'],
+              ['For both sides', 'Use one Deal Room for terms, messages, evidence and approvals. Report an issue with supporting evidence and follow a documented review process.'],
+            ].map(([title, description]) => <div key={title} className="rounded-2xl border bg-card p-6"><h3 className="text-lg font-bold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p></div>)}
+          </div>
+          <p className="mt-6 text-sm leading-6 text-muted-foreground">Naitrust is in early access. Live funding, payment release and refunds are subject to payment-provider approval and launch readiness. The planned pilot uses a single payment release; milestone and recurring payments are coming later.</p>
         </div>
       </section>
 

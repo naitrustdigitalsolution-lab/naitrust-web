@@ -7,7 +7,7 @@ function LoginPage() {
   const location = useLocation();
   const returnTo = new URLSearchParams(location.search).get('returnTo');
 
-  return <LoginForm onNavigate={(page) => {
+  return <LoginForm initialView={location.pathname === '/forgot-password' ? 'forgot-password' : 'login'} onNavigate={(page) => {
     const path = resolvePagePath(page);
     navigate(page === 'register' && returnTo ? `${path}?returnTo=${encodeURIComponent(returnTo)}` : path);
   }} />;

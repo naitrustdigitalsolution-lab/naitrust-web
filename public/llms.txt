@@ -1,38 +1,35 @@
 # Naitrust
 
-> Naitrust is a protected-commerce and sourcing platform for Nigerian individuals and businesses.
+Naitrust is building secure payments for buyers and sellers in Nigeria.
 
-Naitrust helps users discover verified suppliers in China and Nigeria, browse products in English, request a confirmed landed-cost quote, pay through a protected order, and track delivery. Business accounts can both source products and publish a marketplace showcase.
+## Product
 
-Detailed product and brand context: https://naitrust.com/llms-full.txt
+A Protected Deal connects agreed terms, participant and beneficiary checks, funding status, evidence, approvals and payment release in one shared Deal Room. It is designed for purchases, services, deposits and business payments.
 
-## Core experiences
+Buyers can review what was agreed and the evidence before release. Sellers can see confirmed funding and document delivery or completed work. Both sides share the record used to review an issue.
 
-- Market: public supplier, product, service, Showcase, and Trust Profile discovery.
-- Cart and quotes: authenticated users build one-supplier carts and receive time-limited confirmed quotes.
-- Protected orders: product payment, logistics, evidence, messages, inspection, customs, delivery, refunds, and release stay in one Order Room.
-- Business commerce: businesses can source like any buyer and can also publish products, fulfil orders, and receive earnings.
-- Agents: users may optionally hire a verified independent sourcing or inspection agent under a separate service agreement.
-- Production workflows: business buyers can connect product, packaging, labelling, inspection and shipping stages across multiple approved suppliers.
-- Currency: Naira is the default. Eligible business quotes may offer USD payment, while China partner settlement may use CNY or USD through a regulated provider.
-- Partner network: China-based agents and suppliers use separate reviewed, invite-only access with English and Simplified Chinese support.
-- Wallet: order funding, refunds, supplier earnings, agent earnings, and verified-account withdrawals.
+## Availability
 
-## Important boundaries
+Naitrust is accepting early-access interest. Existing invited users can sign in. Live funding, release and refunds depend on approved payment-provider integrations and launch readiness. The planned pilot supports a single payment release. Milestone and recurring payments are not currently available.
 
-- China and Nigeria are the active staged markets. Japan, Thailand, and the United States are Coming soon.
-- Catalogue prices are estimates until Naitrust issues a confirmed quote.
-- Naitrust does not directly hold customer funds; regulated partners provide applicable money movement.
-- Verification, agent recommendations, and protected orders are not guarantees.
-- Agents never control supplier purchase funds.
-- Legacy payment features may remain accessible but are not the primary product.
+## Payment boundaries
 
-## Public pages
+Naitrust does not directly hold customer funds, operate as a bank or claim its own escrow licence. Appropriately licensed providers must handle custody and money movement. Provider details, fees and applicable terms will be disclosed before live payments.
 
-- Market: https://naitrust.com/market
-- Customers: https://naitrust.com/customer
+Verification records specified checks, not a guarantee of delivery, quality or future conduct. Reporting an issue alone does not automatically freeze a payment. Evidence and applicable risk controls determine the review process.
+
+## Public links
+
+- Home: https://naitrust.com/
+- Early access: https://naitrust.com/waitlist
+- Individuals: https://naitrust.com/customer
 - Businesses: https://naitrust.com/business
 - About: https://naitrust.com/about
-- Help: https://naitrust.com/help
 - FAQs: https://naitrust.com/faqs
-- Contact: https://naitrust.com/contact
+- Contact and partnerships: https://naitrust.com/contact
+- Terms: https://naitrust.com/terms
+- Privacy: https://naitrust.com/privacy
+- Verification: https://naitrust.com/verification-policy
+- Compliance: https://naitrust.com/compliance
+
+Operated by Naitrust Digital Solutions Limited. Contact: contact@naitrust.com.

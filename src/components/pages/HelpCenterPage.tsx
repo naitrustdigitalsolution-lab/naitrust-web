@@ -1,3 +1,4 @@
+import { protectedPaymentFAQs } from '../../content/protected-payment-faqs';
 import React, { useState } from 'react';
 import { HelpCircle, Search, Shield, CreditCard, Users, Settings, MessageCircle, FileText, ChevronDown, ChevronUp, Mail, Phone, Clock } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
@@ -15,167 +16,16 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
 
   const categories = [
     { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
-    { id: 'payments', name: 'Order Money', icon: CreditCard, description: 'Deposits, quote payments, supplier releases, service fees, refunds and withdrawals' },
+    { id: 'payments', name: 'Payments', icon: CreditCard, description: 'Deposits, quote payments, supplier releases, service fees, refunds and withdrawals' },
     { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
     { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
     { id: 'general', name: 'General', icon: FileText, description: 'Platform basics, features, and how Naitrust works' },
   ];
 
-  const faqs: Record<string, Array<{ id: string; question: string; answer: string }>> = {
-    verification: [
-      {
-        id: 'v1',
-        question: 'What does Naitrust verification check?',
-        answer: 'Verification can include email, phone, individual identity, facial liveness, CAC registration, owner or director identity, business address, ownership proof, and supporting documents. The exact checks depend on the risk and value of the transaction.'
-      },
-      {
-        id: 'v2',
-        question: 'How long does verification take?',
-        answer: 'Some checks can complete quickly when provider data matches. Manual review may take longer if documents are unclear, ownership is hard to prove, or the deal requires stronger risk checks. You will see status updates as verification moves through review.'
-      },
-      {
-        id: 'v3',
-        question: 'What documents may be required?',
-        answer: 'Depending on the transaction, Naitrust may request CAC registration details, TIN where available, government-issued ID, selfie or liveness capture, proof of address, CAC certificate, ownership documents, bank ownership evidence through a regulated partner, invoices, waybills, or other supporting files.'
-      },
-      {
-        id: 'v4',
-        question: 'Can my verification be revoked?',
-        answer: 'Yes. Verification can be suspended or permanently revoked if Naitrust discovers false information, receives credible fraud reports, detects violations of the Terms of Service, or is directed by a regulatory authority. You\'ll receive written notice and may appeal within 14 days.'
-      },
-      {
-        id: 'v5',
-        question: 'How does re-verification work?',
-        answer: 'Re-verification may be required when your business name, address, ownership, CAC details, directors, phone, email, or legal identity changes. It may also be required when risk signals conflict, account recovery happened recently, or a high-value deal needs fresher proof.'
-      },
-    ],
-    payments: [
-      {
-        id: 'p1',
-        question: 'Does Naitrust hold my money?',
-        answer: 'No. Naitrust coordinates supplier orders, evidence, payment status and agreed actions. Money movement is handled by regulated payment or banking partners through accounts issued by those partners.'
-      },
-      {
-        id: 'p2',
-        question: 'How does order funding work?',
-        answer: 'Order funding is tied to a specific accepted quote. The Order Room shows the amount received, agent or inspection evidence, supplier-payment stages, refunds and the next required decision.'
-      },
-      {
-        id: 'p3',
-        question: 'When is payment released?',
-        answer: 'Supplier payment follows the accepted quote and Order Room conditions. Required evidence, agent confirmation, milestones, delivery review or an open issue may prevent a release instruction.'
-      },
-      {
-        id: 'p4',
-        question: 'What happens if there is a dispute?',
-        answer: 'A participant can raise an issue from the Order Room. Naitrust keeps the quote, agreement, messages, receipts, evidence, photographs, inspection notes, milestones and confirmations together for review.'
-      },
-      {
-        id: 'p5',
-        question: 'Is my payment information secure?',
-        answer: 'Naitrust does not store full card details. Payment and banking activity for protected funding is handled by regulated partners. Platform data is protected with encryption in transit and at rest.'
-      },
-    ],
-    account: [
-      {
-        id: 'a1',
-        question: 'How do I create a Naitrust account?',
-        answer: 'Tap "Sign Up" and choose your account type. Individuals provide basic profile details, email, and phone number. Businesses provide business details and may complete CAC, ownership, and document checks before joining higher-risk transactions.'
-      },
-      {
-        id: 'a2',
-        question: 'Which details can people use to pay me?',
-        answer: 'People can send a Naitrust transfer using your account number, registered email address, or verified phone number. Confirm these details in your profile before sharing them.'
-      },
-      {
-        id: 'a3',
-        question: 'How do I update my business information?',
-        answer: 'Go to Settings → Business Profile to make updates. Minor changes can take effect immediately. Material changes such as business name, address, ownership, directors, or CAC details may require re-verification before they appear as trusted details.'
-      },
-      {
-        id: 'a4',
-        question: 'Can I have multiple accounts?',
-        answer: 'No. Each individual or business entity may have only one account. Creating multiple accounts (including through aliases or bots) violates the Terms of Service and will result in suspension of all associated accounts.'
-      },
-      {
-        id: 'a5',
-        question: 'How do I delete my account?',
-        answer: 'Go to Settings → Account → Delete Account. Deletion is permanent, but Naitrust may retain records required for legal, security, transaction, dispute, fraud-prevention, or financial reporting purposes. Consider deactivating temporarily if you just need a break.'
-      },
-    ],
-    security: [
-      {
-        id: 's1',
-        question: 'How does Naitrust protect my data?',
-        answer: 'We use encryption in transit and at rest, role-based access controls, monitoring, and security reviews. We design verification and transaction data handling around Nigerian privacy requirements and only show sensitive verification evidence to authorised parties.'
-      },
-      {
-        id: 's2',
-        question: 'What should I do if my account is compromised?',
-        answer: 'Change your password immediately. Contact contact@naitrust.com. Review your recent account activity. We\'ll investigate, secure your account, and reverse unauthorised changes where possible. Enable two-factor authentication from your Settings for ongoing protection.'
-      },
-      {
-        id: 's3',
-        question: 'How do I report a fraudulent business?',
-        answer: 'Tap "Report" on the business profile, visit the Report a Concern page, or email contact@naitrust.com. Include the business name or account number, screenshots, and a description. Reports are reviewed internally by the Naitrust team.'
-      },
-      {
-        id: 's4',
-        question: 'Does verification guarantee a business is safe to transact with?',
-        answer: 'Verification confirms that a business\'s documentation has been validated (CAC registration, TIN, personal ID, etc.), but it does not guarantee quality, reliability, or eliminate all fraud risk. Always read reviews, verify details, and exercise caution. Report any concerns immediately.'
-      },
-    ],
-    messaging: [
-      {
-        id: 'm1',
-        question: 'How do I contact a business on Naitrust?',
-        answer: 'Open the supplier profile or Order Room and use messaging to clarify products, terms, payment stages, evidence, agent checks or milestones. Important messages should stay attached to the order.'
-      },
-      {
-        id: 'm2',
-        question: 'Can businesses see my personal details in chat?',
-        answer: 'Businesses can only see your display name and what you choose to share in messages. Your personal ID details, payment details, and contact information are never visible to businesses.'
-      },
-      {
-        id: 'm3',
-        question: 'How do I report inappropriate messages?',
-        answer: 'In the chat, tap the three-dot menu and select "Report". Describe the issue and our team will investigate. We take harassment, abuse, and scam attempts seriously. Offending accounts may be suspended or terminated.'
-      },
-    ],
-    general: [
-      {
-        id: 'g1',
-        question: 'What is Naitrust?',
-        answer: 'Naitrust helps Nigerian individuals and businesses buy from China through verified sourcing agents. Customers choose an agent operating in China, share what they need, approve a complete landed-cost quote, and track the order to delivery in Nigeria.'
-      },
-      {
-        id: 'g2',
-        question: 'How can I verify a business I found on social media?',
-        answer: 'Ask your verified sourcing agent to investigate the intended China supplier. The agent can collect supplier details and evidence, while the Order Room keeps the quote, terms, payments and confirmations together.'
-      },
-      {
-        id: 'g3',
-        question: 'Does verification guarantee a successful transaction?',
-        answer: 'No. Verification helps reduce identity and representation risk, but it does not prove ownership, authority to sell, legal validity, payment recovery, or future behaviour. For property deals specifically, independent legal, title, survey, valuation, and physical checks may still be necessary.'
-      },
-      {
-        id: 'g4',
-        question: 'How do reviews work?',
-        answer: 'Customers who complete an eligible agent-supported order can leave one 1–5 star rating and an optional comment. The review appears on the sourcing agent’s profile. Fake or incentivised reviews violate our policies.'
-      },
-      {
-        id: 'g5',
-        question: 'Is Naitrust available outside Nigeria?',
-        answer: 'Naitrust is built for Nigerian individuals, retailers, wholesalers and businesses buying from China. Sourcing agents can be of any nationality, but must operate in China and complete Naitrust verification before offering services on the platform.'
-      },
-      {
-        id: 'g6',
-        question: 'What kinds of transactions is Naitrust for?',
-        answer: 'Naitrust supports domestic purchases and China imports, including wholesale stock, packaging, electronics, equipment and manufactured goods. International orders can include inspection, export pickup, transit, customs clearance and final delivery tracking.'
-      },
-    ],
-  };
+  const faqs: Record<string, typeof protectedPaymentFAQs> = Object.fromEntries(
+    categories.map(({ id }) => [id, protectedPaymentFAQs.filter((faq) => faq.helpCategory === id)]),
+  );
 
   const filteredCategories = selectedCategory 
     ? categories.filter(cat => cat.id === selectedCategory)
@@ -185,8 +35,8 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
     <div className="min-h-screen bg-linear-to-b from-muted/30 via-muted/10 to-background relative py-12">
       <SEOHead
         title="Help Center"
-        description="Get help choosing a verified sourcing agent, buying wholesale from China, reviewing landed-cost quotes, using Order Rooms and tracking delivery to Nigeria."
-        keywords="verified sourcing agents China, buy wholesale from China Nigeria, China sourcing help Nigeria, landed cost quote, Order Room, delivery tracking"
+        description="Answers about Protected Deals, buyer and seller payments, verification, release conditions and early access to Naitrust."
+        keywords="Naitrust, protected payments, buyer protection, seller payments, Deal Room"
         canonicalPath="/help"
       />
       <div className="relative z-10 max-w-6xl mx-auto px-4">

@@ -45,7 +45,6 @@ function lazyWithMinDelay<T extends ComponentType<any>>(
 }
 
 const LoginPage = lazyWithMinDelay(() => import("./pages/LoginPage"));
-const SignupPage = lazyWithMinDelay(() => import("./pages/SignupPage"));
 const DashboardPage = lazyWithMinDelay(() => import("./pages/DashboardPage"));
 const CreateDealPage = lazyWithMinDelay(() => import("./pages/CreateDealPage"));
 const DealsPage = lazyWithMinDelay(() => import("./pages/DealsPage"));
@@ -111,7 +110,6 @@ const PublicOrderInvitationPage = lazyWithMinDelay(() => import("./pages/PublicO
 const InvitedOrderPage = lazyWithMinDelay(() => import("./pages/InvitedOrderPage"));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 const AudiencePage = lazy(() => import("./components/pages/AudiencePage").then((module) => ({ default: module.AudiencePage })));
-const PartnerNetworkPage = lazy(() => import("./pages/PartnerNetworkPage"));
 const PartnerApplicationPage = lazy(() => import("./pages/PartnerApplicationPage"));
 
 const queryClient = new QueryClient();
@@ -203,7 +201,7 @@ const standalonePaths = [
   "/verify-code",
   "/verify-email",
   "/waitlist",
-  "/partners/login",
+  "/vault-access-nd-7k4m9/sign-in",
   "/app",
 ];
 
@@ -336,10 +334,11 @@ function PublicAppContent() {
           <Route path="/compliance" element={<CompliancePage onNavigate={handleNavigate} />} />
           <Route path="/pricing" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<SignupPage />} />
+          <Route path="/vault-access-nd-7k4m9/sign-in" element={<LoginPage />} />
+          <Route path="/register" element={<Navigate to="/waitlist" replace />} />
           <Route path="/register-business" element={<Navigate to="/waitlist" replace />} />
           <Route path="/register-customer" element={<Navigate to="/waitlist" replace />} />
-          <Route path="/forgot-password" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/forgot-password" element={<LoginPage />} />
           <Route path="/verify-code" element={<Navigate to="/waitlist" replace />} />
           <Route path="/verify-email" element={<Navigate to="/waitlist" replace />} />
           <Route path="/waitlist" element={<WaitlistPage />} />
@@ -349,10 +348,10 @@ function PublicAppContent() {
           <Route path="/market/products/:productId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/market/suppliers" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
           <Route path="/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
-          <Route path="/partners" element={<PartnerNetworkPage />} />
-          <Route path="/partners/:kind/apply" element={<PartnerNetworkPage />} />
-          <Route path="/partners/login" element={<PartnerNetworkPage />} />
-          <Route path="/partners/portal" element={<PartnerNetworkPage />} />
+          <Route path="/partners" element={<Navigate to="/contact" replace />} />
+          <Route path="/partners/:kind/apply" element={<Navigate to="/waitlist" replace />} />
+          <Route path="/partners/login" element={<Navigate to="/" replace />} />
+          <Route path="/partners/portal" element={<Navigate to="/login" replace />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
           <Route path="/invite/order/:token" element={<PublicOrderInvitationPage />} />
           <Route path="/delivery/:token" element={<DeliveryHandoverPage />} />

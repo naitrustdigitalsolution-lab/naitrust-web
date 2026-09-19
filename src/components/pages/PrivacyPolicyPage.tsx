@@ -13,7 +13,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
     <div className="min-h-screen bg-background relative py-12">
       <SEOHead
         title="Privacy Policy"
-        description="Learn how Naitrust handles personal data for property early access, participant verification, and property transaction records under Nigerian data-protection requirements."
+        description="Learn how Naitrust handles identity, business, beneficiary and protected-payment data under Nigerian data-protection requirements."
         canonicalPath="/privacy"
         noindex={false}
       />
@@ -31,19 +31,19 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
           {/* Introduction */}
           <section className="mb-8">
             <p className="text-muted-foreground mb-4">
-              This Privacy Policy ("Policy") explains how Naitrust Digital Solutions Limited ("Naitrust", "we", "us", or "our"), 
-              a company incorporated under the Companies and Allied Matters Act (CAMA) 2020 with its registered office in 
-              Lagos, Nigeria, collects, uses, stores, discloses, and protects your personal data when you use the Naitrust 
-              property transaction platform and early-access website at naitrust.com ("Platform").
+              This Privacy Policy ("Policy") explains how Naitrust Digital Solutions Limited ("Naitrust", "we", "us", or "our"),
+              a company incorporated under the Companies and Allied Matters Act (CAMA) 2020 with its registered office in
+              Lagos, Nigeria, collects, uses, stores, discloses, and protects your personal data when you use the Naitrust
+              protected-payment platform and website at naitrust.com ("Platform").
             </p>
             <p className="text-muted-foreground mb-4">
-              This Policy is issued in compliance with the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection 
-              Regulation (NDPR) 2019 as issued by the National Information Technology Development Agency (NITDA), and all 
+              This Policy is issued in compliance with the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection
+              Regulation (NDPR) 2019 as issued by the National Information Technology Development Agency (NITDA), and all
               applicable data protection laws and regulations of the Federal Republic of Nigeria.
             </p>
             <p className="text-muted-foreground">
-              By creating an account, accessing, or using the Platform, you acknowledge that you have read, understood, and 
-              consent to the collection and processing of your personal data in accordance with this Policy. If you do not 
+              By creating an account, accessing, or using the Platform, you acknowledge that you have read, understood, and
+              consent to the collection and processing of your personal data in accordance with this Policy. If you do not
               agree with any provision of this Policy, you must discontinue use of the Platform immediately.
             </p>
           </section>
@@ -54,10 +54,10 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <UserCheck className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">1. Data Controller</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-2">
-                For the purposes of the NDPA 2023 and NDPR 2019, Naitrust Digital Solutions Limited is the data controller 
+                For the purposes of the NDPA 2023 and NDPR 2019, Naitrust Digital Solutions Limited is the data controller
                 responsible for the processing of your personal data. Our Data Protection Officer can be contacted at:
               </p>
               <div className="p-4 rounded-lg space-y-1 border-2 mt-2">
@@ -73,7 +73,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Database className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">2. Categories of Personal Data Collected</h2>
             </div>
-            
+
             <div className="ml-8 space-y-4">
               <div>
                 <h3 className="text-lg mb-2">2.1 Identity and Registration Data</h3>
@@ -91,31 +91,31 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               </div>
 
               <div>
-                <h3 className="text-lg mb-2">2.2 Billing and Subscription Data</h3>
-                <p className="text-muted-foreground mb-2">For verification fee and subscription billing, we collect or process:</p>
+                <h3 className="text-lg mb-2">2.2 Payment and Billing Data</h3>
+                <p className="text-muted-foreground mb-2">For account verification and protected-payment services, we collect or process:</p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li>Verification fee payment records and subscription billing history</li>
+                  <li>Verification, funding, release, refund and service-fee records</li>
                   <li>Payment method metadata (card type, issuing bank: note: full card numbers are never stored by Naitrust)</li>
-                  <li>Billing dates, amounts, and subscription status</li>
+                  <li>Transaction dates, amounts, references and payment status</li>
                 </ul>
                 <p className="text-muted-foreground mt-2 text-sm">
-                  Payment card details are processed exclusively by Paystack, our PCI-DSS Level 1 certified payment partner. 
-                  Naitrust does not store, transmit, or have access to full payment card numbers. Payments connected to property transactions are processed by the regulated financial partner identified for that transaction. If you enable auto-renewal, your card details are 
-                  securely stored and managed by Paystack for recurring charges: Naitrust only stores a tokenized reference 
+                  Payment card details are processed exclusively by Paystack, our PCI-DSS Level 1 certified payment partner.
+                  Naitrust does not store, transmit, or have access to full payment card numbers. Protected-payment funding and settlement are processed by the regulated financial partner identified for that transaction. If you enable a recurring service, your card details are
+                  securely stored and managed by Paystack for recurring charges: Naitrust only stores a tokenized reference
                   and never has access to your full card number, CVV, or PIN.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg mb-2">2.3 Property Transaction Data</h3>
-                <p className="text-muted-foreground mb-2">When property transaction features become available, we may process:</p>
+                <h3 className="text-lg mb-2">2.3 Protected Transaction Data</h3>
+                <p className="text-muted-foreground mb-2">When you create, accept or participate in a Protected Deal, we may process:</p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li>Property descriptions, locations, transaction purposes, amounts, and timelines</li>
+                  <li>Transaction descriptions, purposes, amounts, milestones, deadlines and release conditions</li>
                   <li>Participant identities, contact details, claimed roles, and transaction permissions</li>
                   <li>Agreements, offers, receipts, payment status, milestones, messages, and confirmations</li>
-                  <li>Property documents, inspection evidence, photographs, issue reports, and supporting files submitted by participants</li>
+                  <li>Invoices, contracts, delivery or completion evidence, photographs, issue reports and supporting files submitted by participants</li>
                 </ul>
-                <p className="mt-2 text-sm text-muted-foreground">Naitrust does not independently certify property ownership, title validity, authority to sell, or the legal effect of documents merely because they are uploaded to a transaction record.</p>
+                <p className="mt-2 text-sm text-muted-foreground">Naitrust does not independently certify ownership, performance, authority, authenticity or the legal effect of documents merely because they are uploaded to a transaction record.</p>
               </div>
 
               <div>
@@ -133,8 +133,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">2.4 Communications Data</h3>
                 <p className="text-muted-foreground">
-                  Messages exchanged between users through the Platform's in-app messaging system, customer support 
-                  correspondence, feedback submissions, and fraud reports. Communications data is stored to facilitate 
+                  Messages exchanged between users through the Platform's in-app messaging system, customer support
+                  correspondence, feedback submissions, and fraud reports. Communications data is stored to facilitate
                   dispute resolution, fraud investigation, and service improvement.
                 </p>
               </div>
@@ -157,8 +157,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">2.6 Biometric and Camera Data</h3>
                 <p className="text-muted-foreground mb-2">
-                  During individual or business verification, your device camera may be accessed to capture a live selfie, perform a liveness check, compare your face with an identity record, or capture a photo of you 
-                  holding your government-issued identification document. Images, facial templates, liveness signals, and match results may constitute biometric and sensitive personal data, 
+                  During individual or business verification, your device camera may be accessed to capture a live selfie, perform a liveness check, compare your face with an identity record, or capture a photo of you
+                  holding your government-issued identification document. Images, facial templates, liveness signals, and match results may constitute biometric and sensitive personal data,
                   classified as sensitive personal data under Section 30 of the NDPA 2023.
                 </p>
                 <p className="text-muted-foreground">
@@ -188,10 +188,10 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Scale className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">3. Legal Basis and Purpose of Processing</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-4">
-                In accordance with Section 25 of the NDPA 2023 and Article 2.2 of the NDPR 2019, we process your 
+                In accordance with Section 25 of the NDPA 2023 and Article 2.2 of the NDPR 2019, we process your
                 personal data on the following lawful bases:
               </p>
               <ul className="list-disc ml-6 text-muted-foreground space-y-2">
@@ -200,7 +200,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Legal Obligation:</strong> Processing is required to comply with Nigerian law, including AML/CFT regulations, tax reporting obligations, and CBN directives</li>
                 <li><strong>Legitimate Interest:</strong> Processing is necessary for our legitimate interests in fraud prevention, platform security, service improvement, and business analytics, provided such interests do not override your fundamental rights and freedoms</li>
               </ul>
-              
+
               <h3 className="text-lg mt-4 mb-2">Specific purposes include:</h3>
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
                   <li>Verifying individuals and business representatives through identity, facial-match, and liveness checks</li>
@@ -225,17 +225,17 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <div className="p-4 rounded-lg border-2">
                   <h4 className="font-semibold mb-1">Instant Verification</h4>
                   <p className="text-muted-foreground text-sm">
-                    Automated CAC registration verification, NIN or International Passport verification via the QoreID API, 
-                    identity matching against CAC-registered affiliates, and business email OTP verification. This path is 
+                    Automated CAC registration verification, NIN or International Passport verification via the QoreID API,
+                    identity matching against CAC-registered affiliates, and business email OTP verification. This path is
                     fully automated with no human review of your documents.
                   </p>
                 </div>
                 <div className="p-4 rounded-lg border-2">
                   <h4 className="font-semibold mb-1">Manual Verification</h4>
                   <p className="text-muted-foreground text-sm">
-                    You upload a live selfie (captured via device camera), a selfie holding your ID (captured via device camera), 
-                    your CAC certificate, a personal identification document, and optional supporting documents. These materials 
-                    are reviewed by authorised Naitrust administrative staff. Manual verification is typically completed within 
+                    You upload a live selfie (captured via device camera), a selfie holding your ID (captured via device camera),
+                    your CAC certificate, a personal identification document, and optional supporting documents. These materials
+                    are reviewed by authorised Naitrust administrative staff. Manual verification is typically completed within
                     1–3 business days.
                   </p>
                 </div>
@@ -249,14 +249,14 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Globe className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">4. Disclosure of Personal Data</h2>
             </div>
-            
+
             <div className="ml-8 space-y-4">
               <div>
                 <h3 className="text-lg mb-2">4.1 Publicly Visible Information</h3>
                 <p className="text-muted-foreground">
-                  Business profiles: including business name, category, description, location, verification status, 
-                  reviews, and ratings: are publicly visible on the Platform and through shareable profile links. 
-                  Customer names may be visible on reviews they post. No sensitive personal data (financial 
+                  Business profiles: including business name, category, description, location, verification status,
+                  reviews, and ratings: are publicly visible on the Platform and through shareable profile links.
+                  Customer names may be visible on reviews they post. No sensitive personal data (financial
                   records, identification documents, or TIN) is ever publicly displayed.
                 </p>
               </div>
@@ -264,11 +264,11 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">4.2 Authorised Third-Party Service Providers</h3>
                 <p className="text-muted-foreground mb-2">
-                  We share personal data with the following categories of processors, all of whom are contractually 
+                  We share personal data with the following categories of processors, all of whom are contractually
                   bound to process data only on our instructions and in compliance with applicable data protection law:
                 </p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for subscriptions and, when launched, property-transaction funding, settlement, release, refund, and status updates</li>
+                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for account services and protected-payment funding, settlement, release, refund and status updates</li>
                   <li><strong>Verification Providers:</strong> QoreID for CAC, TIN, and personal ID validation against government databases</li>
                   <li><strong>Cloud Infrastructure:</strong> Hosting and data storage providers with ISO 27001 or equivalent certification</li>
                   <li><strong>Communication Services:</strong> Email and SMS service providers for transactional notifications</li>
@@ -280,9 +280,9 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">4.3 Legal and Regulatory Disclosure</h3>
                 <p className="text-muted-foreground">
-                  We may disclose personal data where required by Nigerian law, regulation, court order, or governmental 
-                  directive. This includes cooperation with the Nigeria Police Force, Economic and Financial Crimes Commission 
-                  (EFCC), Independent Corrupt Practices Commission (ICPC), Central Bank of Nigeria, NITDA, or any other 
+                  We may disclose personal data where required by Nigerian law, regulation, court order, or governmental
+                  directive. This includes cooperation with the Nigeria Police Force, Economic and Financial Crimes Commission
+                  (EFCC), Independent Corrupt Practices Commission (ICPC), Central Bank of Nigeria, NITDA, or any other
                   competent authority in the investigation of fraud, money laundering, or cybercrime.
                 </p>
               </div>
@@ -290,8 +290,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">4.4 Business Transfers</h3>
                 <p className="text-muted-foreground">
-                  In the event of a merger, acquisition, reorganisation, or sale of all or substantially all of Naitrust's 
-                  assets, your personal data may be transferred to the successor entity. You will be notified of any such 
+                  In the event of a merger, acquisition, reorganisation, or sale of all or substantially all of Naitrust's
+                  assets, your personal data may be transferred to the successor entity. You will be notified of any such
                   transfer and your continued rights under this Policy.
                 </p>
               </div>
@@ -299,9 +299,9 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">4.5 International Data Transfers</h3>
                 <p className="text-muted-foreground">
-                  Where personal data is transferred to processors located outside Nigeria, we ensure that adequate 
-                  safeguards are in place as required by the NDPA 2023 and NDPR 2019, including execution of standard 
-                  contractual clauses and verification that the recipient jurisdiction provides an adequate level of 
+                  Where personal data is transferred to processors located outside Nigeria, we ensure that adequate
+                  safeguards are in place as required by the NDPA 2023 and NDPR 2019, including execution of standard
+                  contractual clauses and verification that the recipient jurisdiction provides an adequate level of
                   data protection.
                 </p>
               </div>
@@ -314,10 +314,10 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Lock className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">5. Data Security Measures</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-2">
-                We implement appropriate technical and organisational measures to protect personal data against 
+                We implement appropriate technical and organisational measures to protect personal data against
                 unauthorised access, alteration, disclosure, or destruction, including:
               </p>
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
@@ -332,9 +332,9 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li>Incident response procedures and breach notification protocols</li>
               </ul>
               <p className="text-muted-foreground mt-4">
-                Notwithstanding the above, no system of electronic data transmission or storage is entirely secure. While 
-                we employ commercially reasonable measures to protect your data, we cannot guarantee absolute security. 
-                In the event of a data breach affecting your personal data, we shall notify you and the relevant regulatory 
+                Notwithstanding the above, no system of electronic data transmission or storage is entirely secure. While
+                we employ commercially reasonable measures to protect your data, we cannot guarantee absolute security.
+                In the event of a data breach affecting your personal data, we shall notify you and the relevant regulatory
                 authorities in accordance with the NDPA 2023.
               </p>
             </div>
@@ -346,7 +346,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Eye className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">6. Your Data Protection Rights</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-2">
                 Under the NDPA 2023 and NDPR 2019, you have the following rights with respect to your personal data:
@@ -361,8 +361,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Right to Restrict Processing:</strong> You may request restriction of processing in certain circumstances, such as where you contest the accuracy of data</li>
               </ul>
               <p className="text-muted-foreground mt-4">
-                To exercise any of these rights, contact our Data Protection Officer at <strong>dpo@naitrust.com</strong>. 
-                We shall respond to valid requests within thirty (30) calendar days. We may request additional information 
+                To exercise any of these rights, contact our Data Protection Officer at <strong>dpo@naitrust.com</strong>.
+                We shall respond to valid requests within thirty (30) calendar days. We may request additional information
                 to verify your identity before processing the request.
               </p>
 
@@ -376,8 +376,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Third-Party Data Sharing:</strong> Before instant verification via QoreID, you consent to sharing your identification data (NIN, International Passport, or CAC details) with QoreID for verification against government databases.</li>
               </ul>
               <p className="text-muted-foreground mt-2">
-                All consent is freely given, specific, informed, and unambiguous as required by the NDPA 2023. You may withdraw 
-                your consent at any time by contacting our Data Protection Officer, though withdrawal of consent may prevent the 
+                All consent is freely given, specific, informed, and unambiguous as required by the NDPA 2023. You may withdraw
+                your consent at any time by contacting our Data Protection Officer, though withdrawal of consent may prevent the
                 completion of verification and limit your access to certain Platform features.
               </p>
             </div>
@@ -389,7 +389,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <FileText className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">7. Data Retention</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-2">We retain personal data for the following periods:</p>
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
@@ -404,8 +404,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Verification documents (CAC certificates, ID documents):</strong> Retained for up to five (5) years from the date of verification for regulatory compliance purposes</li>
               </ul>
               <p className="text-muted-foreground mt-4">
-                Upon expiry of the applicable retention period, personal data shall be securely deleted or irreversibly 
-                anonymised. Where data is required for ongoing legal proceedings, regulatory investigations, or dispute 
+                Upon expiry of the applicable retention period, personal data shall be securely deleted or irreversibly
+                anonymised. Where data is required for ongoing legal proceedings, regulatory investigations, or dispute
                 resolution, retention may be extended for the duration of such proceedings.
               </p>
             </div>
@@ -417,12 +417,12 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <AlertCircle className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">8. Children and Minors</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground">
-                The Platform is not intended for use by individuals under the age of eighteen (18) years. We do not 
-                knowingly collect or process personal data from minors. If we become aware that we have collected personal 
-                data from a minor, we shall take immediate steps to delete such data. If you believe that a minor has 
+                The Platform is not intended for use by individuals under the age of eighteen (18) years. We do not
+                knowingly collect or process personal data from minors. If we become aware that we have collected personal
+                data from a minor, we shall take immediate steps to delete such data. If you believe that a minor has
                 provided personal data to us, please contact our Data Protection Officer at dpo@naitrust.com immediately.
               </p>
             </div>
@@ -434,7 +434,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Globe className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">9. Cookies and Tracking Technologies</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-2">
                 The Platform uses cookies and similar tracking technologies to enhance your experience. We use:
@@ -445,7 +445,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Analytics Cookies:</strong> Help us understand how users interact with the Platform to improve our services</li>
               </ul>
               <p className="text-muted-foreground mt-2">
-                You may manage your cookie preferences through the "Cookie Preferences" option in the Platform footer. 
+                You may manage your cookie preferences through the "Cookie Preferences" option in the Platform footer.
                 Disabling non-essential cookies may affect certain Platform features.
               </p>
             </div>
@@ -457,12 +457,12 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Shield className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">10. Third-Party Verification Services</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-4">
-                For business verification (including CAC, TIN, and personal ID validation), we engage QoreId, a licensed and 
-                NITDA-compliant third-party identity verification provider. Naitrust has executed a formal Data Processing 
-                Agreement (DPA) with QoreId, which governs the processing of personal data on our behalf in accordance 
+                For business verification (including CAC, TIN, and personal ID validation), we engage QoreId, a licensed and
+                NITDA-compliant third-party identity verification provider. Naitrust has executed a formal Data Processing
+                Agreement (DPA) with QoreId, which governs the processing of personal data on our behalf in accordance
                 with the NDPA 2023 and NDPR 2019.
               </p>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
@@ -495,13 +495,13 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <FileText className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">11. Amendments to This Policy</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground">
-                We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal 
-                requirements, or other factors. Material changes will be notified to you via email and/or prominent Platform 
-                notification at least fourteen (14) calendar days before taking effect. The "Last Updated" date at the top 
-                of this Policy indicates the most recent revision. Your continued use of the Platform following any amendment 
+                We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal
+                requirements, or other factors. Material changes will be notified to you via email and/or prominent Platform
+                notification at least fourteen (14) calendar days before taking effect. The "Last Updated" date at the top
+                of this Policy indicates the most recent revision. Your continued use of the Platform following any amendment
                 constitutes acceptance of the updated Policy.
               </p>
             </div>
@@ -513,11 +513,11 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <Scale className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">12. Governing Law, Complaints, and Dispute Resolution</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-4">
-                This Privacy Policy is governed by and construed in accordance with the laws of the Federal Republic of 
-                Nigeria, including the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection Regulation 
+                This Privacy Policy is governed by and construed in accordance with the laws of the Federal Republic of
+                Nigeria, including the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection Regulation
                 (NDPR) 2019, and the Cybercrimes (Prohibition, Prevention, etc.) Act 2015.
               </p>
               <p className="text-muted-foreground mb-4">
@@ -538,7 +538,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <UserCheck className="w-6 h-6 text-[#1E90FF]" />
               <h2 className="text-xl">13. Contact Us</h2>
             </div>
-            
+
             <div className="ml-8">
               <p className="text-muted-foreground mb-4">
                 For questions, concerns, or requests relating to this Privacy Policy or our data practices:

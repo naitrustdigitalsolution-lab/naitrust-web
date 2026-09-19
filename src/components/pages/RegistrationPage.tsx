@@ -777,10 +777,10 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
-        title={registrationType === 'business' ? 'Source Wholesale Products for Your Business' : 'Start Sourcing from China'}
+        title={registrationType === 'business' ? 'Protected Payments for Your Business' : 'Protect Important Payments'}
         description={registrationType === 'business'
-          ? 'Create a Naitrust business account, find a verified sourcing agent in China, compare suppliers and manage wholesale delivery to Nigeria.'
-          : 'Create an individual Naitrust account, find a verified sourcing agent in China and manage your wholesale order to Nigeria.'}
+          ? 'Create a Naitrust business account for controlled vendor, procurement, contractor and service payments.'
+          : 'Create an individual Naitrust account for purchases, services and deposits that need clear terms and controlled release.'}
         canonicalPath={registrationType === 'business' ? '/register-business' : '/register-customer'}
       />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
@@ -810,13 +810,13 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               </p>
               <h1 className="text-2xl font-bold leading-tight text-[#0b2b45] dark:text-white sm:text-3xl lg:text-4xl">
                 {registrationType === 'business'
-                  ? 'Source wholesale stock from China for your business.'
-                  : 'Buy wholesale from China without travelling.'}
+                  ? 'Control business payments from agreement to settlement.'
+                  : 'Pay with confidence when trust alone is not enough.'}
               </h1>
               <p className="mt-2 text-sm leading-6 text-[#496274] dark:text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                 {registrationType === 'business'
-                  ? 'Choose a verified sourcing agent, compare suppliers and manage inspection, shipping and delivery in one place.'
-                  : 'Work with a verified sourcing agent and review the supplier, quotation and inspection evidence before important decisions.'}
+                  ? 'Verify beneficiaries and keep protected funds, evidence, approvals and settlement records together.'
+                  : 'Agree the terms, verify the other party and approve release only when the conditions are met.'}
               </p>
             </div>
 
@@ -874,8 +874,8 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               </p>
               <p className="mt-2 text-xs leading-5 text-muted-foreground">
                 {registrationType === 'business'
-                  ? 'For registered companies, informal businesses, retailers, importers and wholesalers buying from China.'
-                  : 'For individuals buying wholesale products from China with help from a verified sourcing agent.'}
+                  ? 'For registered companies, merchants, teams and growing businesses managing important payments.'
+                  : 'For individuals protecting purchases, service fees, deposits and delivery-based payments.'}
               </p>
             </div>
 

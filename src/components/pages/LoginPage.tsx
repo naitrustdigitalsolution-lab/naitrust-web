@@ -193,8 +193,8 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
     }
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleForgotPassword = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setError('');
 
     if (!resetEmail) {
@@ -351,16 +351,6 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                 {t('signUpFree')}
               </button>
             </p>
-            <p>
-              {t('partnerPrompt')}{' '}
-              <button
-                type="button"
-                onClick={() => routerNavigate('/partners/login')}
-                className="font-semibold text-primary hover:underline"
-              >
-                {t('partnerSignIn')}
-              </button>
-            </p>
           </div>
         </aside>
 
@@ -429,7 +419,10 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
                     onChange={setOtp}
                     onSubmit={handleVerifyOTP}
                     onBack={() => setView('forgot-password')}
-                    onResend={() => {}}
+                    onResend={() => {
+                      if (isSendingOtp) return;
+                      void handleForgotPassword();
+                    }}
                   />
                 </motion.div>
               )}

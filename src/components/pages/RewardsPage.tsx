@@ -16,7 +16,7 @@ export function RewardsPage() {
               <span className="hidden h-12 w-12 items-center justify-center rounded-2xl bg-white/10 sm:flex"><Gift size={22} /></span>
               <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-sky-300">Naitrust rewards</p>
               <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Earn while building reliable trade history</h1>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-white/65">Eligible supplier checks, completed wholesale orders, useful evidence, and successful deliveries can earn points.</p>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-white/65">Reward availability and eligibility will be announced as Naitrust launches.</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.07] px-5 py-4 sm:text-right">
               <p className="text-xs font-semibold uppercase tracking-wider text-white/55">Available</p>
@@ -38,7 +38,7 @@ export function RewardsPage() {
             <div className="mt-4 space-y-4 text-sm">
               {[
                 ['Verified sourcing', 'Complete a supplier or product verification with useful evidence.'],
-                ['Reliable orders', 'Complete eligible wholesale orders without an unresolved issue.'],
+                ['Reliable orders', 'Complete eligible Protected Deals without an unresolved issue.'],
                 ['Successful delivery', 'Finish shipping and buyer review for the connected order.'],
               ].map(([title, detail]) => <div key={title} className="flex gap-3"><Gift className="mt-0.5 shrink-0 text-primary" size={17} /><p><strong className="block">{title}</strong><span className="text-xs leading-5 text-muted-foreground">{detail}</span></p></div>)}
             </div>

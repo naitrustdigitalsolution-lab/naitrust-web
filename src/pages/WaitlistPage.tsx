@@ -31,7 +31,7 @@ export default function WaitlistPage() {
   const [form, setForm] = useState({
     fullName: '', businessName: '', email: searchParams.get('email') ?? '', phone: '',
     userTypes: [] as WaitlistUserType[],
-    range: '' as TransactionRange | '', note: '', suggestion: '', consent: true,
+    range: '' as TransactionRange | '', note: '', suggestion: '', consent: false,
   });
 
   const selectedRole = WAITLIST_ROLE_OPTIONS.find((option) => option.value === form.userTypes[0]);
@@ -78,7 +78,7 @@ export default function WaitlistPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
-      <SEOHead title="Join the Naitrust China Sourcing Waiting List" description="Join early access to source wholesale products from China with vetted sourcing agents, clear landed-cost quotes, inspection evidence and delivery tracking to Nigeria." canonicalPath="/waitlist" />
+      <SEOHead title="Join the Naitrust Protected Payments Waiting List" description="Join early access to secure payments for buyers and sellers in Nigeria. Agree terms, keep evidence together and control payment release." canonicalPath="/waitlist" />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="pointer-events-none absolute inset-0 mx-auto max-w-[130rem] px-4 sm:px-6 lg:px-8"><img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-4 top-1/2 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-80 sm:left-6 lg:left-8" /></div>
 
@@ -88,12 +88,12 @@ export default function WaitlistPage() {
           <button type="button" onClick={() => navigate('/')} className="mb-12 inline-flex" aria-label="Naitrust home"><NaitrustLogo size="postMd" textColor="text-primary" /></button>
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Naitrust China sourcing · early access</p>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Protected payments · early access</p>
           </div>
-          <h1 className="mt-7 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white lg:text-4xl">Buy wholesale from China. Without travelling.</h1>
-          <p className="mt-4 max-w-md text-base leading-7 text-[#496274] dark:text-slate-300">Join early access to find products, work with a vetted sourcing agent, approve a clear landed-cost quote, and follow your order to Nigeria.</p>
+          <h1 className="mt-7 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white lg:text-4xl">Buy with confidence. Sell with clear payment terms.</h1>
+          <p className="mt-4 max-w-md text-base leading-7 text-[#496274] dark:text-slate-300">We’re building a safer way for buyers and sellers to transact: agree the terms, confirm funding through approved payment partners, and release payment under the agreed conditions.</p>
           <div className="mt-8 max-w-md space-y-3 text-sm text-[#496274] dark:text-slate-300">
-            {['Share what you need in English', 'Follow supplier checks and inspection evidence', 'Know the landed cost before you approve the order'].map((item) => (
+            {['For buyers: clear terms and evidence before payment release', 'For sellers: confirmed funding and a record of delivery or completed work', 'For both sides: one Deal Room for messages, approvals and issues'].map((item) => (
               <p key={item} className="flex items-start gap-2.5 rounded-xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-card"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</p>
             ))}
           </div>
@@ -116,11 +116,11 @@ export default function WaitlistPage() {
               <div>
                 <div className="mb-6 grid grid-cols-2 gap-2" aria-label={`Step ${step} of 2`}>
                   <div className={`rounded-xl border p-3 ${step === 1 ? 'border-primary bg-primary/[.06]' : 'border-emerald-500/25 bg-emerald-500/[.05]'}`}><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Step 1</p><p className="mt-1 text-xs font-semibold">Your details {step === 2 && <Check size={12} className="ml-1 inline text-emerald-600"/>}</p></div>
-                  <div className={`rounded-xl border p-3 ${step === 2 ? 'border-primary bg-primary/[.06]' : 'bg-muted/20'}`}><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Step 2</p><p className="mt-1 text-xs font-semibold">Your sourcing needs</p></div>
+                  <div className={`rounded-xl border p-3 ${step === 2 ? 'border-primary bg-primary/[.06]' : 'bg-muted/20'}`}><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Step 2</p><p className="mt-1 text-xs font-semibold">Your payment needs</p></div>
                 </div>
                 {step === 1 && <p className="text-sm font-bold uppercase tracking-[0.12em] text-primary">About you</p>}
-                <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{step === 1 ? 'Join the waiting list' : 'Tell us about your China order'}</h2>
-                <p className="mt-2 text-base leading-6 text-muted-foreground">{step === 1 ? 'Tell us where to send your early-access update.' : 'Share what you want to source and where you need support.'}</p>
+                <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{step === 1 ? 'Join the waiting list' : 'What payments would you like to protect?'}</h2>
+                <p className="mt-2 text-base leading-6 text-muted-foreground">{step === 1 ? 'Secure payments for buyers and sellers, with clear terms, shared evidence and controlled release. Join early access for launch updates.' : 'Tell us how you buy, sell or provide services.'}</p>
               </div>
 
               {step === 1 ? (
@@ -134,8 +134,8 @@ export default function WaitlistPage() {
                 <>
                   <label className="grid gap-2 text-sm font-semibold"><span>Who is joining the waiting list?</span><select required value={form.userTypes[0] ?? ''} onChange={(e) => setForm({ ...form, userTypes: e.target.value ? [e.target.value as WaitlistUserType] : [] })} className="h-12 rounded-lg border border-input-border bg-input-background px-4 text-base font-normal outline-none focus:border-primary"><option value="">Select one</option>{WAITLIST_ROLE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
 
-                  <label className="grid gap-2 text-sm font-medium"><span>Typical order value <span className="font-normal text-muted-foreground">(optional)</span></span><select value={form.range} onChange={(e) => setForm({ ...form, range: e.target.value as TransactionRange })} className="h-12 rounded-lg border border-input-border bg-input-background px-4 text-base outline-none focus:border-primary"><option value="">Select one</option>{RANGES.map((range) => <option key={range.value} value={range.value}>{range.label}</option>)}</select></label>
-                  <label className="grid gap-2 text-sm font-semibold"><span>What do you want to source from China? <span className="font-normal text-muted-foreground">(optional)</span></span><Textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="min-h-24 text-base font-normal" placeholder="Example: 500 branded food containers for my retail business" /></label>
+                  <label className="grid gap-2 text-sm font-medium"><span>Typical payment value <span className="font-normal text-muted-foreground">(optional)</span></span><select value={form.range} onChange={(e) => setForm({ ...form, range: e.target.value as TransactionRange })} className="h-12 rounded-lg border border-input-border bg-input-background px-4 text-base outline-none focus:border-primary"><option value="">Select one</option>{RANGES.map((range) => <option key={range.value} value={range.value}>{range.label}</option>)}</select></label>
+                  <label className="grid gap-2 text-sm font-semibold"><span>What would you use a Protected Deal for? <span className="font-normal text-muted-foreground">(optional)</span></span><Textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="min-h-24 text-base font-normal" placeholder="Example: buying a phone, collecting a customer payment, or paying for a repair" /></label>
                   <label className="grid gap-2 text-sm font-semibold"><span>What would you suggest for Naitrust? <span className="font-normal text-muted-foreground">(optional)</span></span><Textarea value={form.suggestion} onChange={(e) => setForm({ ...form, suggestion: e.target.value })} className="min-h-24 text-base font-normal" placeholder="Share a feature, service or improvement that would help you" /></label>
                   <label className="flex items-start gap-3 rounded-xl border bg-muted/30 p-3.5 text-sm font-normal leading-5 text-muted-foreground"><input type="checkbox" checked={form.consent} onChange={(e) => setForm({ ...form, consent: e.target.checked })} className="mt-0.5 h-4 w-4 shrink-0 accent-primary" />Naitrust may contact me about early access and relevant launch updates.</label>
                 </>

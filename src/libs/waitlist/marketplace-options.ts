@@ -16,23 +16,21 @@ export interface WaitlistInterestOption {
 }
 
 export const WAITLIST_ROLE_OPTIONS: WaitlistRoleOption[] = [
-  { value: 'business_buyer', label: 'Buyer or importer', detail: 'I want to source products, stock, equipment or packaging from China.', audiences: ['buyer'] },
-  { value: 'sourcing_inspection_agent', label: 'China sourcing agent', detail: 'I operate in China and provide sourcing, supplier visits or inspections.', audiences: ['agent'] },
-  { value: 'china_supplier', label: 'China supplier or manufacturer', detail: 'I want to receive clear requirements and quote Nigerian buyers.', audiences: ['supplier'] },
-  { value: 'logistics_provider', label: 'China–Nigeria logistics partner', detail: 'I provide pickup, consolidation, freight, customs or delivery services.', audiences: ['logistics'] },
-  { value: 'other', label: 'Something else', detail: 'My role does not fit the options above.', audiences: ['buyer', 'supplier', 'agent', 'logistics'] },
+  { value: 'individual_customer', label: 'Individual buyer', detail: 'I want clearer terms and payment protection for purchases or services.', audiences: ['buyer'] },
+  { value: 'marketplace_social_seller', label: 'Seller or merchant', detail: 'I sell goods and want confirmed funding and clear release conditions.', audiences: ['supplier'] },
+  { value: 'business_buyer', label: 'Business', detail: 'I manage vendor payments, customer collections or deposits.', audiences: ['buyer', 'supplier'] },
+  { value: 'contractor_service_provider', label: 'Freelancer or service provider', detail: 'I want agreed deliverables and a documented payment process.', audiences: ['supplier'] },
+  { value: 'buyer_and_seller', label: 'Both buyer and seller', detail: 'I want to protect payments on both sides of a deal.', audiences: ['buyer', 'supplier'] },
+  { value: 'partner', label: 'Payment or technology partner', detail: 'I want to discuss supporting protected payment infrastructure.', audiences: ['agent', 'logistics'] },
+  { value: 'other', label: 'Something else', detail: 'Tell us how you would use Naitrust.', audiences: ['buyer', 'supplier', 'agent', 'logistics'] },
 ];
 
 export const WAITLIST_INTEREST_OPTIONS: WaitlistInterestOption[] = [
-  { value: 'china-products', label: 'Find wholesale products and suppliers in China', audiences: ['buyer'] },
-  { value: 'custom-production', label: 'Custom production, packaging or branding', audiences: ['buyer'] },
-  { value: 'landed-quotes', label: 'A confirmed landed-cost quote', audiences: ['buyer'] },
-  { value: 'sourcing-agents', label: 'Sourcing or inspection help in China', audiences: ['buyer'] },
-  { value: 'consolidated-shipping', label: 'Consolidation and delivery to Nigeria', audiences: ['buyer'] },
-  { value: 'supplier-enquiries', label: 'Receive product enquiries and submit quotes', audiences: ['supplier'] },
-  { value: 'supplier-showcase', label: 'Present products and manufacturing capabilities', audiences: ['supplier'] },
-  { value: 'agent-assignments', label: 'Receive sourcing, visit or inspection assignments', audiences: ['agent'] },
-  { value: 'shipping-quotes', label: 'Receive China-to-Nigeria shipment requests', audiences: ['logistics'] },
+  { value: 'protected-purchases', label: 'Protect payments for purchases and deposits', audiences: ['buyer'] },
+  { value: 'customer-payments', label: 'Receive customer payments with clear release terms', audiences: ['supplier'] },
+  { value: 'service-payments', label: 'Agree and document payments for services', audiences: ['all'] },
+  { value: 'deal-records', label: 'Keep agreements, evidence and approvals together', audiences: ['all'] },
+  { value: 'payment-partnership', label: 'Explore payment or technology partnerships', audiences: ['agent', 'logistics'] },
 ];
 
 export function interestsForWaitlistRoles(userTypes: WaitlistUserType[]): WaitlistInterestOption[] {

@@ -16,7 +16,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
 
   const categories = [
     { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
-    { id: 'payments', name: 'Payments', icon: CreditCard, description: 'Deposits, quote payments, supplier releases, service fees, refunds and withdrawals' },
+    { id: 'payments', name: 'Payments', icon: CreditCard, description: 'Protected funding, payment release, fees, refunds and payment status' },
     { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
     { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
@@ -32,7 +32,7 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
     : categories;
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-muted/30 via-muted/10 to-background relative py-12">
+    <div className="nt-information min-h-screen bg-linear-to-b from-muted/30 via-muted/10 to-background relative py-12">
       <SEOHead
         title="Help Center"
         description="Answers about Protected Deals, buyer and seller payments, verification, release conditions and early access to Naitrust."

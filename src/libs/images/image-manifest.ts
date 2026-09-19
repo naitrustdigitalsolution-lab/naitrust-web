@@ -27,7 +27,7 @@ function image(path: string, alt: string, aspect: ImageAspect = '4/3', focalPoin
 }
 
 export const pageImages = {
-  homeHero: image('home/provider-ai-hero.png', 'Nigerian business owners using Naitrust protected payments', '16/9', 'right', true),
+  homeHero: image('home/naitrust-studio-hero-v1.webp', 'A Nigerian customer reviewing her phone in a calm blue studio', '16/9', 'right', true),
   homeImportInspection: image('pages/protected-payment-success-v1.png', 'A protected payment confirmed and released successfully'),
   aboutHero: image('pages/about-protected-payment-v1.png', 'Two Nigerian business participants reviewing a protected payment agreement'),
   customerHero: image('pages/individual-protected-payment-hero-v1.png', 'A Nigerian woman confidently approving a protected payment', '4/3', 'center', true),
@@ -35,7 +35,7 @@ export const pageImages = {
   businessHero: image('pages/business-protected-payment-hero-v1.png', 'A Nigerian business team reviewing a protected vendor payment', '4/3', 'center', true),
   businessFulfilment: image('pages/protected-payment-success-v1.png', 'Protected business funds released after the agreed conditions were completed'),
   marketHero: image('pages/protected-payment-success-v1.png', 'A successful transaction protected by Naitrust', '16/9', 'center', true),
-  login: image('pages/protected-payment-success-v1.png', 'A secure Naitrust payment completing successfully'),
+  login: image('home/naitrust-studio-hero-v1.webp', 'A customer reviewing her phone with confidence'),
   registerCustomer: image('pages/agree-protect-approve-v1.png', 'A clear protected-payment flow from agreement to approval'),
   registerBusiness: image('pages/protected-payment-success-v1.png', 'A protected business payment completing successfully'),
 } as const;

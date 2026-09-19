@@ -22,7 +22,7 @@ function ComplianceSection({ icon, title, children }: { icon: ReactNode; title: 
 
 export function CompliancePage({ onNavigate }: CompliancePageProps) {
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="nt-information min-h-screen bg-background py-12">
       <SEOHead
         title="Compliance and Trust"
         description="How Naitrust approaches privacy, participant verification, Deal Room records, regulated payment partners, security, and user protection in Nigeria."

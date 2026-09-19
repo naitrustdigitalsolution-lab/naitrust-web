@@ -775,7 +775,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
   const currentStepMeta = steps[currentStep - 1];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+    <div className="nt-auth relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
         title={registrationType === 'business' ? 'Protected Payments for Your Business' : 'Protect Important Payments'}
         description={registrationType === 'business'

@@ -291,7 +291,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+    <div className="nt-auth relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead
         title={t('signInTitle')}
         description={t('seoDescription')}

@@ -26,7 +26,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+    <div className="nt-auth relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
        <div className="pointer-events-none absolute inset-0 mx-auto max-w-520 px-4 sm:px-6 lg:px-8 ">
           <img

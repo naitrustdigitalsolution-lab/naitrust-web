@@ -77,7 +77,7 @@ export default function WaitlistPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+    <div className="nt-auth relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
       <SEOHead title="Join the Naitrust Protected Payments Waiting List" description="Join early access to secure payments for buyers and sellers in Nigeria. Agree terms, keep evidence together and control payment release." canonicalPath="/waitlist" />
       <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
       <div className="pointer-events-none absolute inset-0 mx-auto max-w-[130rem] px-4 sm:px-6 lg:px-8"><img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-4 top-1/2 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-80 sm:left-6 lg:left-8" /></div>

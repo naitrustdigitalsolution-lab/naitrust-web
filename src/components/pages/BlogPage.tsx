@@ -19,7 +19,7 @@ export function BlogPage() {
   );
   const featured = blogArticles[0];
   return (
-    <div className="min-h-screen bg-background">
+    <div className="nt-information min-h-screen bg-background">
       <SEOHead
         title="Naitrust Blog"
         description="Guides to clear agreements, buyer and seller protection, payment evidence and Protected Deals."
@@ -47,7 +47,7 @@ export function BlogPage() {
           <img
             src={featured.image}
             alt={featured.imageAlt}
-            className="h-full min-h-72 w-full object-cover"
+            className="h-full min-h-72 w-full object-cover object-top"
           />
           <div className="flex flex-col justify-center p-7 sm:p-10">
             <Badge variant="outline" className="w-fit">
@@ -98,7 +98,7 @@ export function BlogPage() {
               <img
                 src={article.image}
                 alt={article.imageAlt}
-                className="h-52 w-full object-cover"
+                className="h-52 w-full object-cover object-top"
               />
               <div className="p-6">
                 <div className="flex items-center justify-between gap-3 text-xs">

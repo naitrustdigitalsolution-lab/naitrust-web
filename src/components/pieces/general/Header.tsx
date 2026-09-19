@@ -1,3 +1,4 @@
+import { PublicHeader } from './PublicHeader';
 import { useEffect, useState } from 'react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
 import { useAuth } from '../../../libs/auth-context';
@@ -89,6 +90,8 @@ export function Header({ onNavigate, currentPage, showNavItems = true }: HeaderP
       onNavigate('home');
     }
   };
+
+  if (!isAuthenticated && showNavItems) return <PublicHeader onNavigate={onNavigate} currentPage={currentPage} />;
 
   return (
     <>

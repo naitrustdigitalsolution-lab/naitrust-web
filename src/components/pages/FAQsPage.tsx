@@ -47,7 +47,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
   const selectedCategoryName = categories.find((category) => category.id === selectedCategory)?.name;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="nt-information min-h-screen bg-background">
       <SEOHead
         title="Frequently Asked Questions"
         description="Answers about Protected Deals, buyer and seller payments, verification, release conditions and early access to Naitrust."
@@ -63,7 +63,7 @@ export const FAQsPage: React.FC<FAQsPageProps> = ({ onNavigate }) => {
             </span>
             <h1 className="mt-5 text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">How can we help?</h1>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Clear answers about suppliers, quotes, orders, logistics, agents, payments, and security.
+              Clear answers about Protected Deals, buyers, sellers, payments and security.
             </p>
           </div>
           <div className="relative mx-auto mt-7 max-w-2xl">

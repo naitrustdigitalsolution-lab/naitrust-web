@@ -17,7 +17,7 @@ const sections = [
 
 export function TermsOfServicePage({ onNavigate }: TermsOfServicePageProps) {
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="nt-information min-h-screen bg-background py-12">
       <SEOHead title="Terms of Service" description="Terms governing the Naitrust website and protected-payment early-access list." canonicalPath="/terms" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header className="rounded-3xl bg-[#031335] px-6 py-12 text-center text-white">

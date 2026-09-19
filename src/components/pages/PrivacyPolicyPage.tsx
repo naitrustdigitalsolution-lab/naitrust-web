@@ -10,7 +10,7 @@ interface PrivacyPolicyPageProps {
 
 export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate, userType, userId }) => {
   return (
-    <div className="min-h-screen bg-background relative py-12">
+    <div className="nt-information min-h-screen bg-background relative py-12">
       <SEOHead
         title="Privacy Policy"
         description="Learn how Naitrust handles identity, business, beneficiary and protected-payment data under Nigerian data-protection requirements."

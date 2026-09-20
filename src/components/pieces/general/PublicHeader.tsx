@@ -24,7 +24,7 @@ export function PublicHeader({ onNavigate, currentPage }: { onNavigate: (page: s
   const inverse = home && !scrolled && !open;
   return <header className={`nt-header ${home ? 'nt-header-home' : ''} ${inverse ? 'nt-header-inverse' : ''}`}>
     <div className="nt-container nt-header-inner">
-      <button onClick={() => navigate('home')} aria-label="Naitrust home"><NaitrustLogo size="md" textColor={inverse ? 'text-white' : 'text-[#142441]'} /></button>
+      <button onClick={() => navigate('home')} aria-label="Naitrust home"><NaitrustLogo size="md" solidN={home} textColor={inverse ? 'text-white' : 'text-[#142441]'} /></button>
       <nav className="nt-desktop-nav" aria-label="Main navigation">
         {links.map(([label, page]) => <button key={page} onClick={() => navigate(page)} aria-current={currentPage === page ? 'page' : undefined}>{label}</button>)}
       </nav>

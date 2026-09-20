@@ -1,12 +1,14 @@
 import icon from '../../assets/naitrust-logo/naitrust-icon-3.png';
+import solidNIcon from '../../assets/naitrust-logo/naitrust-icon-solid-n.png';
 interface NaitrustLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'postMd' | 'postMd2';
   showText?: boolean;
   className?: string;
   textColor?: string;
+  solidN?: boolean;
 }
 
-export function NaitrustLogo({ size = 'md', showText = true, className = '', textColor = 'text-primary' }: NaitrustLogoProps) {
+export function NaitrustLogo({ size = 'md', showText = true, className = '', textColor = 'text-primary', solidN = false }: NaitrustLogoProps) {
   const sizeClasses = {
     sm: { container: 'w-8 h-8', text: 'text-lg' },
     md: { container: 'w-10 h-10', text: 'text-xl' },
@@ -23,7 +25,7 @@ export function NaitrustLogo({ size = 'md', showText = true, className = '', tex
     <div className={`flex items-center gap-2 ${className}`}>
       {/* Logo Icon - Shield with Nigerian colors and security elements */}
       <div className={`${currentSize.container} relative shrink-0`}>
-        <img src={icon} alt="Naitrust logo" className="h-full w-full object-contain" />
+        <img src={solidN ? solidNIcon : icon} alt="Naitrust logo" className="h-full w-full object-contain" />
       </div>
       
       {showText && (

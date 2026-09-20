@@ -30,7 +30,7 @@ export const pageImages = {
   homeHero: image('home/naitrust-studio-hero-v1.webp', 'A Nigerian customer reviewing her phone in a calm blue studio', '16/9', 'right', true),
   homeImportInspection: image('pages/protected-payment-success-v1.png', 'A protected payment confirmed and released successfully'),
   aboutHero: image('pages/about-protected-payment-v1.png', 'Two Nigerian business participants reviewing a protected payment agreement'),
-  customerHero: image('pages/individual-protected-payment-hero-v1.png', 'A Nigerian woman confidently approving a protected payment', '4/3', 'center', true),
+  customerHero: image('pages/individual-protected-payment-hero-v2.webp', 'A Nigerian woman looking at her phone at home', '4/3', 'center', true),
   customerDelivery: image('pages/protected-payment-success-v1.png', 'Protected funds released after the agreed conditions were completed'),
   businessHero: image('pages/business-protected-payment-hero-v1.png', 'A Nigerian business team reviewing a protected vendor payment', '4/3', 'center', true),
   businessFulfilment: image('pages/protected-payment-success-v1.png', 'Protected business funds released after the agreed conditions were completed'),

@@ -1,4 +1,6 @@
-import { ArrowDown, ArrowRight, Check, CheckCheck, ChevronDown, FileText, Fingerprint, LockKeyhole, ShieldCheck } from 'lucide-react';
+import koraLogo from '../../assets/partners/kora.svg';
+import qoreidLogo from '../../assets/partners/qoreid.svg';
+import { ArrowDown, ArrowRight, Check, CheckCheck, ChevronDown, FileText, Fingerprint, LockKeyhole, Scale, ShieldCheck } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
 import { pageImages } from '../../libs/images/image-manifest';
 import studioHero from '../../assets/home/naitrust-studio-hero-v1.webp';
@@ -15,13 +17,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <div className="nt-hero-shade" />
       <div className="nt-container nt-hero-content">
         <p className="nt-eyebrow nt-hero-eyebrow"><span /> A little more certainty. A lot more confidence.</p>
-        <h1>Good deals.<br />Great peace<br />of mind.</h1>
+        <h1>Clear terms.<br />Safer payments<br />for both.</h1>
         <p className="nt-hero-description">Buying something new. Selling what you love.<br className="nt-desktop-break" /> We’re building a safer way to pay, with clear terms<br className="nt-desktop-break" /> and protection built around both of you.</p>
         <button className="nt-button" onClick={join}>Join the waiting list <ArrowRight size={18} /></button>
         <p className="nt-hero-note">Built for buyers and sellers in Nigeria. Coming soon.</p>
       </div>
       <div className="nt-hero-caption"><span className="nt-caption-icon"><ShieldCheck size={22} /></span><div><strong>Confidence, on both sides.</strong><span>One agreement. One shared Deal Room.</span></div></div>
       <button className="nt-hero-discover" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>Meet your next way to pay <ArrowDown size={18} /></button>
+    </section>
+
+    <section className="nt-container nt-partners" aria-labelledby="partners-heading">
+      <div><p className="nt-eyebrow" id="partners-heading">BUILT ON TRUSTED TECHNOLOGY</p><p className="nt-partners-copy">Our planned payment and identity integrations.</p></div>
+      <div className="nt-partner-logos">
+        <a href="https://www.korahq.com/" target="_blank" rel="noopener noreferrer" aria-label="Kora — payment integration"><img src={koraLogo} alt="Kora" width="130" height="40" loading="lazy" /><span>Payments</span></a>
+        <a href="https://qoreid.com/" target="_blank" rel="noopener noreferrer" aria-label="QoreID — identity verification"><img src={qoreidLogo} alt="QoreID" width="130" height="40" loading="lazy" /><span>Identity verification</span></a>
+      </div>
     </section>
 
     <section className="nt-intro nt-container" id="payment-journey">
@@ -38,13 +48,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </article>
       <article className="nt-feature nt-feature-seller">
         <div className="nt-feature-copy"><p className="nt-eyebrow">FOR SELLERS & BUSINESSES</p><h2>Your hard work.<br />A clearer path<br />to getting paid.</h2><p>See confirmed funding before fulfilment. Keep delivery or work evidence together, so both sides know when payment can be released.</p><button className="nt-text-link" onClick={() => onNavigate('business')}>Explore business payments <ArrowRight size={19} /></button></div>
-        <div className="nt-seller-visual"><div className="nt-mini-deal"><div className="nt-mini-deal-heading"><span className="nt-success-icon"><ShieldCheck size={24} /></span><span>Protected Deal<small>Illustrative preview</small></span><span className="nt-status-pill">Agreed</span></div><h3>A deal you can follow.</h3><div className="nt-mini-step"><Check size={16} /><span>Terms accepted by both sides</span></div><div className="nt-mini-step"><LockKeyhole size={16} /><span>Funding status in one place</span></div><div className="nt-mini-step"><FileText size={16} /><span>Evidence attached to the agreement</span></div><div className="nt-mini-footer">Your work. Documented.<ArrowRight size={18} /></div></div></div>
+        <div className="nt-seller-visual"><div className="nt-mini-deal"><div className="nt-mini-deal-heading"><span className="nt-success-icon"><ShieldCheck size={24} /></span><span>Protected Deal</span><span className="nt-status-pill">Agreed</span></div><h3>A deal you can follow.</h3><div className="nt-mini-step"><Check size={16} /><span>Terms accepted by both sides</span></div><div className="nt-mini-step"><LockKeyhole size={16} /><span>Funding status in one place</span></div><div className="nt-mini-step"><FileText size={16} /><span>Evidence attached to the agreement</span></div><div className="nt-mini-footer">Your work. Documented.<ArrowRight size={18} /></div></div></div>
       </article>
     </section>
 
     <section className="nt-room-section nt-container">
-      <div className="nt-room-visual"><div className="nt-room-app"><div className="nt-room-top"><span className="nt-app-mark">n.</span><span>Deal Room</span><span className="nt-preview-label">Preview</span></div><div className="nt-room-body"><span className="nt-eyebrow">YOU’RE ON THE SAME PAGE</span><h3>Website design project</h3><p>Buyer + service provider</p><div className="nt-room-tabs"><span>Overview</span><span>Evidence</span><span>Messages</span></div><div className="nt-document"><FileText size={27} /><div><strong>Our agreement</strong><small>Scope, deadline & release conditions</small></div><CheckCheck size={19} /></div><div className="nt-chat nt-chat-left">The final files are ready for your review.<small>Service provider · Illustrative message</small></div><div className="nt-chat nt-chat-right">Thanks! Everything is here in one place.<small>Buyer · Illustrative message</small></div><div className="nt-room-action"><ShieldCheck size={18} /> Clear evidence. An informed decision.</div></div></div><span className="nt-orbit nt-orbit-one" aria-hidden="true" /><span className="nt-orbit nt-orbit-two" aria-hidden="true" /></div>
+      <div className="nt-room-visual"><div className="nt-room-app"><div className="nt-room-top"><span className="nt-app-mark">n.</span><span>Deal Room</span></div><div className="nt-room-body"><span className="nt-eyebrow">YOU’RE ON THE SAME PAGE</span><h3>Website design project</h3><p>Buyer + service provider</p><div className="nt-room-tabs"><span>Overview</span><span>Evidence</span><span>Messages</span></div><div className="nt-document"><FileText size={27} /><div><strong>Our agreement</strong><small>Scope, deadline & release conditions</small></div><CheckCheck size={19} /></div><div className="nt-chat nt-chat-left">The final files are ready for your review.<small>Service provider</small></div><div className="nt-chat nt-chat-right">Thanks! Everything is here in one place.<small>Buyer</small></div><div className="nt-room-action"><ShieldCheck size={18} /> Clear evidence. An informed decision.</div></div></div><span className="nt-orbit nt-orbit-one" aria-hidden="true" /><span className="nt-orbit nt-orbit-two" aria-hidden="true" /></div>
       <div className="nt-section-copy"><p className="nt-eyebrow">ONE DEAL. ONE SHARED SPACE.</p><h2>All the details.<br />None of the<br />back-and-forth.</h2><p>No more piecing together messages, receipts and promises. Your Deal Room brings the agreement, conversations, evidence and payment status into one clear view.</p><ul className="nt-check-list"><li><Check size={18} /> Terms everyone can refer to</li><li><Check size={18} /> Evidence connected to the payment</li><li><Check size={18} /> A documented path if there’s an issue</li></ul><button className="nt-button" onClick={join}>Get early access <ArrowRight size={18} /></button></div>
+    </section>
+
+    <section className="nt-container nt-legal-section" aria-labelledby="legal-support-heading">
+      <div className="nt-legal-copy"><p className="nt-eyebrow">LEGAL SUPPORT, IN THE LOOP</p><h2 id="legal-support-heading">An extra pair of eyes.<br />Right where it matters.</h2><p>Bring an approved legal reviewer into your Deal Room. Agree once together, and keep your agreement and future uploads ready for review.</p><button className="nt-text-link" onClick={join}>Join early access <ArrowRight size={18} /></button><small>Planned for early access. Optional service; additional fee applies.</small></div>
+      <div className="nt-legal-preview"><span className="nt-legal-icon"><Scale size={30} strokeWidth={1.5} /></span><h3>Your legal reviewer</h3><p>Part of the room. There when you need them.</p><ul><li><Check size={18} /> Both parties agree</li><li><FileText size={18} /> Documents shared automatically</li><li><ShieldCheck size={18} /> Both parties confirm deactivation</li></ul></div>
     </section>
 
     <section className="nt-steps-section"><div className="nt-container"><div className="nt-section-heading"><div><p className="nt-eyebrow">A BETTER WAY TO DO THE DEAL</p><h2>Agree. Protect.<br />Move forward.</h2></div><p>A little clarity at the start makes<br />a big difference at the finish.</p></div><div className="nt-steps-grid">{[

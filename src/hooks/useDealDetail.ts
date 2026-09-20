@@ -1,3 +1,5 @@
+import { legalApi, legalFundingBlocked } from '../features/legal/legal.api';
+import { appConfig } from '../configs/env';
 /**
  * useDealDetail / useDealMessages / useSendDealMessage
  * React Query hooks for the transaction room: the full deal detail and the
@@ -35,6 +37,18 @@ export function useDealDetail(id: string | undefined) {
   });
 }
 
+export function useSimulateDealFunding(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => dealDetailApi.simulateFunding(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...DEAL_DETAIL_QUERY_KEY, id] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
 export function useFundDealFromWallet(id: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -44,7 +58,9 @@ export function useFundDealFromWallet(id: string | undefined) {
       if (deal.funding.status !== 'awaiting_transfer') {
         throw new Error('This deal is not ready for funding.');
       }
-      await walletApi.payProtectedDeal(deal.funding.amountExpectedMinor);
+      if (appConfig.isMock && legalFundingBlocked(id!)) throw new Error('Resolve legal consent before funding.');
+      const legal = appConfig.isMock ? legalApi.get(id!) : null;
+      await walletApi.payProtectedDeal(deal.funding.amountExpectedMinor + (legal && !legal.removed && !legal.fee.payment ? legal.fee.amountMinor : 0));
       return dealDetailApi.fundFromWallet(id!);
     },
     onSuccess: () => {
@@ -66,8 +82,9 @@ export function useDeliveryPreview(token: string | undefined) {
 }
 
 export function useDealMessages(id: string | undefined, counterpartyName?: string) {
+  const userId = useAuthStore(state => state.user?.id);
   return useQuery<DealMessage[]>({
-    queryKey: [...DEAL_MESSAGES_QUERY_KEY, id],
+    queryKey: [...DEAL_MESSAGES_QUERY_KEY, id, userId],
     enabled: !!id,
     queryFn: async () => (id ? (await dealMessagesApi.list(id, counterpartyName)).data : []),
   });

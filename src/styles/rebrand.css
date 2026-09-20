@@ -352,9 +352,9 @@
 .nt-auth .auth-balanced-panel .border { box-shadow: none; border: 0; background: transparent; padding-left: 0; }
 .nt-auth .auth-balanced-panel [class*='shadow-sm'] { box-shadow: none; }
 @media(max-width:600px) {
-  .nt-hero { background: #738bb2; min-height: 945px; }
-
-  .nt-hero-shade { background: linear-gradient(180deg, #58729b 0%, #6d85ac 48%, #738bb200 72%); }
+  .nt-hero { background: #738bb2; min-height: 945px; padding-bottom: min(460px, 110vw); }
+  /* Keep the text gradient above the portrait so her face stays unobscured. */
+  .nt-hero-shade { bottom: min(460px, 110vw); background: linear-gradient(180deg, #58729b, #738bb2); }
 }
 .nt-auth { --background: #fff; --foreground: #142441; --card: #fff; --card-foreground: #142441; --muted-foreground: #667084; --input-background: #fff; --input: #142441; --popover: #fff; --popover-foreground: #142441; --muted: #f5f6f8; color: #142441; }
 .nt-auth [data-slot='card'] { box-shadow: none; border: none; background: #fff; }
@@ -369,3 +369,36 @@
 .nt-auth .text-primary, .nt-information .text-primary { color: var(--nt-brand-dark); }
 
 .nt-auth .nt-logo-wordmark { color: var(--nt-brand); }
+
+/* Quiet partner strip and optional legal-support story. */
+.nt-partners { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding-block: 44px; border-bottom: 1px solid #e7edf5; }
+.nt-partners-copy { margin: 8px 0 0; color: #667084; font-size: 14px; }
+.nt-partner-logos { display: flex; gap: 64px; align-items: center; }
+.nt-partner-logos a { display: grid; gap: 10px; justify-items: center; color: #667084; text-decoration: none; font-size: 12px; }
+.nt-partner-logos img { width: 130px; height: 40px; object-fit: contain; }
+.nt-legal-section { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 90px; padding-block: 70px 100px; }
+.nt-legal-copy h2 { font-size: clamp(32px, 4vw, 52px); line-height: 1.12; letter-spacing: -.045em; font-weight: 550; margin: 20px 0; }
+.nt-legal-copy > p:not(.nt-eyebrow) { max-width: 460px; color: #667084; line-height: 1.8; }
+.nt-legal-copy small { display: block; margin-top: 18px; color: #667084; font-size: 12px; }
+.nt-legal-preview { padding: 36px; border: 1px solid #e1eaf5; border-radius: 24px; background: #f7faff; }
+.nt-legal-icon { width: 60px; height: 60px; border-radius: 18px; display: grid; place-items: center; background: #e4f0ff; color: #1266bc; }
+.nt-legal-preview h3 { margin: 22px 0 8px; font-size: 23px; font-weight: 550; letter-spacing: -.03em; }
+.nt-legal-preview p { color: #667084; font-size: 14px; line-height: 1.7; }
+.nt-legal-preview ul { display: grid; gap: 18px; list-style: none; padding: 25px 0; margin: 0; font-size: 14px; }
+.nt-legal-preview li { display: flex; align-items: center; gap: 12px; }
+.nt-legal-preview li svg { color: #1266bc; flex-shrink: 0; }
+@media(max-width:700px) {
+  .nt-partners { flex-direction: column; align-items: flex-start; gap: 26px; padding-block: 32px; }
+  .nt-partner-logos { width: 100%; justify-content: space-around; gap: 24px; }
+  .nt-partner-logos img { width: 110px; height: 34px; }
+  .nt-legal-section { grid-template-columns: 1fr; gap: 30px; padding-block: 45px 60px; }
+  .nt-legal-preview { padding: 25px; }
+}
+
+/* Company contact locations. */
+.nt-footer-addresses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 40px; padding-top: 28px; border-top: 1px solid #ffffff18; }
+.nt-footer-addresses address { font-style: normal; font-size: 13px; line-height: 1.8; color: #a0a9b8; }
+.nt-footer-addresses address p { margin: 0; }
+.nt-footer-addresses address p + p { margin-top: 4px; color: #fff; }
+.nt-footer-addresses + .nt-footer-bottom { margin-top: 28px; }
+@media(max-width:700px) { .nt-footer-addresses { grid-template-columns: 1fr; gap: 20px; margin-top: 28px; } }

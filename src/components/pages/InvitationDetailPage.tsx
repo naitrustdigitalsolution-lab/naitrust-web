@@ -68,7 +68,7 @@ export function InvitationDetailPage() {
       await respond.mutateAsync({ id, action, reason, livenessVerifiedAt: action === 'accepted' ? livenessVerifiedAt : undefined, livenessCaptureId: action === 'accepted' ? livenessCaptureId : undefined });
       if (action === 'accepted') {
         if (livenessCaptureId) bindMockDealIdentityCapture(livenessCaptureId, id);
-        toast.success('Invitation accepted. Opening the Order Room.');
+        toast.success('Invitation accepted. Opening the Deal Room.');
         navigate(`/app/deals/${id}`, { replace: true });
       } else if (action === 'changes_requested') {
         toast.success('Change request sent. This invitation remains open for an update.');
@@ -108,7 +108,7 @@ export function InvitationDetailPage() {
           setLivenessOk(true);
           setShowLiveness(false);
         }}
-        reason="You have a new order invitation. We will take a live photo to confirm it is really you and link it to this order record."
+        reason="You have a new order invitation. We will take a live photo to confirm it is really you and link it to this deal record."
         shareNotice="I understand that the other verified participant can view this live photo for the deal after I accept."
         footerText="Every deal acceptance requires a new liveness check recorded with that action."
       />
@@ -117,12 +117,12 @@ export function InvitationDetailPage() {
         onOpenChange={setShowPin}
         onVerified={() => runResponse('accepted')}
         title="Confirm with your PIN"
-        description="Enter your 4-digit transaction PIN to accept this order."
+        description="Enter your 4-digit transaction PIN to accept this deal."
       />
       <Dialog open={showDecline} onOpenChange={setShowDecline}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{declineMode === 'changes' ? 'Request changes to this order' : declineMode === 'decline' ? 'Decline this order invitation?' : 'How would you like to respond?'}</DialogTitle>
+            <DialogTitle>{declineMode === 'changes' ? 'Request changes to this deal' : declineMode === 'decline' ? 'Decline this deal invitation?' : 'How would you like to respond?'}</DialogTitle>
             <DialogDescription>
               {declineMode === 'changes' ? 'The invitation stays open. The creator will be asked to update its terms and send the revised invitation back to you.' : declineMode === 'decline' ? 'This closes the invitation. The creator will be notified.' : 'Request an update without closing the invitation, or decline it completely.'}
             </DialogDescription>
@@ -143,7 +143,7 @@ export function InvitationDetailPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               {(declineMode === 'changes'
                 ? ['I’d like to renegotiate the deal', 'The deal needs adjustment']
-                : ['I’m unable to proceed with this order', 'I no longer need this order']
+                : ['I’m unable to proceed with this deal', 'I no longer need this deal']
               ).map((hint) => (
                 <Button key={hint} type="button" size="sm" variant="outline" className="h-auto rounded-full py-1.5 text-xs" onClick={() => setDeclineReason(hint)}>{hint}</Button>
               ))}
@@ -196,7 +196,7 @@ export function InvitationDetailPage() {
                 <CounterpartyAvatar name={invitation.fromName} className="h-11 w-11 text-sm" />
                 <div>
                   <p className="font-semibold text-foreground">{invitation.fromName}</p>
-                  <p className="text-sm text-muted-foreground">invited you to a supplier order</p>
+                  <p className="text-sm text-muted-foreground">invited you to a protected deal</p>
                 </div>
               </div>
               <InvitationStatusBadge status={invitation.status} />
@@ -218,15 +218,15 @@ export function InvitationDetailPage() {
               <div className="flex items-start gap-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ScanFace size={19} /></span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2"><p className="text-sm font-semibold">Deal representative</p><Badge variant="success">Live identity confirmed</Badge></div>
+                  <div className="flex flex-wrap items-center gap-2"><p className="text-sm font-semibold">Deal representative</p><Badge variant="success">Deal participant</Badge></div>
                   <p className="mt-1 text-sm font-medium">{invitation.creatorIdentityCapture?.representativeName ?? invitation.fromName}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">Created this order{invitation.creatorIdentityCapture?.capturedAt ? ` · ${new Date(invitation.creatorIdentityCapture.capturedAt).toLocaleString()}` : ''}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Created this deal{invitation.creatorIdentityCapture?.capturedAt ? ` · ${new Date(invitation.creatorIdentityCapture.capturedAt).toLocaleString()}` : ''}</p>
                   {invitation.creatorIdentityCapture?.photoAvailable ? (
                     <Button type="button" variant="outline" size="sm" className="mt-3 rounded-full" onClick={() => {
                       try { setIdentityPhoto(viewMockDealIdentityCapture(invitation.id, invitation.creatorIdentityCapture!.captureId)); }
                       catch (error) { toast.error(error instanceof Error ? error.message : 'Photo unavailable.'); }
                     }}><Eye size={14} /> View live identity photo</Button>
-                  ) : <p className="mt-2 text-xs text-muted-foreground">Photo for this order is not available.</p>}
+                  ) : <p className="mt-2 text-xs text-muted-foreground">Photo for this deal is not available.</p>}
                 </div>
               </div>
             </div>
@@ -251,7 +251,7 @@ export function InvitationDetailPage() {
                     className="mt-0.5"
                   />
                   <span className="text-sm leading-6 text-foreground">
-                    I have read the Naitrust order agreement above and agree to its terms as
+                    I have read the Naitrust deal agreement above and agree to its terms as
                     the {roleLabel(invitation.yourRole)}.
                   </span>
                 </label>
@@ -272,7 +272,7 @@ export function InvitationDetailPage() {
 
                 <p className="text-xs text-muted-foreground">
                   Expires {formatDistanceToNow(new Date(invitation.expiresAt), { addSuffix: true })}.
-                  Accepting agrees to these terms; payment is protected through a regulated partner.
+                  Accepting confirms these terms. Funding begins after both people agree.
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button
@@ -315,8 +315,8 @@ export function InvitationDetailPage() {
       </CenteredCard>
       <Dialog open={Boolean(identityPhoto)} onOpenChange={(open) => !open && setIdentityPhoto(undefined)}>
         <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>Live identity for this order</DialogTitle><DialogDescription>This photo was captured for this order and is not a reusable profile photo.</DialogDescription></DialogHeader>
-          {identityPhoto && <div className="relative overflow-hidden rounded-2xl bg-muted"><img src={identityPhoto.photoDataUrl} alt={`${identityPhoto.representativeName} live identity capture for this order`} className="aspect-[4/3] w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-black/65 px-3 py-2 text-[11px] text-white">{identityPhoto.watermark}</div></div>}
+          <DialogHeader><DialogTitle>Live identity for this deal</DialogTitle><DialogDescription>This photo was captured for this deal and is not a reusable profile photo.</DialogDescription></DialogHeader>
+          {identityPhoto && <div className="relative overflow-hidden rounded-2xl bg-muted"><img src={identityPhoto.photoDataUrl} alt={`${identityPhoto.representativeName} live identity capture for this deal`} className="aspect-[4/3] w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-black/65 px-3 py-2 text-[11px] text-white">{identityPhoto.watermark}</div></div>}
         </DialogContent>
       </Dialog>
     </DashboardLayout>

@@ -53,36 +53,10 @@ const TransactionRoomPage = lazyWithMinDelay(() => import("./pages/TransactionRo
 const DeliveryHandoverPage = lazyWithMinDelay(() => import("./pages/DeliveryHandoverPage"));
 const InvitationsPage = lazyWithMinDelay(() => import("./pages/InvitationsPage"));
 const InvitationDetailPage = lazyWithMinDelay(() => import("./pages/InvitationDetailPage"));
-const OrderInvitationsPage = lazyWithMinDelay(() => import("./pages/OrderInvitationsPage"));
 const NotificationsPage = lazyWithMinDelay(() => import("./pages/NotificationsPage"));
-const MessagesPage = lazyWithMinDelay(() => import("./pages/MessagesPage"));
 const SupportChatPage = lazyWithMinDelay(() => import("./pages/SupportChatPage"));
-const SupportRequestPage = lazyWithMinDelay(() => import("./pages/SupportRequestPage"));
 const SettingsPage = lazyWithMinDelay(() => import("./pages/SettingsPage"));
-const PaymentsHubPage = lazyWithMinDelay(() => import("./pages/PaymentsHubPage"));
-const SendInstantlyPage = lazyWithMinDelay(() => import("./pages/SendInstantlyPage"));
-const ReceiveMoneyPage = lazyWithMinDelay(() => import("./pages/ReceiveMoneyPage"));
-const BeneficiariesPage = lazyWithMinDelay(() => import("./pages/BeneficiariesPage"));
-const PaymentRequestsPage = lazyWithMinDelay(() => import("./pages/PaymentRequestsPage"));
-const BusinessBillsPage = lazyWithMinDelay(() => import("./pages/BusinessBillsPage"));
-const TransactionsPage = lazyWithMinDelay(() => import("./pages/TransactionsPage"));
-const BusinessNetworkPage = lazyWithMinDelay(() => import("./pages/BusinessNetworkPage"));
-const CounterpartyDetailPage = lazyWithMinDelay(() => import("./pages/CounterpartyDetailPage"));
-const BusinessDiscoveryPage = lazyWithMinDelay(() => import("./pages/BusinessDiscoveryPage"));
-const TrustProfilePage = lazyWithMinDelay(() => import("./pages/TrustProfilePage"));
-const RewardsPage = lazyWithMinDelay(() => import("./pages/RewardsPage"));
-const MarketPage = lazyWithMinDelay(() => import("./pages/MarketPage"));
-const CommerceWorkspacePage = lazyWithMinDelay(() => import("./pages/CommerceWorkspacePage"));
-const CreateOrderPage = lazyWithMinDelay(() => import("./pages/CreateOrderPage"));
-const CommerceWalletPage = lazyWithMinDelay(() => import("./pages/CommerceWalletPage"));
-const BusinessCommercePage = lazyWithMinDelay(() => import("./pages/BusinessCommercePage"));
-const ProductionWorkflowPage = lazyWithMinDelay(() => import("./pages/ProductionWorkflowPage"));
-const FindProductPage = lazyWithMinDelay(() => import("./pages/FindProductPage"));
-const AgentDirectoryPage = lazyWithMinDelay(() => import("./pages/AgentDirectoryPage"));
-const AgentProfilePage = lazyWithMinDelay(() => import("./pages/AgentProfilePage"));
-const SourcedProductPage = lazyWithMinDelay(() => import("./pages/SourcedProductPage"));
-const AgentAssignmentPage = lazyWithMinDelay(() => import("./pages/AgentAssignmentPage"));
-const LogisticsPage = lazyWithMinDelay(() => import("./pages/LogisticsPage"));
+const LegalWorkspacePage = lazyWithMinDelay(() => import('./features/legal/LegalWorkspacePage'));
 const AdminPortalPage = lazyWithMinDelay(() => import("./pages/AdminPortalPage"));
 
 // Public pages outside the landing-page critical path load only when visited.
@@ -106,11 +80,8 @@ const ReportConcernPage = lazy(() => import("./components/pages/ReportConcernPag
 const PublicBusinessPaymentPage = lazy(() => import("./components/pages/PublicBusinessPaymentPage").then((module) => ({ default: module.PublicBusinessPaymentPage })));
 const PublicTrustProfilePage = lazy(() => import("./components/pages/PublicTrustProfilePage").then((module) => ({ default: module.PublicTrustProfilePage })));
 const PublicInvitationPreviewPage = lazy(() => import("./components/pages/PublicInvitationPreviewPage").then((module) => ({ default: module.PublicInvitationPreviewPage })));
-const PublicOrderInvitationPage = lazyWithMinDelay(() => import("./pages/PublicOrderInvitationPage"));
-const InvitedOrderPage = lazyWithMinDelay(() => import("./pages/InvitedOrderPage"));
 const WaitlistPage = lazy(() => import("./pages/WaitlistPage"));
 const AudiencePage = lazy(() => import("./components/pages/AudiencePage").then((module) => ({ default: module.AudiencePage })));
-const PartnerApplicationPage = lazy(() => import("./pages/PartnerApplicationPage"));
 
 const queryClient = new QueryClient();
 
@@ -344,16 +315,16 @@ function PublicAppContent() {
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/pay/:businessSlug" element={<PublicBusinessPaymentPage />} />
           <Route path="/trust/:businessSlug" element={<PublicTrustProfilePage />} />
-          <Route path="/market" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
-          <Route path="/market/products/:productId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
-          <Route path="/market/suppliers" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
-          <Route path="/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace" redirectTo="/"><MarketPage /></FeatureGate>} />
+          <Route path="/market" element={<Navigate to="/" replace />} />
+          <Route path="/market/products/:productId" element={<Navigate to="/" replace />} />
+          <Route path="/market/suppliers" element={<Navigate to="/" replace />} />
+          <Route path="/market/suppliers/:supplierId" element={<Navigate to="/" replace />} />
           <Route path="/partners" element={<Navigate to="/contact" replace />} />
           <Route path="/partners/:kind/apply" element={<Navigate to="/waitlist" replace />} />
           <Route path="/partners/login" element={<Navigate to="/" replace />} />
           <Route path="/partners/portal" element={<Navigate to="/login" replace />} />
           <Route path="/invite/:token" element={<PublicInvitationPreviewPage />} />
-          <Route path="/invite/order/:token" element={<PublicOrderInvitationPage />} />
+          <Route path="/invite/order/:token" element={<Navigate to="/login" replace />} />
           <Route path="/delivery/:token" element={<DeliveryHandoverPage />} />
           <Route element={<RequireAuth />}>
             <Route path="/app" element={<DashboardRouteSuspense><DashboardPage /></DashboardRouteSuspense>} />
@@ -363,51 +334,52 @@ function PublicAppContent() {
             <Route path="/app/deals/:id" element={<DashboardRouteSuspense><TransactionRoomPage /></DashboardRouteSuspense>} />
             <Route path="/app/invitations" element={<DashboardRouteSuspense><InvitationsPage /></DashboardRouteSuspense>} />
             <Route path="/app/invitations/:id" element={<DashboardRouteSuspense><InvitationDetailPage /></DashboardRouteSuspense>} />
-            <Route path="/app/order-invitations" element={<DashboardRouteSuspense><OrderInvitationsPage /></DashboardRouteSuspense>} />
+            <Route path="/app/order-invitations" element={<Navigate to="/app/invitations" replace />} />
             <Route path="/app/notifications" element={<DashboardRouteSuspense><NotificationsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/messages" element={<DashboardRouteSuspense><MessagesPage /></DashboardRouteSuspense>} />
+            <Route path="/app/messages" element={<Navigate to="/app/deals" replace />} />
             <Route path="/app/messages/support" element={<DashboardRouteSuspense><SupportChatPage /></DashboardRouteSuspense>} />
-            <Route path="/app/support/new" element={<DashboardRouteSuspense><SupportRequestPage /></DashboardRouteSuspense>} />
+            <Route path="/app/support/new" element={<Navigate to="/app/messages/support" replace />} />
             <Route path="/app/profile" element={<Navigate to="/app/settings" replace />} />
             <Route path="/app/settings" element={<DashboardRouteSuspense><SettingsPage /></DashboardRouteSuspense>} />
             <Route path="/app/security" element={<Navigate to="/app/settings?tab=security" replace />} />
-            <Route path="/app/rewards" element={<FeatureGate feature="rewards"><DashboardRouteSuspense><RewardsPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/wallet" element={<DashboardRouteSuspense><CommerceWalletPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments" element={<DashboardRouteSuspense><PaymentsHubPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/send" element={<DashboardRouteSuspense><SendInstantlyPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/receive" element={<DashboardRouteSuspense><ReceiveMoneyPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/beneficiaries" element={<DashboardRouteSuspense><BeneficiariesPage /></DashboardRouteSuspense>} />
-            <Route path="/app/payments/requests" element={<RequireBusinessAccount><DashboardRouteSuspense><PaymentRequestsPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/bills" element={<FeatureGate feature="bills"><DashboardRouteSuspense><BusinessBillsPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/transactions" element={<DashboardRouteSuspense><TransactionsPage /></DashboardRouteSuspense>} />
-            <Route path="/app/network" element={<RequireBusinessAccount><DashboardRouteSuspense><BusinessNetworkPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/network/:counterpartyId" element={<RequireBusinessAccount><DashboardRouteSuspense><CounterpartyDetailPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/trust-profile" element={<RequireBusinessAccount><DashboardRouteSuspense><TrustProfilePage /></DashboardRouteSuspense></RequireBusinessAccount>} />
-            <Route path="/app/businesses" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
-            <Route path="/app/businesses/:businessId" element={<DashboardRouteSuspense><BusinessDiscoveryPage /></DashboardRouteSuspense>} />
-            <Route path="/app/market" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/market/products/:productId" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/market/suppliers" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/market/suppliers/:supplierId" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><MarketPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/cart" element={<FeatureGate feature="marketplace"><DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/source" element={<FeatureGate feature="productFinder"><DashboardRouteSuspense><FindProductPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/quotes" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
-            <Route path="/app/orders" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
-            <Route path="/app/orders/new" element={<DashboardRouteSuspense><CreateOrderPage /></DashboardRouteSuspense>} />
-            <Route path="/app/orders/invited/:token" element={<DashboardRouteSuspense><InvitedOrderPage /></DashboardRouteSuspense>} />
-            <Route path="/app/orders/:orderId" element={<DashboardRouteSuspense><CommerceWorkspacePage /></DashboardRouteSuspense>} />
-            <Route path="/app/agents" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentDirectoryPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/agents/:agentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentProfilePage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/source/product/:productId" element={<DashboardRouteSuspense><SourcedProductPage /></DashboardRouteSuspense>} />
+            <Route path="/app/rewards" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/wallet" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/payments" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/payments/send" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/payments/receive" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/payments/beneficiaries" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/payments/requests" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/bills" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/transactions" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/network" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/network/:counterpartyId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/trust-profile" element={<Navigate to="/app/settings" replace />} />
+            <Route path="/app/businesses" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/businesses/:businessId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/market" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/market/products/:productId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/market/suppliers" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/market/suppliers/:supplierId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/cart" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/source" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/quotes" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/orders" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/orders/new" element={<Navigate to="/app/deals/new" replace />} />
+            <Route path="/app/orders/invited/:token" element={<Navigate to="/app/invitations" replace />} />
+            <Route path="/app/orders/:orderId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/agents" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/agents/:agentId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/source/product/:productId" element={<Navigate to="/app/deals" replace />} />
             <Route path="/app/agent-assignments" element={<Navigate to="/app/orders" replace />} />
-            <Route path="/app/agent-assignments/:assignmentId" element={<FeatureGate feature="sourcingAgents"><DashboardRouteSuspense><AgentAssignmentPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/logistics" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/shipments" element={<FeatureGate feature="logistics"><DashboardRouteSuspense><LogisticsPage /></DashboardRouteSuspense></FeatureGate>} />
-            <Route path="/app/production" element={<RequireBusinessAccount><DashboardRouteSuspense><ProductionWorkflowPage /></DashboardRouteSuspense></RequireBusinessAccount>} />
+            <Route path="/app/agent-assignments/:assignmentId" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/logistics" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/shipments" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/production" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/legal-reviews" element={<DashboardRouteSuspense><LegalWorkspacePage /></DashboardRouteSuspense>} />
             <Route path="/app/admin/:section?" element={<DashboardRouteSuspense><AdminPortalPage /></DashboardRouteSuspense>} />
             <Route path="/app/partner-admin" element={<Navigate to="/app/admin/applications" replace />} />
-            <Route path="/app/showcase" element={<FeatureGate feature="sellerShowcase"><RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount></FeatureGate>} />
-            <Route path="/app/products" element={<FeatureGate feature="sellerShowcase"><RequireBusinessAccount><DashboardRouteSuspense><BusinessCommercePage /></DashboardRouteSuspense></RequireBusinessAccount></FeatureGate>} />
+            <Route path="/app/showcase" element={<Navigate to="/app/deals" replace />} />
+            <Route path="/app/products" element={<Navigate to="/app/deals" replace />} />
           </Route>
           <Route path="/resources" element={<SimpleRoutePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

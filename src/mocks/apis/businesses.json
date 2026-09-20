@@ -19,8 +19,14 @@
       "state": "Lagos",
       "country": "Nigeria",
       "socialHandles": [
-        { "platform": "instagram", "value": "@adaezefabrics" },
-        { "platform": "whatsapp", "value": "+2348031234567" }
+        {
+          "platform": "instagram",
+          "value": "@adaezefabrics"
+        },
+        {
+          "platform": "whatsapp",
+          "value": "+2348031234567"
+        }
       ],
       "verified": true,
       "identityVerifiedAt": "2026-05-02T09:00:00Z",
@@ -57,7 +63,10 @@
       "state": "Lagos",
       "country": "Nigeria",
       "socialHandles": [
-        { "platform": "twitter", "value": "@emekalogistics" }
+        {
+          "platform": "twitter",
+          "value": "@emekalogistics"
+        }
       ],
       "verified": true,
       "identityVerifiedAt": "2026-04-10T09:00:00Z",
@@ -94,7 +103,10 @@
       "state": "Rivers",
       "country": "Nigeria",
       "socialHandles": [
-        { "platform": "instagram", "value": "@balogunventures" }
+        {
+          "platform": "instagram",
+          "value": "@balogunventures"
+        }
       ],
       "verified": false,
       "createdAt": "2026-07-15T09:00:00Z"
@@ -243,6 +255,24 @@
       "verifiedReviewCount": 22,
       "ratingAverage": 4.7,
       "createdAt": "2025-07-19T09:00:00Z"
+    },
+    {
+      "id": "biz_mock_legal",
+      "ownerUserId": "usr_mock_legal",
+      "name": "Okoro Legal Partners (Demo)",
+      "slug": "okoro-legal-demo",
+      "ntId": "NT-BIZ-LEGAL001",
+      "category": "Legal services",
+      "description": "Fictional law firm for the legal review preview.",
+      "ownerName": "Ada Okoro",
+      "email": "legal.firm@naitrust.test",
+      "phone": "+2348011110099",
+      "address": "Demo office",
+      "city": "Lagos",
+      "state": "Lagos",
+      "country": "Nigeria",
+      "verified": true,
+      "createdAt": "2026-09-20T00:00:00Z"
     }
   ]
 }

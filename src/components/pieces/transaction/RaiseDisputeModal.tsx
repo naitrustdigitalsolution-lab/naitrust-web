@@ -4,6 +4,7 @@
  * Opening pauses release and starts an evidence-based admin review.
  */
 
+import { appConfig } from '../../../configs/env';
 import { useRef, useState } from 'react';
 import { FileText, Loader2, ShieldAlert, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
@@ -27,6 +28,7 @@ const REASONS = [
   'Missing contents',
   'Tampered packaging',
   'Non-delivery',
+  'Incomplete or unsatisfactory work',
   'Missed deal milestone',
   'Other',
 ];
@@ -43,6 +45,7 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
   const [description, setDescription] = useState('');
   const [evidence, setEvidence] = useState<DisputeEvidenceUpload[]>([]);
   const [error, setError] = useState('');
+  const [readingFiles, setReadingFiles] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
@@ -117,16 +120,29 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
               accept={DEAL_EVIDENCE_ACCEPT}
               multiple
               className="hidden"
-              onChange={(event) => {
-                const incoming = Array.from(event.target.files ?? []).map((file) => ({
-                  fileName: file.name,
-                  fileUrl: URL.createObjectURL(file),
-                  mimeType: file.type || 'application/octet-stream',
-                  kind: 'Buyer problem evidence' as const,
-                }));
-                setEvidence((current) => [...current, ...incoming]);
+              onChange={async (event) => {
+                const selected = Array.from(event.target.files ?? []);
                 event.currentTarget.value = '';
-                setError('');
+                if (selected.some(file => file.size > 2 * 1024 * 1024 || !/\.(pdf|jpe?g|png|mp4|mov|webm)$/i.test(file.name))) {
+                  setError('Choose a supported file smaller than 2 MB.'); return;
+                }
+                if (evidence.length + selected.length > 3) { setError('Upload up to 3 files at a time.'); return; }
+                setReadingFiles(true); setError('');
+                try {
+                  const incoming = await Promise.all(selected.map(async file => ({
+                    fileName: file.name,
+                    fileUrl: appConfig.isMock ? await new Promise<string>((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.onload = () => resolve(String(reader.result));
+                      reader.onerror = () => reject(new Error('File could not be read.'));
+                      reader.readAsDataURL(file);
+                    }) : URL.createObjectURL(file),
+                    mimeType: file.type || 'application/octet-stream',
+                    kind: 'Buyer problem evidence' as const,
+                  })));
+                  setEvidence(current => [...current, ...incoming]);
+                } catch { setError('Could not read the file. Please try again.'); }
+                finally { setReadingFiles(false); }
               }}
             />
             {evidence.map((item, index) => (
@@ -142,7 +158,7 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
             <Button type="button" variant="outline" className="mt-2 w-full rounded-xl" onClick={() => fileRef.current?.click()}>
               <Upload size={15} /> {evidence.length ? 'Add more evidence' : 'Attach evidence'}
             </Button>
-            <p className="mt-1 text-[11px] text-muted-foreground">{DEAL_EVIDENCE_FORMATS}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{DEAL_EVIDENCE_FORMATS} · Up to 3 files, 2 MB each.</p>
           </div>
 
           {error && <p className="text-xs text-destructive">{error}</p>}
@@ -158,7 +174,7 @@ export function RaiseDisputeModal({ open, onOpenChange, submitting, onSubmit }: 
             <Button
               className="rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={submit}
-              disabled={submitting}
+              disabled={submitting || readingFiles}
             >
               {submitting ? <Loader2 size={16} className="mr-1.5 animate-spin" /> : <ShieldAlert size={16} className="mr-1.5" />}
               Open dispute

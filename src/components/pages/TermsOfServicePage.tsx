@@ -12,7 +12,8 @@ const sections = [
   ['6. Intellectual property', 'The Naitrust name, logo, website design, copy, and original materials belong to Naitrust or its licensors. You may use the website for personal evaluation but may not copy, resell, or exploit its materials without permission.'],
   ['7. Availability and liability', 'The website and protected-payment early-access list are provided on an as-available basis. We work to keep them accurate and secure but cannot promise uninterrupted access. To the extent permitted by law, Naitrust is not liable for purchase or service decisions or transactions made outside a launched Naitrust service, or for losses caused by information supplied by users or third parties.'],
   ['8. Privacy', 'Our Privacy Policy explains how we collect, use, share, protect, and retain personal information. It forms part of these Terms.'],
-  ['9. Changes and governing law', 'We may update these Terms as the product develops. Material terms for a launched service will be presented before they apply. These Terms are governed by the laws of the Federal Republic of Nigeria.'],
+  ['9. Planned legal review', 'Both parties must read and accept the legal review agreement to appoint a named Naitrust-approved reviewer. The appointment covers the room’s agreement, existing evidence and future document uploads automatically, for the agreed purpose. The deal payer pays the displayed percentage fee; document access starts after payment. Additional uploads do not require another approval or fee. Either party may request deactivation, but access continues until both confirm, including access to the retained record after deal completion. Naitrust may restrict access for provider revocation, account suspension or an urgent access review. Deactivation cannot recall copies already obtained. Reviewers cannot release funds or decide disputes; findings do not certify authenticity. Legal review payments are unavailable until launch. Final service terms require legal review before launch.'],
+  ['10. Changes and governing law', 'We may update these Terms as the product develops. Material terms for a launched service will be presented before they apply. These Terms are governed by the laws of the Federal Republic of Nigeria.'],
 ];
 
 export function TermsOfServicePage({ onNavigate }: TermsOfServicePageProps) {
@@ -24,7 +25,7 @@ export function TermsOfServicePage({ onNavigate }: TermsOfServicePageProps) {
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10"><FileText size={27} /></div>
           <h1 className="text-4xl font-bold">Terms of Service</h1>
           <p className="mx-auto mt-4 max-w-2xl text-blue-100">Clear terms for using Naitrust and joining protected-payment early access.</p>
-          <p className="mt-5 text-sm text-blue-200">Effective and last updated: 19 September 2026</p>
+          <p className="mt-5 text-sm text-blue-200">Effective and last updated: 20 September 2026</p>
         </header>
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-5">
           <div className="flex gap-3"><ShieldCheck className="mt-0.5 shrink-0 text-primary" /><p className="text-sm leading-6 text-muted-foreground"><strong className="text-foreground">Current status:</strong> Naitrust is accepting protected-payment early-access registrations. Product accounts, verification, Protected Deal workflows, and partner-led payment features are not yet publicly available.</p></div>

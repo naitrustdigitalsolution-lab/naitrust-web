@@ -1,3 +1,5 @@
+import { dealDetailApi } from './deal-detail.api';
+import { assertActiveAccount } from '../../features/legal/access';
 /**
  * Termination API
  * Either party can request ending a deal early with a reason; the counterparty
@@ -27,8 +29,10 @@ function forCurrentViewer(termination: DealTermination): DealTermination {
 export const terminationApi = {
   /** GET the current termination request for a deal (or null). */
   get: async (dealId: string): Promise<ApiSuccess<DealTermination | null>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const t = terminations[dealId];
       return { success: true, data: t ? structuredClone(forCurrentViewer(t)) : null };
     }
@@ -38,8 +42,10 @@ export const terminationApi = {
 
   /** Request termination: anyone on the deal can start this. */
   request: async (dealId: string, reason: string): Promise<ApiSuccess<DealTermination>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const t: DealTermination = {
         dealId,
         status: 'requested',
@@ -64,8 +70,10 @@ export const terminationApi = {
     dealId: string,
     input: { accept: boolean; reason?: string; byName?: string },
   ): Promise<ApiSuccess<DealTermination>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const current = terminations[dealId];
       if (!current) throw new Error('No termination request');
       const next: DealTermination = {

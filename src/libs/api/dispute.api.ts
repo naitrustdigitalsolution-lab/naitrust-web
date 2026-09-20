@@ -1,3 +1,5 @@
+import { dealDetailApi } from './deal-detail.api';
+import { assertActiveAccount } from '../../features/legal/access';
 /**
  * Dispute API
  * Open and follow a dispute on a deal. In mock mode disputes live in session
@@ -21,6 +23,10 @@ const MOCK_MS = 350;
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 const disputes: Record<string, DealDispute> = {};
+const disputeKey = (id: string) => `naitrust:demo:dispute:${id}`;
+function saveDispute(dealId: string) {
+  if (typeof localStorage !== 'undefined') localStorage.setItem(disputeKey(dealId), JSON.stringify(disputes[dealId]));
+}
 
 const FUNDED_STATUSES: SafeDealStatus[] = ['funded', 'in_progress', 'evidence_submitted', 'buyer_review', 'disputed'];
 const CLOSED_STATUSES: SafeDealStatus[] = ['release_approved', 'paid_out', 'completed', 'refunded', 'cancelled'];
@@ -43,7 +49,7 @@ function assertMockDisputeEligible(dealId: string): void {
 }
 
 export function activateDisputeWithEvidence(dealId: string): void {
-  const dispute = disputes[dealId];
+  const dispute = ensure(dealId);
   if (!dispute || dispute.status !== 'awaiting_evidence') return;
   disputes[dealId] = {
     ...dispute,
@@ -56,6 +62,7 @@ export function activateDisputeWithEvidence(dealId: string): void {
       createdAt: new Date().toISOString(),
     }],
   };
+  saveDispute(dealId);
   blockDeliveryRelease(dealId);
 }
 
@@ -81,6 +88,9 @@ const SEEDS: Record<string, Omit<DealDispute, 'dealId'>> = {
 };
 
 function ensure(dealId: string): DealDispute | null {
+  if (!disputes[dealId] && typeof localStorage !== 'undefined') {
+    try { const saved = JSON.parse(localStorage.getItem(disputeKey(dealId)) ?? 'null'); if (saved?.dealId === dealId && Array.isArray(saved.messages)) disputes[dealId] = saved; } catch { /* Invalid preview data is ignored. */ }
+  }
   if (!disputes[dealId] && SEEDS[dealId]) {
     disputes[dealId] = { dealId, ...SEEDS[dealId] };
   }
@@ -90,8 +100,10 @@ function ensure(dealId: string): DealDispute | null {
 export const disputeApi = {
   /** GET current dispute (or null). */
   get: async (dealId: string): Promise<ApiSuccess<DealDispute | null>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const d = ensure(dealId);
       return { success: true, data: d ? structuredClone(d) : null };
     }
@@ -104,8 +116,10 @@ export const disputeApi = {
     dealId: string,
     input: { reason: string; description: string; hasEvidence?: boolean },
   ): Promise<ApiSuccess<DealDispute>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       assertMockDisputeEligible(dealId);
       const delivery = reconcileDeliveryLifecycle(dealId);
       if (delivery.fundingReview.status === 'release_approved' || delivery.fundingReview.status === 'paid_out') {
@@ -133,6 +147,7 @@ export const disputeApi = {
         ],
       };
       disputes[dealId] = dispute;
+      saveDispute(dealId);
       if (input.hasEvidence) blockDeliveryRelease(dealId);
       return { success: true, data: structuredClone(dispute) };
     }
@@ -142,8 +157,10 @@ export const disputeApi = {
 
   /** Add a message/evidence note to the dispute thread. */
   message: async (dealId: string, body: string): Promise<ApiSuccess<DealDispute>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_MS);
+      if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const d = ensure(dealId);
       if (!d) throw new Error('No dispute');
       const msg: DisputeMessage = {
@@ -154,6 +171,7 @@ export const disputeApi = {
         createdAt: new Date().toISOString(),
       };
       disputes[dealId] = { ...d, messages: [...d.messages, msg] };
+      saveDispute(dealId);
       return { success: true, data: structuredClone(disputes[dealId]) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.message(dealId), { body });

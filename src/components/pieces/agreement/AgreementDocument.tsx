@@ -50,7 +50,7 @@ export function AgreementDocument({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/60 px-4 py-3">
         <div className="flex items-center gap-2">
           <FileText size={16} className="text-primary" />
-          <p className="text-sm font-semibold text-foreground">Order agreement</p>
+          <p className="text-sm font-semibold text-foreground">Deal agreement</p>
           <span className="text-xs text-muted-foreground">v{agreement.version}</span>
         </div>
         <div className="flex items-center gap-2">{agreement.generatedByAi && !hideAiNote && (
@@ -60,6 +60,7 @@ export function AgreementDocument({
           </Badge>
         )}{collapsible && <button type="button" onClick={() => setExpanded((current) => !current)} className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition hover:bg-primary/10">{expanded ? 'Show less' : 'View full agreement'}<ChevronDown size={14} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} /></button>}</div>
       </div>
+      <p className="border-b px-4 py-3 text-xs leading-5 text-muted-foreground">Optional legal review is governed by a separate, versioned proposal. Both parties must accept the legal terms for the named reviewer, purpose and additional fee. This covers existing and future room documents automatically, until both parties confirm deactivation. Accepting this deal agreement alone does not authorise legal sharing. Reviewers cannot release payments or decide disputes.</p>
       <ol className={`space-y-4 px-4 py-4 ${scrollable ? 'max-h-72 overflow-y-auto' : ''}`}>
         {(expanded ? agreement.sections : agreement.sections.slice(0, 2)).map((section, i) => (
           <li key={section.heading} className="flex gap-3">

@@ -2,12 +2,7 @@ import type { UseCase } from '../use-cases';
 
 const QUICK_USE_CASE_SLUGS = [
   'high-value-personal-purchases',
-  'supplier-purchase',
-  'wholesale-order',
   'service-delivery',
-  'contractor-engagement',
-  'vehicle-transactions',
-  'property-agent-payments',
   'custom-business-deal',
 ] as const;
 

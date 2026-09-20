@@ -12,7 +12,9 @@
     "verify:images": "node scripts/verify-image-coverage.mjs",
     "verify:sourcing": "node scripts/verify-sourcing-mocks.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:deals": "node scripts/verify-protected-deals.mjs",
+    "verify:legal": "node scripts/verify-legal-review.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

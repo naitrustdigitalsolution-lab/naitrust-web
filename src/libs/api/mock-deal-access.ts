@@ -1,3 +1,4 @@
+import { accountSuspended } from '../../features/legal/access';
 import type { SafeDealSummary } from '../store/types';
 import { getMockDealRuntime } from './mock-protected-deal-store';
 import { mockCreatedDealParticipantIndex } from './mock-deal-participants';
@@ -36,7 +37,7 @@ export function mockDealParticipantUserIds(dealId: string): string[] {
 }
 
 export function canMockUserAccessDeal(summary: SafeDealSummary, userId: string | undefined): boolean {
-  if (!userId) return false;
+  if (!userId || accountSuspended(userId)) return false;
   // Targeted repair for the completed Adaeze ↔ Emeka deal whose older mock
   // participant record was saved without Emeka's runtime participant ID.
   const isEmekaChinaCarDeal = summary.reference === 'NT-2026-072249' && userId === 'usr_mock_004';

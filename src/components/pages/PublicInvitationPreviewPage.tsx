@@ -56,7 +56,7 @@ export function PublicInvitationPreviewPage() {
 
   return (
     <div className="min-h-screen bg-[#f4f7f9] px-4 pb-10 pt-12 dark:bg-background sm:pb-16 sm:pt-20 lg:pt-24">
-      <SEOHead title="Supplier order invitation" description="Review a Naitrust supplier order invitation." noindex />
+      <SEOHead title="Protected deal invitation" description="Review a Naitrust protected deal invitation." noindex />
       <div className="mx-auto max-w-xl">
         {isLoading ? (
           <Card className="flex min-h-72 items-center justify-center rounded-3xl border-0 shadow-xl">
@@ -82,7 +82,7 @@ export function PublicInvitationPreviewPage() {
                 <button type="button" onClick={() => navigate('/')} aria-label="Go to Naitrust home" className="rounded-lg transition-opacity hover:opacity-80">
                   <NaitrustLogo size="sm" textColor="text-white" />
                 </button>
-                <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Supplier order invitation</Badge>
+                <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">Protected deal invitation</Badge>
               </div>
               <div className="mt-5 flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10">

@@ -1,3 +1,4 @@
+import { assertActiveAccount } from '../../features/legal/access';
 /**
  * Deal Invitations API
  * Typed access to incoming safe-deal invitations.
@@ -185,6 +186,7 @@ export const invitationsApi = {
     token: string,
     user: Pick<User, 'id' | 'email' | 'phone' | 'naitrustId' | 'role' | 'kycVerified'>,
   ): Promise<ApiSuccess<{ invitationId: string; destination: string }>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const preview = publicPreview(token);
@@ -230,6 +232,7 @@ export const invitationsApi = {
 
   /** GET /invitations */
   list: async (): Promise<ApiSuccess<DealInvitation[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
@@ -250,6 +253,7 @@ export const invitationsApi = {
 
   /** GET /invitations/:id */
   getOne: async (id: string): Promise<ApiSuccess<DealInvitation>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
@@ -271,6 +275,7 @@ export const invitationsApi = {
 
   /** POST /invitations/:id/resend */
   resend: async (id: string): Promise<ApiSuccess<{ publicInvitePath?: string }>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
@@ -294,6 +299,7 @@ export const invitationsApi = {
     livenessVerifiedAt?: string,
     livenessCaptureId?: string,
   ): Promise<ApiSuccess<{ id: string; status: InvitationStatus }>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;

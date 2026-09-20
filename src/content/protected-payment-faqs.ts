@@ -96,5 +96,12 @@ export const protectedPaymentFAQs = [
     "helpCategory": "security",
     "question": "How do I contact support or report a concern?",
     "answer": "Use Contact Us for account, early-access and partnership questions. Use Report a Concern for suspected fraud or misuse. Include the deal reference and relevant evidence, but never include your password, OTP or transaction PIN."
-  }
+  },
+  {
+    "id": "faq-legal-review",
+    "category": "getting-started",
+    "helpCategory": "general",
+    "question": "Can a legal reviewer join my deal?",
+    "answer": "We are preparing optional legal review for early access. Both parties read and accept the legal agreement to add an approved reviewer. The reviewer can then access existing and future room documents automatically once the additional legal fee is paid. Both parties must confirm deactivation. Reviewers do not control payments or guarantee an outcome."
+  },
 ];

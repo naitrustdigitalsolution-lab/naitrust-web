@@ -1,3 +1,4 @@
+import { readLocal, writeLocal } from '../../features/legal/access';
 /**
  * Notifications API
  * Typed access to the user's notification feed.
@@ -44,7 +45,7 @@ export const notificationsApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
-      return { success: true, data: mockList.filter((notification) => !notification.userId || notification.userId === userId).map((n) => ({ ...n })) };
+      return { success: true, data: [...readLocal<AppNotification[]>(`naitrust:account:${userId}:legal-alerts`, []), ...mockList].filter((notification) => !notification.userId || notification.userId === userId).map((n) => ({ ...n })) };
     }
     const response = await httpClient.get<AppNotification[]>(endpoints.notifications.list);
     return response as ApiSuccess<AppNotification[]>;
@@ -54,6 +55,8 @@ export const notificationsApi = {
   markAsRead: async (id: string): Promise<ApiSuccess<{ id: string }>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      const key = `naitrust:account:${useAuthStore.getState().user?.id}:legal-alerts`;
+      writeLocal(key, readLocal<AppNotification[]>(key, []).map(n => n.id === id ? { ...n, read: true } : n));
       mockList = mockList.map((n) => (n.id === id ? { ...n, read: true } : n));
       return { success: true, data: { id } };
     }
@@ -65,6 +68,8 @@ export const notificationsApi = {
   markAllAsRead: async (): Promise<ApiSuccess<null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      const key = `naitrust:account:${useAuthStore.getState().user?.id}:legal-alerts`;
+      writeLocal(key, readLocal<AppNotification[]>(key, []).map(n => ({ ...n, read: true })));
       mockList = mockList.map((n) => ({ ...n, read: true }));
       return { success: true, data: null };
     }

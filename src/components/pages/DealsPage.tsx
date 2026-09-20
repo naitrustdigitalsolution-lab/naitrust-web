@@ -1,282 +1,31 @@
-/**
- * DealsPage
- * The dedicated safe-deals list (`/app/deals`): a robust toolbar over the deal
- * list: text search (counterparty / reference), status filter chips, a
- * created-date range, and client-side pagination. Rows open the transaction
- * room. Reuses TransactionList for consistent row presentation.
- */
-
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CalendarRange, ChevronLeft, ChevronRight, FileClock, Plus, Search, ShieldCheck, SlidersHorizontal, X } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, FileClock, Plus, Search } from 'lucide-react';
 import { DashboardLayout } from '../pieces/dashboard/DashboardLayout';
-import { PageHero } from '../pieces/dashboard/PageHero';
-import { getAppImage } from '../../libs/images/image-manifest';
-import { TransactionList } from '../pieces/dashboard/TransactionList';
+import { DealList } from '../pieces/dashboard/DealList';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { useTransactions } from '../../hooks/useTransactions';
-import { dealsNeedingAction } from '../../libs/utils/safe-deal-presentation';
-import type { SafeDealStatus, SafeDealSummary } from '../../libs/store/types';
-
-type Filter = 'all' | 'active' | 'action' | 'completed' | 'disputed';
-
-const FILTERS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'active', label: 'Active' },
-  { key: 'action', label: 'Needs action' },
-  { key: 'disputed', label: 'Disputed' },
-  { key: 'completed', label: 'Completed' },
-];
-
-const CLOSED: SafeDealStatus[] = ['draft', 'completed', 'paid_out', 'refunded', 'cancelled'];
-const PAGE_SIZE = 10;
-
-function byStatus(deals: SafeDealSummary[], filter: Filter): SafeDealSummary[] {
-  // Drafts have their own workspace at /app/drafts and must never appear on
-  // the Active Deals screen, including its "All" and "Needs action" views.
-  const publishedDeals = deals.filter((deal) => deal.status !== 'draft');
-  switch (filter) {
-    case 'active':
-      return publishedDeals.filter((d) => !CLOSED.includes(d.status));
-    case 'action':
-      return dealsNeedingAction(publishedDeals);
-    case 'disputed':
-      return publishedDeals.filter((d) => d.status === 'disputed');
-    case 'completed':
-      return publishedDeals.filter((d) => d.status === 'completed' || d.status === 'paid_out');
-    default:
-      return publishedDeals;
-  }
-}
-
+const filters = ['all','active','completed','disputed'] as const;
+type Filter = typeof filters[number];
 export function DealsPage() {
-  const navigate = useNavigate();
-  const { data: deals, isLoading, isError } = useTransactions();
-
-  const [filter, setFilter] = useState<Filter>('active');
-  const [search, setSearch] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [showDates, setShowDates] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [page, setPage] = useState(1);
-
-  const filtered = useMemo(() => {
-    if (!deals) return undefined;
-    let list = byStatus(deals, filter);
-    const q = search.trim().toLowerCase();
-    if (q) {
-      list = list.filter(
-        (d) =>
-          d.counterpartyName.toLowerCase().includes(q) || d.reference.toLowerCase().includes(q),
-      );
-    }
-    if (from) {
-      const fromTs = new Date(from).getTime();
-      list = list.filter((d) => new Date(d.createdAt).getTime() >= fromTs);
-    }
-    if (to) {
-      // Include the whole "to" day.
-      const toTs = new Date(to).getTime() + 86_400_000 - 1;
-      list = list.filter((d) => new Date(d.createdAt).getTime() <= toTs);
-    }
-    return list;
-  }, [deals, filter, search, from, to]);
-
-  // Reset to first page whenever the result set changes.
-  useEffect(() => {
-    setPage(1);
-  }, [filter, search, from, to]);
-
-  const total = filtered?.length ?? 0;
-  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const current = Math.min(page, pageCount);
-  const paged = filtered?.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
-
-  const countFor = (key: Filter) => (deals ? byStatus(deals, key).length : 0);
-  const hasFilters = !!search || !!from || !!to || filter !== 'all';
-  const clearAll = () => {
-    setFilter('all');
-    setSearch('');
-    setFrom('');
-    setTo('');
-  };
-
-  return (
-    <DashboardLayout title="Direct orders">
-      <div className="mx-auto w-full max-w-9xl">
-        <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
-          <h1 className="text-xl font-bold tracking-tight">Direct orders</h1>
-          <div className="flex items-center gap-1.5">
-            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Drafts" onClick={() => navigate('/app/drafts')}><FileClock size={15} /></Button>
-            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" aria-label="Search direct orders" onClick={() => setShowMobileSearch((value) => !value)}><Search size={15} /></Button>
-            <Button variant={filter !== 'all' ? 'default' : 'outline'} size="icon" className="h-9 w-9 rounded-full" aria-label="Filter direct orders" onClick={() => setShowMobileFilters((value) => !value)}><SlidersHorizontal size={15} /></Button>
-            <Button size="icon" className="h-9 w-9 rounded-full" aria-label="New supplier order" onClick={() => navigate('/app/deals/new')}><Plus size={16} /></Button>
-          </div>
-        </div>
-
-        <div className="hidden sm:block"><PageHero
-          eyebrow="Outside the catalogue"
-          title="Direct supplier orders"
-          description="Create and manage an order when the supplier or service is not already listed in Naitrust Market."
-          icon={ShieldCheck}
-          image={getAppImage('deliveryWorkflow', 'A wholesale product delivery being checked')}
-          actions={<div className="flex flex-wrap gap-2">
-            <Button variant="outline" className="rounded-full" onClick={() => navigate('/app/drafts')}>
-              <FileClock size={16} className="mr-1" /> Drafts
-            </Button>
-            <Button className="rounded-full" onClick={() => navigate('/app/deals/new')}>
-              <Plus size={16} className="mr-1" /> New supplier order
-            </Button>
-          </div>}
-        /></div>
-
-        {/* Toolbar */}
-        <div className={`${showMobileSearch || showMobileFilters || showDates ? 'block' : 'hidden'} mb-4 space-y-3 rounded-none border-0 bg-transparent p-0 shadow-none sm:block sm:rounded-xl sm:border sm:bg-card sm:p-4 sm:shadow-sm`}>
-          {/* Search + date range (dates inline on desktop, toggled on mobile) */}
-          <div className={`${showMobileSearch || showDates ? 'flex' : 'hidden'} flex-col gap-2 sm:flex lg:flex-row lg:items-end lg:gap-3`}>
-            <div className="flex flex-1 items-center gap-2">
-              <div className="relative flex-1">
-                <Label htmlFor="deal-search" className="sr-only">
-                  Search direct orders
-                </Label>
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                <Input
-                  id="deal-search"
-                  placeholder="Search orders or references…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="h-11 rounded-xl bg-card pl-9 sm:h-10"
-                />
-              </div>
-              {/* Mobile-only date toggle keeps the bar compact. */}
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label="Date range"
-                aria-pressed={showDates}
-                className={`shrink-0 rounded-full lg:hidden ${from || to ? 'border-primary text-primary' : ''}`}
-                onClick={() => setShowDates((s) => !s)}
-              >
-                <CalendarRange size={16} />
-              </Button>
-            </div>
-            <div className={`${showDates ? 'grid' : 'hidden'} grid-cols-2 gap-2 lg:flex lg:items-end`}>
-              <div className="min-w-0">
-                <Label htmlFor="from" className="text-xs">
-                  From
-                </Label>
-                <Input id="from" type="date" value={from} max={to || undefined} className="mt-1 w-full" onChange={(e) => setFrom(e.target.value)} />
-              </div>
-              <div className="min-w-0">
-                <Label htmlFor="to" className="text-xs">
-                  To
-                </Label>
-                <Input id="to" type="date" value={to} min={from || undefined} className="mt-1 w-full" onChange={(e) => setTo(e.target.value)} />
-              </div>
-            </div>
-          </div>
-
-          {/* Status chips scroll horizontally on mobile instead of wrapping. */}
-          <div className={`${showMobileFilters ? 'flex' : 'hidden'} items-center gap-2 sm:flex`}>
-            <div className="-mx-1 flex flex-1 items-center gap-2 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {FILTERS.map((f) => {
-                const active = filter === f.key;
-                return (
-                  <button
-                    key={f.key}
-                    type="button"
-                    onClick={() => setFilter(f.key)}
-                    className={
-                      'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-sm font-medium transition-colors ' +
-                      (active
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-card text-muted-foreground hover:bg-accent/40')
-                    }
-                  >
-                    {f.label}
-                    {!isLoading && <span className="ml-1.5 opacity-80">{countFor(f.key)}</span>}
-                  </button>
-                );
-              })}
-            </div>
-            {hasFilters && (
-              <button
-                type="button"
-                onClick={clearAll}
-                className="inline-flex shrink-0 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-              >
-                <X size={14} />
-                <span className="hidden sm:inline">Clear</span>
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Result meta */}
-        {!isLoading && !isError && (
-          <p className="mb-2 text-xs text-muted-foreground">
-            {total === 0 ? 'No direct orders match your filters' : `Showing ${paged?.length ?? 0} of ${total} direct orders`}
-          </p>
-        )}
-
-        {!isLoading && !isError && (deals?.length ?? 0) > 0 && total === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed p-10 text-center">
-            <Search size={22} className="text-muted-foreground" />
-            <p className="font-semibold text-foreground">No direct orders match your filters</p>
-            <p className="max-w-sm text-sm text-muted-foreground">
-              Try a different search, status, or date range.
-            </p>
-            <Button variant="outline" className="rounded-full" onClick={clearAll}>
-              Clear filters
-            </Button>
-          </div>
-        ) : (
-          <TransactionList
-            deals={paged}
-            isLoading={isLoading}
-            isError={isError}
-            compactMobile
-            onCreate={() => navigate('/app/deals/new')}
-            onSelect={(deal) => navigate(`/app/deals/${deal.id}`)}
-          />
-        )}
-
-        {/* Pagination */}
-        {total > PAGE_SIZE && (
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Page {current} of {pageCount}
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                disabled={current <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                <ChevronLeft size={15} className="mr-1" />
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                disabled={current >= pageCount}
-                onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-              >
-                Next
-                <ChevronRight size={15} className="ml-1" />
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </DashboardLayout>
-  );
+  const query = useTransactions();
+  const [params,setParams] = useSearchParams();
+  const selected = params.get('status');
+  const filter: Filter = filters.includes(selected as Filter) ? selected as Filter : 'all';
+  const [search,setSearch] = useState('');
+  const [page,setPage] = useState(1);
+  const deals = (query.data ?? []).filter(deal => deal.status !== 'draft').filter(deal => {
+    if(filter === 'active') return !['completed','paid_out','refunded','cancelled'].includes(deal.status);
+    if(filter === 'completed') return ['completed','paid_out'].includes(deal.status);
+    if(filter === 'disputed') return deal.status === 'disputed';
+    return true;
+  }).filter(deal => `${deal.title} ${deal.counterpartyName} ${deal.reference}`.toLowerCase().includes(search.toLowerCase()));
+  const pages = Math.max(1,Math.ceil(deals.length/8));
+  const current = Math.min(page,pages);
+  return <DashboardLayout title="My deals"><div className="nd-heading"><div><h1>My deals</h1><p>Clear terms. Shared progress. One place for every deal.</p></div><Button asChild><Link to="/app/deals/new"><Plus size={15}/>New deal</Link></Button></div>
+    <div className="nd-toolbar"><label className="nd-search"><span className="sr-only">Search deals</span><Search size={16}/><input placeholder="Search deals or people" value={search} onChange={event=>{setSearch(event.target.value);setPage(1);}}/></label><Button variant="ghost" asChild><Link to="/app/drafts"><FileClock size={15}/>Drafts</Link></Button></div>
+    <div className="nd-filters" aria-label="Filter deals">{filters.map(value=><button key={value} aria-pressed={value===filter} onClick={()=>{setParams(value==='all'?{}:{status:value});setPage(1);}}>{value==='all'?'All deals':value[0].toUpperCase()+value.slice(1)}</button>)}</div>
+    <DealList deals={deals.slice((current-1)*8,current*8)} loading={query.isLoading} error={query.isError} onRetry={()=>void query.refetch()} emptyTitle={search || filter!=='all' ? 'No matching deals' : undefined} emptyDescription={search || filter!=='all' ? 'Try another search or select All deals.' : undefined}/>
+    {deals.length>8 && <div className="nd-pagination"><span>Page {current} of {pages}</span><div><Button variant="outline" size="icon" aria-label="Previous page" disabled={current===1} onClick={()=>setPage(current-1)}><ChevronLeft size={16}/></Button><Button variant="outline" size="icon" aria-label="Next page" disabled={current===pages} onClick={()=>setPage(current+1)}><ChevronRight size={16}/></Button></div></div>}
+  </DashboardLayout>;
 }

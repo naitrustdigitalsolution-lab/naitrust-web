@@ -1,3 +1,7 @@
+import { legalRate } from '../../features/legal/legal.api';
+import { LegalSelectionForm } from '../../features/legal/components';
+import type { LegalSelection } from '../../features/legal/types';
+import { appConfig } from '../../configs/env';
 /**
  * CreateDealPage
  * Create Safe Deal wizard (`/app/deals/new`), contained but space-filling.
@@ -46,6 +50,9 @@ import {
   type DealParticipantForm,
 } from '../pieces/transaction/CreateDealDetailsStep';
 import { DraftSavedForPinModal } from '../pieces/transaction/DraftSavedForPinModal';
+import { SimpleDealDetails } from '../pieces/transaction/SimpleDealDetails';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 import { PaymentConditionsStep } from '../pieces/transaction/PaymentConditionsStep';
 import { VerificationGate } from '../pieces/security/VerificationGate';
 import { Button } from '../ui/button';
@@ -94,7 +101,7 @@ import mockAuthUsers from '../../mocks/apis/auth-users.json';
 
 const STEPS: StepMeta[] = [
   { title: 'Deal setup', description: 'Choose what you are protecting and who is involved.' },
-  { title: 'Order terms', description: 'Enter the amount, supplier, timing and payment conditions.' },
+  { title: 'Deal terms', description: 'Set the amount, the other person and the release conditions.' },
   { title: 'Review agreement & send', description: 'Check the agreement and invite the other party.' },
 ];
 
@@ -103,6 +110,7 @@ const MOBILE_TERM_STEPS = ['Deal details', 'Money and date', 'Other party', 'Con
 const CREATE_DEAL_USE_CASES = splitCreateDealUseCases(useCases);
 
 interface FormState extends DealDetailsValues {
+  legalReview?: LegalSelection;
   useCase: string;
   workflowMode: DealWorkflowMode;
   dealType: DealType | null;
@@ -272,6 +280,7 @@ export function CreateDealPage() {
     if (recoveredDraft?.form) {
       return {
         ...recoveredDraft.form,
+        legalReview: recoveredDraft.form.legalReview ? { ...recoveredDraft.form.legalReview, consent: false } : undefined,
         workflowMode: recoveredDraft.form.workflowMode ?? recommendedWorkflowForUseCase(recoveredDraft.form.useCase),
         dealType: 'single',
         splitPayment: recoveredDraft.form.splitPayment ?? false,
@@ -561,8 +570,8 @@ export function CreateDealPage() {
   const eligibleSavedCounterparties = (accountType === 'customer' ? customerSavedContacts : savedCounterparties).filter(matchesExpectedKind);
   const eligibleDirectoryCounterparties = [...businessContacts, ...personalDirectoryContacts].filter(matchesExpectedKind);
   const multiParty = form.participants.length > 1;
-  const firstStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved) && (!form.splitPayment || participant.paymentTargets.includes('first')));
-  const secondStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved) && participant.paymentTargets.includes('second'));
+  const firstStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved || isValidContact(participant.contact)) && (!form.splitPayment || participant.paymentTargets.includes('first')));
+  const secondStageParticipants = form.participants.filter((participant) => participant.name.trim() && participant.contact.trim() && (participant.profileId || participant.isManualSaved || isValidContact(participant.contact)) && participant.paymentTargets.includes('second'));
   const myName = user?.name || 'You';
 
   const allocatedMinor = useMemo(
@@ -582,7 +591,7 @@ export function CreateDealPage() {
     try {
       const nextRequest = paymentConditionsGeneratedByAi ? paymentConditionsRequest + 1 : paymentConditionsRequest;
       const conditionInput = {
-        useCaseTitle: selectedUseCase?.title ?? 'Direct supplier order',
+        useCaseTitle: selectedUseCase?.title ?? 'Direct protected deal',
         title: form.title,
         description: form.description,
         deliveryDueDate: form.deliveryDueDate,
@@ -638,7 +647,7 @@ export function CreateDealPage() {
     try {
       const response = await agreementsApi.draft(
         {
-          useCaseTitle: selectedUseCase?.title ?? 'Direct supplier order',
+          useCaseTitle: selectedUseCase?.title ?? 'Direct protected deal',
           workflowMode: form.workflowMode,
           partyModeLabel: form.partyMode ? partyModeLabel(form.partyMode) : 'Protected',
           buyerName,
@@ -680,7 +689,7 @@ export function CreateDealPage() {
       if (containsAiDealDetailPlaceholder(form.description))
         next.description = 'Clear the AI template, or replace each remaining AI placeholder with your deal details before continuing.';
       const amount = Number(form.amount);
-      if (!form.amount || Number.isNaN(amount) || amount <= 0)
+      if (!form.amount || !Number.isFinite(amount) || parseMajorAmountToMinor(form.amount) <= 0)
         next.amount = 'Enter an amount greater than zero.';
       if (form.splitPayment) {
         const firstPayment = Number(form.initialPayment);
@@ -691,7 +700,7 @@ export function CreateDealPage() {
         else if (form.initialPaymentMode === 'fixed' && firstPayment >= amount)
           next.initialPayment = 'The first payment must be less than the total deal amount.';
       }
-      if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the next milestone or completion date.';
+      if (!form.deliveryDueDate || new Date(form.deliveryDueDate + 'T23:59:59').getTime() < Date.now()) next.deliveryDueDate = 'Choose today or a future completion date.';
       form.participants.forEach((participant, index) => {
         if (!participant.name.trim()) next[`participant_${index}_name`] = 'Enter a name.';
         if (participant.isManualSaved && !participant.profileId) {
@@ -727,8 +736,8 @@ export function CreateDealPage() {
     }
     if (mobileTermStage === 2) {
       const amount = Number(form.amount);
-      if (!form.amount || Number.isNaN(amount) || amount <= 0) next.amount = 'Enter an amount greater than zero.';
-      if (!form.deliveryDueDate) next.deliveryDueDate = 'Set the delivery or completion date.';
+      if (!form.amount || !Number.isFinite(amount) || parseMajorAmountToMinor(form.amount) <= 0) next.amount = 'Enter an amount greater than zero.';
+      if (!form.deliveryDueDate || new Date(form.deliveryDueDate + 'T23:59:59').getTime() < Date.now()) next.deliveryDueDate = 'Choose today or a future completion date.';
     }
     if (mobileTermStage === 3) {
       form.participants.forEach((participant, index) => {
@@ -803,6 +812,7 @@ export function CreateDealPage() {
         Math.max(1, differenceInCalendarDays(new Date(form.openUntil), today)),
       );
       const dealInput: CreateSafeDealInput = {
+        legalReview: form.legalReview,
         useCase: form.useCase,
         workflowMode: form.workflowMode,
         dealType: 'single',
@@ -849,9 +859,9 @@ export function CreateDealPage() {
       clearDealDraft(user?.id, draftId);
       const shareUrl = `${window.location.origin}${created.data.publicInvitePath}`;
       setCreatedInvitation({ dealId: created.data.id, title: created.data.title, url: shareUrl });
-      toast.success('Supplier order created. Your invitation link is ready.');
+      toast.success('Protected deal created. Your invitation link is ready.');
     } catch {
-      toast.error('Could not create the supplier order. Please try again.');
+      toast.error('Could not create the protected deal. Please try again.');
     }
   };
 
@@ -861,7 +871,7 @@ export function CreateDealPage() {
         <div className="mx-auto w-full max-w-2xl py-8">
           <Card className="rounded-3xl p-6 shadow-sm sm:p-8">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-700"><Check size={22} /></div>
-            <h1 className="mt-5 text-2xl font-bold">Supplier order created</h1>
+            <h1 className="mt-5 text-2xl font-bold">Protected deal created</h1>
             <p className="mt-2 text-sm text-muted-foreground">{createdInvitation.title}</p>
             <div className="mt-6 rounded-2xl border bg-muted/30 p-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Deal invitation link</p>
@@ -902,14 +912,14 @@ export function CreateDealPage() {
   const startBlocked = !security.emailVerified || security.kycStatus !== 'verified';
   if (startBlocked) {
     return (
-      <DashboardLayout title="New supplier order">
+      <DashboardLayout title="New protected deal">
         <VerificationGate missing={security.missingForDeal} />
       </DashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout title={editDealId ? "Edit supplier order" : "New supplier order"}>
+    <DashboardLayout title={editDealId ? "Edit protected deal" : "New protected deal"}>
       <LivenessCheckModal
         open={showLiveness && !showProfileConfirmation}
         onOpenChange={setShowLiveness}
@@ -926,7 +936,7 @@ export function CreateDealPage() {
           setActionLiveness({ captureId: capture.captureId, verifiedAt: capture.capturedAt, photoDataUrl: capture.photoDataUrl });
           setShowLiveness(false);
         }}
-        reason="This live photo will be linked only to this order. The other verified participant can view it to confirm who created the order."
+        reason="This live photo will be linked only to this deal. The other verified participant can view it to confirm who created the deal."
         shareNotice="I understand that the other verified participant can view this live photo for the deal."
         footerText="Continuing confirms this photo for the deal may be viewed by the other verified participant. It remains valid for this draft for 24 hours."
       />
@@ -941,9 +951,9 @@ export function CreateDealPage() {
             <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <ShieldCheck size={20} />
             </div>
-            <DialogTitle>Start this supplier order?</DialogTitle>
+            <DialogTitle>Start this protected deal?</DialogTitle>
             <DialogDescription className="leading-6">
-              You are about to create a direct order with <strong className="font-semibold text-foreground">{profileBusinessName || 'this business'}</strong>. Their verified profile has been added as the supplier.
+              You are about to create a protected deal with <strong className="font-semibold text-foreground">{profileBusinessName || 'this business'}</strong>. Their verified profile has been added as the seller.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-2 gap-2 sm:gap-0">
@@ -957,7 +967,7 @@ export function CreateDealPage() {
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this supplier order'}.`}
+        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this protected deal'}.`}
       />
       <DraftSavedForPinModal
         open={showPinDraftSaved}
@@ -976,20 +986,20 @@ export function CreateDealPage() {
       <div className="mx-auto w-full max-w-9xl">
         <div className="mb-4 flex items-center justify-between gap-3 sm:hidden">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Direct orders</p>
-            <h1 className="mt-1 text-lg font-bold tracking-tight">{editDealId ? 'Edit order' : 'Create an order'}</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">My deals</p>
+            <h1 className="mt-1 text-lg font-bold tracking-tight">{editDealId ? 'Edit deal' : 'Create a deal'}</h1>
           </div>
           <Button variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full" aria-label="Back to deals" onClick={() => navigate('/app/deals')}><ArrowLeft size={15} /></Button>
         </div>
 
         <div className="hidden sm:block"><PageHero
-          eyebrow={editDealId ? "Editing existing invitation" : "Direct supplier orders"}
-          title={editDealId ? "Edit supplier order" : "Create a supplier order"}
-          description={editDealId ? "Update the original order details. The same invitation will return to the supplier for review." : "Set the product or service, supplier, payment stages, evidence and completion terms in one Order Room."}
+          eyebrow={editDealId ? "Editing existing invitation" : "Protected deals"}
+          title={editDealId ? "Edit protected deal" : "Create a protected deal"}
+          description={editDealId ? "Update the original deal details. The same invitation will return to the seller for review." : "Describe the deal, agree when payment can be released, and invite the other person."}
           icon={ShieldCheck}
           actions={
             <Button variant="outline" className="rounded-full bg-background/80" onClick={() => navigate('/app/deals')}>
-              <ArrowLeft size={15} /> Direct orders
+              <ArrowLeft size={15} /> My deals
             </Button>
           }
         /></div>
@@ -1002,7 +1012,7 @@ export function CreateDealPage() {
                 <p className="truncate text-sm font-bold">{step === 2 && isMobileLayout ? MOBILE_TERM_STEPS[mobileTermStage - 1] : STEPS[step - 1].title}</p>
                 <p className="shrink-0 text-xs font-medium text-muted-foreground">{step === 2 && isMobileLayout ? `${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}</p>
               </div>
-              <div className={`mt-2 grid gap-1.5 ${step === 2 && isMobileLayout ? 'grid-cols-4' : 'grid-cols-3'}`} aria-label={step === 2 && isMobileLayout ? `Order terms ${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}>
+              <div className={`mt-2 grid gap-1.5 ${step === 2 && isMobileLayout ? 'grid-cols-4' : 'grid-cols-3'}`} aria-label={step === 2 && isMobileLayout ? `Deal terms ${mobileTermStage} of ${MOBILE_TERM_STEPS.length}` : `Step ${step} of ${STEPS.length}`}>
                 {(step === 2 && isMobileLayout ? MOBILE_TERM_STEPS : STEPS).map((item, index) => <span key={typeof item === 'string' ? item : item.title} className={`h-1 rounded-full ${index < (step === 2 && isMobileLayout ? mobileTermStage : step) ? 'bg-primary' : 'bg-muted'}`} />)}
               </div>
             </div>
@@ -1016,15 +1026,15 @@ export function CreateDealPage() {
               </span>
             </div>
             <div className="mb-6 hidden h-1.5 overflow-hidden rounded-full bg-muted xl:block">
-              <div className="h-full rounded-full bg-gradient-to-r from-primary to-sky-400 transition-all duration-500" style={{ width: `${(step / STEPS.length) * 100}%` }} />
+              <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${(step / STEPS.length) * 100}%` }} />
             </div>
             <div className="hidden xl:block">
               <VerticalStepper steps={STEPS} currentStep={step} />
             </div>
-            <div className="mt-7 hidden gap-3 rounded-2xl bg-gradient-to-br from-[#071b31] to-[#0b4d91] p-4 text-white xl:flex">
+            <div className="mt-7 hidden gap-3 rounded-2xl border-t p-4 text-muted-foreground xl:flex">
               <ShieldCheck size={18} className="mt-0.5 shrink-0 text-sky-300" />
               <p className="text-xs leading-5 text-muted-foreground">
-                <span className="text-white/80">Funds move through an account issued by a regulated payment partner. Naitrust never holds them directly.</span>
+                <span className="text-muted-foreground">Live payments require an approved payment partner. Naitrust does not hold customer funds.</span>
               </p>
             </div>
           </aside>
@@ -1039,7 +1049,7 @@ export function CreateDealPage() {
               style={{ willChange: 'opacity' }}
             >
             <Card className="gap-0 overflow-hidden rounded-none border-x-0 border-border/80 p-0 shadow-none sm:rounded-3xl sm:border-x sm:shadow-[0_16px_45px_rgba(7,27,49,.08)]">
-              <div className="relative hidden overflow-hidden border-b bg-gradient-to-br from-primary/[0.09] via-background to-background px-5 py-5 sm:block sm:px-7">
+              <div className="relative hidden overflow-hidden border-b bg-muted/20 px-5 py-5 sm:block sm:px-7">
                 <div className="pointer-events-none absolute -right-14 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-2xl" />
                 <div className="relative flex items-start gap-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20">
@@ -1065,9 +1075,9 @@ export function CreateDealPage() {
                     </p>
                     <div className="mt-2 sm:hidden">
                       <Select value={form.useCase || undefined} onValueChange={selectUseCase}>
-                        <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose a deal type" /></SelectTrigger>
+                        <SelectTrigger aria-label="Deal type" className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose a deal type" /></SelectTrigger>
                         <SelectContent>
-                          {[...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
+                          {[...CREATE_DEAL_USE_CASES.quick]
                             .sort((left, right) => Number(left.slug === 'custom-business-deal') - Number(right.slug === 'custom-business-deal'))
                             .map((useCase) => <SelectItem key={useCase.slug} value={useCase.slug}>{shortUseCaseLabel(useCase)}</SelectItem>)}
                         </SelectContent>
@@ -1075,7 +1085,7 @@ export function CreateDealPage() {
                     </div>
                     <div className="mt-3 hidden grid-cols-2 gap-2 sm:grid sm:grid-cols-3">
                       {(showAllUseCases
-                        ? [...CREATE_DEAL_USE_CASES.quick, ...CREATE_DEAL_USE_CASES.more]
+                        ? [...CREATE_DEAL_USE_CASES.quick]
                         : [...CREATE_DEAL_USE_CASES.quick]
                       ).sort((left, right) => Number(left.slug === 'custom-business-deal') - Number(right.slug === 'custom-business-deal')).map((useCase) => {
                         const Icon = useCase.icon;
@@ -1099,55 +1109,15 @@ export function CreateDealPage() {
                         );
                       })}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowAllUseCases((current) => !current)}
-                      className="mt-3 hidden items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80 sm:inline-flex"
-                    >
-                      {showAllUseCases ? 'Show common choices only' : 'See all deal types'}
-                      <ChevronDown
-                        size={15}
-                        className={`transition-transform ${showAllUseCases ? 'rotate-180' : ''}`}
-                      />
-                    </button>
                     <FieldError message={errors.useCase} />
                   </div>
-
-                  {form.useCase && (
-                    <div>
-                      <div className="flex items-center justify-between gap-3">
-                        <Label className="text-sm">How will it be completed?</Label>
-                        <span className="text-[10px] text-muted-foreground">Recommended from your deal type</span>
-                      </div>
-                      <div className="mt-2 grid grid-cols-3 rounded-xl border bg-muted/30 p-1">
-                        {(features.availableWorkflows ?? []).map((workflowMode) => {
-                          const selected = form.workflowMode === workflowMode;
-                          return (
-                            <button
-                              key={workflowMode}
-                              type="button"
-                              aria-pressed={selected}
-                              onClick={() => {
-                                setForm((current) => ({ ...current, workflowMode, extendedProductTestingDays: workflowMode === 'delivery' ? current.extendedProductTestingDays : undefined }));
-                                invalidateAgreement();
-                              }}
-                              className={`min-w-0 rounded-lg px-2 py-2 text-xs font-semibold transition sm:text-sm ${selected ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-                            >
-                              {WORKFLOW_META[workflowMode].label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      <p className="mt-1.5 text-[11px] leading-4 text-muted-foreground">{WORKFLOW_META[form.workflowMode].description}</p>
-                    </div>
-                  )}
 
                   <div className="grid gap-6 lg:grid-cols-2">
                     <div>
                       <Label className="mb-2 block">Who are you dealing with?</Label>
                       <div className="sm:hidden">
                         <Select value={form.partyMode || undefined} onValueChange={(value) => set('partyMode', value as PartyMode)}>
-                          <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose who is involved" /></SelectTrigger>
+                          <SelectTrigger aria-label="Who is involved" className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose who is involved" /></SelectTrigger>
                           <SelectContent>{partyModeOptions.map((opt) => <SelectItem key={opt.mode} value={opt.mode}>{opt.title}</SelectItem>)}</SelectContent>
                         </Select>
                       </div>
@@ -1170,7 +1140,7 @@ export function CreateDealPage() {
                       <Label className="mb-2 block">Will you pay or receive?</Label>
                       <div className="sm:hidden">
                         <Select value={form.role || undefined} onValueChange={(value) => set('role', value as DealRole)}>
-                          <SelectTrigger className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose your role" /></SelectTrigger>
+                          <SelectTrigger aria-label="Your role" className="h-11 w-full rounded-xl bg-background"><SelectValue placeholder="Choose your role" /></SelectTrigger>
                           <SelectContent><SelectItem value="buyer">I will pay</SelectItem><SelectItem value="seller">I will receive</SelectItem></SelectContent>
                         </Select>
                       </div>
@@ -1198,7 +1168,7 @@ export function CreateDealPage() {
 
               {step === 2 && (
                 <div className="flex flex-col gap-6">
-                  <CreateDealDetailsStep
+                  {(form.splitPayment || form.participants.length > 1) ? <CreateDealDetailsStep
                   mobileStage={mobileTermStage}
                   form={form}
                   errors={errors}
@@ -1226,13 +1196,21 @@ export function CreateDealPage() {
                   onDeselectCounterparty={removeSelectedCounterparty}
                   onRemoveParticipant={removeParticipant}
                   onRemoveParticipantFromStage={(index, stage) => removeParticipantFromStage(index, stage as 'first' | 'second')}
-                  />
-                  <div className={mobileTermStage === 4 ? 'block' : 'hidden sm:block'}><PaymentConditionsStep workflowMode={form.workflowMode} splitPayment={form.splitPayment} useCase={form.useCase} releaseConditions={form.releaseConditions} nextPaymentReleaseConditions={form.nextPaymentReleaseConditions} extendedProductTestingDays={form.extendedProductTestingDays} openUntil={form.openUntil} minOpen={minOpen} maxOpen={maxOpen} maxOpenDays={MAX_DEAL_OPEN_DAYS} showAdvancedTiming={showAdvancedTiming} errors={errors} generatedByAi={paymentConditionsGeneratedByAi} generating={isGeneratingPaymentConditions} onGenerate={(stage) => void generatePaymentConditions(stage)} onFieldChange={(field, value) => set(field, value)} onTestingPeriodChange={(value) => set('extendedProductTestingDays', value)} onAdvancedTimingChange={setShowAdvancedTiming} /></div>
+                  /> : <SimpleDealDetails form={form} errors={errors} mobileStage={mobileTermStage} onFieldChange={(field,value)=>set(field,value)} onParticipantChange={updateParticipant}/> }
+                  <div className={mobileTermStage === 4 ? 'block' : 'hidden sm:block'}>
+                    <Label htmlFor="simple-release">When should payment be released?</Label>
+                    <p className="mb-2 mt-1 text-xs leading-5 text-muted-foreground">Be specific about the delivery, evidence and checks you both expect.</p>
+                    <Textarea id="simple-release" rows={4} value={form.releaseConditions} onChange={event=>set('releaseConditions',event.target.value)} />
+                    <FieldError message={errors.releaseConditions}/>
+                    {form.splitPayment && <div className="mt-4"><Label htmlFor="legacy-next-release">Remaining payment conditions</Label><Textarea id="legacy-next-release" value={form.nextPaymentReleaseConditions} onChange={event=>set('nextPaymentReleaseConditions',event.target.value)}/><FieldError message={errors.nextPaymentReleaseConditions}/></div>}
+                    <div className="mt-5"><Label htmlFor="simple-invite-expiry">Accept the invitation by</Label><Input id="simple-invite-expiry" type="date" className="mt-2 max-w-xs" min={minOpen} max={maxOpen} value={form.openUntil} onChange={event=>set('openUntil',event.target.value)}/><FieldError message={errors.openUntil}/></div>
+                  </div>
                 </div>
               )}
 
               {step === 3 && (
                 <div className="flex flex-col gap-4">
+                  {appConfig.isMock && !editDealId && <LegalSelectionForm value={form.legalReview} onChange={legalReview => setForm(previous => ({ ...previous, legalReview }))} amountMinor={amountMinor} />}
                   {isGenerating || !agreement ? (
                     <AgreementPreparationState />
                   ) : (
@@ -1288,7 +1266,7 @@ export function CreateDealPage() {
                       label="Invitation expires"
                       value={form.openUntil ? format(new Date(form.openUntil), 'MMM d, yyyy') : 'Not available'}
                     />
-                    <ReviewRow label="Order Room" value={form.workflowMode === 'delivery' ? 'Delivery and handover' : form.workflowMode === 'service' ? 'Work review and buyer-approved payment' : 'Milestone progress and stage review'} />
+                    <ReviewRow label="Deal Room" value={form.workflowMode === 'delivery' ? 'Delivery and handover' : form.workflowMode === 'service' ? 'Work review and buyer-approved payment' : 'Milestone progress and stage review'} />
                     <div className="flex items-center gap-4 px-4 py-3">
                       <dt className="w-40 shrink-0 text-sm text-muted-foreground">Agreement</dt>
                       <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-sm font-medium text-foreground">
@@ -1325,14 +1303,14 @@ export function CreateDealPage() {
                         </span>
                         <div>
                           <p className="text-xs font-semibold text-foreground">3. Funding begins</p>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the order from the Order Room.</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">Both parties can follow the deal from the Deal Room.</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Order money moves through an account issued by a regulated payment partner. Naitrust coordinates the order record but does not hold the money directly.
+                    Naitrust keeps the agreement and payment instructions together. Live payments depend on approved payment partners; Naitrust does not directly hold customer funds.
                   </p>
                 </div>
                 )
@@ -1349,14 +1327,14 @@ export function CreateDealPage() {
                   <span className="shrink-0 rounded-full bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm">Start check</span>
                 </button>
               )}
-              <div className="sticky bottom-0 z-20 -mx-1 -mb-4 mt-6 flex items-center gap-2 border-t bg-background/95 px-1 py-3 backdrop-blur sm:static sm:-mx-7 sm:-mb-7 sm:mt-7 sm:justify-between sm:bg-muted/20 sm:px-7 sm:py-5">
+              <div className="relative z-20 -mx-1 -mb-4 mt-6 flex items-center gap-2 border-t bg-background/95 px-1 py-3 backdrop-blur sm:static sm:-mx-7 sm:-mb-7 sm:mt-7 sm:justify-between sm:bg-muted/20 sm:px-7 sm:py-5">
                 <Button type="button" variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-full sm:h-9 sm:w-auto sm:px-3" onClick={handleBack} disabled={submittingDeal} aria-label={step === 1 ? 'Cancel' : 'Back'}>
                   <ArrowLeft size={16} className="sm:mr-1" />
                   <span className="hidden sm:inline">{step === 1 ? 'Cancel' : 'Back'}</span>
                 </Button>
                 <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
                   {step > 1 && !editDealId && (
-                    <Button type="button" variant="ghost" size="sm" onClick={handleSaveDraft} disabled={submittingDeal} className="h-10 shrink-0 rounded-full px-2.5 sm:rounded-md sm:px-3">
+                    <Button type="button" variant="ghost" size="sm" aria-label="Save draft" onClick={handleSaveDraft} disabled={submittingDeal} className="h-10 shrink-0 rounded-full px-2.5 sm:rounded-md sm:px-3">
                       <Save size={15} />
                       <span className="hidden sm:inline">Save draft</span>
                     </Button>
@@ -1367,7 +1345,7 @@ export function CreateDealPage() {
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   ) : (
-                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || isGenerating || !agreement || !agreementConfirmed || livenessRequiredNow} className="rounded-md">
+                    <Button type="button" onClick={requestSubmit} disabled={submittingDeal || isGenerating || !agreement || !agreementConfirmed || livenessRequiredNow || Boolean(form.legalReview && (!form.legalReview.consent || !form.legalReview.providerId || !form.legalReview.purpose.trim() || legalRate() === null))} className="rounded-md">
                       {submittingDeal ? (
                         <>
                           <Loader2 size={16} className="mr-1.5 animate-spin" />
@@ -1376,7 +1354,7 @@ export function CreateDealPage() {
                       ) : (
                         <>
                           {editDealId ? <Pencil size={16} className="mr-1.5" /> : <ShieldCheck size={16} className="mr-1.5" />}
-                          {editDealId ? 'Update invitation' : 'Create supplier order'}
+                          {editDealId ? 'Update invitation' : 'Create protected deal'}
                         </>
                       )}
                     </Button>

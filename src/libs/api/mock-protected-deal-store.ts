@@ -2,6 +2,8 @@ import type {
   CreateSafeDealInput,
   CreateSafeDealResult,
   DealActivityEvent,
+  DealEvidenceItem,
+  DealMilestone,
   DealDeliveryLifecycle,
   DealCompletionLifecycle,
   SafeDealStatus,
@@ -16,6 +18,8 @@ export interface MockCreatedDeal {
 }
 
 interface MockDealRuntime {
+  evidence?: DealEvidenceItem[];
+  milestones?: DealMilestone[];
   delivery?: DealDeliveryLifecycle;
   completion?: DealCompletionLifecycle;
   status?: SafeDealStatus;

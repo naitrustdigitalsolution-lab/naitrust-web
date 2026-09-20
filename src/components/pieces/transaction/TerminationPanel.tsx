@@ -59,7 +59,7 @@ export function TerminationPanel({ termination, responding, onAccept, onReject }
 
       {status === 'accepted' && (
         <p className="text-sm text-muted-foreground">
-          {termination.respondedByName ?? 'The other party'} agreed to cancel this order
+          {termination.respondedByName ?? 'The other party'} agreed to cancel this deal
           {termination.respondedAt ? ` on ${format(new Date(termination.respondedAt), 'MMM d, yyyy')}` : ''}. This
           record is kept for both parties.
         </p>

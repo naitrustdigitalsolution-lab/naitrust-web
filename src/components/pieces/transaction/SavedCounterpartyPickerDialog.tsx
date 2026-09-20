@@ -162,7 +162,7 @@ export function SavedCounterpartyPickerDialog({
       <SheetContent className="w-[94vw] gap-0 overflow-hidden p-0 sm:max-w-xl lg:max-w-2xl">
         <SheetHeader className="border-b px-5 pb-4 pt-5 sm:px-6">
           <SheetTitle>{directoryMode ? 'Find on Naitrust' : 'Choose a saved contact'}</SheetTitle>
-          <SheetDescription>{directoryMode ? 'Search verified Naitrust accounts and add a supplier or provider.' : 'Search saved contacts and add one to this order.'}</SheetDescription>
+          <SheetDescription>{directoryMode ? 'Search verified Naitrust accounts and add a supplier or provider.' : 'Search saved contacts and add one to this deal.'}</SheetDescription>
         </SheetHeader>
 
         <div className={`grid gap-3 px-5 pt-4 sm:px-6 ${directoryMode ? 'grid-cols-1' : 'sm:grid-cols-[minmax(0,1fr)_190px]'}`}>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { appConfig } from '../../../configs/env';
 import { CheckCircle2, FileCheck2, RefreshCw, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import type { DealRole, SafeDealDetail } from '../../../libs/store/types';
@@ -21,6 +22,8 @@ export function DealServiceCompletionPanel({ deal, viewerRole, hasDispute, onUpl
   const providerEvidence = deal.evidence.some((item) => item.uploadedByRole === 'seller');
   const completed = ['release_approved', 'paid_out'].includes(deal.completion.status);
 
+  if (!['funded', 'released'].includes(deal.funding.status)) return null;
+
   return (
     <Card className="mb-4 overflow-hidden rounded-2xl border-primary/15 p-0 shadow-sm">
       <div className="flex items-start gap-3 p-4 sm:p-5">
@@ -28,10 +31,10 @@ export function DealServiceCompletionPanel({ deal, viewerRole, hasDispute, onUpl
         <div className="min-w-0 flex-1">
           <p className="font-semibold">{deal.workflowMode === 'milestone' ? 'Progress review' : 'Work completion'}</p>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            {completed ? 'The buyer approved the work and the order payment was released.'
+            {completed ? (appConfig.isMock ? 'The work was approved locally. No provider payout was made.' : 'The buyer approved the work and the deal payment was released.')
               : awaitingReview ? (isProvider ? 'Your payment request is waiting for the buyer to review the evidence.' : 'The provider submitted work and requested payment. Review the evidence before deciding.')
-                : deal.completion.status === 'changes_requested' ? (isProvider ? `The buyer requested changes: ${deal.completion.changesReason}` : 'You requested changes. Payment remains protected while the provider updates the work.')
-                  : isProvider ? 'Add evidence of the completed work, then request payment when it is ready for review.' : 'Payment remains protected until the provider submits work and you approve release.'}
+                : deal.completion.status === 'changes_requested' ? (isProvider ? `The buyer requested changes: ${deal.completion.changesReason}` : 'You requested changes. The provider can update the work.')
+                  : isProvider ? 'Add evidence of the completed work, then request payment when it is ready for review.' : (appConfig.isMock ? 'Review the work and evidence. Payment release is unavailable until the provider is connected.' : 'Payment remains protected until the provider submits work and you approve release.')}
           </p>
         </div>
       </div>
@@ -46,7 +49,7 @@ export function DealServiceCompletionPanel({ deal, viewerRole, hasDispute, onUpl
           </>}
           {!isProvider && awaitingReview && <>
             <Button variant="outline" className="rounded-full" onClick={() => setShowChanges(true)}>Request changes</Button>
-            <Button className="rounded-full" onClick={() => setShowPin(true)}><CheckCircle2 size={15} /> Approve & release funds</Button>
+            {appConfig.isMock ? <p className="text-sm text-muted-foreground">Payment release is unavailable until the provider is connected.</p> : <Button className="rounded-full" onClick={() => setShowPin(true)}><CheckCircle2 size={15} /> Approve & release funds</Button>}
           </>}
         </div>
       )}
@@ -58,7 +61,7 @@ export function DealServiceCompletionPanel({ deal, viewerRole, hasDispute, onUpl
           <DialogFooter><Button variant="outline" onClick={() => setShowChanges(false)}>Cancel</Button><Button disabled={!reason.trim() || requestChanges.isPending} onClick={() => requestChanges.mutate(reason, { onSuccess: () => { setShowChanges(false); setReason(''); toast.success('Changes requested. The provider was notified.'); }, onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not request changes.') })}>Send request</Button></DialogFooter>
         </DialogContent>
       </Dialog>
-      <PinPromptModal open={showPin} onOpenChange={setShowPin} title="Release order payment?" description="Confirm that you reviewed the submitted work and evidence and are satisfied." warning="Once released, this payment cannot be frozen or reversed from the Order Room." onVerified={() => approveRelease.mutate(undefined, { onSuccess: () => toast.success('Payment released to the provider.'), onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not release payment.') })} />
+      <PinPromptModal open={showPin} onOpenChange={setShowPin} title="Release payment?" description="Confirm that you reviewed the submitted work and evidence and are satisfied." warning="Once released, this payment cannot be frozen or reversed from the Deal Room." onVerified={() => approveRelease.mutate(undefined, { onSuccess: () => toast.success('Payment released to the provider.'), onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not release payment.') })} />
     </Card>
   );
 }

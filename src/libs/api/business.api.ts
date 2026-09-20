@@ -64,7 +64,9 @@ export type BusinessUpdate = Partial<
 function resolveBusiness(userId: string): BusinessProfile | null {
   const base = mockList.find((b) => b.ownerUserId === userId);
   if (!base) return null;
-  return { ...base, ...overrides[userId] };
+  let saved: Partial<BusinessProfile> = {};
+  try { saved = JSON.parse(localStorage.getItem(`naitrust:business-profile:${userId}`) ?? '{}'); } catch { /* Ignore invalid preview data. */ }
+  return { ...base, ...saved, ...overrides[userId] };
 }
 
 export const businessApi = {
@@ -168,10 +170,15 @@ export const businessApi = {
       await delay(MOCK_LATENCY_MS);
       // The verification-critical fields (name, CAC/RC number) are locked once
       // verified, so editing contact/profile details doesn't change verification.
-      overrides[userId] = { ...overrides[userId], ...patch };
+      const current = resolveBusiness(userId);
+      if (!current) throw new Error('Complete your business profile before adding a website.');
+      const updated = { ...current, ...patch };
+      localStorage.setItem(`naitrust:business-profile:${userId}`, JSON.stringify(updated));
+      overrides[userId] = updated;
       return { success: true, data: resolveBusiness(userId) };
     }
-    const current = resolveBusiness(userId);
+    const current = (await businessApi.getMine(userId)).data;
+    if (!current) throw new Error('Business profile not found.');
     const response = await httpClient.put(
       endpoints.businesses.update(current?.id ?? ''),
       patch,

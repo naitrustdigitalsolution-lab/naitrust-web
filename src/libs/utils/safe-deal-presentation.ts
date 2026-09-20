@@ -23,13 +23,13 @@ interface StatusPresentation {
  */
 const STATUS_PRESENTATION: Record<SafeDealStatus, StatusPresentation> = {
   draft: { label: 'Draft', variant: 'outline' },
-  pending_counterparty: { label: 'Pending counterparty', variant: 'outline' },
+  pending_counterparty: { label: 'Awaiting agreement', variant: 'outline' },
   terms_negotiation: { label: 'Negotiating terms', variant: 'outline' },
   terms_agreed: { label: 'Terms agreed', variant: 'outline' },
   awaiting_funding: { label: 'Awaiting funding', variant: 'outline' },
   funded: { label: 'Funded', variant: 'default' },
   in_progress: { label: 'In progress', variant: 'default' },
-  evidence_submitted: { label: 'Evidence submitted', variant: 'default' },
+  evidence_submitted: { label: 'Ready for review', variant: 'default' },
   buyer_review: { label: 'Buyer review', variant: 'default' },
   release_approved: { label: 'Release approved', variant: 'default' },
   disputed: { label: 'Disputed', variant: 'destructive' },

@@ -1,3 +1,5 @@
+import { accountSuspended } from '../../features/legal/access';
+import { useAuthStore } from '../store/auth.store';
 /**
  * HTTP Client
  * Core HTTP request handler with error handling and JWT authentication
@@ -118,6 +120,7 @@ async function request<T = any>(
   options: RequestInit = {},
   extras: RequestExtras = {}
 ): Promise<ApiResponse<T>> {
+  if (accountSuspended(useAuthStore.getState().user?.id)) throw new Error('Account suspended. Contact support.');
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
   const baseHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -201,7 +204,8 @@ export const httpClient = {
     formData: FormData,
     extraHeaders?: HeadersInit
   ): Promise<ApiResponse<T>> => {
-    const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+    if (accountSuspended(useAuthStore.getState().user?.id)) throw new Error('Account suspended. Contact support.');
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
     const headers = withAuthHeader({ ...(extraHeaders as Record<string, string> | undefined) });
 
     try {

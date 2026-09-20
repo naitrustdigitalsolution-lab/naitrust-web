@@ -1,3 +1,5 @@
+import { assertActiveAccount } from '../../features/legal/access';
+import { legalApi, legalFundingBlocked } from '../../features/legal/legal.api';
 /**
  * Transactions (Safe Deal) API
  * Typed access to the safe-deal transaction endpoints.
@@ -37,8 +39,10 @@ function assertSingleReleasePilot(input: CreateSafeDealInput): void {
 
 export const transactionsApi = {
   deleteUnacceptedTransaction: async (id: string): Promise<ApiSuccess<{ id: string }>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      assertActiveAccount();
       const userId = useAuthStore.getState().user?.id;
       const deal = listMockCreatedDeals().find((item) => item.summary.id === id);
       const status = getMockDealRuntime(id)?.status ?? deal?.summary.status;
@@ -50,12 +54,15 @@ export const transactionsApi = {
     return await httpClient.delete<{ id: string }>(`/transactions/${id}`) as ApiSuccess<{ id: string }>;
   },
   updateTransaction: async (id: string, input: CreateSafeDealInput): Promise<ApiSuccess<CreateSafeDealResult>> => {
+    assertActiveAccount();
     assertSingleReleasePilot(input);
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      assertActiveAccount();
       const userId = useAuthStore.getState().user?.id;
       const existing = listMockCreatedDeals().find((deal) => deal.summary.id === id);
       if (!existing || !userId || existing.summary.createdByUserId !== userId) throw new Error('Only the deal creator can edit this invitation.');
+      if (legalApi.get(id) && !legalApi.get(id)?.removed) throw new Error("Jointly remove the legal proposal before editing deal terms.");
       const { selfParticipantIndex } = mockCreatedDealRoleContext(id);
       const inviteeUserIds = input.participants.filter((_, index) => index !== selfParticipantIndex).map(mockParticipantUserId).filter((value): value is string => Boolean(value));
       const first = input.participants.filter((_, index) => index !== selfParticipantIndex)[0];
@@ -83,8 +90,10 @@ export const transactionsApi = {
    * Real endpoint: GET /transactions/my
    */
   getMyTransactions: async (): Promise<ApiSuccess<SafeDealSummary[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      assertActiveAccount();
       const fixture = (mockTransactions as ApiSuccess<SafeDealSummary[]>).data;
       const created = listMockCreatedDeals().map((deal) => deal.summary);
       const userId = useAuthStore.getState().user?.id;
@@ -126,9 +135,11 @@ export const transactionsApi = {
    * In mock mode returns a freshly-created summary in `pending_counterparty`.
    */
   createTransaction: async (input: CreateSafeDealInput): Promise<ApiSuccess<CreateSafeDealResult>> => {
+    assertActiveAccount();
     assertSingleReleasePilot(input);
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      assertActiveAccount();
       const now = new Date();
       const first = input.participants[0];
       const counterpartyName =
@@ -157,6 +168,10 @@ export const transactionsApi = {
         publicInvitePath: `/invite/${token}`,
       };
       saveMockCreatedDeal({ summary, input });
+      if (input.legalReview) {
+        try { await legalApi.propose(summary.id, input.legalReview); }
+        catch (error) { deleteMockCreatedDeal(summary.id); throw error; }
+      }
       return { success: true, data: summary, message: 'Protected Deal created' };
     }
     const response = await httpClient.post<CreateSafeDealResult>(endpoints.transactions.create, input);

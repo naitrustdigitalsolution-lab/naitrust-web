@@ -1,14 +1,17 @@
+import { assertActiveAccount } from '../../features/legal/access';
 /**
  * Deal Chat API
  * Messages between the parties inside a transaction room. In mock mode the
- * thread is held in session module state (seeded per deal, reset on reload)
- * so sending a message reflects immediately, mirroring the mock-auth engine.
+ * thread persists in the current browser, with authors resolved for each viewer.
+ * Activity updates use the same shared message endpoint.
  */
 
 import { httpClient } from './client';
 import { endpoints } from './endpoints';
 import { appConfig } from '../../configs/env';
 import type { ApiSuccess } from './types';
+import { useAuthStore } from '../store/auth.store';
+import { findMockCreatedDeal } from './mock-protected-deal-store';
 import type { DealMessage } from '../store/types';
 
 const MOCK_LATENCY_MS = 250;
@@ -17,8 +20,17 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Session-scoped threads keyed by deal id. */
-const threads: Record<string, DealMessage[]> = {};
+/** Browser-local preview threads keyed by deal id. */
+const threadKey = (id: string) => `naitrust:deal-messages:${id}`;
+export const ACTIVITY_UPDATE_PREFIX = 'Activity update: ';
+function readThread(id: string, name: string): DealMessage[] {
+  try { const saved = JSON.parse(localStorage.getItem(threadKey(id)) ?? 'null'); if (Array.isArray(saved)) return saved; } catch { /* Ignore invalid preview data. */ }
+  return findMockCreatedDeal(id) ? [] : seedThread(id, name);
+}
+async function assertParticipant(id: string) {
+  const { dealDetailApi } = await import('./deal-detail.api');
+  if (!(await dealDetailApi.getOne(id)).data) throw new Error('This deal is unavailable.');
+}
 
 function seedThread(dealId: string, counterpartyName: string): DealMessage[] {
   const base = Date.now() - 3 * 3600_000;
@@ -47,10 +59,12 @@ function seedThread(dealId: string, counterpartyName: string): DealMessage[] {
 export const dealMessagesApi = {
   /** GET /transactions/:id/messages */
   list: async (dealId: string, counterpartyName = 'Counterparty'): Promise<ApiSuccess<DealMessage[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      if (!threads[dealId]) threads[dealId] = seedThread(dealId, counterpartyName);
-      return { success: true, data: threads[dealId].map((m) => ({ ...m })) };
+      await assertParticipant(dealId);
+      const viewerId = useAuthStore.getState().user?.id;
+      return { success: true, data: readThread(dealId, counterpartyName).map(m => ({ ...m, isYou: m.senderId === viewerId })) };
     }
     const response = await httpClient.get<DealMessage[]>(endpoints.transactions.messages(dealId));
     return response as ApiSuccess<DealMessage[]>;
@@ -58,19 +72,22 @@ export const dealMessagesApi = {
 
   /** POST /transactions/:id/messages */
   send: async (dealId: string, body: string): Promise<ApiSuccess<DealMessage>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
+      await assertParticipant(dealId);
+      const user = useAuthStore.getState().user;
+      if (!user || !body.trim()) throw new Error('Write an update before posting.');
       const message: DealMessage = {
         id: `${dealId}_${crypto.randomUUID()}`,
         dealId,
-        senderId: 'party_you',
-        senderName: 'You',
+        senderId: user.id,
+        senderName: user.name,
         isYou: true,
         body,
         createdAt: new Date().toISOString(),
       };
-      if (!threads[dealId]) threads[dealId] = [];
-      threads[dealId].push(message);
+      localStorage.setItem(threadKey(dealId), JSON.stringify([...readThread(dealId, 'Counterparty'), message]));
       return { success: true, data: message };
     }
     const response = await httpClient.post<DealMessage>(endpoints.transactions.sendMessage(dealId), {

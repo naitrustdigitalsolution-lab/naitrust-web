@@ -12,6 +12,7 @@ import { KeyRound, Loader2, ShieldCheck } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../ui/dialog';
 import { Button } from '../../ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../../ui/input-otp';
+import { appConfig } from '../../../configs/env';
 import { useSecurity } from '../../../hooks/useSecurity';
 import { securityApi } from '../../../libs/api/security.api';
 
@@ -52,7 +53,7 @@ export function PinPromptModal({
     try {
       const res = await securityApi.verifyPin(value);
       // Mock also checks the entered PIN matches the one the user set.
-      if (res.data.valid && value === setPinValue) {
+      if (res.data.valid && (!appConfig.isMock || value === setPinValue)) {
         onVerified();
         onOpenChange(false);
       } else {

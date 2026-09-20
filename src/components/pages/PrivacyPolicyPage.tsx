@@ -48,6 +48,8 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
             </p>
           </section>
 
+          <section className="mb-8 rounded-xl border p-5"><h2 className="text-xl font-semibold">Optional legal review — planned</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Both parties separately read and accept a legal review agreement for a named approved reviewer and stated purpose. This authorises Naitrust to share the room’s agreement, existing evidence and future uploaded documents automatically. General acceptance of this privacy policy does not appoint a reviewer. Private messages, account banking details and identity captures are outside the reviewer’s access. Uploaded documents may themselves contain personal information. Routine deactivation requires confirmation from both parties; access continues until then, including the retained record after deal completion. Provider revocation and account suspension can also restrict access. Deactivation cannot recall existing copies. Contact our Data Protection Officer for personal-data requests or urgent access concerns; these are handled separately from routine deal deactivation. Consent and access records remain available to authorised administrators under applicable retention requirements. Final terms require legal review before launch.</p></section>
+
           {/* Data Controller */}
           <section className="mb-8">
             <div className="flex items-center gap-2 mb-4">

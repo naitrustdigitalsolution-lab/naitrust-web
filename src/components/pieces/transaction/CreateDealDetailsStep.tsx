@@ -207,7 +207,7 @@ export function CreateDealDetailsStep({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="min-w-0">
-            <Label htmlFor="title">What is this order for? <span className="text-destructive" aria-hidden="true">*</span></Label>
+            <Label htmlFor="title">What is this deal for? <span className="text-destructive" aria-hidden="true">*</span></Label>
             <div className="relative mt-1.5">
               <Input id="title" required aria-required="true" className="pr-11" placeholder="e.g. 20 cartons of cooking oil" value={form.title} onChange={(event) => onFieldChange('title', event.target.value)} />
               <button type="button" disabled={suggestingDetails} onClick={() => { if (titleSuggestions.length) { const currentIndex = titleSuggestions.findIndex((suggestion) => suggestion === form.title); onFieldChange('title', titleSuggestions[(currentIndex + 1) % titleSuggestions.length]); } else setSuggestionRequest((current) => current + 1); }} className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-primary transition hover:bg-primary/10 disabled:opacity-50" aria-label="Generate deal title with AI" title="Generate with AI">
@@ -255,7 +255,7 @@ export function CreateDealDetailsStep({
                 )}
               </div>
               <p className={`mt-1 text-xs ${recipientSelectionReady ? 'text-muted-foreground' : 'font-medium text-amber-700 dark:text-amber-400'}`}>
-                {recipientSelectionReady ? 'Choose the supplier or provider for this order.' : 'Enter the total amount and expected date first.'}
+                {recipientSelectionReady ? 'Choose the seller or provider for this deal.' : 'Enter the total amount and expected date first.'}
               </p>
             </div>
             <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
@@ -421,7 +421,7 @@ export function CreateDealDetailsStep({
 
         <div className={`order-1 mb-3 sm:mb-4 ${mobileStage !== 2 ? 'hidden sm:block' : ''}`}>
           <p className="text-sm font-bold text-foreground">2. Money and timing</p>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">Enter the amount and when the order or work is due.</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">Enter the amount and when the deal or work is due.</p>
         </div>
         <div className={`order-1 gap-4 sm:grid sm:grid-cols-2 ${mobileStage === 2 ? 'grid' : 'hidden'}`}>
           <div>

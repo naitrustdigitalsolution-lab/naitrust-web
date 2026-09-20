@@ -1,3 +1,5 @@
+import { accountSuspended } from '../../features/legal/access';
+import { useLegalRefresh } from '../../features/legal/hooks';
 /**
  * RequireAuth
  * Route guard for the authenticated `/app` area.
@@ -11,7 +13,8 @@ import { useAuth } from '../../libs/auth-context';
 import Spinner from '../ui/spinner';
 
 export function RequireAuth() {
-  const { isAuthenticated, isLoading, isHydrated } = useAuth();
+  useLegalRefresh();
+  const { user, logout, isAuthenticated, isLoading, isHydrated } = useAuth();
   const location = useLocation();
 
   // Wait for the persisted auth store to hydrate before deciding,
@@ -28,5 +31,6 @@ export function RequireAuth() {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (accountSuspended(user?.id)) return <div className="mx-auto max-w-lg space-y-4 p-8"><h1 className="text-xl font-semibold">Account suspended</h1><p>Contact Naitrust support for help. Your existing deal and payment records are preserved.</p><button className="underline" onClick={() => void logout()}>Sign out</button></div>;
   return <Outlet />;
 }

@@ -1,3 +1,6 @@
+import { assertActiveAccount } from '../../features/legal/access';
+import { dataUrlBytes, MAX_EVIDENCE_FILE_BYTES, MAX_EVIDENCE_BATCH_BYTES, MAX_EVIDENCE_DEAL_BYTES, storeEvidenceFile, resolveEvidenceFile } from '../protected-deals/evidence-files';
+import { settleLegalFunding, assertLegalReviewerAccess, agreementLegalDocument } from '../../features/legal/legal.api';
 /**
  * Deal Detail API
  * Provides the full transaction-room view of a safe deal. In mock mode the
@@ -684,7 +687,6 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
  * stores these server-side.
  */
 const trackingOverrides: Record<string, DealMilestone[]> = {};
-const evidenceExtra: Record<string, DealEvidenceItem[]> = {};
 
 function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
   const marketOrder = marketplaceApi.listOrders().find((order) => order.roomId === summary.id);
@@ -764,10 +766,10 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
     ? marketOrder.deliveryMode === 'international' ? 'import-export' : 'wholesale-order'
     : input?.useCase ?? overlay?.useCase ?? 'supplier-orders';
   const workflowMode = input?.workflowMode ?? recommendedWorkflowForUseCase(useCase);
-  const milestones = marketOrder ? milestonesForOrder(marketOrder) : trackingOverrides[summary.id] ?? (dealType === 'milestone' || workflowMode === 'milestone'
+  const milestones = marketOrder ? milestonesForOrder(marketOrder) : runtime?.milestones ?? trackingOverrides[summary.id] ?? (dealType === 'milestone' || workflowMode === 'milestone'
     ? milestonesFor(effectiveSummary, youAreSeller ? 'You' : effectiveSummary.counterpartyName, workflowMode)
     : []);
-  const evidence = [...evidenceFor(effectiveSummary), ...(evidenceExtra[summary.id] ?? [])];
+  const evidence = [...evidenceFor(effectiveSummary), ...(runtime?.evidence ?? [])];
   return {
     ...effectiveSummary,
     publicInvitePath: viewerIsCreator ? createdDeal?.summary.publicInvitePath : undefined,
@@ -818,7 +820,7 @@ function buildDealDetail(summary: SafeDealSummary): SafeDealDetail {
 function ensureTracking(id: string): DealMilestone[] {
   if (!trackingOverrides[id]) {
     const summary = findSummary(id);
-    trackingOverrides[id] = summary ? milestonesFor(summary) : [];
+    trackingOverrides[id] = getMockDealRuntime(id)?.milestones ?? (summary ? milestonesFor(summary) : []);
   }
   return trackingOverrides[id];
 }
@@ -861,6 +863,7 @@ function deliveryContext(deal: SafeDealDetail): DeliveryDealContext {
 }
 
 function getMockDetailOrThrow(id: string): SafeDealDetail {
+  assertActiveAccount();
   const summary = findSummary(id);
   if (!summary) throw new Error('Protected Deal not found.');
   return buildDealDetail(summary);
@@ -877,8 +880,34 @@ function mockRecipientUserId(id: string, role: DealRole): string | undefined {
     .find(Boolean);
 }
 
+function summaryOwner(id: string) { return allSummaries().find(d => d.id === id)?.createdByUserId ?? 'unknown'; }
+/** Deliberately returns only shared agreement/evidence; never a full Deal Room. */
+export function getLegalRoomDocuments(id: string) {
+  const proposal = assertLegalReviewerAccess(id);
+  const stored = findMockCreatedDeal(id);
+  const source = allSummaries().find(d => d.id === id);
+  if (!source) throw new Error('Deal unavailable.');
+  const runtime = getMockDealRuntime(id);
+  const agreement = stored?.input.agreement;
+  const documents = [
+    ...(agreement ? [agreementLegalDocument(agreement)] : proposal.documents.filter(d => d.id === 'agreement' || d.id === 'sample-invoice')),
+    ...[...evidenceFor({ ...source, status: runtime?.status ?? source.status }), ...(runtime?.evidence ?? [])].filter(e => !e.notApplicable).map(e => ({ id: e.id, version: e.createdAt, name: e.fileName, text: e.note, fileUrl: e.fileUrl })),
+  ];
+  return [...new Map(documents.map(d => [d.id, d])).values()];
+}
 export const dealDetailApi = {
+  getEvidenceFile: async (id: string, evidenceId: string) => {
+    assertActiveAccount();
+    const deal = appConfig.isMock ? getMockDetailOrThrow(id) : (await dealDetailApi.getOne(id)).data;
+    if (!deal) throw new Error('Deal unavailable.');
+    const evidence = deal.evidence.find(e => e.id === evidenceId);
+    if (!evidence?.fileUrl) throw new Error('File unavailable.');
+    const url = appConfig.isMock ? await resolveEvidenceFile(evidence.fileUrl) : evidence.fileUrl;
+    if (appConfig.isMock) getMockDetailOrThrow(id);
+    return url;
+  },
   requestServiceRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) {
       return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/request-release`) as ApiSuccess<SafeDealDetail>;
     }
@@ -901,6 +930,7 @@ export const dealDetailApi = {
   },
 
   requestServiceChanges: async (id: string, reason: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) {
       return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/request-changes`, { reason }) as ApiSuccess<SafeDealDetail>;
     }
@@ -922,6 +952,7 @@ export const dealDetailApi = {
   },
 
   approveServiceRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) {
       return await httpClient.post<SafeDealDetail>(`/transactions/${id}/completion/approve-release`) as ApiSuccess<SafeDealDetail>;
     }
@@ -929,6 +960,8 @@ export const dealDetailApi = {
     const deal = getMockDetailOrThrow(id);
     const actor = deal.parties.find((party) => party.isYou);
     if (actor?.role !== 'buyer') throw new Error('Only the buyer can approve release.');
+    if (deal.status === 'disputed' || deal.delivery.fundingReview.status === 'blocked') throw new Error('Payment release is paused while this dispute is reviewed.');
+    if (deal.funding.status !== 'funded') throw new Error('Payment must be funded before release.');
     if (deal.completion.status !== 'release_requested') throw new Error('The provider has not requested payment.');
     const current = getMockDealRuntime(id);
     const now = new Date().toISOString();
@@ -940,7 +973,24 @@ export const dealDetailApi = {
     notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Payment released', message: `The buyer approved payment for ${deal.title}.`, link: `/app/deals/${id}` });
     return { success: true, data: getMockDetailOrThrow(id) };
   },
+  simulateFunding: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
+    if (!appConfig.isMock) throw new Error('Payment confirmation must come from the payment provider.');
+    await delay(400);
+    const deal = getMockDetailOrThrow(id);
+    if (!deal.parties.some((party) => party.isYou && party.role === 'buyer')) throw new Error('Only the buyer can fund this deal.');
+    if (deal.funding.status !== 'awaiting_transfer') throw new Error('Both parties must agree before funding.');
+    settleLegalFunding(id);
+    const current = getMockDealRuntime(id);
+    patchMockDealRuntime(id, {
+      status: 'funded',
+      activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'funded', message: 'Local funding record added. No money was transferred.', createdAt: new Date().toISOString() }, ...(current?.activity ?? [])],
+    });
+    notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Funding record added locally', message: `You can begin work on ${deal.title}.`, link: `/app/deals/${id}` });
+    return { success: true, data: getMockDetailOrThrow(id) };
+  },
   fundFromWallet: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) {
       const res = await httpClient.post<SafeDealDetail>(endpoints.transactions.fund(id), { source: 'wallet' });
       return res as ApiSuccess<SafeDealDetail>;
@@ -948,6 +998,8 @@ export const dealDetailApi = {
     await delay(400);
     const deal = getMockDetailOrThrow(id);
     if (deal.funding.status !== 'awaiting_transfer') throw new Error('This deal is not ready for funding.');
+    if (!deal.parties.some(p => p.isYou && p.role === 'buyer')) throw new Error('Only the buyer can fund this deal.');
+    settleLegalFunding(id);
     const current = getMockDealRuntime(id);
     patchMockDealRuntime(id, {
       status: 'funded',
@@ -965,6 +1017,7 @@ export const dealDetailApi = {
   },
   /** GET /transactions/:id */
   getOne: async (id: string): Promise<ApiSuccess<SafeDealDetail | null>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const summary = findSummary(id);
@@ -975,6 +1028,7 @@ export const dealDetailApi = {
   },
 
   generateDeliveryCard: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) throw new Error('Delivery-card backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
@@ -1005,6 +1059,7 @@ export const dealDetailApi = {
   },
 
   confirmReceiptByToken: async (token: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
     await delay(250);
     const dealId = resolveDeliveryToken(token);
@@ -1015,6 +1070,7 @@ export const dealDetailApi = {
   },
 
   confirmReceiptByOtp: async (id: string, otpCode: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
@@ -1023,6 +1079,7 @@ export const dealDetailApi = {
   },
 
   completeHandoverReview: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) throw new Error('Handover backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
@@ -1031,6 +1088,7 @@ export const dealDetailApi = {
   },
 
   approveEarlyRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
+    assertActiveAccount();
     if (!appConfig.isMock) throw new Error('Funding-release backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
@@ -1040,8 +1098,11 @@ export const dealDetailApi = {
 
   /** Seller advances the shipment to the next tracking stage. */
   advanceTracking: async (id: string): Promise<ApiSuccess<DealMilestone[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(300);
+      const authorized = getMockDetailOrThrow(id);
+      if (!authorized.parties.some(p => p.isYou && p.role === 'seller')) throw new Error('Only the seller can update tracking.');
       const list = ensureTracking(id);
       const currentIdx = list.findIndex((m) => m.status === 'current');
       const idx = currentIdx === -1 ? list.findIndex((m) => m.status === 'pending') : currentIdx;
@@ -1053,6 +1114,7 @@ export const dealDetailApi = {
         if (next !== -1) list[next] = { ...list[next], status: 'current' };
       }
       trackingOverrides[id] = [...list];
+      patchMockDealRuntime(id, { milestones: [...list] });
       const completedStep = idx !== -1 ? list[idx] : undefined;
       if (completedStep) {
         const runtime = getMockDealRuntime(id);
@@ -1082,8 +1144,11 @@ export const dealDetailApi = {
     step: { title: string; description?: string },
     afterStepId?: string | null,
   ): Promise<ApiSuccess<DealMilestone[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(300);
+      const authorized = getMockDetailOrThrow(id);
+      if (!authorized.parties.some(p => p.isYou && p.role === 'seller')) throw new Error('Only the seller can update tracking.');
       const list = ensureTracking(id);
       const milestone: DealMilestone = {
         id: `ms_${crypto.randomUUID()}`,
@@ -1104,6 +1169,7 @@ export const dealDetailApi = {
         else list.splice(insertAt, 0, milestone);
       }
       trackingOverrides[id] = [...list];
+      patchMockDealRuntime(id, { milestones: [...list] });
       return { success: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.tracking(id), {
@@ -1119,14 +1185,18 @@ export const dealDetailApi = {
     stepId: string,
     patch: { title: string; description?: string },
   ): Promise<ApiSuccess<DealMilestone[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(300);
+      const authorized = getMockDetailOrThrow(id);
+      if (!authorized.parties.some(p => p.isYou && p.role === 'seller')) throw new Error('Only the seller can update tracking.');
       const list = ensureTracking(id);
       const idx = list.findIndex((m) => m.id === stepId);
       if (idx !== -1) {
         list[idx] = { ...list[idx], title: patch.title, description: patch.description };
       }
       trackingOverrides[id] = [...list];
+      patchMockDealRuntime(id, { milestones: [...list] });
       return { success: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.patch<DealMilestone[]>(
@@ -1141,8 +1211,11 @@ export const dealDetailApi = {
    * one stage (the last completed stage re-opens as the current one).
    */
   revertTracking: async (id: string): Promise<ApiSuccess<DealMilestone[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(300);
+      const authorized = getMockDetailOrThrow(id);
+      if (!authorized.parties.some(p => p.isYou && p.role === 'seller')) throw new Error('Only the seller can update tracking.');
       const list = ensureTracking(id);
       const currentIdx = list.findIndex((m) => m.status === 'current');
       if (currentIdx === -1) {
@@ -1164,45 +1237,60 @@ export const dealDetailApi = {
         };
       }
       trackingOverrides[id] = [...list];
+      patchMockDealRuntime(id, { milestones: [...list] });
       return { success: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.revertTracking(id));
     return res as ApiSuccess<DealMilestone[]>;
   },
 
-  /** Add uploaded evidence (mock retains session object URLs for preview). */
+  /** Add uploaded evidence (the preview keeps attachments across reloads). */
   addEvidence: async (
     id: string,
-    items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string; notApplicable?: boolean }[],
+    items: { fileName: string; kind: string; note?: string; fileUrl?: string; mimeType?: string; sizeBytes?: number; originalSizeBytes?: number; notApplicable?: boolean }[],
     uploadedByName: string,
     uploadedByRole: DealRole,
   ): Promise<ApiSuccess<DealEvidenceItem[]>> => {
+    assertActiveAccount();
     if (appConfig.isMock) {
       await delay(300);
-      const created = items.map((it) => ({
+      const authorizedDeal = getMockDetailOrThrow(id);
+      const self = authorizedDeal.parties.find(p => p.isYou);
+      if (!self) throw new Error('Deal participant access required.');
+      if (['paid_out','completed','refunded','cancelled'].includes(authorizedDeal.status)) throw new Error('This deal is closed.');
+      const actualSizes = items.map(it => dataUrlBytes(it.fileUrl));
+      if (items.length > 3 || actualSizes.some(size => size > MAX_EVIDENCE_FILE_BYTES) || actualSizes.reduce((a,b) => a+b,0) > MAX_EVIDENCE_BATCH_BYTES) throw new Error('Evidence exceeds the upload limits (3 files, 2 MB each, 4 MB total).');
+      if ((getMockDealRuntime(id)?.evidence ?? []).reduce((n,e) => n + (e.sizeBytes ?? dataUrlBytes(e.fileUrl)),0) + actualSizes.reduce((a,b)=>a+b,0) > MAX_EVIDENCE_DEAL_BYTES) throw new Error('This deal has reached its 20 MB evidence limit.');
+      for (const item of items) { if (item.fileUrl && !/^data:(application\/pdf|image\/(jpeg|png)|video\/(mp4|quicktime|webm));base64,/.test(item.fileUrl)) throw new Error('Unsupported evidence file.'); }
+      const created = await Promise.all(items.map(async (it, index) => ({
         id: `ev_${crypto.randomUUID()}`,
         fileName: it.fileName,
         kind: it.kind,
-        fileUrl: it.fileUrl,
+        fileUrl: it.fileUrl ? await storeEvidenceFile(`${summaryOwner(id)}:${id}:${crypto.randomUUID()}`, it.fileUrl) : undefined,
+        sizeBytes: actualSizes[index],
+        originalSizeBytes: it.originalSizeBytes,
         mimeType: it.mimeType,
-        uploadedByName,
-        uploadedByRole,
+        uploadedByName: self.name,
+        uploadedByRole: self.role,
         notApplicable: it.notApplicable,
         note: it.note,
         createdAt: new Date().toISOString(),
-      }));
-      evidenceExtra[id] = [...(evidenceExtra[id] ?? []), ...created];
-      if (uploadedByRole === 'buyer') activateDisputeWithEvidence(id);
+      })));
+      getMockDetailOrThrow(id);
+      const allEvidence = [...(getMockDealRuntime(id)?.evidence ?? []), ...created];
+      patchMockDealRuntime(id, { evidence: allEvidence });
+      window.dispatchEvent(new Event('naitrust:deal-evidence-change'));
+      if (self.role === 'buyer') activateDisputeWithEvidence(id);
       const deal = getMockDetailOrThrow(id);
       const runtime = getMockDealRuntime(id);
       const now = new Date().toISOString();
       patchMockDealRuntime(id, {
-        activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'evidence', message: `${uploadedByName} added ${created.length === 1 ? 'evidence' : `${created.length} evidence files`} to the deal.`, createdAt: now }, ...(runtime?.activity ?? [])],
+        activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'evidence', message: `${self.name} added ${created.length === 1 ? 'evidence' : `${created.length} evidence files`} to the deal.`, createdAt: now }, ...(runtime?.activity ?? [])],
       });
-      if (deal.workflowMode !== 'delivery' && uploadedByRole === 'seller' && deal.completion.status === 'changes_requested') {
-        notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Revised work evidence added', message: `${uploadedByName} added revised evidence to ${deal.title}.`, link: `/app/deals/${id}` });
+      if (deal.workflowMode !== 'delivery' && self.role === 'seller' && deal.completion.status === 'changes_requested') {
+        notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Revised work evidence added', message: `${self.name} added revised evidence to ${deal.title}.`, link: `/app/deals/${id}` });
       }
-      return { success: true, data: evidenceExtra[id] };
+      return { success: true, data: allEvidence };
     }
     const res = await httpClient.post<DealEvidenceItem[]>(endpoints.upload.verificationDocument, {
       dealId: id,

@@ -1,3 +1,4 @@
+import type { LegalSelection } from '../../features/legal/types';
 /**
  * Shared Domain Types
  * Single home for the types the app actually uses. Grouped by domain:
@@ -160,6 +161,7 @@ export type DealDeliveryMode = 'domestic' | 'international';
  * form and converted to `amountMinor` before submit.
  */
 export interface CreateSafeDealInput {
+  legalReview?: LegalSelection;
   useCase: string; // use-case slug from libs/use-cases.ts
   /** Completion experience selected for the Deal Room. Optional for legacy deals. */
   workflowMode?: DealWorkflowMode;
@@ -254,6 +256,8 @@ export interface DealFunding {
 }
 
 export interface DealEvidenceItem {
+  sizeBytes?: number;
+  originalSizeBytes?: number;
   id: string;
   fileName: string;
   kind: string; // e.g. Invoice, Waybill, Photo, Inspection report

@@ -40,6 +40,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/input-otp';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../ui/sheet';
 import { useAuth } from '../../libs/auth-context';
 import { useSecurity } from '../../hooks/useSecurity';
+import { appConfig } from '../../configs/env';
 import { securityApi, MOCK_OTP, type TwoFactorEnrolment } from '../../libs/api/security.api';
 import { accountTypeOf } from '../../libs/utils/account';
 import { useMyBusiness } from '../../hooks/useMyBusiness';
@@ -139,7 +140,7 @@ function OtpModal({
     await onSend();
     setSending(false);
     setSent(true);
-    toast.success(`Code sent (${channelLabel}). Use ${MOCK_OTP} in this demo.`);
+    toast.success(appConfig.isMock ? `Local verification code: ${MOCK_OTP}. No message was sent.` : `Code sent (${channelLabel}).`);
   };
 
   const verify = async (value: string) => {
@@ -392,8 +393,8 @@ function KycModal({
         if (!o) reset();
       }}
     >
-      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
-        <SheetHeader className="border-b">
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-2xl lg:max-w-3xl">
+        <SheetHeader className="border-b px-5 py-6 pr-12 sm:px-8 sm:pr-12">
           <SheetTitle className="flex items-center gap-2">
             {isBusiness ? <Building2 size={18} /> : <Fingerprint size={18} />}
             {isBusiness ? 'Business verification' : 'Identity verification'}
@@ -401,32 +402,18 @@ function KycModal({
           <SheetDescription>
             {isBusiness
               ? 'Verify your business (CAC), a director, and confirm business ownership before transacting.'
-              : 'Verify your identity before transacting. Your details are checked against official records.'}
+              : 'Enter your legal details to verify your identity.'}
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
-          {isBusiness ? (
+        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-5 sm:p-8">
+          {isBusiness && (
             <div className="rounded-2xl border border-primary/15 bg-primary/[0.04] p-4">
               <p className="text-sm font-semibold">Business KYB</p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">Provide the registered business, operating address, industry and an owner or director. Anchor requests the exact CAC and address documents needed after KYB starts; approval is required before a business deposit account is created.</p>
             </div>
-          ) : (
-            <div className="grid gap-2 sm:grid-cols-3">
-              {[
-                ['Tier 0', 'Name, address, email and phone'],
-                ['Tier 1', 'BVN, date of birth and gender'],
-                ['Tier 2', 'Government ID and manual review'],
-              ].map(([tier, description], index) => (
-                <div key={tier} className={`rounded-xl border p-3 ${index === 1 ? 'border-primary/30 bg-primary/[0.05]' : 'bg-muted/30'}`}>
-                  <p className="text-xs font-bold text-foreground">{tier}</p>
-                  <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{description}</p>
-                </div>
-              ))}
-              <p className="text-xs leading-5 text-muted-foreground sm:col-span-3">Your registered name and phone number must match the details attached to your BVN.</p>
-            </div>
           )}
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2 sm:gap-x-6">
             {spec.map((f) => (
               <div key={f.key} className={f.key === 'businessName' ? 'sm:col-span-2' : ''}>
                 <Label htmlFor={f.key}>{f.label}</Label>
@@ -777,7 +764,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
               description={
                 isBusiness
                   ? 'Verify your CAC registration and a director.'
-                  : 'Verify your identity with your NIN.'
+                  : 'Verify your identity with your BVN.'
               }
               done={security.kycStatus === 'verified'}
               doneLabel="Verified"

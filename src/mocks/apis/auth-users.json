@@ -137,6 +137,23 @@
         "isPhoneVerified": true,
         "hasTransactionPin": true
       }
+    },
+    {
+      "twoFactorEnabled": false,
+      "user": {
+        "id": "usr_mock_legal",
+        "naitrustId": "NT-BIZ-LEGAL001",
+        "email": "legal.firm@naitrust.test",
+        "firstName": "Ada",
+        "lastName": "Okoro",
+        "name": "Ada Okoro",
+        "role": "business",
+        "phone": "+2348011110099",
+        "kycLevel": 3,
+        "kycVerified": true,
+        "isEmailVerified": true,
+        "isPhoneVerified": true
+      }
     }
   ]
 }

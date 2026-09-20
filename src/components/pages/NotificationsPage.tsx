@@ -42,45 +42,6 @@ const TYPE_PRESENTATION: Record<NotificationType, { icon: LucideIcon; chipClass:
   system: { icon: Bell, chipClass: 'bg-muted text-muted-foreground' },
 };
 
-const DEMO_NOTIFICATIONS: AppNotification[] = [
-  {
-    id: 'demo-funding-confirmed',
-    type: 'funding',
-    title: 'Order funding confirmed',
-    message: '₦6,000,000.00 has been confirmed for your supplier order.',
-    read: false,
-    createdAt: '2026-08-14T08:45:00Z',
-    link: '/app/orders',
-  },
-  {
-    id: 'demo-evidence-added',
-    type: 'evidence',
-    title: 'Inspection evidence ready',
-    message: 'Your sourcing agent added product inspection photos and notes.',
-    read: false,
-    createdAt: '2026-08-14T06:10:00Z',
-    link: '/app/orders',
-  },
-  {
-    id: 'demo-deal-action',
-    type: 'deal',
-    title: 'Your review is needed',
-    message: 'Review the delivered products before the supplier payment is released.',
-    read: false,
-    createdAt: '2026-08-13T15:30:00Z',
-    link: '/app/orders',
-  },
-  {
-    id: 'demo-payment-released',
-    type: 'funding',
-    title: 'Payment released',
-    message: '₦600,000.00 was released to the supplier after delivery approval.',
-    read: true,
-    createdAt: '2026-08-12T22:07:00Z',
-    link: '/app/transactions',
-  },
-];
-
 function LoadingRows() {
   return (
     <Card className="gap-0 p-0 shadow-sm" aria-label="Loading notifications">
@@ -145,15 +106,8 @@ export function NotificationsPage() {
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
   const [page, setPage] = useState(1);
-  const [readDemoIds, setReadDemoIds] = useState<string[]>([]);
 
-  const usingDemoNotifications = !isLoading && !isError && (!notifications || notifications.length === 0);
-  const displayedNotifications = usingDemoNotifications
-    ? DEMO_NOTIFICATIONS.map((notification) => ({
-        ...notification,
-        read: notification.read || readDemoIds.includes(notification.id),
-      }))
-    : notifications ?? [];
+  const displayedNotifications = notifications ?? [];
   const unreadCount = displayedNotifications.filter((n) => !n.read).length;
   const total = displayedNotifications.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -165,23 +119,11 @@ export function NotificationsPage() {
   }, [total]);
 
   const handleOpen = (notification: AppNotification) => {
-    if (!notification.read) {
-      if (usingDemoNotifications) {
-        setReadDemoIds((ids) => [...ids, notification.id]);
-      } else {
-        markRead.mutate(notification.id);
-      }
-    }
+    if (!notification.read) markRead.mutate(notification.id);
     if (notification.link) navigate(notification.link);
   };
 
-  const handleMarkAllRead = () => {
-    if (usingDemoNotifications) {
-      setReadDemoIds(DEMO_NOTIFICATIONS.map((notification) => notification.id));
-    } else {
-      markAllRead.mutate();
-    }
-  };
+  const handleMarkAllRead = () => markAllRead.mutate();
 
   return (
     <DashboardLayout title="Notifications">

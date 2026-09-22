@@ -20,12 +20,11 @@
 .nt-button-white:hover { background: #eef7ff; color: var(--nt-brand-dark); }
 .nt-menu-toggle, .nt-mobile-nav { display: none; }
 .nt-header button:focus-visible, .nt-marketing button:focus-visible, .nt-footer button:focus-visible, .nt-marketing summary:focus-visible { outline: 3px solid var(--nt-brand); outline-offset: 5px; }
-.nt-hero { min-height: 790px; position: relative; overflow: hidden; background: #f7f3eb; color: #142441; border-radius: 0 0 64px 0; padding: 150px 0 72px; }
-.nt-hero::before { content: ''; position: absolute; width: 420px; height: 420px; left: -250px; top: 120px; border: 1px solid #dcd3c4; border-radius: 50%; box-shadow: 0 0 0 68px #f1ebe1, 0 0 0 69px #ded6c9; opacity: .65; }
-.nt-hero-layout { position: relative; display: grid; grid-template-columns: .86fr 1.14fr; align-items: center; gap: clamp(48px, 7vw, 100px); }
-.nt-hero-content { position: relative; z-index: 2; padding: 30px 0 0; }
-.nt-hero-visual { position: relative; min-height: 565px; overflow: hidden; border-radius: 36px 36px 36px 10px; background: #eee5d8; box-shadow: 0 28px 70px #4b352413; }
-.nt-hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 68% center; }
+.nt-hero { min-height: 820px; position: relative; overflow: hidden; background: #f3ece1; color: #142441; border-radius: 0 0 64px 0; }
+.nt-hero-photo { position: absolute; inset: 102px 0 0; width: 100%; height: calc(100% - 102px); object-fit: contain; object-position: right bottom; }
+.nt-hero-wash { position: absolute; inset: 0; background: linear-gradient(90deg, #f7f3eb 0%, #f7f3ebf5 32%, #f7f3eb8c 48%, transparent 68%); }
+.nt-hero-layout { position: relative; min-height: 820px; }
+.nt-hero-content { position: relative; z-index: 2; max-width: 570px; padding: 190px 0 70px; }
 .nt-eyebrow { font-size: 11px; letter-spacing: .13em; font-weight: 700; line-height: 1.8; }
 .nt-hero-eyebrow { text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #8b4a38; font-size: 10px; letter-spacing: .11em; }
 .nt-hero-eyebrow > span { width: 7px; height: 7px; border-radius: 2px; transform: rotate(45deg); background: #b85c43; }
@@ -38,13 +37,6 @@
 .nt-hero-journey span { display: grid; gap: 3px; white-space: nowrap; }
 .nt-hero-journey b { color: #a26a58; font-size: 8px; }
 .nt-hero-journey i { width: min(30px, 2vw); height: 1px; background: #cfc5b7; }
-.nt-hero-deal-card { position: absolute; left: 24px; bottom: 24px; display: flex; align-items: center; gap: 13px; width: min(335px, calc(100% - 48px)); padding: 16px 18px; border: 1px solid #ffffffb8; border-radius: 16px; background: #fffffff0; box-shadow: 0 18px 45px #39281c20; backdrop-filter: blur(14px); }
-.nt-hero-deal-card > div { flex: 1; min-width: 0; }
-.nt-hero-deal-card small, .nt-hero-deal-card strong, .nt-hero-deal-card div > span { display: block; }
-.nt-hero-deal-card small { color: #8b4a38; font-size: 8px; letter-spacing: .12em; font-weight: 750; }
-.nt-hero-deal-card strong { margin-top: 4px; font-size: 14px; }
-.nt-hero-deal-card div > span { margin-top: 3px; color: #6f7988; font-size: 10px; }
-.nt-hero-deal-card > svg { color: #2b916d; }
 .nt-hero-caption { position: absolute; right: max(7%, calc((100vw - 1200px) / 2)); bottom: 112px; display: flex; align-items: center; gap: 14px; border: 1px solid #ffffff50; background: #fffffff0; color: #142441; padding: 18px 23px; border-radius: 15px; box-shadow: 0 10px 50px #11254212; }
 .nt-caption-icon { display: grid; place-items: center; width: 45px; height: 45px; background: #e8f0ff; border-radius: 50%; color: var(--nt-brand-dark); }
 .nt-hero-caption strong, .nt-hero-caption span span { display: block; }
@@ -406,22 +398,20 @@
 .nt-footer-addresses + .nt-footer-bottom { margin-top: 28px; }
 @media(max-width:700px) { .nt-footer-addresses { grid-template-columns: 1fr; gap: 20px; margin-top: 28px; } }
 
-/* Naitrust hero: a distinct protected-deal story rather than a full-bleed campaign image. */
+/* Full-width human campaign, in Naitrust's warm protected-deal identity. */
 @media(max-width: 900px) {
-  .nt-hero { padding-top: 122px; }
-  .nt-hero-layout { grid-template-columns: 1fr; gap: 42px; }
-  .nt-hero-content { padding-top: 20px; }
+  .nt-hero, .nt-hero-layout { min-height: 800px; }
+  .nt-hero-content { padding-top: 150px; }
   .nt-hero h1 { max-width: 650px; font-size: clamp(55px, 9vw, 74px); }
-  .nt-hero-description { max-width: 610px; }
-  .nt-hero-visual { min-height: 600px; }
-  .nt-hero-photo { height: 100%; object-position: 68% center; }
+  .nt-hero-description { max-width: 480px; }
+  .nt-hero-wash { background: linear-gradient(90deg, #f7f3eb 0%, #f7f3ebf2 44%, #f7f3eb70 72%, transparent); }
+  .nt-hero-photo { inset: 80px 0 0; height: calc(100% - 80px); object-position: right bottom; }
 }
 @media(max-width: 600px) {
   .nt-header-home { background: rgba(247, 243, 235, .97); }
-  .nt-hero { min-height: 0; height: auto; padding: 108px 0 38px; border-radius: 0 0 34px 0; background: #f7f3eb; color: #142441; }
-  .nt-hero::before { width: 250px; height: 250px; left: -195px; top: 145px; box-shadow: 0 0 0 38px #f1ebe1, 0 0 0 39px #ded6c9; }
-  .nt-hero-layout { gap: 32px; }
-  .nt-hero-content { padding: 10px 0 0; }
+  .nt-hero { min-height: 980px; height: auto; padding: 0; border-radius: 0 0 34px 0; background: #f7f3eb; color: #142441; }
+  .nt-hero-layout { min-height: 980px; }
+  .nt-hero-content { max-width: none; padding: 116px 0 455px; }
   .nt-hero-eyebrow { color: #8b4a38; font-size: 8px; }
   .nt-hero h1 { margin: 20px 0 22px; font-size: clamp(45px, 13.2vw, 62px); line-height: 1.01; }
   .nt-hero-description { margin-bottom: 24px; color: #586479; font-size: 14px; }
@@ -431,10 +421,8 @@
   .nt-hero-journey { width: 100%; justify-content: space-between; gap: 5px; margin-top: 30px; font-size: 8px; }
   .nt-hero-journey b { font-size: 7px; }
   .nt-hero-journey i { min-width: 8px; }
-  .nt-hero-visual { min-height: 445px; border-radius: 24px 24px 24px 8px; }
-  .nt-hero-photo { position: absolute; bottom: auto; width: 100%; height: 100%; object-fit: cover; object-position: 67% center; mask-image: none; }
-  .nt-hero-deal-card { left: 14px; bottom: 14px; width: calc(100% - 28px); padding: 13px 14px; }
-  .nt-hero-deal-card .nt-caption-icon { width: 38px; height: 38px; }
+  .nt-hero-photo { inset: auto 0 0; width: 100%; height: 470px; object-fit: cover; object-position: 68% center; mask-image: none; }
+  .nt-hero-wash { background: linear-gradient(180deg, #f7f3eb 0%, #f7f3eb 52%, #f7f3eb00 70%); }
 }
 
 /* Early access follows the warm public identity while keeping the form focused. */

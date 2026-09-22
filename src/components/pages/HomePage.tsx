@@ -13,17 +13,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return <div className="nt-marketing">
     <SEOHead title="Secure payments. Better peace of mind." description="A safer way to buy and sell. Naitrust brings clear terms, shared evidence and controlled payment release into one Protected Deal. Join early access." canonicalPath="/" />
     <section className="nt-hero">
+      <img className="nt-hero-photo" src={studioHero} alt="A woman reviewing a protected deal on her phone" fetchPriority="high" />
+      <div className="nt-hero-wash" />
       <div className="nt-container nt-hero-layout">
         <div className="nt-hero-content">
           <p className="nt-eyebrow nt-hero-eyebrow"><span /> For the deals that matter</p>
           <h1>A safer way<br />to pay for<br /><em>what matters.</em></h1>
-          <p className="nt-hero-description">Whether you’re buying, selling or paying for a service, Naitrust keeps the terms, payment and proof in one place—so both sides can move forward with confidence.</p>
+          <p className="nt-hero-description">Buy, sell and pay for services with clear terms, protected payment and proof kept together in one place.</p>
           <div className="nt-hero-actions"><button className="nt-button" onClick={join}>Join early access <ArrowRight size={18} /></button><button className="nt-hero-secondary" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>See how it works</button></div>
           <div className="nt-hero-journey" aria-label="The Naitrust protected deal journey"><span><b>01</b> Agree</span><i /><span><b>02</b> Protect</span><i /><span><b>03</b> Confirm</span><i /><span><b>04</b> Release</span></div>
-        </div>
-        <div className="nt-hero-visual">
-          <img className="nt-hero-photo" src={studioHero} alt="A woman reviewing a protected deal on her phone" fetchPriority="high" />
-          <div className="nt-hero-deal-card"><span className="nt-caption-icon"><ShieldCheck size={20} /></span><div><small>PROTECTED DEAL</small><strong>Payment is secured</strong><span>Release follows your agreed terms</span></div><CheckCheck size={18} /></div>
         </div>
       </div>
     </section>

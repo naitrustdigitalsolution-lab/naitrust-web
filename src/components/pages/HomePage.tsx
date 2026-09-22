@@ -1,9 +1,9 @@
 import koraLogo from '../../assets/partners/kora.svg';
 import qoreidLogo from '../../assets/partners/qoreid.svg';
-import { ArrowDown, ArrowRight, Check, CheckCheck, ChevronDown, FileText, Fingerprint, LockKeyhole, Scale, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, CheckCheck, ChevronDown, FileText, Fingerprint, LockKeyhole, Scale, ShieldCheck } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
 import { pageImages } from '../../libs/images/image-manifest';
-import studioHero from '../../assets/home/naitrust-studio-hero-v1.webp';
+import studioHero from '../../assets/home/naitrust-warm-hero-v2.webp';
 import { protectedPaymentFAQs } from '../../content/protected-payment-faqs';
 
 interface HomePageProps { onNavigate: (page: string) => void }
@@ -13,17 +13,20 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return <div className="nt-marketing">
     <SEOHead title="Secure payments. Better peace of mind." description="A safer way to buy and sell. Naitrust brings clear terms, shared evidence and controlled payment release into one Protected Deal. Join early access." canonicalPath="/" />
     <section className="nt-hero">
-      <img className="nt-hero-photo" src={studioHero} alt="A woman comfortably reviewing a payment on her phone" fetchPriority="high" />
-      <div className="nt-hero-shade" />
-      <div className="nt-container nt-hero-content">
-        <p className="nt-eyebrow nt-hero-eyebrow"><span /> A little more certainty. A lot more confidence.</p>
-        <h1>Clear terms.<br />Safer payments<br />for both.</h1>
-        <p className="nt-hero-description">Buying something new. Selling what you love.<br className="nt-desktop-break" /> We’re building a safer way to pay, with clear terms<br className="nt-desktop-break" /> and protection built around both of you.</p>
-        <button className="nt-button" onClick={join}>Join the waiting list <ArrowRight size={18} /></button>
-        <p className="nt-hero-note">Built for buyers and sellers in Nigeria. Coming soon.</p>
+      <div className="nt-container nt-hero-layout">
+        <div className="nt-hero-content">
+          <p className="nt-eyebrow nt-hero-eyebrow"><span /> Protected deals, built for both sides</p>
+          <h1>Pay with proof.<br />Get paid with<br /><em>confidence.</em></h1>
+          <p className="nt-hero-description">Naitrust keeps the agreement, protected payment and delivery evidence together—so buyers and sellers always know what happens next.</p>
+          <div className="nt-hero-actions"><button className="nt-button" onClick={join}>Join early access <ArrowRight size={18} /></button><button className="nt-hero-secondary" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>See how it works</button></div>
+          <div className="nt-hero-journey" aria-label="The Naitrust protected deal journey"><span><b>01</b> Agree</span><i /><span><b>02</b> Protect</span><i /><span><b>03</b> Confirm</span><i /><span><b>04</b> Release</span></div>
+        </div>
+        <div className="nt-hero-visual">
+          <img className="nt-hero-photo" src={studioHero} alt="A woman reviewing a protected deal on her phone" fetchPriority="high" />
+          <div className="nt-hero-deal-card"><span className="nt-caption-icon"><ShieldCheck size={20} /></span><div><small>PROTECTED DEAL</small><strong>Payment is secured</strong><span>Release follows your agreed terms</span></div><CheckCheck size={18} /></div>
+          <div className="nt-hero-reference"><span>DEAL ROOM</span><strong>NT-1042</strong></div>
+        </div>
       </div>
-      <div className="nt-hero-caption"><span className="nt-caption-icon"><ShieldCheck size={22} /></span><div><strong>Confidence, on both sides.</strong><span>One agreement. One shared Deal Room.</span></div></div>
-      <button className="nt-hero-discover" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>Meet your next way to pay <ArrowDown size={18} /></button>
     </section>
 
     <section className="nt-container nt-partners" aria-labelledby="partners-heading">

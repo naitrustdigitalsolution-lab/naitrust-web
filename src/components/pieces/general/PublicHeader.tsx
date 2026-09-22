@@ -4,14 +4,7 @@ import { NaitrustLogo } from '../../utility/NaitrustLogo';
 
 export function PublicHeader({ onNavigate, currentPage }: { onNavigate: (page: string) => void; currentPage: string }) {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const home = currentPage === 'home';
-  useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 32);
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
-  }, []);
   useEffect(() => { setOpen(false); }, [currentPage]);
   useEffect(() => {
     if (!open) return;
@@ -21,7 +14,7 @@ export function PublicHeader({ onNavigate, currentPage }: { onNavigate: (page: s
   }, [open]);
   const navigate = (page: string) => { setOpen(false); onNavigate(page); };
   const links = [ ['For individuals', 'customer'], ['For businesses', 'business'], ['About us', 'about'], ['Help', 'faqs'] ];
-  const inverse = home && !scrolled && !open;
+  const inverse = false;
   return <header className={`nt-header ${home ? 'nt-header-home' : ''} ${inverse ? 'nt-header-inverse' : ''}`}>
     <div className="nt-container nt-header-inner">
       <button onClick={() => navigate('home')} aria-label="Naitrust home"><NaitrustLogo size="md" solidN={home} textColor={inverse ? 'text-white' : 'text-[#142441]'} /></button>

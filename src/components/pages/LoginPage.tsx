@@ -307,7 +307,7 @@ export function LoginPage({ onNavigate, initialView = 'login', initialEmail = ''
           />
         </div>
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
-        <aside className="auth-balanced-panel hidden flex-col justify-between rounded-2xl p-5 sm:p-8 lg:flex lg:rounded-none lg:p-10">
+        <aside className="auth-balanced-panel nt-login-panel hidden flex-col justify-between rounded-2xl p-5 sm:p-8 lg:flex lg:rounded-none lg:p-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

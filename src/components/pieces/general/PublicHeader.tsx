@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { NaitrustLogo } from '../../utility/NaitrustLogo';
+import studioHero from '../../../assets/home/naitrust-studio-wide-v4.webp';
 
 export function PublicHeader({ onNavigate, currentPage }: { onNavigate: (page: string) => void; currentPage: string }) {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ export function PublicHeader({ onNavigate, currentPage }: { onNavigate: (page: s
   const links = [ ['For individuals', 'customer'], ['For businesses', 'business'], ['About us', 'about'], ['Help', 'faqs'] ];
   const inverse = false;
   return <header className={`nt-header ${home ? 'nt-header-home' : ''} ${inverse ? 'nt-header-inverse' : ''}`}>
+    {home && <div className="nt-header-backdrop" aria-hidden="true"><img src={studioHero} alt="" /></div>}
     <div className="nt-container nt-header-inner">
       <button onClick={() => navigate('home')} aria-label="Naitrust home"><NaitrustLogo size="md" solidN={home} textColor={inverse ? 'text-white' : 'text-[#142441]'} /></button>
       <nav className="nt-desktop-nav" aria-label="Main navigation">

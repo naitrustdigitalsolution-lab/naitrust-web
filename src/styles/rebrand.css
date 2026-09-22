@@ -440,3 +440,43 @@
   .nt-hero-deal-card { left: 14px; bottom: 14px; width: calc(100% - 28px); padding: 13px 14px; }
   .nt-hero-deal-card .nt-caption-icon { width: 38px; height: 38px; }
 }
+
+/* Early access follows the warm public identity while keeping the form focused. */
+.nt-waitlist { background: #f7f3eb !important; color: #142441; }
+.nt-waitlist-shell { width: min(1320px, calc(100% - 56px)); min-height: 100vh; margin-inline: auto; padding-block: 28px; display: grid; grid-template-columns: .88fr 1.12fr; gap: clamp(36px, 5vw, 76px); }
+.nt-waitlist-story { position: relative; min-height: calc(100vh - 56px); overflow: hidden; flex-direction: column; justify-content: space-between; padding: 48px; border-radius: 34px 34px 34px 10px; background: #172a3f; color: #fff; }
+.nt-waitlist-story::before { content: ''; position: absolute; width: 420px; height: 420px; right: -280px; top: 22%; border: 1px solid #ffffff16; border-radius: 50%; box-shadow: 0 0 0 68px #ffffff08, 0 0 0 69px #ffffff13; }
+.nt-waitlist-story::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 9px; background: linear-gradient(90deg, #b85c43 0 34%, #2c90e8 34% 68%, #67ad8d 68%); }
+.nt-waitlist-logo, .nt-waitlist-story-copy, .nt-waitlist-path { position: relative; z-index: 1; }
+.nt-auth .nt-waitlist-logo .nt-logo-wordmark { color: #fff; }
+.nt-waitlist-kicker { display: flex; align-items: center; gap: 11px; color: #e4ad98; font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+.nt-waitlist-kicker span { width: 7px; height: 7px; transform: rotate(45deg); border-radius: 2px; background: #c56b51; }
+.nt-waitlist-story-copy { margin-block: auto; padding-block: 64px; }
+.nt-waitlist-story-copy h1 { max-width: 490px; margin-top: 24px; font-size: clamp(44px, 4vw, 62px); font-weight: 550; line-height: 1.03; letter-spacing: -.055em; }
+.nt-waitlist-story-copy > p:last-child { max-width: 430px; margin-top: 26px; color: #c5d0dc; font-size: 15px; line-height: 1.75; }
+.nt-waitlist-path { display: grid; grid-template-columns: auto 1px auto 1px auto; align-items: center; gap: 18px; }
+.nt-waitlist-path > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.nt-waitlist-path svg { flex-shrink: 0; color: #75b8f1; }
+.nt-waitlist-path span, .nt-waitlist-path b, .nt-waitlist-path small { display: block; }
+.nt-waitlist-path b { font-size: 11px; }
+.nt-waitlist-path small { margin-top: 3px; color: #91a1b2; font-size: 8px; line-height: 1.35; }
+.nt-waitlist-path > i { width: 1px; height: 36px; background: #ffffff20; }
+.nt-waitlist-form-wrap { min-height: 100%; display: flex; align-items: center; justify-content: center; padding-block: 32px; }
+.nt-waitlist-card { width: 100%; max-width: 620px; padding: clamp(28px, 4vw, 52px); border: 1px solid #e6ded2; border-radius: 30px 30px 30px 10px; background: #fff; box-shadow: 0 24px 70px #3b2e2110; }
+.nt-waitlist-card h2 { font-weight: 570; letter-spacing: -.04em; }
+.nt-waitlist-card input, .nt-waitlist-card textarea, .nt-waitlist-card select { border-color: #ddd9d2; border-radius: 11px; background: #fff; }
+.nt-waitlist-card input:focus, .nt-waitlist-card textarea:focus, .nt-waitlist-card select:focus { border-color: #2c90e8; box-shadow: 0 0 0 3px #2c90e814; }
+.nt-waitlist-steps > div { border-radius: 12px; }
+.nt-waitlist-mobile-head { margin-bottom: 28px; align-items: center; justify-content: space-between; }
+.nt-waitlist-mobile-head > button { display: inline-flex; align-items: center; gap: 8px; color: #667084; font-size: 13px; font-weight: 650; }
+@media(max-width: 1023px) {
+  .nt-waitlist-shell { width: min(680px, calc(100% - 40px)); display: block; padding-block: 24px; }
+  .nt-waitlist-form-wrap { padding: 0; }
+  .nt-waitlist-card { max-width: none; }
+}
+@media(max-width: 600px) {
+  .nt-waitlist-shell { width: 100%; padding: 0; }
+  .nt-waitlist-card { min-height: 100vh; padding: 26px 20px max(26px, env(safe-area-inset-bottom)); border: 0; border-radius: 0; background: #f7f3eb; box-shadow: none; }
+  .nt-waitlist-card input, .nt-waitlist-card textarea, .nt-waitlist-card select { background: #fff; }
+  .nt-waitlist-steps > div { background: #fff; }
+}

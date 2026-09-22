@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, FileCheck2, LockKeyhole, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -8,7 +8,6 @@ import { Textarea } from '../components/ui/textarea';
 import { SEOHead } from '../components/utility/SEOHead';
 import { NaitrustLogo } from '../components/utility/NaitrustLogo';
 import { PhoneField } from '../components/pieces/general/PhoneField';
-import spiralBackground from '../assets/spiral.svg';
 import { joinWaitlist } from '../services/publicService';
 import type { TransactionRange, WaitlistPayload, WaitlistUserType } from '../types/global';
 import { WAITLIST_ROLE_OPTIONS } from '../libs/waitlist/marketplace-options';
@@ -77,31 +76,27 @@ export default function WaitlistPage() {
   }
 
   return (
-    <div className="nt-auth relative min-h-screen overflow-hidden bg-white text-foreground dark:bg-background">
+    <div className="nt-auth nt-waitlist min-h-screen overflow-hidden text-foreground">
       <SEOHead title="Join the Naitrust Protected Payments Waiting List" description="Join early access to secure payments for buyers and sellers in Nigeria. Agree terms, keep evidence together and control payment release." canonicalPath="/waitlist" />
-      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[#eef3f8] dark:bg-[#0A0E1A] lg:block" />
-      <div className="pointer-events-none absolute inset-0 mx-auto max-w-[130rem] px-4 sm:px-6 lg:px-8"><img src={spiralBackground} alt="" aria-hidden="true" className="absolute left-4 top-1/2 h-[1000px] w-[1000px] max-w-none -translate-y-1/2 rotate-180 opacity-80 sm:left-6 lg:left-8" /></div>
-
-      <main className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[.92fr_1.08fr] lg:px-8">
-        <aside className="auth-balanced-panel hidden flex-col items-start justify-start p-5 sm:p-8 lg:flex lg:p-10">
-          <div>
-          <button type="button" onClick={() => navigate('/')} className="mb-12 inline-flex" aria-label="Naitrust home"><NaitrustLogo size="postMd" textColor="text-primary" /></button>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShieldCheck size={20} /></div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary">Protected payments · early access</p>
+      <main className="nt-waitlist-shell">
+        <aside className="nt-waitlist-story hidden lg:flex">
+          <button type="button" onClick={() => navigate('/')} className="nt-waitlist-logo" aria-label="Naitrust home"><NaitrustLogo size="postMd" solidN textColor="text-white" /></button>
+          <div className="nt-waitlist-story-copy">
+            <p className="nt-waitlist-kicker"><span /> Early access</p>
+            <h1>Be early to a safer way to do the deal.</h1>
+            <p>Clear terms, protected payment and shared evidence—kept together from agreement to release.</p>
           </div>
-          <h1 className="mt-7 max-w-md text-3xl font-bold leading-tight tracking-[-0.04em] text-[#0b2b45] dark:text-white lg:text-4xl">Buy with confidence. Sell with clear payment terms.</h1>
-          <p className="mt-4 max-w-md text-base leading-7 text-[#496274] dark:text-slate-300">We’re building a safer way for buyers and sellers to transact: agree the terms, confirm funding through approved payment partners, and release payment under the agreed conditions.</p>
-          <div className="mt-8 max-w-md space-y-3 text-sm text-[#496274] dark:text-slate-300">
-            {['For buyers: clear terms and evidence before payment release', 'For sellers: confirmed funding and a record of delivery or completed work', 'For both sides: one Deal Room for messages, approvals and issues'].map((item) => (
-              <p key={item} className="flex items-start gap-2.5 rounded-xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-card"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />{item}</p>
-            ))}
-          </div>
+          <div className="nt-waitlist-path" aria-label="The Naitrust protected deal journey">
+            <div><FileCheck2 size={19} /><span><b>Agree</b><small>Set clear terms together</small></span></div>
+            <i />
+            <div><LockKeyhole size={19} /><span><b>Protect</b><small>Confirm secured payment</small></span></div>
+            <i />
+            <div><ShieldCheck size={19} /><span><b>Release</b><small>Complete the agreed conditions</small></span></div>
           </div>
         </aside>
 
-        <section className="auth-balanced-form flex min-h-full items-center justify-center py-4 lg:py-10"><div className="w-full max-w-xl rounded-3xl border bg-card p-5 shadow-2xl sm:p-8 lg:p-10">
-          <div className="mb-7 flex items-center justify-between lg:hidden"><button type="button" onClick={() => navigate('/')} className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground"><ArrowLeft size={17}/>Back home</button><NaitrustLogo size="sm" showText /></div>
+        <section className="nt-waitlist-form-wrap auth-balanced-form"><div className="nt-waitlist-card">
+          <div className="nt-waitlist-mobile-head flex lg:hidden"><button type="button" onClick={() => navigate('/')}><ArrowLeft size={17}/>Back home</button><NaitrustLogo size="sm" showText /></div>
           {complete ? (
             <div className="grid min-h-[28rem] place-items-center text-center">
               <div>
@@ -114,7 +109,7 @@ export default function WaitlistPage() {
           ) : (
             <form onSubmit={submit} className="space-y-6">
               <div>
-                <div className="mb-6 grid grid-cols-2 gap-2" aria-label={`Step ${step} of 2`}>
+                <div className="nt-waitlist-steps mb-6 grid grid-cols-2 gap-2" aria-label={`Step ${step} of 2`}>
                   <div className={`rounded-xl border p-3 ${step === 1 ? 'border-primary bg-primary/[.06]' : 'border-emerald-500/25 bg-emerald-500/[.05]'}`}><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Step 1</p><p className="mt-1 text-xs font-semibold">Your details {step === 2 && <Check size={12} className="ml-1 inline text-emerald-600"/>}</p></div>
                   <div className={`rounded-xl border p-3 ${step === 2 ? 'border-primary bg-primary/[.06]' : 'bg-muted/20'}`}><p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Step 2</p><p className="mt-1 text-xs font-semibold">Your payment needs</p></div>
                 </div>

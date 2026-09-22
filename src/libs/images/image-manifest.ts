@@ -35,7 +35,7 @@ export const pageImages = {
   businessHero: image('pages/business-protected-payment-hero-v1.png', 'A Nigerian business team reviewing a protected vendor payment', '4/3', 'center', true),
   businessFulfilment: image('pages/protected-payment-success-v1.png', 'Protected business funds released after the agreed conditions were completed'),
   marketHero: image('pages/protected-payment-success-v1.png', 'A successful transaction protected by Naitrust', '16/9', 'center', true),
-  login: image('home/naitrust-studio-hero-v1.webp', 'A customer reviewing her phone with confidence'),
+  login: image('pages/naitrust-naira-payment-v2.webp', 'A Nigerian buyer and shop owner checking a protected naira payment together', '3/2'),
   registerCustomer: image('pages/agree-protect-approve-v1.png', 'A clear protected-payment flow from agreement to approval'),
   registerBusiness: image('pages/protected-payment-success-v1.png', 'A protected business payment completing successfully'),
 } as const;

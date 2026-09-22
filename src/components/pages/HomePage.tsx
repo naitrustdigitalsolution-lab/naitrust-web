@@ -3,7 +3,7 @@ import qoreidLogo from '../../assets/partners/qoreid.svg';
 import { ArrowRight, Check, CheckCheck, ChevronDown, FileText, Fingerprint, LockKeyhole, Scale, ShieldCheck } from 'lucide-react';
 import { SEOHead } from '../utility/SEOHead';
 import { pageImages } from '../../libs/images/image-manifest';
-import studioHero from '../../assets/home/naitrust-warm-hero-v2.webp';
+import studioHero from '../../assets/home/naitrust-studio-wide-v4.webp';
 import { protectedPaymentFAQs } from '../../content/protected-payment-faqs';
 
 interface HomePageProps { onNavigate: (page: string) => void }
@@ -13,8 +13,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return <div className="nt-marketing">
     <SEOHead title="Secure payments. Better peace of mind." description="A safer way to buy and sell. Naitrust brings clear terms, shared evidence and controlled payment release into one Protected Deal. Join early access." canonicalPath="/" />
     <section className="nt-hero">
-      <img className="nt-hero-photo" src={studioHero} alt="A woman reviewing a protected deal on her phone" fetchPriority="high" />
-      <div className="nt-hero-wash" />
+      <img className="nt-hero-photo" src={studioHero} alt="A woman seated in a warm studio, looking at her phone" fetchPriority="high" />
       <div className="nt-container nt-hero-layout">
         <div className="nt-hero-content">
           <p className="nt-eyebrow nt-hero-eyebrow">PROTECTED PAYMENTS. SHARED CONFIDENCE.</p>
@@ -23,6 +22,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="nt-hero-actions"><button className="nt-button" onClick={join}>Join early access <ArrowRight size={18} /></button><button className="nt-hero-secondary" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>See how it works</button></div>
           <p className="nt-hero-note">Built for buyers and sellers in Nigeria. Early access opens soon.</p>
         </div>
+
       </div>
     </section>
 

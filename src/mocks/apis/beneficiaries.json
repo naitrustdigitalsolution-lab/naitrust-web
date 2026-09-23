@@ -57,7 +57,7 @@
       "type": "bank_account",
       "name": "Ibrahim Sani",
       "bankName": "GTBank",
-      "accountNumber": "0215738462",
+      "accountNumber": "•••• 8462",
       "isFavourite": true,
       "createdAt": "2026-07-22T11:15:00Z"
     },
@@ -67,7 +67,7 @@
       "type": "bank_account",
       "name": "Zainab Yusuf",
       "bankName": "Access Bank",
-      "accountNumber": "1039582746",
+      "accountNumber": "•••• 2746",
       "isFavourite": false,
       "createdAt": "2026-07-29T14:40:00Z"
     },
@@ -107,7 +107,7 @@
       "type": "bank_account",
       "name": "Lagos Packaging Company",
       "bankName": "Zenith Bank",
-      "accountNumber": "1013847265",
+      "accountNumber": "•••• 7265",
       "isFavourite": true,
       "createdAt": "2026-07-03T09:30:00Z"
     }

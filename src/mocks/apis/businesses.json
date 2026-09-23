@@ -40,7 +40,7 @@
       "ratingAverage": 4.8,
       "paymentAccount": {
         "bankName": "Anchor MFB",
-        "accountNumber": "7012345678",
+        "accountNumber": "•••• 5678",
         "accountName": "Adaeze Homes & Properties Ltd"
       },
       "createdAt": "2025-11-02T09:00:00Z"
@@ -80,7 +80,7 @@
       "ratingAverage": 4.9,
       "paymentAccount": {
         "bankName": "Anchor MFB",
-        "accountNumber": "7012345686",
+        "accountNumber": "•••• 5686",
         "accountName": "Emeka Trade & Logistics"
       },
       "createdAt": "2025-09-18T09:00:00Z"

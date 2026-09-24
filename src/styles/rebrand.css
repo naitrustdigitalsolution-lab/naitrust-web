@@ -405,10 +405,11 @@
 :root { --nt-hero-height: max(clamp(680px, 100svh - 132px, 900px), calc(100vw / 3 + 132px)); }
 .nt-header-home { background: #faf8f5; border-color: transparent; backdrop-filter: none; isolation: isolate; }
 .nt-header-backdrop { display: none; position: absolute; inset: 0; overflow: hidden; z-index: -1; pointer-events: none; }
-.nt-header-backdrop img { position: absolute; left: 50%; width: 100%; max-width: none; height: calc(var(--nt-hero-height) - 132px); object-fit: cover; object-position: right top; transform: translateX(-50%) scaleY(132); transform-origin: center top; }
+.nt-header-backdrop img { position: absolute; left: 50%; width: 100%; max-width: none; height: calc(var(--nt-hero-height) - 132px); object-fit: cover; object-position: 84% top; transform: translateX(-50%) scaleY(132); transform-origin: center top; }
 .nt-hero { position: relative; overflow: hidden; background: #e9dfd0; color: #172b40; }
-.nt-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, #faf8f5 0, transparent 190px), linear-gradient(90deg, #faf8f5 0%, #faf8f5 33%, rgba(250, 248, 245, .94) 43%, rgba(250, 248, 245, .55) 55%, transparent 72%); }
-.nt-hero-photo { position: absolute; top: 132px; left: 50%; width: 100%; max-width: none; transform: translateX(-50%); height: calc(100% - 132px); object-fit: cover; object-position: right top; }
+/* End the desktop fade before the subject; keep the copy on a soft backdrop. */
+.nt-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, #faf8f5 0, transparent 160px), linear-gradient(90deg, #faf8f5 0%, #faf8f5 30%, rgba(250, 248, 245, .94) 38%, rgba(250, 248, 245, .45) 48%, transparent 58%); }
+.nt-hero-photo { position: absolute; top: 132px; left: 50%; width: 100%; max-width: none; transform: translateX(-50%); height: calc(100% - 132px); object-fit: cover; object-position: 84% top; }
 .nt-hero-backdrop-extension { position: absolute; inset: 0; clip-path: inset(0 0 calc(100% - 132px)); pointer-events: none; }
 .nt-hero-backdrop-extension .nt-hero-photo { top: 0; transform: translateX(-50%) scaleY(132); transform-origin: center top; }
 .nt-hero-layout { position: relative; z-index: 1; min-height: 680px; height: var(--nt-hero-height); display: flex; align-items: center; padding-block: 128px 48px; }
@@ -430,7 +431,8 @@
  .nt-header-backdrop img { object-position: 84% top; }
 }
 @media (max-width: 850px) {
- .nt-hero::after { background: linear-gradient(180deg, #faf8f5 0, #faf8f5 calc(100% - 390px), transparent calc(100% - 270px)); }
+ /* Keep the mobile photo fade above the subject instead of washing out her face. */
+ .nt-hero::after { background: linear-gradient(180deg, #faf8f5 0, #faf8f5 calc(100% - 490px), rgba(250, 248, 245, .85) calc(100% - 450px), rgba(250, 248, 245, .45) calc(100% - 400px), rgba(250, 248, 245, .12) calc(100% - 355px), rgba(250, 248, 245, 0) calc(100% - 320px)); }
  .nt-hero-backdrop-extension { clip-path: inset(0 0 390px); }
  .nt-hero-backdrop-extension .nt-hero-photo { transform: translateX(-50%) scaleY(1500); }
  .nt-header-backdrop img { height: 390px; object-position: 88% top; transform: translateX(-50%) scaleY(1500); }

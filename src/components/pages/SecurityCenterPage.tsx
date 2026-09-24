@@ -169,7 +169,7 @@ function OtpModal({
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-sm">
         <SheetHeader className="border-b">
           <SheetTitle>{title}</SheetTitle>
-          <SheetDescription>We'll send a 6-digit code to {channelLabel}.</SheetDescription>
+          <SheetDescription>We'll send a 6 digit code to {channelLabel}.</SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {!sent ? (
@@ -245,7 +245,7 @@ function TwoFactorModal({
       setEnrol(null);
       setCode('');
     } else {
-      setError('Enter the 6-digit code from your authenticator app.');
+      setError('Enter the 6 digit code from your authenticator app.');
       setCode('');
     }
   };
@@ -287,7 +287,7 @@ function TwoFactorModal({
                   {enrol.secret}
                 </p>
               </div>
-              <p className="text-sm text-muted-foreground">Enter the 6-digit code to confirm</p>
+              <p className="text-sm text-muted-foreground">Enter the 6 digit code to confirm</p>
               <InputOTP
                 maxLength={6}
                 value={code}
@@ -492,7 +492,7 @@ function KycModal({
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Enter the business, director, or owner email registered with the CAC. After you
-                  submit, we send a one-time code there to confirm you own this business.
+                  submit, we send a one time code there to confirm you own this business.
                 </p>
                 <Input
                   type="email"
@@ -599,8 +599,8 @@ function SetPinModal({
           </SheetTitle>
           <SheetDescription>
             {requireOld
-              ? 'Enter your current PIN, then choose a new 4-digit PIN.'
-              : "A 4-digit PIN confirms every money-moving action. Don't reuse an obvious code."}
+              ? 'Enter your current PIN, then choose a new 4 digit PIN.'
+              : "A 4 digit PIN confirms every money moving action. Don't reuse an obvious code."}
           </SheetDescription>
         </SheetHeader>
 
@@ -611,7 +611,7 @@ function SetPinModal({
               <InputOTP
                 maxLength={4}
                 autoComplete="off"
-                aria-label="Current four-digit transaction PIN"
+                aria-label="Current four digit transaction PIN"
                 value={oldPin}
                 onChange={(v) => {
                   setOldPin(v);
@@ -628,7 +628,7 @@ function SetPinModal({
           )}
           <div className="flex flex-col items-center gap-1.5">
             <Label className="text-xs">{requireOld ? 'New PIN' : 'Enter PIN'}</Label>
-            <InputOTP maxLength={4} value={pin} onChange={setPin} autoComplete="off" aria-label="New four-digit transaction PIN">
+            <InputOTP maxLength={4} value={pin} onChange={setPin} autoComplete="off" aria-label="New four digit transaction PIN">
               <InputOTPGroup>
                 {[0, 1, 2, 3].map((i) => (
                   <InputOTPSlot key={i} index={i} variant="pin" />
@@ -641,7 +641,7 @@ function SetPinModal({
             <InputOTP
               maxLength={4}
               autoComplete="off"
-              aria-label="Confirm four-digit transaction PIN"
+              aria-label="Confirm four digit transaction PIN"
               value={confirm}
               onChange={(v) => {
                 setConfirm(v);
@@ -744,7 +744,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
                 <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
               </div>
               <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                Phone verification, liveness, and authenticator protection add stronger recovery and sign-in security.
+                Phone verification, liveness, and authenticator protection add stronger recovery and sign in security.
               </p>
             </div>}
           </div>
@@ -785,7 +785,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
             <SecurityRow
               icon={KeyRound}
               title="Transaction PIN"
-              description="A 4-digit PIN confirms every money-moving action."
+              description="A 4 digit PIN confirms every money moving action."
               done={security.pinSet}
               doneLabel="Set"
               actionLabel={security.pinSet ? 'Change PIN' : 'Set PIN'}
@@ -818,8 +818,8 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
             />
             <SecurityRow
               icon={Smartphone}
-              title="Two-factor (authenticator)"
-              description="Use an authenticator app to protect sign-in."
+              title="Two factor (authenticator)"
+              description="Use an authenticator app to protect sign in."
               done={security.twoFactorEnabled}
               doneLabel="Enabled"
               actionLabel="Enable 2FA"
@@ -864,7 +864,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
         email={user?.email ?? ''}
         onSuccess={() => {
           security.patch({ twoFactorEnabled: true });
-          toast.success('Two-factor authentication enabled.');
+          toast.success('Two factor authentication enabled.');
         }}
       />
       {/* Not yet verified → the verification form. Already verified → read-only details. */}
@@ -892,7 +892,7 @@ export function SecurityCenterPage({ embedded = false }: { embedded?: boolean })
           { label: 'Email address', done: security.emailVerified },
           { label: 'Phone number', done: security.phoneVerified },
           { label: 'Transaction PIN', done: security.pinSet },
-          { label: 'Two-factor authentication', done: security.twoFactorEnabled },
+          { label: 'Two factor authentication', done: security.twoFactorEnabled },
         ]}
       />
       <SetPinModal

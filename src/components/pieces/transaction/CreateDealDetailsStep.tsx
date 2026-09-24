@@ -458,7 +458,7 @@ export function CreateDealDetailsStep({
           <div className="sm:col-span-2">
             <Label>Payment plan</Label>
             <div className="mt-1.5 grid grid-cols-2 rounded-xl border bg-muted/30 p-1">
-              <button type="button" aria-pressed={!form.splitPayment} onClick={() => onSplitPaymentChange(false)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${!form.splitPayment ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>One-off payment</button>
+              <button type="button" aria-pressed={!form.splitPayment} onClick={() => onSplitPaymentChange(false)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${!form.splitPayment ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>One off payment</button>
               <button type="button" aria-pressed={form.splitPayment} onClick={() => onSplitPaymentChange(true)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${form.splitPayment ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Instalments</button>
             </div>
           </div>

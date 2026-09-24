@@ -10,7 +10,7 @@ Buyers can review what was agreed and the evidence before release. Sellers can s
 
 ## Availability
 
-Naitrust is accepting early-access interest. Existing invited users can sign in. Live funding, release and refunds depend on approved payment-provider integrations and launch readiness. The planned pilot supports a single payment release. Milestone and recurring payments are not currently available.
+Naitrust is accepting early access interest. Existing invited users can sign in. Live funding, release and refunds depend on approved payment provider integrations and launch readiness. The planned pilot supports a single payment release. Milestone and recurring payments are not currently available.
 
 ## Payment boundaries
 

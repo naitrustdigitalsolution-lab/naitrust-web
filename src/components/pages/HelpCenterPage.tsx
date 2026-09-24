@@ -15,11 +15,11 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
 
   const categories = [
-    { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk-based verification' },
+    { id: 'verification', name: 'Verification', icon: Shield, description: 'Identity, business, ownership, and risk based verification' },
     { id: 'payments', name: 'Payments', icon: CreditCard, description: 'Protected funding, payment release, fees, refunds and payment status' },
     { id: 'account', name: 'Account', icon: Users, description: 'Registration, account details, profile settings, and account management' },
     { id: 'security', name: 'Security', icon: Settings, description: 'Data protection, privacy, and reporting fraud' },
-    { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In-app chat, inbox, and communication features' },
+    { id: 'messaging', name: 'Messaging', icon: MessageCircle, description: 'In app chat, inbox, and communication features' },
     { id: 'general', name: 'General', icon: FileText, description: 'Platform basics, features, and how Naitrust works' },
   ];
 
@@ -170,14 +170,14 @@ export const HelpCenterPage: React.FC<HelpCenterPageProps> = ({ onNavigate, user
               <Phone className="w-8 h-8 mx-auto mb-3" />
               <h3 className="text-lg mb-2">Phone Support</h3>
               <p className="text-sm text-blue-100 mb-3">+234 707 587 3258</p>
-              <p className="text-xs text-blue-100">Mon–Fri, 9AM–5PM WAT</p>
+              <p className="text-xs text-blue-100">Mon to Fri, 9AM to 5PM WAT</p>
             </div>
             
             <div className="bg-white/10 backdrop-blur rounded-lg p-4 sm:p-6 text-center">
               <Clock className="w-8 h-8 mx-auto mb-3" />
               <h3 className="text-lg mb-2">Live Chat</h3>
-              <p className="text-sm text-blue-100 mb-3">Available in-app</p>
-              <p className="text-xs text-blue-100">Mon–Fri, 9AM–5PM WAT</p>
+              <p className="text-sm text-blue-100 mb-3">Available in app</p>
+              <p className="text-xs text-blue-100">Mon to Fri, 9AM to 5PM WAT</p>
             </div>
           </div>
           

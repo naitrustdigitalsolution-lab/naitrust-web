@@ -31,12 +31,12 @@ const SEEDS: Record<string, { byName: string; message: string; changes: Proposed
   txn_mock_007: {
     byName: 'Ibrahim Musa',
     message:
-      "Thanks for the offer. Before I accept, can we lower the amount slightly and extend the delivery date? I'd also like the release to depend on an on-site inspection.",
+      "Thanks for the offer. Before I accept, can we lower the amount slightly and extend the delivery date? I'd also like the release to depend on an on site inspection.",
     changes: {
       amountMinor: 2800000,
       deliveryDueDate: '2026-08-05',
-      releaseConditions: 'Goods delivered and inspected on-site by the buyer before release.',
-      agreementNote: 'Please reflect the on-site inspection requirement in the release clause.',
+      releaseConditions: 'Goods delivered and inspected on site by the buyer before release.',
+      agreementNote: 'Please reflect the on site inspection requirement in the release clause.',
     },
   },
 };

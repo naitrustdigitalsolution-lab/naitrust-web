@@ -32,7 +32,7 @@ export function MobileAppPreview() {
         <div className="flex items-center justify-between bg-[#f4f7fb] px-5 py-2 text-[9px] font-bold text-[#071a32]">
           <span>11:21</span>
           <span className="h-4 w-20 rounded-full bg-black shadow-inner" aria-label="Dynamic Island" />
-          <span>●  Wi-Fi  82%</span>
+          <span>●  Wi Fi  82%</span>
         </div>
 
         <div className="px-5 pb-4 pt-5 sm:px-6">

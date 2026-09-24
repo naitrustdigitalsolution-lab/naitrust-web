@@ -128,13 +128,13 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
     youAreSeller: false,
   },
   txn_mock_001: {
-    description: 'Two-bedroom apartment reservation with Adaeze Homes & Properties Ltd, held safely until the offer letter, allocation details, and deposit receipt are confirmed.',
+    description: 'Two bedroom apartment reservation with Adaeze Homes & Properties Ltd, held safely until the offer letter, allocation details, and deposit receipt are confirmed.',
     useCase: 'property-agent-payments',
     releaseConditions: 'Offer letter, allocation details, and deposit receipt confirmed by the buyer.',
     dealType: 'milestone',
   },
   txn_mock_003: {
-    description: 'Off-plan unit deposit with Lekki Gardens Development Co., held safely until allocation documents and inspection evidence are confirmed.',
+    description: 'Off plan unit deposit with Lekki Gardens Development Co., held safely until allocation documents and inspection evidence are confirmed.',
     useCase: 'developer-instalments',
     releaseConditions: 'Allocation letter and supporting documents delivered and confirmed by the buyer, with inspection evidence uploaded.',
     dealType: 'milestone',
@@ -147,7 +147,7 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
   txn_mock_029: {
     description: 'A sealed Galaxy S25 Ultra supplied for business use, with model, IMEI, package condition, and tamper seal recorded before dispatch.',
     useCase: 'supplier-orders',
-    releaseConditions: 'Buyer completes handover review and the funding-review deadline passes without a dispute, or the buyer approves early release.',
+    releaseConditions: 'Buyer completes handover review and the funding review deadline passes without a dispute, or the buyer approves early release.',
     dealType: 'milestone',
   },
   txn_mock_030: {
@@ -205,7 +205,7 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
   txn_mock_037: {
     description: 'Office cleaning was completed and the customer is reviewing the completion evidence before approving payment.',
     useCase: 'custom-business-deal',
-    releaseConditions: 'The customer confirms the agreed deep-cleaning checklist has been completed.',
+    releaseConditions: 'The customer confirms the agreed deep cleaning checklist has been completed.',
     partyMode: 'b2c',
     youAreSeller: true,
   },
@@ -244,7 +244,7 @@ const DETAIL_OVERLAY: Record<string, DetailOverlay> = {
   txn_mock_042: {
     description: 'A completed business equipment lease where the final handover was accepted and payment was paid out.',
     useCase: 'equipment-purchase',
-    releaseConditions: 'Equipment handover, serial-number checks, and acceptance are complete.',
+    releaseConditions: 'Equipment handover, serial number checks, and acceptance are complete.',
     partyMode: 'b2b',
     youAreSeller: true,
   },
@@ -653,7 +653,7 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
     },
     {
       heading: firstPayment ? 'First payment release' : 'Release conditions',
-      body: `${releaseCondition} Once the condition is confirmed, the standard 1-hour payment review begins. The Seller may request release, but that request cannot move money by itself.`,
+      body: `${releaseCondition} Once the condition is confirmed, the standard 1 hour payment review begins. The Seller may request release, but that request cannot move money by itself.`,
     },
   ];
   if (firstPayment) sections.push({
@@ -663,7 +663,7 @@ function agreementFor(summary: SafeDealSummary, overlay: DetailOverlay | undefin
   sections.push(
     {
       heading: 'Review period and early release',
-      body: 'Every payment release has a 1-hour review period after handover. The Buyer may approve release earlier with a transaction PIN after reviewing a warning that the remaining delay will be bypassed. Early approval applies only to the payment currently eligible for release.',
+      body: 'Every payment release has a 1 hour review period after handover. The Buyer may approve release earlier with a transaction PIN after reviewing a warning that the remaining delay will be bypassed. Early approval applies only to the payment currently eligible for release.',
     },
     {
       heading: 'Evidence, issues, and disputes',
@@ -1029,7 +1029,7 @@ export const dealDetailApi = {
 
   generateDeliveryCard: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
     assertActiveAccount();
-    if (!appConfig.isMock) throw new Error('Delivery-card backend integration is not enabled.');
+    if (!appConfig.isMock) throw new Error('Delivery card backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     generateDeliveryCard(deliveryContext(deal));
@@ -1089,7 +1089,7 @@ export const dealDetailApi = {
 
   approveEarlyRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
     assertActiveAccount();
-    if (!appConfig.isMock) throw new Error('Funding-release backend integration is not enabled.');
+    if (!appConfig.isMock) throw new Error('Funding release backend integration is not enabled.');
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     approveEarlyRelease(deliveryContext(deal));

@@ -11,7 +11,7 @@ export const protectedPaymentFAQs = [
     "category": "getting-started",
     "helpCategory": "account",
     "question": "Can I use Naitrust today?",
-    "answer": "Naitrust is accepting early-access interest. Join the waiting list for launch updates. Existing invited users can sign in. Live funding, release and refunds depend on provider approval and launch readiness."
+    "answer": "Naitrust is accepting early access interest. Join the waiting list for launch updates. Existing invited users can sign in. Live funding, release and refunds depend on provider approval and launch readiness."
   },
   {
     "id": "faq-2",
@@ -60,7 +60,7 @@ export const protectedPaymentFAQs = [
     "category": "payments",
     "helpCategory": "payments",
     "question": "What fees will I pay?",
-    "answer": "Pricing is being finalised. Applicable Naitrust and payment-provider fees will be disclosed before you confirm a live payment. Joining the waiting list does not require a payment."
+    "answer": "Pricing is being finalised. Applicable Naitrust and payment provider fees will be disclosed before you confirm a live payment. Joining the waiting list does not require a payment."
   },
   {
     "id": "faq-9",
@@ -81,7 +81,7 @@ export const protectedPaymentFAQs = [
     "category": "security",
     "helpCategory": "security",
     "question": "How should I protect my account?",
-    "answer": "Keep passwords, verification codes and transaction PINs private. Use the secure sign-in flow and contact Naitrust if you notice unfamiliar activity. Never send credentials or payment details in a support message."
+    "answer": "Keep passwords, verification codes and transaction PINs private. Use the secure sign in flow and contact Naitrust if you notice unfamiliar activity. Never send credentials or payment details in a support message."
   },
   {
     "id": "faq-12",
@@ -95,7 +95,7 @@ export const protectedPaymentFAQs = [
     "category": "troubleshooting",
     "helpCategory": "security",
     "question": "How do I contact support or report a concern?",
-    "answer": "Use Contact Us for account, early-access and partnership questions. Use Report a Concern for suspected fraud or misuse. Include the deal reference and relevant evidence, but never include your password, OTP or transaction PIN."
+    "answer": "Use Contact Us for account, early access and partnership questions. Use Report a Concern for suspected fraud or misuse. Include the deal reference and relevant evidence, but never include your password, OTP or transaction PIN."
   },
   {
     "id": "faq-legal-review",

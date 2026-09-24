@@ -203,7 +203,7 @@ export function OnboardingPage({ onNavigate, initialType = 'choice' }: Onboardin
             </div>
 
             <div className="mt-6 rounded-xl border border-primary/15 bg-primary/5 p-3 text-center text-xs leading-5 text-muted-foreground">
-              Both account types use the same protected-payment journey. Choose Business when payments belong to a company, merchant or trading operation.
+              Both account types use the same protected payment journey. Choose Business when payments belong to a company, merchant or trading operation.
             </div>
             <div className="mt-5 text-center">
               <button

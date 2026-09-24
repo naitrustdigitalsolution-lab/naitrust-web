@@ -94,7 +94,7 @@ export const TIER_FEATURES: Record<string, TierFeature> = {
   'unlimited_team_members': {
     id: 'unlimited_team_members',
     name: 'Unlimited Team Members',
-    description: 'Add unlimited team members with role-based permissions',
+    description: 'Add unlimited team members with role based permissions',
     category: 'business_management',
   },
   'business_documents': {
@@ -124,7 +124,7 @@ export const TIER_FEATURES: Record<string, TierFeature> = {
   'ai_insights': {
     id: 'ai_insights',
     name: 'AI Business Insights',
-    description: 'AI-powered business insights and recommendations',
+    description: 'AI powered business insights and recommendations',
     category: 'analytics',
   },
   'export_reports': {
@@ -189,7 +189,7 @@ export const TIER_FEATURES: Record<string, TierFeature> = {
   },
   'two_factor_auth': {
     id: 'two_factor_auth',
-    name: 'Two-Factor Authentication',
+    name: 'Two Factor Authentication',
     description: 'Enhanced security with 2FA',
     category: 'security',
   },
@@ -301,7 +301,7 @@ export const BUSINESS_TIERS: Record<string, BusinessTier> = {
   premium: {
     id: 'premium',
     name: 'Premium',
-    description: 'Unlock multi-business management, advanced features, and growth tools. Only an ACTIVE Premium business enables multi-business capability.',
+    description: 'Unlock multi business management, advanced features, and growth tools. Only an ACTIVE Premium business enables multi business capability.',
     price: {
       monthly: 7999, // ₦7,999/month (VAT included)
       yearly: 69999, // ₦69,999/year (VAT included)

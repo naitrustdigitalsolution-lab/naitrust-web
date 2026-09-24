@@ -185,7 +185,7 @@ export async function mockGetProfile(
   const userId = userIdFromToken(token);
   const record = userId ? records.find((r) => r.user.id === userId) : undefined;
   if (!record) {
-    return { success: false, error: 'Unauthorized - Please login again' };
+    return { success: false, error: 'Unauthorized: Please login again' };
   }
 
   return { success: true, data: { user: { ...record.user } } };

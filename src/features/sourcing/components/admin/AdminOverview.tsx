@@ -9,7 +9,7 @@ const metrics = [
   ['paymentReviews', 'Release recommendations', ShieldCheck],
   ['shipmentExceptions', 'Shipment exceptions', Truck],
   ['moderationCases', 'Moderation alerts', MessageSquareWarning],
-  ['newLeads', 'New early-access leads', AlertTriangle],
+  ['newLeads', 'New early access leads', AlertTriangle],
 ] as const;
 
 export function AdminOverview() {

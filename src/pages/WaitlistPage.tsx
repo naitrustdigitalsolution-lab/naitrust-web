@@ -14,10 +14,10 @@ import { WAITLIST_ROLE_OPTIONS } from '../libs/waitlist/marketplace-options';
 
 const RANGES: Array<{ value: TransactionRange; label: string }> = [
   { value: 'below_500k', label: 'Below ₦500,000' },
-  { value: '500k_2m', label: '₦500,000 – ₦2 million' },
-  { value: '2m_5m', label: '₦2 million – ₦5 million' },
-  { value: '5m_20m', label: '₦5 million – ₦20 million' },
-  { value: '20m_50m', label: '₦20 million – ₦50 million' },
+  { value: '500k_2m', label: '₦500,000 to ₦2 million' },
+  { value: '2m_5m', label: '₦2 million to ₦5 million' },
+  { value: '5m_20m', label: '₦5 million to ₦20 million' },
+  { value: '20m_50m', label: '₦20 million to ₦50 million' },
   { value: 'above_50m', label: 'Above ₦50 million' },
 ];
 
@@ -84,7 +84,7 @@ export default function WaitlistPage() {
           <div className="nt-waitlist-story-copy">
             <p className="nt-waitlist-kicker"><span /> Early access</p>
             <h1>Be early to a safer way to do the deal.</h1>
-            <p>Clear terms, protected payment and shared evidence—kept together from agreement to release.</p>
+            <p>Clear terms, protected payment and shared evidence, kept together from agreement to release.</p>
           </div>
           <div className="nt-waitlist-path" aria-label="The Naitrust protected deal journey">
             <div><FileCheck2 size={19} /><span><b>Agree</b><small>Set clear terms together</small></span></div>
@@ -145,7 +145,7 @@ export default function WaitlistPage() {
                     <Button type="submit" disabled={isSubmitting} className="h-11 flex-[1.7] rounded-md">{isSubmitting ? 'Saving…' : 'Join the waiting list'} <ArrowRight size={17} /></Button>
                   </div>
                 )}
-                <p className="mt-2 text-center text-xs text-muted-foreground">No spam. Only early-access updates.</p>
+                <p className="mt-2 text-center text-xs text-muted-foreground">No spam. Only early access updates.</p>
               </div>
             </form>
           )}

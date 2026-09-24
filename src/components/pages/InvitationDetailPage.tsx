@@ -117,7 +117,7 @@ export function InvitationDetailPage() {
         onOpenChange={setShowPin}
         onVerified={() => runResponse('accepted')}
         title="Confirm with your PIN"
-        description="Enter your 4-digit transaction PIN to accept this deal."
+        description="Enter your 4 digit transaction PIN to accept this deal."
       />
       <Dialog open={showDecline} onOpenChange={setShowDecline}>
         <DialogContent className="sm:max-w-lg">

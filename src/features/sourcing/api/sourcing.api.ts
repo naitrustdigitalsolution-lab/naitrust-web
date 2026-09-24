@@ -167,7 +167,7 @@ export const sourcingApi = {
       return {
         ...database,
         assignments: database.assignments.map((item) => item.id === assignmentId ? updated! : item),
-        moderationCases: moderated.flagged ? [{ id: makeId('mod'), ownerUserId: user.id, sourceType: 'message', reason: 'Possible off-platform contact detail', excerpt: body.slice(0, 100), status: 'open', createdAt: now() }, ...database.moderationCases] : database.moderationCases,
+        moderationCases: moderated.flagged ? [{ id: makeId('mod'), ownerUserId: user.id, sourceType: 'message', reason: 'Possible off platform contact detail', excerpt: body.slice(0, 100), status: 'open', createdAt: now() }, ...database.moderationCases] : database.moderationCases,
       };
     });
     return { assignment: updated!, flagged: moderated.flagged };

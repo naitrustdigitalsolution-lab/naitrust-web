@@ -329,7 +329,7 @@ function ActionsPanel({
       : terminated
       ? 'This order has been cancelled.'
       : releaseClosed
-        ? 'The Naitrust payment-dispute window closed when payment was released.'
+        ? 'The Naitrust payment dispute window closed when payment was released.'
         : undefined;
 
   if (!canConfirm && hasDispute && !canNegotiate && !canTerminate) return null;
@@ -382,7 +382,7 @@ function ActionsPanel({
         </Button>
       )}
       {canTerminate && terminationLocked && (
-        <p className="text-xs leading-5 text-muted-foreground">This deal cannot be cancelled while the handover or payment-review countdown is active. Raise a dispute if there is a problem.</p>
+        <p className="text-xs leading-5 text-muted-foreground">This deal cannot be cancelled while the handover or payment review countdown is active. Raise a dispute if there is a problem.</p>
       )}
       {!youIsReleaser && deal.funding.status === 'awaiting_transfer' && (
         <p className="text-xs leading-5 text-muted-foreground">

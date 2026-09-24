@@ -107,7 +107,7 @@ export function SettingsPage() {
 
   const handleAddBankAccount = async () => {
     if (!bankForm.bankName.trim() || bankForm.accountNumber.length !== 10 || !bankForm.accountName.trim()) {
-      toast.error('Enter the bank, 10-digit account number, and account name.');
+      toast.error('Enter the bank, 10 digit account number, and account name.');
       return;
     }
     try {
@@ -255,7 +255,7 @@ export function SettingsPage() {
           <DialogHeader><DialogTitle>Add a payout account</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><Label htmlFor="linked-bank-name">Bank</Label><Input id="linked-bank-name" value={bankForm.bankName} onChange={(e) => setBankForm({ ...bankForm, bankName: e.target.value })} placeholder="e.g. Zenith Bank" className="mt-1.5" /></div>
-            <div><Label htmlFor="linked-account-number">Account number</Label><Input id="linked-account-number" inputMode="numeric" maxLength={10} value={bankForm.accountNumber} onChange={(e) => setBankForm({ ...bankForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 10) })} placeholder="10-digit account number" className="mt-1.5" /></div>
+            <div><Label htmlFor="linked-account-number">Account number</Label><Input id="linked-account-number" inputMode="numeric" maxLength={10} value={bankForm.accountNumber} onChange={(e) => setBankForm({ ...bankForm, accountNumber: e.target.value.replace(/\D/g, '').slice(0, 10) })} placeholder="10 digit account number" className="mt-1.5" /></div>
             <div><Label htmlFor="linked-account-name">Account name</Label><Input id="linked-account-name" value={bankForm.accountName} onChange={(e) => setBankForm({ ...bankForm, accountName: e.target.value })} placeholder="Name on the account" className="mt-1.5" /></div>
           </div>
           <DialogFooter><Button className="w-full rounded-md" disabled={addBankAccount.isPending} onClick={() => void handleAddBankAccount()}>Add bank account</Button></DialogFooter>

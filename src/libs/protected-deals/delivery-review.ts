@@ -97,7 +97,7 @@ export function fundingReviewDurationMs(days?: ExtendedProductTestingDays): numb
 }
 
 export function fundingReviewLabel(days?: ExtendedProductTestingDays): string {
-  return days ? `${days}-day extended product testing period` : '1-hour payment review';
+  return days ? `${days}-day extended product testing period` : '1 hour payment review';
 }
 
 export function createOpaqueToken(): string {

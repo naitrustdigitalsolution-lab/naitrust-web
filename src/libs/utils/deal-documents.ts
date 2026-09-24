@@ -202,7 +202,7 @@ export async function downloadDeliveryCardPdf(input: DeliveryCardDocumentInput):
   pdf.text('BUYER INSTRUCTIONS', 48, 458);
   const instructions = [
     'Check the package, model, seal and serial or IMEI with the rider present.',
-    'Scan this QR or enter the six-digit OTP in your Naitrust Transaction Room.',
+    'Scan this QR or enter the six digit OTP in your Naitrust Transaction Room.',
     'Confirm the correct product or report a problem during the handover review.',
   ];
   pdf.setFont('helvetica', 'normal');

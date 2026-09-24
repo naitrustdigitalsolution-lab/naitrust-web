@@ -16,7 +16,7 @@ const SHORT_LABELS: Record<string, string> = {
   'property-agent-payments': 'Property payment',
   'developer-instalments': 'Property instalments',
   'land-transactions': 'Land transaction',
-  'agent-led-property': 'Agent-led property',
+  'agent-led-property': 'Agent led property',
   'contractor-projects': 'Construction work',
   'diaspora-purchases': 'Diaspora purchase',
   'vehicle-transactions': 'Car or other vehicle',

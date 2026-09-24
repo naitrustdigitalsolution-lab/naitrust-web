@@ -292,7 +292,7 @@ export function confirmDeliveryReceipt(
     delivery,
     'buyer_review',
     [
-      event('delivery', 'Buyer verified the delivery card. The ten-minute handover review started.'),
+      event('delivery', 'Buyer verified the delivery card. The ten minute handover review started.'),
     ],
   );
 }
@@ -344,7 +344,7 @@ export function blockDeliveryRelease(dealId: string): DealDeliveryLifecycle {
         : current.handover,
     fundingReview: { ...current.fundingReview, status: 'blocked' },
   };
-  notify('Dispute blocks release', 'A reported problem has paused countdown-based payment release.', dealId);
+  notify('Dispute blocks release', 'A reported problem has paused countdown based payment release.', dealId);
   return saveLifecycle(
     dealId,
     delivery,
@@ -358,7 +358,7 @@ export function approveEarlyRelease(context: DeliveryDealContext): DealDeliveryL
   const now = new Date();
   const current = reconcileDeliveryLifecycle(context.id, context.extendedProductTestingDays, now);
   if (current.fundingReview.status !== 'in_progress') {
-    throw new Error('Payment can only be released during an active funding-review period.');
+    throw new Error('Payment can only be released during an active funding review period.');
   }
   const delivery: DealDeliveryLifecycle = {
     ...current,

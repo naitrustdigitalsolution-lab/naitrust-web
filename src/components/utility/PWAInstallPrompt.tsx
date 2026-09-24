@@ -114,8 +114,8 @@ export function PWAInstallPrompt() {
             </div>
             <p className="text-sm text-muted-foreground mb-3">
               {isIOS
-                ? 'For app-like access, tap Share in Safari, then choose Add to Home Screen.'
-                : 'Install Naitrust for quick access and a smooth, full-screen mobile experience.'}
+                ? 'For app like access, tap Share in Safari, then choose Add to Home Screen.'
+                : 'Install Naitrust for quick access and a smooth, full screen mobile experience.'}
             </p>
             <div className="flex gap-2">
               {!isIOS && (

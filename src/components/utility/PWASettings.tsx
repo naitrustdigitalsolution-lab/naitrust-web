@@ -74,7 +74,7 @@ export function PWASettings() {
   };
 
   const handleClearCache = async () => {
-    if (confirm('Are you sure you want to clear all cached data? This will require re-downloading resources.')) {
+    if (confirm('Are you sure you want to clear all cached data? This will require re downloading resources.')) {
       setLoading('cache');
       await clearAllCaches();
       await loadCacheSize();
@@ -162,7 +162,7 @@ export function PWASettings() {
                   ? 'You will receive important updates' 
                   : pwaStatus.notificationPermission === 'denied'
                   ? 'Notifications are blocked'
-                  : 'Enable to get real-time updates'}
+                  : 'Enable to get real time updates'}
               </p>
             </div>
             <Switch
@@ -276,7 +276,7 @@ export function PWASettings() {
             <div>
               <p className="font-medium">Check for Updates</p>
               <p className="text-sm text-gray-600">
-                Version 1.0.0 - Last checked: {new Date().toLocaleDateString()}
+                Version 1.0.0: Last checked: {new Date().toLocaleDateString()}
               </p>
             </div>
             <Button

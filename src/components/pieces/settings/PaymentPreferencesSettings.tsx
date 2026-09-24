@@ -47,7 +47,7 @@ export function PaymentPreferencesSettings({
             >
               <div className="flex items-center gap-1.5">
                 <CreditCard size={14} />
-                <span className="font-semibold">One-time</span>
+                <span className="font-semibold">One time</span>
               </div>
               <p className="text-xs font-normal mt-0.5 opacity-70">
                 Pay manually each billing cycle
@@ -63,7 +63,7 @@ export function PaymentPreferencesSettings({
             >
               <div className="flex items-center gap-1.5">
                 <RefreshCw size={14} />
-                <span className="font-semibold">Auto-renew</span>
+                <span className="font-semibold">Auto renew</span>
               </div>
               <p className="text-xs font-normal mt-0.5 opacity-70">
                 Charged automatically via Paystack
@@ -79,10 +79,10 @@ export function PaymentPreferencesSettings({
               <p className="font-medium text-foreground">How it works</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>
-                  <strong>One-time:</strong> You pay manually each time your subscription is due. We'll send you email reminders before it expires.
+                  <strong>One time:</strong> You pay manually each time your subscription is due. We'll send you email reminders before it expires.
                 </li>
                 <li>
-                  <strong>Auto-renew:</strong> Paystack automatically charges your card on file when your subscription is due. No action required.
+                  <strong>Auto renew:</strong> Paystack automatically charges your card on file when your subscription is due. No action required.
                 </li>
               </ul>
               <p className="mt-2 text-xs">

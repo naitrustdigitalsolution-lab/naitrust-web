@@ -56,9 +56,9 @@ const initialFormState: WaitlistFormState = {
 
 const transactionRanges: Array<{ value: TransactionRange; label: string }> = [
   { value: 'below_100k', label: 'Below NGN 100k' },
-  { value: '100k_500k', label: 'NGN 100k - 500k' },
-  { value: '500k_5m', label: 'NGN 500k - 5m' },
-  { value: '5m_50m', label: 'NGN 5m - 50m' },
+  { value: '100k_500k', label: 'NGN 100k to 500k' },
+  { value: '500k_5m', label: 'NGN 500k to 5m' },
+  { value: '5m_50m', label: 'NGN 5m to 50m' },
   { value: 'above_50m', label: 'Above NGN 50m' },
 ];
 
@@ -458,7 +458,7 @@ export function WaitlistModal({ open, onOpenChange }: WaitlistModalProps) {
             {isSubmitting ? 'Saving your place...' : 'Join the Naitrust waitlist'}
           </Button>
           <p className="-mt-2 text-center text-xs text-muted-foreground">
-            No spam. We will only send useful launch and early-access updates.
+            No spam. We will only send useful launch and early access updates.
           </p>
         </form>
         </div>

@@ -30,7 +30,7 @@ export function PinPromptModal({
   onOpenChange,
   onVerified,
   title = 'Enter your transaction PIN',
-  description = 'For your security, confirm this action with your 4-digit PIN.',
+  description = 'For your security, confirm this action with your 4 digit PIN.',
   warning,
 }: PinPromptModalProps) {
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ export function PinPromptModal({
             </div>
             <p className="text-sm font-medium text-foreground">Set up your transaction PIN first</p>
             <p className="max-w-xs text-xs text-muted-foreground">
-              A 4-digit PIN protects every money-moving action on your account.
+              A 4 digit PIN protects every money moving action on your account.
             </p>
             <Button
               className="mt-1 rounded-md"
@@ -105,7 +105,7 @@ export function PinPromptModal({
             <InputOTP
               maxLength={4}
               autoComplete="off"
-              aria-label="Four-digit transaction PIN"
+              aria-label="Four digit transaction PIN"
               value={pin}
               onChange={(v) => {
                 setPin(v);

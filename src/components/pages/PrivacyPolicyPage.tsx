@@ -13,7 +13,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
     <div className="nt-information min-h-screen bg-background relative py-12">
       <SEOHead
         title="Privacy Policy"
-        description="Learn how Naitrust handles identity, business, beneficiary and protected-payment data under Nigerian data-protection requirements."
+        description="Learn how Naitrust handles identity, business, beneficiary and protected payment data under Nigerian data protection requirements."
         canonicalPath="/privacy"
         noindex={false}
       />
@@ -34,7 +34,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               This Privacy Policy ("Policy") explains how Naitrust Digital Solutions Limited ("Naitrust", "we", "us", or "our"),
               a company incorporated under the Companies and Allied Matters Act (CAMA) 2020 with its registered office in
               Lagos, Nigeria, collects, uses, stores, discloses, and protects your personal data when you use the Naitrust
-              protected-payment platform and website at naitrust.com ("Platform").
+              protected payment platform and website at naitrust.com ("Platform").
             </p>
             <p className="text-muted-foreground mb-4">
               This Policy is issued in compliance with the Nigeria Data Protection Act (NDPA) 2023, the Nigeria Data Protection
@@ -48,7 +48,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
             </p>
           </section>
 
-          <section className="mb-8 rounded-xl border p-5"><h2 className="text-xl font-semibold">Optional legal review — planned</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Both parties separately read and accept a legal review agreement for a named approved reviewer and stated purpose. This authorises Naitrust to share the room’s agreement, existing evidence and future uploaded documents automatically. General acceptance of this privacy policy does not appoint a reviewer. Private messages, account banking details and identity captures are outside the reviewer’s access. Uploaded documents may themselves contain personal information. Routine deactivation requires confirmation from both parties; access continues until then, including the retained record after deal completion. Provider revocation and account suspension can also restrict access. Deactivation cannot recall existing copies. Contact our Data Protection Officer for personal-data requests or urgent access concerns; these are handled separately from routine deal deactivation. Consent and access records remain available to authorised administrators under applicable retention requirements. Final terms require legal review before launch.</p></section>
+          <section className="mb-8 rounded-xl border p-5"><h2 className="text-xl font-semibold">Optional legal review, planned</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Both parties separately read and accept a legal review agreement for a named approved reviewer and stated purpose. This authorises Naitrust to share the room’s agreement, existing evidence and future uploaded documents automatically. General acceptance of this privacy policy does not appoint a reviewer. Private messages, account banking details and identity captures are outside the reviewer’s access. Uploaded documents may themselves contain personal information. Routine deactivation requires confirmation from both parties; access continues until then, including the retained record after deal completion. Provider revocation and account suspension can also restrict access. Deactivation cannot recall existing copies. Contact our Data Protection Officer for personal data requests or urgent access concerns; these are handled separately from routine deal deactivation. Consent and access records remain available to authorised administrators under applicable retention requirements. Final terms require legal review before launch.</p></section>
 
           {/* Data Controller */}
           <section className="mb-8">
@@ -85,7 +85,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                   <li>Email address, phone number, and alternative contact details</li>
                   <li>Corporate Affairs Commission (CAC) registration number and business type (for businesses)</li>
                   <li>Tax Identification Number (TIN) for business verification</li>
-                  <li>Government-issued identification documents (international passport, driver's licence, or voter's card) for identity verification</li>
+                  <li>Government issued identification documents (international passport, driver's licence, or voter's card) for identity verification</li>
                   <li>Business category, description, and operating details</li>
                   <li>Physical address and geographical location</li>
                   <li>Profile photographs and business logos</li>
@@ -94,15 +94,15 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
 
               <div>
                 <h3 className="text-lg mb-2">2.2 Payment and Billing Data</h3>
-                <p className="text-muted-foreground mb-2">For account verification and protected-payment services, we collect or process:</p>
+                <p className="text-muted-foreground mb-2">For account verification and protected payment services, we collect or process:</p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li>Verification, funding, release, refund and service-fee records</li>
+                  <li>Verification, funding, release, refund and service fee records</li>
                   <li>Payment method metadata (card type, issuing bank: note: full card numbers are never stored by Naitrust)</li>
                   <li>Transaction dates, amounts, references and payment status</li>
                 </ul>
                 <p className="text-muted-foreground mt-2 text-sm">
                   Payment card details are processed exclusively by Paystack, our PCI-DSS Level 1 certified payment partner.
-                  Naitrust does not store, transmit, or have access to full payment card numbers. Protected-payment funding and settlement are processed by the regulated financial partner identified for that transaction. If you enable a recurring service, your card details are
+                  Naitrust does not store, transmit, or have access to full payment card numbers. Protected payment funding and settlement are processed by the regulated financial partner identified for that transaction. If you enable a recurring service, your card details are
                   securely stored and managed by Paystack for recurring charges: Naitrust only stores a tokenized reference
                   and never has access to your full card number, CVV, or PIN.
                 </p>
@@ -135,7 +135,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-lg mb-2">2.4 Communications Data</h3>
                 <p className="text-muted-foreground">
-                  Messages exchanged between users through the Platform's in-app messaging system, customer support
+                  Messages exchanged between users through the Platform's in app messaging system, customer support
                   correspondence, feedback submissions, and fraud reports. Communications data is stored to facilitate
                   dispute resolution, fraud investigation, and service improvement.
                 </p>
@@ -145,14 +145,14 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <h3 className="text-lg mb-2">2.5 Verification and Compliance Data</h3>
                 <p className="text-muted-foreground mb-2">For fraud prevention and regulatory compliance:</p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li>Government-issued ID documents, NIN or BVN details where applicable, and proof of address</li>
+                  <li>Government issued ID documents, NIN or BVN details where applicable, and proof of address</li>
                   <li>CAC registration certificates and related corporate documents</li>
                   <li>Tax Identification Number (TIN)</li>
                   <li>Business premises photographs</li>
                   <li>Verification audit trail and compliance screening results</li>
-                  <li>CAC verification results (processed via QoreId, a NITDA-compliant provider)</li>
+                  <li>CAC verification results (processed via QoreId, a NITDA compliant provider)</li>
                   <li>TIN validation results (processed via QoreId)</li>
-                  <li>Individual identity, facial match, and liveness-check results processed by approved verification providers</li>
+                  <li>Individual identity, facial match, and liveness check results processed by approved verification providers</li>
                 </ul>
               </div>
 
@@ -160,7 +160,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <h3 className="text-lg mb-2">2.6 Biometric and Camera Data</h3>
                 <p className="text-muted-foreground mb-2">
                   During individual or business verification, your device camera may be accessed to capture a live selfie, perform a liveness check, compare your face with an identity record, or capture a photo of you
-                  holding your government-issued identification document. Images, facial templates, liveness signals, and match results may constitute biometric and sensitive personal data,
+                  holding your government issued identification document. Images, facial templates, liveness signals, and match results may constitute biometric and sensitive personal data,
                   classified as sensitive personal data under Section 30 of the NDPA 2023.
                 </p>
                 <p className="text-muted-foreground">
@@ -205,7 +205,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
 
               <h3 className="text-lg mt-4 mb-2">Specific purposes include:</h3>
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li>Verifying individuals and business representatives through identity, facial-match, and liveness checks</li>
+                  <li>Verifying individuals and business representatives through identity, facial match, and liveness checks</li>
                   <li>Verifying business identity and registration through CAC, TIN, ownership, and representative checks</li>
                 <li>Creating and maintaining user accounts and payment account details</li>
                 <li>Processing verification fee payments and subscription billing</li>
@@ -228,7 +228,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                   <h4 className="font-semibold mb-1">Instant Verification</h4>
                   <p className="text-muted-foreground text-sm">
                     Automated CAC registration verification, NIN or International Passport verification via the QoreID API,
-                    identity matching against CAC-registered affiliates, and business email OTP verification. This path is
+                    identity matching against CAC registered affiliates, and business email OTP verification. This path is
                     fully automated with no human review of your documents.
                   </p>
                 </div>
@@ -238,7 +238,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                     You upload a live selfie (captured via device camera), a selfie holding your ID (captured via device camera),
                     your CAC certificate, a personal identification document, and optional supporting documents. These materials
                     are reviewed by authorised Naitrust administrative staff. Manual verification is typically completed within
-                    1–3 business days.
+                    1 to 3 business days.
                   </p>
                 </div>
               </div>
@@ -264,18 +264,18 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               </div>
 
               <div>
-                <h3 className="text-lg mb-2">4.2 Authorised Third-Party Service Providers</h3>
+                <h3 className="text-lg mb-2">4.2 Authorised Third Party Service Providers</h3>
                 <p className="text-muted-foreground mb-2">
                   We share personal data with the following categories of processors, all of whom are contractually
                   bound to process data only on our instructions and in compliance with applicable data protection law:
                 </p>
                 <ul className="list-disc ml-6 text-muted-foreground space-y-1">
-                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for account services and protected-payment funding, settlement, release, refund and status updates</li>
+                  <li><strong>Payment and Banking Partners:</strong> Regulated providers used for account services and protected payment funding, settlement, release, refund and status updates</li>
                   <li><strong>Verification Providers:</strong> QoreID for CAC, TIN, and personal ID validation against government databases</li>
                   <li><strong>Cloud Infrastructure:</strong> Hosting and data storage providers with ISO 27001 or equivalent certification</li>
                   <li><strong>Communication Services:</strong> Email and SMS service providers for transactional notifications</li>
                   <li><strong>Analytics Providers:</strong> For anonymised usage analytics and performance monitoring</li>
-                  <li><strong>Image Storage:</strong> ImageKit: a cloud-based image storage and delivery service used to store verification document images (selfies, ID photos, CAC certificates). Data stored via ImageKit may reside on servers outside Nigeria and is subject to a Data Processing Agreement (DPA) with Naitrust ensuring compliance with applicable data protection standards</li>
+                  <li><strong>Image Storage:</strong> ImageKit: a cloud based image storage and delivery service used to store verification document images (selfies, ID photos, CAC certificates). Data stored via ImageKit may reside on servers outside Nigeria and is subject to a Data Processing Agreement (DPA) with Naitrust ensuring compliance with applicable data protection standards</li>
                 </ul>
               </div>
 
@@ -326,9 +326,9 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li>TLS 1.3 encryption for all data in transit</li>
                 <li>AES-256 encryption for sensitive data at rest</li>
                 <li>Regular vulnerability assessments and penetration testing</li>
-                <li>Role-based access controls with principle of least privilege</li>
-                <li>Multi-factor authentication for administrative access</li>
-                <li>AI-powered anomaly detection and real-time security monitoring</li>
+                <li>Role based access controls with principle of least privilege</li>
+                <li>Multi factor authentication for administrative access</li>
+                <li>AI powered anomaly detection and real time security monitoring</li>
                 <li>Secure verification fee processing through PCI-DSS Level 1 certified payment partner</li>
                 <li>Automated backups with encrypted offsite storage</li>
                 <li>Incident response procedures and breach notification protocols</li>
@@ -357,7 +357,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Right of Access:</strong> You may request a copy of the personal data we hold about you, together with information about the purposes of processing and the categories of recipients</li>
                 <li><strong>Right to Rectification:</strong> You may request correction of inaccurate or incomplete personal data</li>
                 <li><strong>Right to Erasure:</strong> You may request deletion of your personal data, subject to our legal retention obligations (see Section 7)</li>
-                <li><strong>Right to Data Portability:</strong> You may request your personal data in a structured, commonly used, and machine-readable format</li>
+                <li><strong>Right to Data Portability:</strong> You may request your personal data in a structured, commonly used, and machine readable format</li>
                 <li><strong>Right to Object:</strong> You may object to processing based on legitimate interests where your particular circumstances warrant</li>
                 <li><strong>Right to Withdraw Consent:</strong> Where processing is based on consent, you may withdraw that consent at any time without affecting the lawfulness of processing carried out prior to withdrawal</li>
                 <li><strong>Right to Restrict Processing:</strong> You may request restriction of processing in certain circumstances, such as where you contest the accuracy of data</li>
@@ -375,7 +375,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               <ul className="list-disc ml-6 text-muted-foreground space-y-1">
                 <li><strong>Camera Access:</strong> Before accessing your device camera for selfie capture, you are prompted with a standard browser permission dialog. Camera access is only used during the manual verification process and is not retained beyond the capture session.</li>
                 <li><strong>Document Review Consent:</strong> Before submitting verification documents, you are informed that your documents will be reviewed by authorised Naitrust administrative staff, and you provide consent to proceed.</li>
-                <li><strong>Third-Party Data Sharing:</strong> Before instant verification via QoreID, you consent to sharing your identification data (NIN, International Passport, or CAC details) with QoreID for verification against government databases.</li>
+                <li><strong>Third Party Data Sharing:</strong> Before instant verification via QoreID, you consent to sharing your identification data (NIN, International Passport, or CAC details) with QoreID for verification against government databases.</li>
               </ul>
               <p className="text-muted-foreground mt-2">
                 All consent is freely given, specific, informed, and unambiguous as required by the NDPA 2023. You may withdraw
@@ -399,9 +399,9 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
                 <li><strong>Verification fee and billing records:</strong> Seven (7) years from the date of the transaction, as required by Nigerian financial regulations and the Federal Inland Revenue Service</li>
                 <li><strong>Verification documents:</strong> Five (5) years from the date of verification or account closure, whichever is later</li>
                 <li><strong>Communications data:</strong> Three (3) years from the date of the communication</li>
-                <li><strong>Technical/usage data:</strong> Twenty-four (24) months from the date of collection</li>
+                <li><strong>Technical/usage data:</strong> Twenty four (24) months from the date of collection</li>
                 <li><strong>Fraud reports and investigation records:</strong> Seven (7) years or such longer period as required by ongoing legal proceedings</li>
-                <li><strong>Selfie and ID photos (manual verification):</strong> Deleted from ImageKit within thirty (30) days of verification approval or rejection. Selfie-with-ID photos are deleted immediately after administrative review is complete to minimise biometric data retention</li>
+                <li><strong>Selfie and ID photos (manual verification):</strong> Deleted from ImageKit within thirty (30) days of verification approval or rejection. Selfie with ID photos are deleted immediately after administrative review is complete to minimise biometric data retention</li>
                 <li><strong>Live identity photos for an order:</strong> Viewable only by authorised order participants until ninety (90) days after the Order Room closes. Participant access then ends and only verification and audit metadata is retained, unless a dispute, fraud investigation, regulatory requirement, or legal hold requires continued restricted retention</li>
                 <li><strong>Verification documents (CAC certificates, ID documents):</strong> Retained for up to five (5) years from the date of verification for regulatory compliance purposes</li>
               </ul>
@@ -448,7 +448,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
               </ul>
               <p className="text-muted-foreground mt-2">
                 You may manage your cookie preferences through the "Cookie Preferences" option in the Platform footer.
-                Disabling non-essential cookies may affect certain Platform features.
+                Disabling non essential cookies may affect certain Platform features.
               </p>
             </div>
           </section>
@@ -457,13 +457,13 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onNavigate
           <section className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Shield className="w-6 h-6 text-[#1E90FF]" />
-              <h2 className="text-xl">10. Third-Party Verification Services</h2>
+              <h2 className="text-xl">10. Third Party Verification Services</h2>
             </div>
 
             <div className="ml-8">
               <p className="text-muted-foreground mb-4">
                 For business verification (including CAC, TIN, and personal ID validation), we engage QoreId, a licensed and
-                NITDA-compliant third-party identity verification provider. Naitrust has executed a formal Data Processing
+                NITDA compliant third party identity verification provider. Naitrust has executed a formal Data Processing
                 Agreement (DPA) with QoreId, which governs the processing of personal data on our behalf in accordance
                 with the NDPA 2023 and NDPR 2019.
               </p>

@@ -177,7 +177,7 @@ export function NegotiationPanel({
                     Accept changes
                   </Button>
                   {canProposeChanges && <Button size="sm" variant="outline" className="rounded-md" onClick={() => setShowPropose(true)}>
-                    Counter-propose
+                    Counter propose
                   </Button>}
                   <Button
                     size="sm"
@@ -211,7 +211,7 @@ export function NegotiationPanel({
             propose.mutate(input, {
               onSuccess: () => {
                 setShowPropose(false);
-                toast.success('Counter-proposal sent.');
+                toast.success('Counter proposal sent.');
               },
             })
           }

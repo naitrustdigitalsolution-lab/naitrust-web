@@ -100,7 +100,7 @@ export const blogArticles: BlogArticle[] = [
       {
         "heading": "What comes next",
         "paragraphs": [
-          "Naitrust is currently accepting early-access interest for buyers, sellers and businesses in Nigeria. The planned pilot uses a single payment release. Live funding, release and refunds require approved payment-provider integrations."
+          "Naitrust is currently accepting early access interest for buyers, sellers and businesses in Nigeria. The planned pilot uses a single payment release. Live funding, release and refunds require approved payment provider integrations."
         ]
       }
     ]

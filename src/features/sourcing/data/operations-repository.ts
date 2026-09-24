@@ -36,7 +36,7 @@ function cloneSeed(): OperationsDatabase {
       responseMinutes: 75 + (index % 10) * 35,
       available: index % 7 !== 0,
       verificationSummary: isCompany
-        ? `Registered sourcing business with a verified representative, China operating address and evidence-review process.`
+        ? `Registered sourcing business with a verified representative, China operating address and evidence review process.`
         : `Identity, China location and sourcing work history reviewed by Naitrust operations.`,
     });
   }

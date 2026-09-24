@@ -136,7 +136,7 @@ export function URLVerificationModal({ isOpen, onClose, currentUrl, onConfirm }:
                 <ul className="space-y-1 text-muted-foreground">
                   <li>✓ Always check the URL is <span className="font-mono">naitrust.com</span></li>
                   <li>✓ Look for the padlock icon in your browser</li>
-                  <li>✓ Be wary of similar-looking domains (e.g., truslink.ng)</li>
+                  <li>✓ Be wary of similar looking domains (e.g., truslink.ng)</li>
                 </ul>
               </div>
             </div>

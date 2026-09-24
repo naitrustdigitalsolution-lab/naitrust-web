@@ -53,7 +53,7 @@ export function ProductTestingPeriodField({ value, onChange }: ProductTestingPer
           </div>
           <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-muted-foreground">
             <ShieldCheck size={14} className="mt-0.5 shrink-0 text-primary" />
-            This sets the protected-funding release deadline. It is not a warranty and does not remove consumer rights.
+            This sets the protected funding release deadline. It is not a warranty and does not remove consumer rights.
           </p>
         </div>
       )}

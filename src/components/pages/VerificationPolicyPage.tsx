@@ -9,7 +9,7 @@ interface VerificationPolicyPageProps {
 const verificationTypes = [
   { icon: UserCheck, title: 'Individual verification', text: 'Identity information and supporting documents may be checked to help confirm that a person is who they claim to be.' },
   { icon: Building2, title: 'Business verification', text: 'Business registration information and the authority of a representative may be checked before a business is marked as verified.' },
-  { icon: ScanFace, title: 'Liveness checks', text: 'A short camera-based check may be used to reduce impersonation and confirm that a real person is present during verification.' },
+  { icon: ScanFace, title: 'Liveness checks', text: 'A short camera based check may be used to reduce impersonation and confirm that a real person is present during verification.' },
   { icon: ShieldCheck, title: 'Beneficiary checks', text: 'The intended payment recipient and account details must be checked through supported provider processes before funding or release.' },
 ];
 
@@ -30,7 +30,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
           <div className="flex gap-3">
             <AlertTriangle className="mt-0.5 shrink-0" size={21} />
             <div>
-              <h2 className="font-bold">Naitrust is currently accepting waiting-list registrations.</h2>
+              <h2 className="font-bold">Naitrust is currently accepting waiting list registrations.</h2>
               <p className="mt-1 text-sm leading-6">Verification is not yet available to the public. The final checks, providers, fees, timing, and availability will be shown before anyone is asked to submit verification information.</p>
               <button
                 type="button"
@@ -54,7 +54,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
         </section>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <section className="rounded-2xl border bg-card p-6"><FileCheck2 className="mb-4 text-primary" /><h2 className="text-xl font-bold">Information and consent</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">Applicants must provide accurate, current, and genuine information and must have authority to submit it. Before a camera, identity, business, or third-party check begins, Naitrust will explain what is required and request any consent required by law.</p></section>
+          <section className="rounded-2xl border bg-card p-6"><FileCheck2 className="mb-4 text-primary" /><h2 className="text-xl font-bold">Information and consent</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">Applicants must provide accurate, current, and genuine information and must have authority to submit it. Before a camera, identity, business, or third party check begins, Naitrust will explain what is required and request any consent required by law.</p></section>
           <section className="rounded-2xl border bg-card p-6"><ShieldCheck className="mb-4 text-primary" /><h2 className="text-xl font-bold">Verification decisions</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">A check may pass, fail, remain pending, or require more information. Naitrust may refuse, pause, repeat, or remove verification where information cannot be confirmed, appears misleading, or later becomes inaccurate.</p></section>
         </div>
 
@@ -65,7 +65,7 @@ export function VerificationPolicyPage({ onNavigate }: VerificationPolicyPagePro
 
         <section className="mt-8 rounded-2xl border bg-card p-6">
           <h2 className="text-xl font-bold">Privacy and questions</h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification information will be handled under the Naitrust Privacy Policy and applicable Nigerian data-protection law. Final retention periods and any verification-provider details will be disclosed when the service becomes available.</p>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">Verification information will be handled under the Naitrust Privacy Policy and applicable Nigerian data protection law. Final retention periods and any verification provider details will be disclosed when the service becomes available.</p>
           <div className="mt-5 flex flex-wrap gap-3"><button onClick={() => onNavigate('privacy')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">Read Privacy Policy</button><button onClick={() => onNavigate('contact')} className="rounded-full border-2 border-primary px-5 py-2.5 text-sm font-semibold text-primary">Contact Naitrust</button></div>
         </section>
       </div>

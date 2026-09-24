@@ -369,7 +369,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
                 <Label htmlFor="confirmPassword">Confirm Password *</Label>
                 <PasswordInput
                   id="confirmPassword"
-                  placeholder="Re-enter your password"
+                  placeholder="Re enter your password"
                   value={formData.confirmPassword || ''}
                   onChange={(e) => updateFormData('confirmPassword', e.target.value)}
                 />
@@ -875,7 +875,7 @@ export function RegistrationPage({ onNavigate, registrationType }: RegistrationP
               <p className="mt-2 text-xs leading-5 text-muted-foreground">
                 {registrationType === 'business'
                   ? 'For registered companies, merchants, teams and growing businesses managing important payments.'
-                  : 'For individuals protecting purchases, service fees, deposits and delivery-based payments.'}
+                  : 'For individuals protecting purchases, service fees, deposits and delivery based payments.'}
               </p>
             </div>
 

@@ -172,7 +172,7 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
               </div>
             </div>
             {business.socialHandles && business.socialHandles.length > 0 && <div className="mt-4 border-t pt-4"><p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground"><AtSign size={14} /> Social media</p><div className="flex flex-wrap gap-2">{business.socialHandles.map((social) => { const href = socialUrl(social.platform, social.value); const content = <><span className="capitalize">{social.platform}</span><span className="font-normal text-muted-foreground">{social.value}</span>{href && <ExternalLink size={12} />}</>; return href ? <a key={`${social.platform}-${social.value}`} href={href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted">{content}</a> : <span key={`${social.platform}-${social.value}`} className="inline-flex items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium">{content}</span>; })}</div></div>}
-            {!business.email && !business.phone && !business.website && !business.address && !business.socialHandles?.length && <p className="mt-4 rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground">No public contact details have been added yet. You can still send an in-app message.</p>}
+            {!business.email && !business.phone && !business.website && !business.address && !business.socialHandles?.length && <p className="mt-4 rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground">No public contact details have been added yet. You can still send an in app message.</p>}
           </section>
           <section>
             <div className="mb-3 flex items-end justify-between gap-4"><div><h2 className="font-semibold">Customer feedback</h2><p className="mt-1 text-xs text-muted-foreground">Ratings and comments are tied to completed Naitrust transactions with this business.</p></div>{reviews.length > 0 && <p className="shrink-0 text-xs text-muted-foreground">{reviewPageStart + 1}–{Math.min(reviewPageStart + REVIEWS_PER_PAGE, reviews.length)} of {reviews.length}</p>}</div>
@@ -215,7 +215,7 @@ export function PublicTrustProfilePage({ businessIdentifier, embedded = false, s
           </div>
           <details className="group rounded-2xl border p-4">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-foreground">
-              I already know and trust them — pay directly instead
+              I already know and trust them, pay directly instead
               <ChevronDown size={16} className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
             </summary>
             <div className="mt-4 space-y-4">

@@ -43,7 +43,7 @@ export function PasswordSettings({
           </span>
           <div>
             <h2 className="text-base font-semibold text-foreground sm:text-sm">Change password</h2>
-            <p className="text-xs text-muted-foreground">Keep your sign-in secure</p>
+            <p className="text-xs text-muted-foreground">Keep your sign in secure</p>
           </div>
           <ChevronDown size={17} className={`ml-auto shrink-0 transition-transform sm:hidden ${expanded ? 'rotate-180' : ''}`} />
         </button>

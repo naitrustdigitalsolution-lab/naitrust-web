@@ -152,7 +152,7 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
             </div>
             <CardTitle className="text-2xl">Verify Your Email</CardTitle>
             <CardDescription>
-              We've sent a 6-digit verification code to your email address
+              We've sent a 6 digit verification code to your email address
             </CardDescription>
           </CardHeader>
           
@@ -192,7 +192,7 @@ export function VerifyEmailPage({ onNavigate, email: initialEmail, otp: initialO
                   disabled={isVerifying}
                 />
                 <p className="text-xs text-muted-foreground text-center">
-                  Enter the 6-digit code sent to your email
+                  Enter the 6 digit code sent to your email
                 </p>
               </div>
 

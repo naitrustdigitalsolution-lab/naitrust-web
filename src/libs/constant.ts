@@ -30,14 +30,14 @@ export const CATEGORIES = [
   'Butchery & Meat Shop', 'Fish & Seafood', 'Fruits & Vegetables', 'Spices & Condiments',
   'Frozen Foods', 'Organic & Health Foods', 'Fast Food & Quick Service', 'Fine Dining',
   'Cafe & Coffee Shop', 'Bar & Lounge', 'Night Club', 'Cinema & Movies',
-  'Gaming & Arcade', 'Amusement Parks', 'Comedy & Stand-up', 'Theater & Drama',
+  'Gaming & Arcade', 'Amusement Parks', 'Comedy & Stand up', 'Theater & Drama',
   'Art Gallery & Exhibition', 'Museum & Cultural Center', 'Driving School', 'Language School',
   'Computer Training', 'Vocational Training', 'Professional Certification', 'Tutoring & Lessons',
   'Daycare & Nursery', 'Primary School', 'Secondary School', 'University & College',
   'Online Courses', 'Insurance Services', 'Investment & Asset Management', 'Banking & Microfinance',
   'Forex & Bureau de Change', 'Tax Consulting', 'Business Registration', 'Recruitment & HR Services',
-  'Co-working Spaces', 'Virtual Office Services', 'Equipment Rental', 'Storage & Warehousing',
-  'Import & Export', 'Wholesale & Distribution', 'Retail & Shopping', 'E-commerce & Online Store',
+  'Co working Spaces', 'Virtual Office Services', 'Equipment Rental', 'Storage & Warehousing',
+  'Import & Export', 'Wholesale & Distribution', 'Retail & Shopping', 'E commerce & Online Store',
 ];
 
 // Nigerian States

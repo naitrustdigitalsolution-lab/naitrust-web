@@ -42,9 +42,9 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
 
         <div className="grid gap-6">
           <ComplianceSection icon={<Users size={22} />} title="1. Individual and business verification">
-            <p>Naitrust may verify an individual, a business, and the person representing a business before higher-risk activity proceeds.</p>
+            <p>Naitrust may verify an individual, a business, and the person representing a business before higher risk activity proceeds.</p>
             <ul className="list-disc space-y-2 pl-5">
-              <li>Individual checks may include contact verification, NIN or BVN-based identity checks where available, document checks, facial comparison, and liveness checks.</li>
+              <li>Individual checks may include contact verification, NIN or BVN based identity checks where available, document checks, facial comparison, and liveness checks.</li>
               <li>Business checks may include CAC registration details, business contact information, ownership or representative information, and supporting documents.</li>
               <li>Checks may be completed through approved verification providers or reviewed by authorised Naitrust personnel when manual review is required.</li>
             </ul>
@@ -56,35 +56,35 @@ export function CompliancePage({ onNavigate }: CompliancePageProps) {
             <p>Users remain responsible for accurate information, participant authority, checks appropriate to their deal, genuine evidence, account security, and legal compliance. Uploading a document does not mean Naitrust has authenticated its legal effect or the ownership claims within it.</p>
           </ComplianceSection>
 
-          <ComplianceSection icon={<Landmark size={22} />} title="3. Partner-led payments">
-            <p>Naitrust is not a bank or deposit-taking institution. Where a Protected Deal includes funding, release, settlement, reversal, or refund activity, movement or custody of funds is performed by the regulated payment, banking, or financial partner identified for that transaction.</p>
-            <p>Naitrust may display payment instructions and partner-supplied status updates inside the Protected Deal record. Partner terms, processing limits, compliance reviews, availability, settlement timing, and refund or reversal rules may also apply.</p>
+          <ComplianceSection icon={<Landmark size={22} />} title="3. Partner led payments">
+            <p>Naitrust is not a bank or deposit taking institution. Where a Protected Deal includes funding, release, settlement, reversal, or refund activity, movement or custody of funds is performed by the regulated payment, banking, or financial partner identified for that transaction.</p>
+            <p>Naitrust may display payment instructions and partner supplied status updates inside the Protected Deal record. Partner terms, processing limits, compliance reviews, availability, settlement timing, and refund or reversal rules may also apply.</p>
           </ComplianceSection>
 
           <ComplianceSection icon={<Database size={22} />} title="4. Privacy and biometric data">
-            <p>Naitrust processes personal data in accordance with its Privacy Policy and applicable Nigerian data-protection law, including the Nigeria Data Protection Act 2023.</p>
+            <p>Naitrust processes personal data in accordance with its Privacy Policy and applicable Nigerian data protection law, including the Nigeria Data Protection Act 2023.</p>
             <ul className="list-disc space-y-2 pl-5">
               <li>We aim to collect only the information needed for accounts, verification, Protected Deal workflows, support, security, and legal compliance.</li>
-              <li>Camera access, facial images, facial-match results, and liveness signals are requested only when needed for a verification check.</li>
+              <li>Camera access, facial images, facial match results, and liveness signals are requested only when needed for a verification check.</li>
               <li>Information may be shared with contracted verification, infrastructure, communication, and regulated financial providers only as needed for their role.</li>
               <li>Users may request access, correction, deletion, restriction, objection, or portability where those rights apply and are not limited by a lawful retention obligation.</li>
             </ul>
           </ComplianceSection>
 
           <ComplianceSection icon={<ShieldCheck size={22} />} title="5. Security, fraud prevention, and records">
-            <p>Naitrust uses access controls, encryption in transit, account-security controls, activity records, and review processes appropriate to the information and product feature involved.</p>
-            <p>We may preserve verification results, accepted terms, payment-status events, evidence, account activity, and support or issue records for security, dispute handling, fraud prevention, service operation, and legal obligations. Retention depends on the record type, purpose, partner requirements, and applicable law.</p>
+            <p>Naitrust uses access controls, encryption in transit, account security controls, activity records, and review processes appropriate to the information and product feature involved.</p>
+            <p>We may preserve verification results, accepted terms, payment status events, evidence, account activity, and support or issue records for security, dispute handling, fraud prevention, service operation, and legal obligations. Retention depends on the record type, purpose, partner requirements, and applicable law.</p>
           </ComplianceSection>
 
           <ComplianceSection icon={<Building2 size={22} />} title="6. Product roles and transparency">
-            <p>Naitrust provides Protected Deal-record and trust-workflow technology. Verification providers perform specified identity or business checks. Regulated financial partners handle applicable fund movement or custody. Deal participants remain responsible for ownership, authority, legal advice, physical and document checks, statements, and performance.</p>
-            <p>Naitrust provides protected-payment coordination and transaction tools, but is not a supplier, freight carrier, customs authority, regulator, bank, insurer, law firm, credit-rating agency, or guarantee service. Material changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
+            <p>Naitrust provides Protected Deal record and trust workflow technology. Verification providers perform specified identity or business checks. Regulated financial partners handle applicable fund movement or custody. Deal participants remain responsible for ownership, authority, legal advice, physical and document checks, statements, and performance.</p>
+            <p>Naitrust provides protected payment coordination and transaction tools, but is not a supplier, freight carrier, customs authority, regulator, bank, insurer, law firm, credit rating agency, or guarantee service. Material changes will be reflected in the relevant Terms, Privacy Policy, Verification Policy, or this page.</p>
           </ComplianceSection>
         </div>
 
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
           <h2 className="text-xl font-bold">Questions about compliance or your information?</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Contact Naitrust for privacy, verification, Protected Deal, or partner-payment questions.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Contact Naitrust for privacy, verification, Protected Deal, or partner payment questions.</p>
           <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
             <button onClick={() => onNavigate('contact')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90">Contact Naitrust</button>
             <button onClick={() => onNavigate('privacy')} className="rounded-full border-2 border-primary bg-background px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">Read the Privacy Policy</button>

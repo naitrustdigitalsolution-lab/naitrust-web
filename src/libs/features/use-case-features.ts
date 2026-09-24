@@ -185,7 +185,7 @@ const DEAL_TYPE_META: Record<DealType, { label: string; description: string }> =
   },
   recurring: {
     label: 'Recurring deal',
-    description: 'A linked follow-on deal is created automatically when this one completes.',
+    description: 'A linked follow on deal is created automatically when this one completes.',
   },
 };
 

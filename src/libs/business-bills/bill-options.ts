@@ -22,7 +22,7 @@ export const BUSINESS_BILL_RECURRENCE_OPTIONS: ReadonlyArray<{
   value: BusinessBillRecurrence;
   label: string;
 }> = [
-  { value: 'one_off', label: 'One-time' },
+  { value: 'one_off', label: 'One time' },
   { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },
   { value: 'quarterly', label: 'Quarterly' },

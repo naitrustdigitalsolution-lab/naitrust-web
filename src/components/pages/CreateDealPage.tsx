@@ -967,7 +967,7 @@ export function CreateDealPage() {
         onOpenChange={setShowPin}
         onVerified={doSubmit}
         title="Confirm with your PIN"
-        description={`Enter your 4-digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this protected deal'}.`}
+        description={`Enter your 4 digit transaction PIN to ${editDealId ? 'update this invitation' : 'create this protected deal'}.`}
       />
       <DraftSavedForPinModal
         open={showPinDraftSaved}
@@ -1378,7 +1378,7 @@ export function CreateDealPage() {
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
             {agreement && <AgreementDocument agreement={agreement} editable={editingAgreement} hideAiNote onChange={(next) => { setAgreement(next); setAgreementConfirmed(false); setAgreementAcceptanceChecked(false); }} />}
           </div>
-          <div className="border-t bg-background p-4 sm:px-6"><label className="flex cursor-pointer items-start gap-3 rounded-xl border bg-muted/20 p-3"><Checkbox checked={agreementAcceptanceChecked} onCheckedChange={(checked) => setAgreementAcceptanceChecked(checked === true)} className="mt-0.5" /><span className="text-sm leading-5">I have read this agreement and accept the amount, {form.workflowMode === 'delivery' ? 'delivery terms' : form.workflowMode === 'service' ? 'work-completion terms' : 'milestone terms'}, and payment release conditions.</span></label><Button type="button" className="mt-3 w-full rounded-full" disabled={!agreementAcceptanceChecked || editingAgreement} onClick={() => { setAgreementConfirmed(true); setAgreementPreviewOpen(false); }}>Accept agreement</Button></div>
+          <div className="border-t bg-background p-4 sm:px-6"><label className="flex cursor-pointer items-start gap-3 rounded-xl border bg-muted/20 p-3"><Checkbox checked={agreementAcceptanceChecked} onCheckedChange={(checked) => setAgreementAcceptanceChecked(checked === true)} className="mt-0.5" /><span className="text-sm leading-5">I have read this agreement and accept the amount, {form.workflowMode === 'delivery' ? 'delivery terms' : form.workflowMode === 'service' ? 'work completion terms' : 'milestone terms'}, and payment release conditions.</span></label><Button type="button" className="mt-3 w-full rounded-full" disabled={!agreementAcceptanceChecked || editingAgreement} onClick={() => { setAgreementConfirmed(true); setAgreementPreviewOpen(false); }}>Accept agreement</Button></div>
         </SheetContent>
       </Sheet>
       <Sheet open={dealTermsPreviewOpen} onOpenChange={setDealTermsPreviewOpen}>

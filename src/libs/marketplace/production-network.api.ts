@@ -48,7 +48,7 @@ export const productionNetworkApi = {
     const stages: ProductionStage[] = [
       { id: `stage_product_${Date.now()}`, kind: 'product', title: 'Main product', requirement: input.productBrief, status: 'needs_supplier' },
       { id: `stage_packaging_${Date.now()}`, kind: 'packaging', title: 'Product packaging', requirement: 'Choose the carton, retail box, inserts, and packing quantity.', supplierId: 'sup_cn_pack', status: 'supplier_selected' },
-      { id: `stage_labels_${Date.now()}`, kind: 'labels', title: 'Brand labels', requirement: 'Add logo labels, product information, barcode, and country-of-origin details.', status: 'needs_supplier' },
+      { id: `stage_labels_${Date.now()}`, kind: 'labels', title: 'Brand labels', requirement: 'Add logo labels, product information, barcode, and country of origin details.', status: 'needs_supplier' },
       { id: `stage_inspection_${Date.now()}`, kind: 'inspection', title: 'Final inspection', requirement: 'Check the product, branding, packaging, quantity, and shipping marks before collection.', status: 'needs_supplier' },
       { id: `stage_shipping_${Date.now()}`, kind: 'shipping', title: 'Consolidation and shipping', requirement: 'Collect every completed stage and coordinate one shipment to Nigeria.', status: 'needs_supplier' },
     ];

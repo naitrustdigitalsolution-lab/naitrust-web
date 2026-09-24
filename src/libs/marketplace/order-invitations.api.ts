@@ -153,7 +153,7 @@ export const orderInvitationsApi = {
     const list = read();
     const invitation = list.find((item) => item.token === token);
     if (!invitation || invitation.kind !== 'agent_invite') throw new Error('This agent invitation could not be found.');
-    if (!isRecipient(invitation, agent.identifiers)) throw new Error('This invitation was sent to another sourcing-agent account.');
+    if (!isRecipient(invitation, agent.identifiers)) throw new Error('This invitation was sent to another sourcing agent account.');
     const current = withComputedStatus(invitation);
     if (current.status !== 'pending') throw new Error(`This invitation is already ${current.status}.`);
     write(list.map((item) => item.token === token ? { ...item, status: 'claimed' as const, claimedByUserId: agent.id, claimedByName: agent.name } : item));

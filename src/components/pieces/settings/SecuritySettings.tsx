@@ -35,7 +35,7 @@ export function SecuritySettings({
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-medium">Two-Factor Authentication</div>
+            <div className="font-medium">Two Factor Authentication</div>
             <div className="text-sm text-muted-foreground">
               Add an extra layer of security to your account
             </div>

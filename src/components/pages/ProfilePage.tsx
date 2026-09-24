@@ -121,12 +121,12 @@ export function AccountProfileOverview({ profileEditor }: { profileEditor?: Reac
               <VerificationRow
                 label="Transaction PIN"
                 verified={security.pinSet}
-                hint="Set a 4-digit PIN for money-moving actions."
+                hint="Set a 4 digit PIN for money moving actions."
               />
               <VerificationRow
-                label="Two-factor (authenticator)"
+                label="Two factor (authenticator)"
                 verified={security.twoFactorEnabled}
-                hint="Add an authenticator app for sign-in."
+                hint="Add an authenticator app for sign in."
               />
             </Card>
 

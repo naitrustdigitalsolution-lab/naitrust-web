@@ -289,7 +289,7 @@ export function LivenessCheckModal({
             <div className="flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
               <Lightbulb size={16} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
               <p className="text-xs leading-5 text-foreground">
-                Find a well-lit spot and face the camera directly so we can get a clear photo. Remove
+                Find a well lit spot and face the camera directly so we can get a clear photo. Remove
                 hats or sunglasses. We'll tell you if the lighting or framing needs adjusting.
               </p>
             </div>

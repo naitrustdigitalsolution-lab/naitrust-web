@@ -28,7 +28,7 @@ export function OrdersWorkspace() {
       <WorkspaceHeader
         eyebrow="Purchase orders"
         title="Track every supplier order"
-        description="Track every China supplier in a separate Order Room, including products, quotes, sourcing-agent checks, payment decisions, documents and delivery progress to Nigeria."
+        description="Track every China supplier in a separate Order Room, including products, quotes, sourcing agent checks, payment decisions, documents and delivery progress to Nigeria."
         icon={Package}
         image={getAppImage('orders', 'A wholesale order moving through supplier and delivery stages')}
       />

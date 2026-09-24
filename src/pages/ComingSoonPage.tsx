@@ -131,7 +131,7 @@ function ComingSoonPage() {
             <dl className="trust-stats" aria-label="Naitrust launch focus">
               <div>
                 <dt>Property transactions</dt>
-                <dd>Create agreement-backed transactions</dd>
+                <dd>Create agreement backed transactions</dd>
               </div>
               <div>
                 <dt>China sourcing</dt>
@@ -374,9 +374,9 @@ function ComingSoonPage() {
             >
               <option value="">Select range</option>
               <option value="below_100k">Below NGN 100k</option>
-              <option value="100k_500k">NGN 100k - 500k</option>
-              <option value="500k_5m">NGN 500k - 5m</option>
-              <option value="5m_50m">NGN 5m - 50m</option>
+              <option value="100k_500k">NGN 100k to 500k</option>
+              <option value="500k_5m">NGN 500k to 5m</option>
+              <option value="5m_50m">NGN 5m to 50m</option>
               <option value="above_50m">Above NGN 50m</option>
             </select>
           </div>

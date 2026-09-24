@@ -17,7 +17,7 @@ const signupRequirements = [
   },
   {
     title: 'You can complete face verification',
-    text: 'Make sure you are in a well-lit area and follow the onscreen instructions for the best results.',
+    text: 'Make sure you are in a well lit area and follow the onscreen instructions for the best results.',
   },
 ];
 

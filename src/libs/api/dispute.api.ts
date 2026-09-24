@@ -41,7 +41,7 @@ function assertMockDisputeEligible(dealId: string): void {
   const status = runtime?.status ?? summary.status;
   const fundingReview = reconcileDeliveryLifecycle(dealId).fundingReview.status;
   if (CLOSED_STATUSES.includes(status) || fundingReview === 'release_approved' || fundingReview === 'paid_out') {
-    throw new Error('The Naitrust payment-dispute window is closed for this deal.');
+    throw new Error('The Naitrust payment dispute window is closed for this deal.');
   }
   if (!FUNDED_STATUSES.includes(status)) {
     throw new Error('A dispute can be opened after the protected payment is received.');

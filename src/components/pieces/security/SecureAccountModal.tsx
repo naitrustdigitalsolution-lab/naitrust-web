@@ -50,8 +50,8 @@ export function SecureAccountModal() {
           </div>
           <DialogTitle>Secure your account</DialogTitle>
           <DialogDescription>
-            Add an authenticator app for two-factor authentication and give your account an extra
-            layer of protection at sign-in.
+            Add an authenticator app for two factor authentication and give your account an extra
+            layer of protection at sign in.
           </DialogDescription>
         </DialogHeader>
 

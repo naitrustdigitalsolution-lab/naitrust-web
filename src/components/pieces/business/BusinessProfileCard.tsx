@@ -289,7 +289,7 @@ export function BusinessProfileCard() {
         onOpenChange={setShowPin}
         onVerified={commitSave}
         title="Confirm business changes"
-        description="Enter your 4-digit transaction PIN to confirm and save your business details."
+        description="Enter your 4 digit transaction PIN to confirm and save your business details."
       />
     </Card>
   );

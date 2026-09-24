@@ -104,7 +104,7 @@ export function DeliveryHandoverPage() {
                     Keep the rider present while you compare the package, tamper seal, product model, contents, and serial or IMEI with the deal evidence.
                   </p>
                   <div className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.07] p-4 text-sm leading-6 text-emerald-950 dark:text-emerald-100">
-                  Confirming receipt records only that the parcel is physically with you and starts a ten-minute handover review. It does not confirm that the item is fault-free, release payment, or waive consumer and warranty rights.
+                  Confirming receipt records only that the parcel is physically with you and starts a ten minute handover review. It does not confirm that the item is fault free, release payment, or waive consumer and warranty rights.
                   </div>
                   <Button
                     className="mt-6 w-full rounded-full"
@@ -132,7 +132,7 @@ export function DeliveryHandoverPage() {
                       disabled={completeHandover.isPending}
                       onClick={() =>
                         completeHandover.mutate(undefined, {
-                          onSuccess: () => toast.success('Correct product confirmed. The funding-review period has started.'),
+                          onSuccess: () => toast.success('Correct product confirmed. The funding review period has started.'),
                           onError: (error) => toast.error(errorMessage(error)),
                         })
                       }
@@ -156,7 +156,7 @@ export function DeliveryHandoverPage() {
                   <ShieldCheck size={34} className="mx-auto text-emerald-600" />
                   <h2 className="mt-4 text-xl font-bold">Handover recorded</h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Continue product checks and follow the payment-review deadline in the Order Room.
+                    Continue product checks and follow the payment review deadline in the Order Room.
                   </p>
                   <Button className="mt-6 rounded-full" onClick={() => navigate(`/app/deals/${preview.dealId}`)}>
                     Open Order Room <ArrowRight size={16} />

@@ -15,7 +15,7 @@ type Requirement = 'email' | 'kyc' | 'pin';
 const REQ_META: Record<Requirement, { icon: typeof Mail; title: string; body: string }> = {
   email: { icon: Mail, title: 'Verify your email', body: 'Confirm your email address to secure your account.' },
   kyc: { icon: Fingerprint, title: 'Complete identity verification (KYC)', body: 'Verify who you are before moving money.' },
-  pin: { icon: KeyRound, title: 'Set a transaction PIN', body: 'A 4-digit PIN protects every money-moving action.' },
+  pin: { icon: KeyRound, title: 'Set a transaction PIN', body: 'A 4 digit PIN protects every money moving action.' },
 };
 
 export function VerificationGate({

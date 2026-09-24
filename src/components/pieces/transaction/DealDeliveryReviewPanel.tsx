@@ -108,7 +108,7 @@ export function DealDeliveryReviewPanel({
       onSuccess: () => {
         setOtp("");
         toast.success(
-          "Delivery verified. Your 10-minute handover review has started.",
+          "Delivery verified. Your 10 minute handover review has started.",
         );
       },
       onError: (error) => toast.error(actionError(error)),
@@ -128,7 +128,7 @@ export function DealDeliveryReviewPanel({
       ).BarcodeDetector;
       if (!Detector)
         throw new Error(
-          "QR scanning is not supported by this browser. Enter the six-digit PIN instead.",
+          "QR scanning is not supported by this browser. Enter the six digit PIN instead.",
         );
       const bitmap = await createImageBitmap(file);
       const results = await new Detector({ formats: ["qr_code"] }).detect(
@@ -141,7 +141,7 @@ export function DealDeliveryReviewPanel({
       confirmQr.mutate(undefined, {
         onSuccess: () =>
           toast.success(
-            "Delivery verified. Your 10-minute handover review has started.",
+            "Delivery verified. Your 10 minute handover review has started.",
           ),
         onError: (error) => toast.error(actionError(error)),
       });
@@ -162,7 +162,7 @@ export function DealDeliveryReviewPanel({
               {delivery.fundingReview.status === "in_progress"
                 ? fundingReviewLabel(delivery.fundingReview.extendedProductTestingDays)
                 : delivery.handover.status === "in_progress"
-                  ? "10-minute handover review"
+                  ? "10 minute handover review"
                   : delivery.handover.status === "completed"
                 ? "Delivery received"
                 : isSeller
@@ -204,7 +204,7 @@ export function DealDeliveryReviewPanel({
               <details className="mt-4 rounded-xl border p-3">
                 <summary className="cursor-pointer text-sm font-medium">Add seller proof (optional)</summary>
                 <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
-                  One relevant photo, video, or document can help the buyer understand the item and its condition before dispatch. This does not affect delivery-card availability.
+                  One relevant photo, video, or document can help the buyer understand the item and its condition before dispatch. This does not affect delivery card availability.
                 </p>
                 <Button type="button" size="sm" variant="outline" className="mt-2 h-8 rounded-full text-xs" onClick={() => onUploadEvidence('Photo')}><Upload size={13} />Upload proof</Button>
                 {requiresInsurance && (
@@ -258,7 +258,7 @@ export function DealDeliveryReviewPanel({
             <div>
               <p className="text-xs leading-5 text-muted-foreground">
                 When the product is in your hands, scan the rider’s card or
-                enter its six-digit PIN. Verification records physical receipt only—it does not mean the item is fault-free or waive your consumer or warranty rights.
+                enter its six digit PIN. Verification records physical receipt only, it does not mean the item is fault free or waive your consumer or warranty rights.
               </p>
               <p className="mt-2 rounded-lg bg-amber-500/10 p-2.5 text-[11px] leading-4 text-amber-800 dark:text-amber-200">
                 Do not accept or confirm this delivery if the parcel or delivery person does not provide the matching Naitrust card or PIN.
@@ -293,7 +293,7 @@ export function DealDeliveryReviewPanel({
                     }
                     inputMode="numeric"
                     autoComplete="one-time-code"
-                    placeholder="6-digit PIN"
+                    placeholder="6 digit PIN"
                     className="h-9 min-w-0 font-mono tracking-[0.18em]"
                   />
                   <Button
@@ -389,7 +389,7 @@ export function DealDeliveryReviewPanel({
                   </p>
                 </div>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  {appConfig.isMock ? "This local review does not release payment. Provider-backed release will be available after integration." : "Payment releases automatically when this review ends. The seller may request an earlier release, but only the buyer can approve it or report a problem. This deadline controls payment release only; statutory, manufacturer, and seller-warranty rights continue afterward."}
+                  {appConfig.isMock ? "This local review does not release payment. Provider backed release will be available after integration." : "Payment releases automatically when this review ends. The seller may request an earlier release, but only the buyer can approve it or report a problem. This deadline controls payment release only; statutory, manufacturer, and seller warranty rights continue afterward."}
                 </p>
                 {isBuyer && (
                   <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/[0.08] p-3 text-xs leading-5 text-foreground">
@@ -451,7 +451,7 @@ export function DealDeliveryReviewPanel({
           <StatusNotice
             danger
             title={appConfig.isMock ? "Issue recorded locally" : "Payment is paused"}
-            text={appConfig.isMock ? "A problem was reported. No provider-held funds are connected to this local record." : "A problem was reported. Funds remain protected and will never release automatically while evidence is inconclusive or the dispute is under review."}
+            text={appConfig.isMock ? "A problem was reported. No provider held funds are connected to this local record." : "A problem was reported. Funds remain protected and will never release automatically while evidence is inconclusive or the dispute is under review."}
           />
         )}
         {delivery.fundingReview.status === "release_approved" && (
@@ -471,7 +471,7 @@ export function DealDeliveryReviewPanel({
       <details className="border-t px-4 py-4 sm:px-5">
         <summary className="cursor-pointer text-sm font-medium">Delivery responsibility</summary>
         <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-          Naitrust does not transport or insure goods, but it can pause a deal payment when a delivery problem is reported. Supplier-arranged delivery remains the seller’s responsibility until agreed-condition receipt. Buyer-arranged courier risk depends on documented handover, the deal terms, and applicable law.
+          Naitrust does not transport or insure goods, but it can pause a deal payment when a delivery problem is reported. Supplier arranged delivery remains the seller’s responsibility until agreed condition receipt. Buyer arranged courier risk depends on documented handover, the deal terms, and applicable law.
         </p>
       </details>
 

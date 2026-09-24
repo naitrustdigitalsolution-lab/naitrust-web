@@ -49,7 +49,7 @@ export function QuotesWorkspace() {
         title="Confirmed costs, separated by supplier"
         description="Compare each product, service, and delivery cost before deciding which supplier order to accept."
         icon={ClipboardCheck}
-        image={getAppImage('quotes', 'A complete landed-cost quote prepared for a wholesale order')}
+        image={getAppImage('quotes', 'A complete landed cost quote prepared for a wholesale order')}
       />
       {quotes.length === 0 ? (
         <WorkspaceEmpty icon={ClipboardCheck} title="No quotes yet" description="Build a wholesale cart and send your supplier requests." actionLabel="Browse products" onAction={() => navigate('/app/market')} />

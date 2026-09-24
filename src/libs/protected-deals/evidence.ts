@@ -9,7 +9,7 @@ export const DEAL_EVIDENCE_KINDS = [
   'Courier details',
   'Pickup evidence',
   'Delivery insurance',
-  'Pre-shipment evidence',
+  'Pre shipment evidence',
   'Buyer problem evidence',
   'Product contents',
   'Delivery confirmation',

@@ -141,7 +141,7 @@ export const legalApi = {
     if (rate === null) throw new Error('An admin must configure the legal fee first.');
     const requestedVersion = readProposal(id)?.version;
     const provider = allProviders().find(p => p.enabled && p.id === input.providerId);
-    if (!provider || ids.includes(provider.ownerUserId)) throw new Error('Choose an independent Naitrust-approved legal reviewer.');
+    if (!provider || ids.includes(provider.ownerUserId)) throw new Error('Choose an independent Naitrust approved legal reviewer.');
     if (!input.purpose.trim() || input.purpose.length > 2000 || !input.consent || input.acceptedTermsVersion !== LEGAL_TERMS_VERSION) throw new Error('Describe the purpose and explicitly approve the sharing terms.');
     const previous = readProposal(id);
     if (previous?.sharingScope && previous.assignedAt && !previous.removed && !previous.withdrawn) throw new Error('Both parties must deactivate the current legal reviewer before replacing this proposal.');

@@ -32,7 +32,7 @@ function demoSeed<T>(resource: 'quotes' | 'orders', fallback: T): T {
   if (resource !== 'orders' || accountScope !== 'usr_mock_007' || !Array.isArray(seeded) || !seeded[0]) return seeded;
   const base = seeded[0] as MarketOrder;
   const additional: MarketOrder[] = [
-    { ...base, id: 'order_aisha_usb_c', roomId: 'market_room_aisha_usb_c', quoteId: 'quote_aisha_usb_c', reference: 'NTM-4418219', itemSummary: 'Branded USB-C fast-charging cables', status: 'preparing', paymentAmountMinor: 126400000, protectedProductAmountMinor: 98000000, settlementAmountMinor: 438000, createdAt: '2026-08-16T08:30:00.000Z' },
+    { ...base, id: 'order_aisha_usb_c', roomId: 'market_room_aisha_usb_c', quoteId: 'quote_aisha_usb_c', reference: 'NTM-4418219', itemSummary: 'Branded USB C fast charging cables', status: 'preparing', paymentAmountMinor: 126400000, protectedProductAmountMinor: 98000000, settlementAmountMinor: 438000, createdAt: '2026-08-16T08:30:00.000Z' },
     { ...base, id: 'order_aisha_beauty_pack', roomId: 'market_room_aisha_beauty_pack', quoteId: 'quote_aisha_beauty_pack', reference: 'NTM-4418231', itemSummary: 'Custom cosmetic jars and printed cartons', status: 'confirmed', paymentAmountMinor: 218600000, protectedProductAmountMinor: 172000000, settlementAmountMinor: 762000, createdAt: '2026-08-18T11:15:00.000Z' },
     { ...base, id: 'order_aisha_shop_lights', roomId: 'market_room_aisha_shop_lights', quoteId: 'quote_aisha_shop_lights', reference: 'NTM-4418244', itemSummary: 'Rechargeable LED shop display lights', status: 'inspection', paymentAmountMinor: 164200000, protectedProductAmountMinor: 121000000, settlementAmountMinor: 571000, createdAt: '2026-08-20T06:45:00.000Z' },
   ];
@@ -70,7 +70,7 @@ function buildQuote(cart: MarketCart, supplierId: string, batchId?: string): Lan
     sourceCurrency: supplier.country === 'CN' ? 'CNY' : 'NGN', lines, totalNgnMinor,
     totalUsdMinor: Math.round(totalNgnMinor / 1600), exchangeRateNote: 'Rate locked for this quote until expiry.',
     logisticsPaidBy: products.every(({ product }) => product.shippingPaidBy === 'seller') ? 'seller' : 'buyer',
-    estimatedDelivery: international ? '28–42 days after supplier confirmation' : '3–7 working days',
+    estimatedDelivery: international ? '28 to 42 days after supplier confirmation' : '3 to 7 working days',
     expiresAt: new Date(Date.now() + 48 * 3600000).toISOString(), createdAt: new Date().toISOString(),
   };
 }

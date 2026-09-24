@@ -6,7 +6,7 @@ export type Audience = 'business' | 'customer';
 export const audienceContent = {
   en: {
     business: {
-      eyebrow: 'Naitrust for business', title: 'Control business payments from agreement to settlement.', titleHighlight: 'from agreement to settlement.', description: 'A planned protected-payment account for companies, merchants and growing teams that need verified beneficiaries, clear approvals and auditable releases.', heroImage: pageImages.businessHero.src, heroAlt: 'A business team reviewing a protected payment', primary: 'Join business early access', register: 'register-business', sectionLabel: 'Built for business payments', whoTitle: 'Give every important payment a clear purpose and approval trail.', whoCopy: 'Use Protected Deals for vendor deposits, procurement, services, projects and service agreements while keeping funds, evidence and decisions connected.',
+      eyebrow: 'Naitrust for business', title: 'Control business payments from agreement to settlement.', titleHighlight: 'from agreement to settlement.', description: 'A planned protected payment account for companies, merchants and growing teams that need verified beneficiaries, clear approvals and auditable releases.', heroImage: pageImages.businessHero.src, heroAlt: 'A business team reviewing a protected payment', primary: 'Join business early access', register: 'register-business', sectionLabel: 'Built for business payments', whoTitle: 'Give every important payment a clear purpose and approval trail.', whoCopy: 'Use Protected Deals for vendor deposits, procurement, services, projects and service agreements while keeping funds, evidence and decisions connected.',
       useCases: [
         { icon: Store, title: 'Vendor payments', text: 'Verify the beneficiary and protect supplier deposits until the agreed conditions are met.' },
         { icon: PackageCheck, title: 'Procurement and delivery', text: 'Connect purchase terms, invoices and delivery evidence to each release decision.' },
@@ -21,12 +21,12 @@ export const audienceContent = {
       ],
     },
     customer: {
-      eyebrow: 'Naitrust for individuals', title: 'Protect important payments before money changes hands.', titleHighlight: 'before money changes hands.', description: 'Use clear terms, verified identities and controlled release for purchases, services, deposits and other high-trust transactions.', heroImage: pageImages.customerHero.src, heroAlt: 'An individual making a protected digital payment', primary: 'Join individual early access', register: 'register-customer', sectionLabel: 'More ways to use Naitrust', whoTitle: 'Pay with more confidence when trust alone is not enough.', whoCopy: 'A Protected Deal keeps the agreement, evidence, funding status and release decision together for both sides.',
+      eyebrow: 'Naitrust for individuals', title: 'Protect important payments before money changes hands.', titleHighlight: 'before money changes hands.', description: 'Use clear terms, verified identities and controlled release for purchases, services, deposits and other high trust transactions.', heroImage: pageImages.customerHero.src, heroAlt: 'An individual making a protected digital payment', primary: 'Join individual early access', register: 'register-customer', sectionLabel: 'More ways to use Naitrust', whoTitle: 'Pay with more confidence when trust alone is not enough.', whoCopy: 'A Protected Deal keeps the agreement, evidence, funding status and release decision together for both sides.',
       useCases: [
         { icon: Search, title: 'Online purchases', text: 'Agree exactly what is being bought and when payment may be released.' },
         { icon: Store, title: 'Services and freelance work', text: 'Protect deposits or service payments while work is completed.' },
         { icon: ReceiptText, title: 'Vehicle and property deposits', text: 'Record the purpose, recipient, documents and refund conditions before funding.' },
-        { icon: PackageCheck, title: 'Delivery-based payments', text: 'Confirm receipt, review evidence and report a problem before release.' },
+        { icon: PackageCheck, title: 'Delivery based payments', text: 'Confirm receipt, review evidence and report a problem before release.' },
       ],
       steps: [
         { icon: Search, title: 'Create the terms', text: 'Describe the item or service, amount, deadline and release conditions.' },

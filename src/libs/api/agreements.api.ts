@@ -56,7 +56,7 @@ const AI_DEAL_DETAIL_PLACEHOLDERS = new Set([
   'add details', 'add them', 'air, sea or road', 'anything not included',
   'cartons, bags or units', 'completion standard', 'describe how the order will be checked',
   'describe it', 'describe the exact product or service', 'describe the work',
-  'description and quantity', 'fragile, sealed or temperature-sensitive', 'list each item',
+  'description and quantity', 'fragile, sealed or temperature sensitive', 'list each item',
   'list the tasks', 'list them', 'location', 'locations', 'make, model and year',
   'name, brand and model', 'new/used and warranty', 'new/used',
   'quantity, quality, expiry date or seal', 'registration, vin or chassis number where available',
@@ -82,7 +82,7 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
   const remainingPayment = firstPayment
     ? formatMinorAmount(input.amountMinor - input.initialPaymentMinor!, input.currency)
     : null;
-  const reviewWindow = 'standard 1-hour payment-review period';
+  const reviewWindow = 'standard 1 hour payment review period';
   const isDelivery = input.workflowMode === 'delivery';
   const isService = input.workflowMode === 'service';
   return {
@@ -114,12 +114,12 @@ function buildMockDraft(input: DraftAgreementInput, version: number): AgreementD
           : input.workflowMode === 'milestone'
             ? `Funds release only for the currently eligible stage after its progress and evidence meet these conditions: ${input.releaseConditions} The Buyer must approve release with their transaction PIN or raise an issue.`
             : firstPayment
-          ? `Payments are released separately. The first payment releases only after this condition is met: ${input.releaseConditions} Receipt starts a ten-minute handover review followed by the ${reviewWindow}. The second payment remains locked until the first payment has been released successfully, then requires this condition: ${input.nextPaymentReleaseConditions} Each release has its own review period. The Seller may request a release, but only the Buyer can approve an early release with a transaction PIN. A dispute opened before either deadline blocks that release.`
-          : `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten-minute handover review, followed by the ${reviewWindow}. The Seller may request release. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
+          ? `Payments are released separately. The first payment releases only after this condition is met: ${input.releaseConditions} Receipt starts a ten minute handover review followed by the ${reviewWindow}. The second payment remains locked until the first payment has been released successfully, then requires this condition: ${input.nextPaymentReleaseConditions} Each release has its own review period. The Seller may request a release, but only the Buyer can approve an early release with a transaction PIN. A dispute opened before either deadline blocks that release.`
+          : `Funds are released to the Seller only when the following conditions are met: ${input.releaseConditions} Receipt starts a ten minute handover review, followed by the ${reviewWindow}. The Seller may request release. The Buyer may approve release earlier with a transaction PIN. A dispute opened before the deadline blocks release.`,
       },
       ...(isDelivery ? [{
         heading: 'Product checks and consumer rights',
-        body: `The ${reviewWindow} controls only Naitrust's partner-funding release deadline. Receipt confirmation and timer expiry do not waive defect, statutory, manufacturer, or seller warranty rights.`,
+        body: `The ${reviewWindow} controls only Naitrust's partner funding release deadline. Receipt confirmation and timer expiry do not waive defect, statutory, manufacturer, or seller warranty rights.`,
       }] : []),
       {
         heading: 'Disputes',
@@ -144,7 +144,7 @@ export const agreementsApi = {
         'service-delivery': { titles: ['Professional service delivery', 'Service work and completion', 'Agreed service engagement'], detailDraft: 'Service required: [describe the work]. Expected result: [what must be completed]. Included tasks: [list them]. Exclusions: [anything not included]. Completion location or delivery method: [add details].' },
         'contractor-engagement': { titles: ['Contractor work agreement', 'Repair and installation work', 'Project work by contractor'], detailDraft: 'Scope of work: [list the tasks]. Materials supplied by each party: [add details]. Expected result: [completion standard]. Work location: [location]. Important measurements, drawings or specifications: [add them].' },
         'equipment-purchase': { titles: ['Equipment purchase and delivery', 'Machinery order and inspection', 'Business equipment supply'], detailDraft: 'Equipment: [name, brand and model]. Quantity and specification: [add details]. Condition: [new/used and warranty]. Included parts or accessories: [list them]. Delivery location and installation requirement: [add details].' },
-        'logistics-agreement': { titles: ['Goods delivery and haulage', 'Logistics service agreement', 'Pickup and delivery service'], detailDraft: 'Goods being moved: [description and quantity]. Pickup location: [location]. Destination: [location]. Handling requirements: [fragile, sealed or temperature-sensitive]. Required delivery proof: [waybill, recipient name or photos].' },
+        'logistics-agreement': { titles: ['Goods delivery and haulage', 'Logistics service agreement', 'Pickup and delivery service'], detailDraft: 'Goods being moved: [description and quantity]. Pickup location: [location]. Destination: [location]. Handling requirements: [fragile, sealed or temperature sensitive]. Required delivery proof: [waybill, recipient name or photos].' },
         'import-export': { titles: ['Imported goods order', 'International shipment purchase', 'Import and delivery transaction'], detailDraft: 'Goods and quantities: [list them]. Origin and destination: [locations]. Shipping method: [air, sea or road]. Required commercial or customs documents: [list them]. Delivery condition and inspection requirements: [add details].' },
         'high-value-personal-purchases': { titles: ['Product purchase and delivery', 'Item order from seller', 'Product order agreement'], detailDraft: 'Product: [name, brand and model]. Quantity, size or colour: [add details]. Condition: [new/used]. Included accessories or warranty: [list them]. Delivery location and condition checks: [add details].' },
       };

@@ -85,7 +85,7 @@ function withAuthHeader(headers: Record<string, string>): Record<string, string>
  * here rather than redirecting.
  */
 function handleUnauthorized(): boolean {
-  console.error('❌ Unauthorized request - token may be invalid or expired');
+  console.error('❌ Unauthorized request: token may be invalid or expired');
 
   if (isRedirecting) return false; // Already navigating; this caller just throws.
 
@@ -145,7 +145,7 @@ async function request<T = any>(
       // Browser is navigating away to /login: resolving quietly is harmless;
       // throwing would only surface a flash of "Unauthorized" before unload.
       if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;
-      throw apiError({ message: 'Unauthorized - Please login again', statusCode: 401 });
+      throw apiError({ message: 'Unauthorized: Please login again', statusCode: 401 });
     }
 
     if (!response.ok) {
@@ -214,7 +214,7 @@ export const httpClient = {
 
       if (response.status === 401) {
         if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;
-        throw apiError({ message: 'Unauthorized - Please login again', statusCode: 401 });
+        throw apiError({ message: 'Unauthorized: Please login again', statusCode: 401 });
       }
 
       if (!response.ok) {

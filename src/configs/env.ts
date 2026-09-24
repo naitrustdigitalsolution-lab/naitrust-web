@@ -8,7 +8,7 @@ function getAppMode(value: string | undefined): AppMode {
     return value as AppMode;
   }
 
-  return "mock";
+  return import.meta.env.DEV ? "mock" : "prod";
 }
 
 function getPagePhase(value: string | undefined): PagePhase {
@@ -22,7 +22,9 @@ function getPagePhase(value: string | undefined): PagePhase {
 export const appConfig = {
   mode: getAppMode(import.meta.env.VITE_APP_MODE),
   pagePhase: getPagePhase(import.meta.env.VITE_PAGE_PHASE),
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || "",
+  apiBaseUrl: (import.meta.env.VITE_API_BASE_URL?.trim() || (import.meta.env.DEV
+    ? "http://localhost:5000"
+    : "https://naitrust-stagingapi-production.up.railway.app")).replace(/\/+$/, ""),
   splineSceneUrl: import.meta.env.VITE_SPLINE_SCENE_URL || "",
   mockOtp: import.meta.env.VITE_MOCK_OTP || "",
   mock2faCode: import.meta.env.VITE_MOCK_2FA_CODE || "",

@@ -5,9 +5,9 @@
 
 // API base URL: VITE_API_BASE_URL should be the domain only (e.g. http://localhost:5000)
 // The /api prefix is appended here in code
-const baseUrl = typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL 
-  ? import.meta.env.VITE_API_BASE_URL 
-  : 'http://localhost:5000';
+import { appConfig } from '../../configs/env';
+
+const baseUrl = appConfig.apiBaseUrl;
 
 export const API_CONFIG = {
   ORIGIN_URL: baseUrl,

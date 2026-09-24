@@ -109,7 +109,20 @@ async function main() {
           },
           { timeout: 12000 },
         );
+        // Runtime preloads must resolve on the deployed site, not the build server.
+        await page.evaluate(() => {
+          for (const element of document.querySelectorAll('[href], [src], [action], [poster]')) {
+            for (const attribute of ['href', 'src', 'action', 'poster']) {
+              const value = element.getAttribute(attribute);
+              if (value?.startsWith(location.origin + '/')) {
+                const url = new URL(value);
+                element.setAttribute(attribute, url.pathname + url.search + url.hash);
+              }
+            }
+          }
+        });
         const html = '<!doctype html>\n' + (await page.content());
+        if (/https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?=[:/])/i.test(html)) throw new Error('Local URL leaked into prerender output');
         const outPath =
           route === '/' ? join(DIST, 'index.html') : join(DIST, route, 'index.html');
         mkdirSync(dirname(outPath), { recursive: true });

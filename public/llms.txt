@@ -1,6 +1,6 @@
 # Naitrust
 
-Naitrust is building secure payments for buyers and sellers in Nigeria.
+Naitrust is building escrow payment workflows for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access.
 
 ## Product
 

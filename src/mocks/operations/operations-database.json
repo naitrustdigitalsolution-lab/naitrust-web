@@ -317,7 +317,7 @@
       "serviceRadiusKm": 85,
       "languages": ["Mandarin", "English", "Hausa"],
       "expertise": ["Machinery", "Custom manufacturing", "Production equipment"],
-      "services": ["Manufacturer checks", "Machine demonstration", "Parts verification", "Production evidence"],
+      "services": ["Manufacturer checks", "Equipment walkthrough", "Parts verification", "Production evidence"],
       "logisticsCapabilities": ["Export-crate supervision"],
       "verified": true,
       "available": true,

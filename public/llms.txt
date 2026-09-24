@@ -1,6 +1,6 @@
 # Naitrust
 
-Naitrust is building escrow payment workflows for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access.
+Naitrust is building escrow payments for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access.
 
 ## Product
 
@@ -10,7 +10,7 @@ Buyers can review what was agreed and the evidence before release. Sellers can s
 
 ## Availability
 
-Naitrust is accepting early access interest. Existing invited users can sign in. Live funding, release and refunds depend on approved payment provider integrations and launch readiness. The planned pilot supports a single payment release. Milestone and recurring payments are not currently available.
+Naitrust is accepting early access interest. Existing invited users can sign in. Payment services are not yet open to the public. Join the waiting list for launch updates.
 
 ## Payment boundaries
 

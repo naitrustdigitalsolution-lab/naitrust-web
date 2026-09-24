@@ -259,7 +259,7 @@
     {
       "id": "biz_mock_legal",
       "ownerUserId": "usr_mock_legal",
-      "name": "Okoro Legal Partners (Demo)",
+      "name": "Okoro Legal Partners (Sample)",
       "slug": "okoro-legal-demo",
       "ntId": "NT-BIZ-LEGAL001",
       "category": "Legal services",
@@ -267,7 +267,7 @@
       "ownerName": "Ada Okoro",
       "email": "legal.firm@naitrust.test",
       "phone": "+2348011110099",
-      "address": "Demo office",
+      "address": "Sample office",
       "city": "Lagos",
       "state": "Lagos",
       "country": "Nigeria",

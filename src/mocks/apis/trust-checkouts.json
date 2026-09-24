@@ -22,7 +22,7 @@
       "category": "product",
       "title": "Customer order payment",
       "purpose": "Payment for the items listed in the customer order",
-      "description": "A demonstration Trust Checkout request using frontend mock data.",
+      "description": "A sample payment request. No real money is involved.",
       "amountMinor": 10000000,
       "customerEntersAmount": false,
       "currency": "NGN",

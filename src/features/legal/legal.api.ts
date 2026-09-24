@@ -50,8 +50,8 @@ function sampleProposal(d: SafeDealSummary): LegalProposal | null {
   const paid = d.id.endsWith('_02');
   const ids = ['usr_mock_003', 'usr_mock_004'];
   return { sharingScope: LEGAL_SHARING_SCOPE, dealId: d.id, ownerUserId: 'usr_mock_003', partyUserIds: ids, payerUserId: 'usr_mock_003', reference: d.reference, title: d.title, provider,
-    purpose: 'Sample assignment: review the demonstration invoice.', version: 1,
-    documents: [{ id: 'sample-invoice', version: '1', name: 'Demonstration invoice.txt', text: 'Fictional invoice supplied for the legal review demo. No actual goods or legal services are represented.' }],
+    purpose: 'Sample assignment: review the sample invoice.', version: 1,
+    documents: [{ id: 'sample-invoice', version: '1', name: 'Sample invoice.txt', text: 'Fictional invoice supplied for the legal review example. No actual goods or legal services are represented.' }],
     fee: { rateBps: 100, principalMinor: d.amountMinor, platformFeeMinor: 0, amountMinor: legalFeeMinor(d.amountMinor,100), currency: d.currency, payment: paid ? { id: 'demo-legal-fee', payerUserId: ids[0], paidAt: at, simulated: true } : undefined },
     consents: ids.map(actorUserId => ({ actorUserId, at, version: 1, termsVersion: LEGAL_TERMS_VERSION, sharingScope: LEGAL_SHARING_SCOPE, decision: 'approve', providerId: provider.id, documentVersions: ['sample-invoice:1'], feeMinor: legalFeeMinor(d.amountMinor,100) })),
     removed: false, withdrawn: false, assignedAt: at, findings: [], requests: [], events: [{ at, actorUserId: 'usr_mock_005', message: 'Fictional historical assignment seeded with a 1% example rate; this is not the current platform rate.' }] };

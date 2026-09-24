@@ -30,10 +30,10 @@ function delay(ms: number): Promise<void> {
 
 function assertSingleReleasePilot(input: CreateSafeDealInput): void {
   if (input.dealType !== 'single') {
-    throw new Error('Milestone tracking and recurring deals are coming soon. Use Single release for this pilot.');
+    throw new Error('Milestone tracking and recurring deals are coming soon. Choose Single release instead.');
   }
   if (input.extendedProductTestingDays) {
-    throw new Error('Extended testing periods are not available during the current pilot.');
+    throw new Error('Extended testing periods are not currently available.');
   }
 }
 

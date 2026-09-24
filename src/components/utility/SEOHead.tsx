@@ -13,7 +13,7 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Naitrust';
 const SITE_URL = 'https://naitrust.com';
-const DEFAULT_DESCRIPTION = 'Naitrust is building escrow payment workflows for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access.';
+const DEFAULT_DESCRIPTION = 'Naitrust is building escrow payments for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access.';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_KEYWORDS = 'Naitrust, escrow payments Nigeria, protected payments Nigeria, buyer protection, secure business payments, seller payments, payment agreements, verified beneficiaries, payment disputes, controlled settlement, Protected Deals';
 

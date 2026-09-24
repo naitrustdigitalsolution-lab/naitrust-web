@@ -11,7 +11,7 @@ interface HomePageProps { onNavigate: (page: string) => void }
 export function HomePage({ onNavigate }: HomePageProps) {
   const join = () => onNavigate('/waitlist');
   return <div className="nt-marketing">
-    <SEOHead title="Escrow Payments for Buyers and Sellers" description="Naitrust is building escrow payment workflows for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access." canonicalPath="/" />
+    <SEOHead title="Escrow Payments for Buyers and Sellers" description="Naitrust is building escrow payments for buyers and sellers in Nigeria. Agree terms, track evidence and approve release. Join early access." canonicalPath="/" />
     <section className="nt-hero">
       <div className="nt-hero-backdrop-extension" aria-hidden="true">
         <img className="nt-hero-photo" src={studioHero} alt="" />
@@ -21,7 +21,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="nt-hero-content">
           <p className="nt-eyebrow nt-hero-eyebrow">PROTECTED PAYMENTS. SHARED CONFIDENCE.</p>
           <h1>A safer way to<br />buy, sell and<br />pay each other.</h1>
-          <p className="nt-hero-description">Escrow payment workflows for buyers, sellers and service providers in Nigeria, with clear terms, shared evidence and controlled payment release.</p>
+          <p className="nt-hero-description">Escrow payments for buyers, sellers and service providers in Nigeria, with clear terms, shared evidence and controlled payment release.</p>
           <div className="nt-hero-actions"><button className="nt-button" onClick={join}>Join early access <ArrowRight size={18} /></button><button className="nt-hero-secondary" onClick={() => document.getElementById('payment-journey')?.scrollIntoView({ behavior: 'smooth' })}>See how it works</button></div>
           <p className="nt-hero-note">Built for buyers and sellers in Nigeria. Early access opens soon.</p>
         </div>
@@ -69,7 +69,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       ['01', 'Make it clear.', 'Agree who’s involved, what’s being delivered, the amount and when payment can be released.', FileText],
       ['02', 'Keep it connected.', 'Confirm funding through an approved provider. Keep updates and evidence in your shared Deal Room.', LockKeyhole],
       ['03', 'Review the outcome.', 'Check the goods or completed work. Approve release or report an issue under the agreed process.', ShieldCheck],
-    ].map(([number, title, copy, Icon]) => { const StepIcon = Icon as typeof FileText; return <article key={String(number)}><div className="nt-step-top"><span>{String(number)} —</span><StepIcon size={25} strokeWidth={1.5} /></div><h3>{String(title)}</h3><p>{String(copy)}</p></article>; })}</div><p className="nt-launch-note">The planned pilot supports a single payment release. Live funding, release and refunds are subject to provider approval and launch readiness.</p></div></section>
+    ].map(([number, title, copy, Icon]) => { const StepIcon = Icon as typeof FileText; return <article key={String(number)}><div className="nt-step-top"><span>{String(number)}</span><StepIcon size={25} strokeWidth={1.5} /></div><h3>{String(title)}</h3><p>{String(copy)}</p></article>; })}</div><p className="nt-launch-note">Join the waiting list to hear when protected payments become available.</p></div></section>
 
     <section className="nt-container nt-faq-section"><div><p className="nt-eyebrow">GOOD QUESTIONS. CLEAR ANSWERS.</p><h2>A little clarity{' '}<br />goes a long way.</h2><button className="nt-text-link" onClick={() => onNavigate('faqs')}>Visit our help centre <ArrowRight size={18} /></button></div><div className="nt-faq-list">{[protectedPaymentFAQs[0], protectedPaymentFAQs[1], protectedPaymentFAQs[4], protectedPaymentFAQs[6]].map(faq => <details key={faq.id}><summary>{faq.question}<ChevronDown size={19} /></summary><p>{faq.answer}</p></details>)}</div></section>
 

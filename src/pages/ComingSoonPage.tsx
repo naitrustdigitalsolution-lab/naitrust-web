@@ -287,7 +287,7 @@ function ComingSoonPage() {
           <ul className="waitlist-benefits">
             <li>Get early product updates.</li>
             <li>Help shape the first property transaction workflow.</li>
-            <li>Be considered for pilot access when testing opens.</li>
+            <li>Hear when you can start using Naitrust.</li>
           </ul>
         </div>
 

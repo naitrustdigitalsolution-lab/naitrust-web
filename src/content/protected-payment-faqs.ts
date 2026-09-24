@@ -1,17 +1,19 @@
+import { serviceInformation } from './service-information';
+
 export const protectedPaymentFAQs = [
   {
     "id": "faq-0",
     "category": "getting-started",
     "helpCategory": "general",
     "question": "What is Naitrust?",
-    "answer": "Naitrust is building secure payment workflows for buyers and sellers in Nigeria. A Protected Deal brings agreed terms, participant checks, funding status, evidence and payment release into one shared Deal Room."
+    "answer": serviceInformation.description
   },
   {
     "id": "faq-1",
     "category": "getting-started",
     "helpCategory": "account",
     "question": "Can I use Naitrust today?",
-    "answer": "Naitrust is accepting early access interest. Join the waiting list for launch updates. Existing invited users can sign in. Live funding, release and refunds depend on provider approval and launch readiness."
+    "answer": "Naitrust is accepting early access interest. Join the waiting list for launch updates. Existing invited users can sign in. Payment services are not yet open to the public."
   },
   {
     "id": "faq-2",
@@ -39,7 +41,7 @@ export const protectedPaymentFAQs = [
     "category": "payments",
     "helpCategory": "payments",
     "question": "When does the seller receive payment?",
-    "answer": "Payment release follows the accepted deal conditions, delivery or service review, and applicable provider rules. Required evidence, unresolved issues and risk controls may affect release. The planned pilot supports one release; milestone and recurring payments are not yet available."
+    "answer": "Payment release follows the accepted deal conditions, delivery or service review, and applicable provider rules. Required evidence, unresolved issues and risk controls may affect release. Each deal currently supports one payment release. Milestone and recurring payments are not yet available."
   },
   {
     "id": "faq-6",
@@ -60,7 +62,7 @@ export const protectedPaymentFAQs = [
     "category": "payments",
     "helpCategory": "payments",
     "question": "What fees will I pay?",
-    "answer": "Pricing is being finalised. Applicable Naitrust and payment provider fees will be disclosed before you confirm a live payment. Joining the waiting list does not require a payment."
+    "answer": serviceInformation.fees + " See Fees and pricing for details."
   },
   {
     "id": "faq-9",
@@ -104,4 +106,6 @@ export const protectedPaymentFAQs = [
     "question": "Can a legal reviewer join my deal?",
     "answer": "We are preparing optional legal review for early access. Both parties read and accept the legal agreement to add an approved reviewer. The reviewer can then access existing and future room documents automatically once the additional legal fee is paid. Both parties must confirm deactivation. Reviewers do not control payments or guarantee an outcome."
   },
+  { id: 'faq-subscriptions', category: 'payments', helpCategory: 'payments', question: 'Are subscriptions or cross border payments available?', answer: 'Paid subscriptions, cross border transfers, foreign exchange and lending are not currently offered on this website. Joining early access or changing a test setting does not authorise a charge.' },
+  { id: 'faq-complaint', category: 'troubleshooting', helpCategory: 'general', question: 'How do I complain or request a refund?', answer: 'Use Contact Us or email contact@naitrust.com with the reference, amount, issue and relevant evidence. Refunds depend on the facts, applicable terms and provider rules. Read Refunds and cancellations and the Complaints process for further review and external channels. Do not send passwords, OTPs or transaction PINs.' },
 ];

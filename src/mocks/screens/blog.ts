@@ -38,7 +38,7 @@ export const blogArticles: BlogArticle[] = [
       {
         "heading": "Make release conditions clear",
         "paragraphs": [
-          "Set out when payment may be released and how an issue should be raised. Naitrust is being built to connect these decisions in one Deal Room. Live payment services depend on approved providers and launch readiness."
+          "Set out when payment may be released and how an issue should be raised. Naitrust is being built to connect these decisions in one Deal Room. Join the waiting list for updates on availability."
         ]
       }
     ]
@@ -100,7 +100,7 @@ export const blogArticles: BlogArticle[] = [
       {
         "heading": "What comes next",
         "paragraphs": [
-          "Naitrust is currently accepting early access interest for buyers, sellers and businesses in Nigeria. The planned pilot uses a single payment release. Live funding, release and refunds require approved payment provider integrations."
+          "Naitrust is currently accepting early access interest for buyers, sellers and businesses in Nigeria. Join the waiting list to hear when protected payments become available."
         ]
       }
     ]

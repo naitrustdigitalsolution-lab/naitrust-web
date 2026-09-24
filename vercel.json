@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build && (npx playwright install chromium > /dev/null 2>&1 && node scripts/prerender.mjs || echo '[prerender] skipped on this build')",
+  "buildCommand": "VITE_APP_MODE=dev VITE_API_BASE_URL=https://naitrust-stagingapi-production.up.railway.app npm run build && (npx playwright install chromium > /dev/null 2>&1 && node scripts/prerender.mjs || echo '[prerender] skipped on this build')",
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [

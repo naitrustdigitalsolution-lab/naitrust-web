@@ -34,7 +34,7 @@ export const counterpartiesApi = {
   list: async (): Promise<ApiSuccess<CounterpartyProfile[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: listMockCounterparties() };
+      return { isSuccessful: true, data: listMockCounterparties() };
     }
     const response = await httpClient.get<CounterpartyProfile[]>(endpoints.counterparties.list);
     return response as ApiSuccess<CounterpartyProfile[]>;
@@ -45,25 +45,25 @@ export const counterpartiesApi = {
     await delay(200);
     const found = getMockCounterparty(id);
     if (!found) throw new Error('Customer or supplier not found.');
-    return { success: true, data: found };
+    return { isSuccessful: true, data: found };
   },
 
   /** Frontend mock only; persists in this browser for product testing. */
   create: async (input: CreateCounterpartyInput): Promise<ApiSuccess<CounterpartyProfile>> => {
     await delay(300);
-    return { success: true, data: createMockCounterparty(input) };
+    return { isSuccessful: true, data: createMockCounterparty(input) };
   },
 
   remove: async (id: string): Promise<ApiSuccess<null>> => {
     await delay(250);
     removeMockCounterparty(id);
-    return { success: true, data: null, message: 'Contact removed' };
+    return { isSuccessful: true, data: null, message: 'Contact removed' };
   },
 
   /** Frontend mock only; transaction rows are stored in a separate fixture. */
   listTransactions: async (counterpartyId: string): Promise<ApiSuccess<CounterpartyTransaction[]>> => {
     await delay(250);
-    return { success: true, data: listMockCounterpartyTransactions(counterpartyId) };
+    return { isSuccessful: true, data: listMockCounterpartyTransactions(counterpartyId) };
   },
 
   /** Real endpoint (not yet implemented): POST /counterparties/:id/favourite */
@@ -72,7 +72,7 @@ export const counterpartiesApi = {
       await delay(250);
       const found = toggleMockCounterpartyFavourite(id);
       if (!found) throw new Error('Customer or supplier not found.');
-      return { success: true, data: found };
+      return { isSuccessful: true, data: found };
     }
     const response = await httpClient.post<CounterpartyProfile>(
       endpoints.counterparties.toggleFavourite(id),
@@ -86,7 +86,7 @@ export const counterpartiesApi = {
       await delay(250);
       const found = toggleMockCounterpartyBlocked(id);
       if (!found) throw new Error('Customer or supplier not found.');
-      return { success: true, data: found };
+      return { isSuccessful: true, data: found };
     }
     const response = await httpClient.post<CounterpartyProfile>(
       endpoints.counterparties.toggleBlocked(id),

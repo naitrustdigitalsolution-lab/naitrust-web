@@ -1,5 +1,5 @@
 {
-  "success": true,
+  "isSuccessful": true,
   "data": {
     "id": "wal_mock_001",
     "ownerUserId": "usr_mock_004",

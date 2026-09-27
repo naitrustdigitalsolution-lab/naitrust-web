@@ -102,7 +102,7 @@ export const walletApi = {
       createdAt: new Date().toISOString(),
     });
     return {
-      success: true,
+      isSuccessful: true,
       message: 'Bill paid from NaiTrust balance',
       data: { ...current.data, balance: { ...current.data.balance, availableMinor: state.availableMinor ?? current.data.balance.availableMinor, billsMinor: state.billsMinor }, totalOutflowMinor: current.data.totalOutflowMinor + amountMinor },
     };
@@ -157,7 +157,7 @@ export const walletApi = {
     if (amountMinor > available) throw new Error('Your available wallet balance is not enough for this deal.');
     state.availableMinor = available - amountMinor;
     return {
-      success: true,
+      isSuccessful: true,
       message: 'Protected deal funded from wallet',
       data: { ...current.data, balance: { ...current.data.balance, availableMinor: state.availableMinor, protectedMinor: current.data.balance.protectedMinor + amountMinor } },
     };
@@ -183,7 +183,7 @@ export const walletApi = {
         createdAt: new Date().toISOString(),
       });
       return {
-        success: true,
+        isSuccessful: true,
         message: 'Bills Account funded',
         data: { ...current.data, balance: { ...current.data.balance, availableMinor: state.availableMinor, billsMinor: state.billsMinor } },
       };
@@ -222,7 +222,7 @@ export const walletApi = {
           : (state.availableMinor ?? account.availableMinor),
       }));
       return {
-        success: true,
+        isSuccessful: true,
         message: 'Sandbox funding recorded',
         data: {
           ...current.data,
@@ -284,7 +284,7 @@ export const walletApi = {
         availableMinor: account.currency === 'NGN' ? state.availableMinor! : state.usdAvailableMinor!,
       })),
     };
-    return { success: true, message: 'Currency swap completed', data: { wallet, receivedMinor, ngnPerUsd } };
+    return { isSuccessful: true, message: 'Currency swap completed', data: { wallet, receivedMinor, ngnPerUsd } };
   },
 
   /**
@@ -307,7 +307,7 @@ export const walletApi = {
       state.availableMinor = available - input.amountMinor;
       state.activity.unshift({ id: `wact_withdraw_${crypto.randomUUID()}`, kind: 'withdrawal', amountMinor: input.amountMinor, currency: 'NGN', description: 'Withdrawal to verified bank account', createdAt: new Date().toISOString() });
       return {
-        success: true,
+        isSuccessful: true,
         message: 'Sandbox withdrawal recorded',
         data: {
           ...current.data,
@@ -352,7 +352,7 @@ export const walletApi = {
     };
     state.added.push(account);
     writeMockLinkedBankState(state);
-    return { success: true, message: 'Bank account added', data: account };
+    return { isSuccessful: true, message: 'Bank account added', data: account };
   },
 
   setDefaultLinkedBankAccount: async (id: string): Promise<ApiSuccess<LinkedBankAccount[]>> => {
@@ -363,7 +363,7 @@ export const walletApi = {
     const state = readMockLinkedBankState();
     state.defaultId = id;
     writeMockLinkedBankState(state);
-    return { success: true, message: 'Default bank account updated', data: mockLinkedBankAccounts() };
+    return { isSuccessful: true, message: 'Default bank account updated', data: mockLinkedBankAccounts() };
   },
 
   /**

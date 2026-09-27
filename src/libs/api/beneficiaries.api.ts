@@ -29,7 +29,7 @@ export const beneficiariesApi = {
   list: async (): Promise<ApiSuccess<Beneficiary[]>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: listMockBeneficiaries() };
+      return { isSuccessful: true, data: listMockBeneficiaries() };
     }
     const response = await httpClient.get<Beneficiary[]>(endpoints.beneficiaries.list);
     return response as ApiSuccess<Beneficiary[]>;
@@ -42,7 +42,7 @@ export const beneficiariesApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const beneficiary = createMockBeneficiary(input);
-      return { success: true, data: beneficiary, message: 'Beneficiary saved' };
+      return { isSuccessful: true, data: beneficiary, message: 'Beneficiary saved' };
     }
     const response = await httpClient.post<Beneficiary>(endpoints.beneficiaries.create, input);
     return response as ApiSuccess<Beneficiary>;
@@ -53,7 +53,7 @@ export const beneficiariesApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       removeMockBeneficiary(id);
-      return { success: true, data: null, message: 'Beneficiary removed' };
+      return { isSuccessful: true, data: null, message: 'Beneficiary removed' };
     }
     const response = await httpClient.delete<null>(endpoints.beneficiaries.remove(id));
     return response as ApiSuccess<null>;

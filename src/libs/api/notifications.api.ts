@@ -45,10 +45,12 @@ export const notificationsApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
-      return { success: true, data: [...readLocal<AppNotification[]>(`naitrust:account:${userId}:legal-alerts`, []), ...mockList].filter((notification) => !notification.userId || notification.userId === userId).map((n) => ({ ...n })) };
+      return { isSuccessful: true, data: [...readLocal<AppNotification[]>(`naitrust:account:${userId}:legal-alerts`, []), ...mockList].filter((notification) => !notification.userId || notification.userId === userId).map((n) => ({ ...n })) };
     }
-    const response = await httpClient.get<AppNotification[]>(endpoints.notifications.list);
-    return response as ApiSuccess<AppNotification[]>;
+    // Backend paginates this endpoint (data: { items, page, pageSize, totalCount, totalPages })
+    // rather than returning a bare array; unwrap it to the flat list this API promises callers.
+    const response = await httpClient.get<{ items: AppNotification[] }>(endpoints.notifications.list);
+    return { isSuccessful: true, data: response.data?.items ?? [], message: response.message };
   },
 
   /** PATCH /notifications/:id/read */
@@ -58,7 +60,7 @@ export const notificationsApi = {
       const key = `naitrust:account:${useAuthStore.getState().user?.id}:legal-alerts`;
       writeLocal(key, readLocal<AppNotification[]>(key, []).map(n => n.id === id ? { ...n, read: true } : n));
       mockList = mockList.map((n) => (n.id === id ? { ...n, read: true } : n));
-      return { success: true, data: { id } };
+      return { isSuccessful: true, data: { id } };
     }
     const response = await httpClient.patch<{ id: string }>(endpoints.notifications.markAsRead(id));
     return response as ApiSuccess<{ id: string }>;
@@ -71,7 +73,7 @@ export const notificationsApi = {
       const key = `naitrust:account:${useAuthStore.getState().user?.id}:legal-alerts`;
       writeLocal(key, readLocal<AppNotification[]>(key, []).map(n => ({ ...n, read: true })));
       mockList = mockList.map((n) => ({ ...n, read: true }));
-      return { success: true, data: null };
+      return { isSuccessful: true, data: null };
     }
     const response = await httpClient.patch<null>(endpoints.notifications.markAllAsRead);
     return response as ApiSuccess<null>;

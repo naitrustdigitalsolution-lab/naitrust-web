@@ -49,7 +49,7 @@ export const transactionsApi = {
       if (!deal || !userId || deal.summary.createdByUserId !== userId) throw new Error('Only the deal creator can delete this invitation.');
       if (!['pending_counterparty', 'terms_negotiation'].includes(status ?? '')) throw new Error('This deal has already been accepted and must be terminated by agreement.');
       deleteMockCreatedDeal(id);
-      return { success: true, data: { id }, message: 'Deal deleted' };
+      return { isSuccessful: true, data: { id }, message: 'Deal deleted' };
     }
     return await httpClient.delete<{ id: string }>(`/transactions/${id}`) as ApiSuccess<{ id: string }>;
   },
@@ -81,7 +81,7 @@ export const transactionsApi = {
       }))!;
       patchMockDealRuntime(id, { invitationStatus: 'pending', status: 'pending_counterparty', invitationResponseReason: undefined, invitationRespondedAt: undefined });
       inviteeUserIds.forEach((inviteeUserId) => notificationsApi.pushLocal({ userId: inviteeUserId, type: 'deal', title: 'Deal invitation updated', message: `${input.title} was updated and is ready for your review.`, link: `/app/invitations/${id}` }));
-      return { success: true, data: updated.summary, message: 'Deal invitation updated' };
+      return { isSuccessful: true, data: updated.summary, message: 'Deal invitation updated' };
     }
     return await httpClient.patch<CreateSafeDealResult>(`/transactions/${id}`, input) as ApiSuccess<CreateSafeDealResult>;
   },
@@ -121,12 +121,14 @@ export const transactionsApi = {
           };
         })
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      return { success: true, data: visibleDeals };
+      return { isSuccessful: true, data: visibleDeals };
     }
-    const response = await httpClient.get<SafeDealSummary[]>(
+    // Backend paginates this endpoint (data: { items, page, pageSize, totalCount, totalPages })
+    // rather than returning a bare array; unwrap it to the flat list this API promises callers.
+    const response = await httpClient.get<{ items: SafeDealSummary[] }>(
       endpoints.transactions.getMyTransactions,
     );
-    return response as ApiSuccess<SafeDealSummary[]>;
+    return { isSuccessful: true, data: response.data?.items ?? [], message: response.message };
   },
 
   /**
@@ -172,7 +174,7 @@ export const transactionsApi = {
         try { await legalApi.propose(summary.id, input.legalReview); }
         catch (error) { deleteMockCreatedDeal(summary.id); throw error; }
       }
-      return { success: true, data: summary, message: 'Protected Deal created' };
+      return { isSuccessful: true, data: summary, message: 'Protected Deal created' };
     }
     const response = await httpClient.post<CreateSafeDealResult>(endpoints.transactions.create, input);
     return response as ApiSuccess<CreateSafeDealResult>;

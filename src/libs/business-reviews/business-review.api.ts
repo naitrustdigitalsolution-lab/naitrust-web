@@ -80,7 +80,7 @@ export const businessReviewApi = {
       .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
 
     return {
-      success: true,
+      isSuccessful: true,
       data: {
         reviews,
         eligibleTransactions: reviewableTransactions(businessId, user, reviews),
@@ -130,7 +130,7 @@ export const businessReviewApi = {
     };
 
     saveSubmittedReviews([review, ...submitted]);
-    return { success: true, data: review, message: 'Your review is now public.' };
+    return { isSuccessful: true, data: review, message: 'Your review is now public.' };
   },
 };
 

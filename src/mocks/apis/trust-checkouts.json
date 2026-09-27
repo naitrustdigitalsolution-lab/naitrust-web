@@ -1,5 +1,5 @@
 {
-  "success": true,
+  "isSuccessful": true,
   "data": [
     {
       "id": "checkout_mock_001",

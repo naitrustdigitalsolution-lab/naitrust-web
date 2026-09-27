@@ -926,7 +926,7 @@ export const dealDetailApi = {
       activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'review', message: `${actor.name} submitted work and requested payment release.`, createdAt: now }, ...(current?.activity ?? [])],
     });
     notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Work ready for review', message: `${deal.title} is ready for your review and payment decision.`, link: `/app/deals/${id}` });
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   requestServiceChanges: async (id: string, reason: string): Promise<ApiSuccess<SafeDealDetail>> => {
@@ -948,7 +948,7 @@ export const dealDetailApi = {
       activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'review', message: `Buyer requested changes: ${reason.trim()}`, createdAt: now }, ...(current?.activity ?? [])],
     });
     notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Changes requested', message: `The buyer requested changes to ${deal.title}.`, link: `/app/deals/${id}` });
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   approveServiceRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
@@ -971,7 +971,7 @@ export const dealDetailApi = {
       activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'released', message: 'Buyer reviewed the work and approved payment release.', createdAt: now }, ...(current?.activity ?? [])],
     });
     notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Payment released', message: `The buyer approved payment for ${deal.title}.`, link: `/app/deals/${id}` });
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
   simulateFunding: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
     assertActiveAccount();
@@ -987,7 +987,7 @@ export const dealDetailApi = {
       activity: [{ id: `act_${crypto.randomUUID()}`, kind: 'funded', message: 'Local funding record added. No money was transferred.', createdAt: new Date().toISOString() }, ...(current?.activity ?? [])],
     });
     notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'seller'), type: 'deal', title: 'Funding record added locally', message: `You can begin work on ${deal.title}.`, link: `/app/deals/${id}` });
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
   fundFromWallet: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
     assertActiveAccount();
@@ -1013,7 +1013,7 @@ export const dealDetailApi = {
         ...(current?.activity ?? []),
       ],
     });
-    return { success: true, data: getMockDetailOrThrow(id), message: 'Deal funded from wallet' };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id), message: 'Deal funded from wallet' };
   },
   /** GET /transactions/:id */
   getOne: async (id: string): Promise<ApiSuccess<SafeDealDetail | null>> => {
@@ -1021,7 +1021,7 @@ export const dealDetailApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const summary = findSummary(id);
-      return { success: true, data: summary ? buildDealDetail(summary) : null };
+      return { isSuccessful: true, data: summary ? buildDealDetail(summary) : null };
     }
     const response = await httpClient.get<SafeDealDetail>(endpoints.transactions.getOne(id));
     return response as ApiSuccess<SafeDealDetail | null>;
@@ -1033,19 +1033,19 @@ export const dealDetailApi = {
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     generateDeliveryCard(deliveryContext(deal));
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   getDeliveryPreview: async (token: string): Promise<ApiSuccess<DeliveryHandoverPreview | null>> => {
     if (!appConfig.isMock) throw new Error('Delivery handover backend integration is not enabled.');
     await delay(250);
     const dealId = resolveDeliveryToken(token);
-    if (!dealId) return { success: true, data: null };
+    if (!dealId) return { isSuccessful: true, data: null };
     const deal = getMockDetailOrThrow(dealId);
     const card = deal.delivery.card;
-    if (!card || card.token !== token) return { success: true, data: null };
+    if (!card || card.token !== token) return { isSuccessful: true, data: null };
     return {
-      success: true,
+      isSuccessful: true,
       data: {
         dealId: deal.id,
         title: deal.title,
@@ -1066,7 +1066,7 @@ export const dealDetailApi = {
     if (!dealId) throw new Error('This delivery link is not valid.');
     const deal = getMockDetailOrThrow(dealId);
     confirmDeliveryReceipt(deliveryContext(deal), { token });
-    return { success: true, data: getMockDetailOrThrow(dealId) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(dealId) };
   },
 
   confirmReceiptByOtp: async (id: string, otpCode: string): Promise<ApiSuccess<SafeDealDetail>> => {
@@ -1075,7 +1075,7 @@ export const dealDetailApi = {
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     confirmDeliveryReceipt(deliveryContext(deal), { otpCode });
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   completeHandoverReview: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
@@ -1084,7 +1084,7 @@ export const dealDetailApi = {
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     completeHandoverReview(deliveryContext(deal));
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   approveEarlyRelease: async (id: string): Promise<ApiSuccess<SafeDealDetail>> => {
@@ -1093,7 +1093,7 @@ export const dealDetailApi = {
     await delay(250);
     const deal = getMockDetailOrThrow(id);
     approveEarlyRelease(deliveryContext(deal));
-    return { success: true, data: getMockDetailOrThrow(id) };
+    return { isSuccessful: true, data: getMockDetailOrThrow(id) };
   },
 
   /** Seller advances the shipment to the next tracking stage. */
@@ -1128,7 +1128,7 @@ export const dealDetailApi = {
           activity: [{ id: `activity_${crypto.randomUUID()}`, kind: 'delivery', message: `Seller marked "${completedStep.title}" as completed.`, createdAt: new Date().toISOString() }, ...(runtime?.activity ?? [])],
         });
       }
-      return { success: true, data: trackingOverrides[id] };
+      return { isSuccessful: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.advanceTracking(id));
     return res as ApiSuccess<DealMilestone[]>;
@@ -1170,7 +1170,7 @@ export const dealDetailApi = {
       }
       trackingOverrides[id] = [...list];
       patchMockDealRuntime(id, { milestones: [...list] });
-      return { success: true, data: trackingOverrides[id] };
+      return { isSuccessful: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.tracking(id), {
       ...step,
@@ -1197,7 +1197,7 @@ export const dealDetailApi = {
       }
       trackingOverrides[id] = [...list];
       patchMockDealRuntime(id, { milestones: [...list] });
-      return { success: true, data: trackingOverrides[id] };
+      return { isSuccessful: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.patch<DealMilestone[]>(
       `${endpoints.transactions.tracking(id)}/${stepId}`,
@@ -1238,7 +1238,7 @@ export const dealDetailApi = {
       }
       trackingOverrides[id] = [...list];
       patchMockDealRuntime(id, { milestones: [...list] });
-      return { success: true, data: trackingOverrides[id] };
+      return { isSuccessful: true, data: trackingOverrides[id] };
     }
     const res = await httpClient.post<DealMilestone[]>(endpoints.transactions.revertTracking(id));
     return res as ApiSuccess<DealMilestone[]>;
@@ -1290,7 +1290,7 @@ export const dealDetailApi = {
       if (deal.workflowMode !== 'delivery' && self.role === 'seller' && deal.completion.status === 'changes_requested') {
         notificationsApi.pushLocal({ userId: mockRecipientUserId(id, 'buyer'), type: 'deal', title: 'Revised work evidence added', message: `${self.name} added revised evidence to ${deal.title}.`, link: `/app/deals/${id}` });
       }
-      return { success: true, data: allEvidence };
+      return { isSuccessful: true, data: allEvidence };
     }
     const res = await httpClient.post<DealEvidenceItem[]>(endpoints.upload.verificationDocument, {
       dealId: id,

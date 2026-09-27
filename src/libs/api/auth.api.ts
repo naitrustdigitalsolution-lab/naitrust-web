@@ -85,7 +85,7 @@ export const authApi = {
   login: async (data: LoginData) => {
     const response = appConfig.isMock
       ? await mockLogin(data.email, data.password)
-      : await httpClient.post(endpoints.auth.login, data);
+      : await httpClient.post(endpoints.auth.login, data, undefined, { skipAuth: true });
     // Only set token if login is complete (no 2FA required)
     if (response.data?.token && !response.data?.requires2FA) {
       setAuthToken(response.data.token);

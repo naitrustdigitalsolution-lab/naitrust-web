@@ -51,7 +51,7 @@ export const paymentRequestsApi = {
         createdAt: now.toISOString(),
         expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
-      return { success: true, data: request, message: 'Sandbox payment request sent' };
+      return { isSuccessful: true, data: request, message: 'Sandbox payment request sent' };
     }
     const response = await httpClient.post<PaymentRequest>(
       endpoints.paymentRequests.create,
@@ -70,7 +70,7 @@ export const paymentRequestsApi = {
       const fixture = mockPaymentRequests as ApiSuccess<PaymentRequest[]>;
       const found = fixture.data.find((request) => request.id === id) ?? fixture.data[0];
       return {
-        success: true,
+        isSuccessful: true,
         data: { ...found, status: action === 'fulfil' ? 'fulfilled' : 'declined' },
       };
     }

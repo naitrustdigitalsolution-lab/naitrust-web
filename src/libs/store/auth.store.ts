@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
             
             console.log('📥 Login response:', response);
             
-            if (response.success && response.data) {
+            if (response.isSuccessful && response.data) {
               const { user, token, requires2FA } = response.data;
               
               // If 2FA is required, return the user data but don't complete login yet
@@ -141,7 +141,7 @@ export const useAuthStore = create<AuthState>()(
             
             console.log('📥 2FA verification response:', response);
             
-            if (response.success && response.data) {
+            if (response.isSuccessful && response.data) {
               const { user, token: jwtToken } = response.data;
               
               console.log('✅ 2FA verification successful:', { 
@@ -189,7 +189,7 @@ export const useAuthStore = create<AuthState>()(
             
             console.log('📥 Registration response:', response);
             
-            if (response.success && response.data) {
+            if (response.isSuccessful && response.data) {
               const { user, token } = response.data;
               
               console.log('✅ Registration successful:', { 
@@ -243,7 +243,7 @@ export const useAuthStore = create<AuthState>()(
             
             const response = await authApi.getProfile();
             
-            if (response.success && response.data) {
+            if (response.isSuccessful && response.data) {
               setUserData(response.data);
               set({ user: response.data });
             }
@@ -262,7 +262,7 @@ export const useAuthStore = create<AuthState>()(
             
             const response = await authApi.updateProfile(data);
             
-            if (response.success && response.data) {
+            if (response.isSuccessful && response.data) {
               setUserData(response.data);
               set({ user: response.data });
             }

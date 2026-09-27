@@ -64,7 +64,7 @@ export const dealMessagesApi = {
       await delay(MOCK_LATENCY_MS);
       await assertParticipant(dealId);
       const viewerId = useAuthStore.getState().user?.id;
-      return { success: true, data: readThread(dealId, counterpartyName).map(m => ({ ...m, isYou: m.senderId === viewerId })) };
+      return { isSuccessful: true, data: readThread(dealId, counterpartyName).map(m => ({ ...m, isYou: m.senderId === viewerId })) };
     }
     const response = await httpClient.get<DealMessage[]>(endpoints.transactions.messages(dealId));
     return response as ApiSuccess<DealMessage[]>;
@@ -88,7 +88,7 @@ export const dealMessagesApi = {
         createdAt: new Date().toISOString(),
       };
       localStorage.setItem(threadKey(dealId), JSON.stringify([...readThread(dealId, 'Counterparty'), message]));
-      return { success: true, data: message };
+      return { isSuccessful: true, data: message };
     }
     const response = await httpClient.post<DealMessage>(endpoints.transactions.sendMessage(dealId), {
       body,

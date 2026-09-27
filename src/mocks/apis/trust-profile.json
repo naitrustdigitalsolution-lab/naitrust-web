@@ -1,5 +1,5 @@
 {
-  "success": true,
+  "isSuccessful": true,
   "data": {
     "identityVerificationLevel": "full",
     "businessVerificationLevel": "verified",

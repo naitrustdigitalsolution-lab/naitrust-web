@@ -34,7 +34,7 @@ export const terminationApi = {
       await delay(MOCK_MS);
       if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const t = terminations[dealId];
-      return { success: true, data: t ? structuredClone(forCurrentViewer(t)) : null };
+      return { isSuccessful: true, data: t ? structuredClone(forCurrentViewer(t)) : null };
     }
     const res = await httpClient.get<DealTermination | null>(endpoints.transactions.termination(dealId));
     return res as ApiSuccess<DealTermination | null>;
@@ -56,7 +56,7 @@ export const terminationApi = {
       };
       terminations[dealId] = t;
       terminationRequesterIds[dealId] = useAuthStore.getState().user?.id;
-      return { success: true, data: structuredClone(forCurrentViewer(t)) };
+      return { isSuccessful: true, data: structuredClone(forCurrentViewer(t)) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.termination(dealId), { reason });
     return res as ApiSuccess<DealTermination>;
@@ -85,7 +85,7 @@ export const terminationApi = {
       };
       terminations[dealId] = next;
       if (input.accept) patchMockDealRuntime(dealId, { status: 'cancelled' });
-      return { success: true, data: structuredClone(forCurrentViewer(next)) };
+      return { isSuccessful: true, data: structuredClone(forCurrentViewer(next)) };
     }
     const res = await httpClient.post<DealTermination>(endpoints.transactions.respondToTermination(dealId), input);
     return res as ApiSuccess<DealTermination>;

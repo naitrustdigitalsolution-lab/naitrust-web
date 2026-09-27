@@ -26,12 +26,12 @@ export const billsApi = {
   listProviders: async (): Promise<ApiSuccess<BillProvider[]>> => {
     if (!appConfig.isMock) return httpClient.get<BillProvider[]>(endpoints.bills.providers) as Promise<ApiSuccess<BillProvider[]>>;
     await wait();
-    return { success: true, data: PROVIDERS };
+    return { isSuccessful: true, data: PROVIDERS };
   },
   listPayments: async (): Promise<ApiSuccess<BillPayment[]>> => {
     if (!appConfig.isMock) return httpClient.get<BillPayment[]>(endpoints.bills.history) as Promise<ApiSuccess<BillPayment[]>>;
     await wait();
-    return { success: true, data: payments };
+    return { isSuccessful: true, data: payments };
   },
   purchase: async (input: CreateBillPaymentInput): Promise<ApiSuccess<BillPayment>> => {
     if (!appConfig.isMock) return httpClient.post<BillPayment>(endpoints.bills.purchase, input) as Promise<ApiSuccess<BillPayment>>;
@@ -43,6 +43,6 @@ export const billsApi = {
     await walletApi.payBill(input.amountMinor, `${provider.name} · ${identifier}`);
     const payment: BillPayment = { id: `billpay_${crypto.randomUUID()}`, providerId: provider.id, providerName: provider.name, category: provider.category, customerIdentifier: identifier, amountMinor: input.amountMinor, currency: input.currency, status: 'successful', reference: `NTB-${Date.now().toString().slice(-10)}`, createdAt: new Date().toISOString() };
     payments = [payment, ...payments];
-    return { success: true, message: 'Payment successful', data: payment };
+    return { isSuccessful: true, message: 'Payment successful', data: payment };
   },
 };

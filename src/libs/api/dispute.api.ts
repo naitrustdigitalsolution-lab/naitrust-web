@@ -105,7 +105,7 @@ export const disputeApi = {
       await delay(MOCK_MS);
       if (!(await dealDetailApi.getOne(dealId)).data) throw new Error('Deal participant access is required.');
       const d = ensure(dealId);
-      return { success: true, data: d ? structuredClone(d) : null };
+      return { isSuccessful: true, data: d ? structuredClone(d) : null };
     }
     const res = await httpClient.get<DealDispute | null>(endpoints.disputes.get(dealId));
     return res as ApiSuccess<DealDispute | null>;
@@ -149,7 +149,7 @@ export const disputeApi = {
       disputes[dealId] = dispute;
       saveDispute(dealId);
       if (input.hasEvidence) blockDeliveryRelease(dealId);
-      return { success: true, data: structuredClone(dispute) };
+      return { isSuccessful: true, data: structuredClone(dispute) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.open(dealId), input);
     return res as ApiSuccess<DealDispute>;
@@ -172,7 +172,7 @@ export const disputeApi = {
       };
       disputes[dealId] = { ...d, messages: [...d.messages, msg] };
       saveDispute(dealId);
-      return { success: true, data: structuredClone(disputes[dealId]) };
+      return { isSuccessful: true, data: structuredClone(disputes[dealId]) };
     }
     const res = await httpClient.post<DealDispute>(endpoints.disputes.message(dealId), { body });
     return res as ApiSuccess<DealDispute>;

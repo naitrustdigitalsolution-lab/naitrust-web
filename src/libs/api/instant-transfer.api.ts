@@ -103,7 +103,7 @@ export const instantTransferApi = {
         throw new Error('Naitrust recipient not found');
       }
       return {
-        success: true,
+        isSuccessful: true,
         data: naitrustRecipient
           ?? bankRecipient
           ?? { ...recipient, resolvedName: resolveMockRecipientName(recipient) },
@@ -147,7 +147,7 @@ export const instantTransferApi = {
         createdAt: now.toISOString(),
         completedAt: status === 'successful' ? now.toISOString() : undefined,
       };
-      return { success: true, data: transfer, message: 'Sandbox transfer created' };
+      return { isSuccessful: true, data: transfer, message: 'Sandbox transfer created' };
     }
     const response = await httpClient.post<InstantTransfer>(
       endpoints.instantTransfers.create,
@@ -162,7 +162,7 @@ export const instantTransferApi = {
       await delay(300);
       const fixture = mockInstantTransfers as ApiSuccess<InstantTransfer[]>;
       const found = fixture.data.find((transfer) => transfer.id === id) ?? fixture.data[0];
-      return { success: true, data: found };
+      return { isSuccessful: true, data: found };
     }
     const response = await httpClient.get<InstantTransfer>(
       endpoints.instantTransfers.getOne(id),

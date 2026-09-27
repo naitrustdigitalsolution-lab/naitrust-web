@@ -12,7 +12,7 @@ let isRedirecting = false;
 let redirectTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 export interface ApiResponse<T = any> {
-  success: boolean;
+  isSuccessful: boolean;
   data?: T;
   message?: string;
   error?: string;
@@ -142,6 +142,16 @@ async function request<T = any>(
       : { message: await response.text() };
 
     if (response.status === 401) {
+      // A 401 on a skipAuth call (e.g. login itself) means bad credentials,
+      // not an expired session: surface the backend's actual message instead
+      // of forcing everyone through the "please login again" session-expiry copy.
+      if (extras.skipAuth) {
+        throw apiError({
+          message: data.error || data.message || 'Invalid credentials',
+          statusCode: 401,
+          errors: data.errors,
+        });
+      }
       // Browser is navigating away to /login: resolving quietly is harmless;
       // throwing would only surface a flash of "Unauthorized" before unload.
       if (handleUnauthorized()) return undefined as unknown as ApiResponse<T>;

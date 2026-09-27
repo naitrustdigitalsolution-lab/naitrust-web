@@ -27,7 +27,7 @@ function makeId() {
 }
 
 export const trustCheckoutsApi = {
-  list: async (): Promise<ApiSuccess<TrustCheckout[]>> => ({ success: true, data: readCheckouts() }),
+  list: async (): Promise<ApiSuccess<TrustCheckout[]>> => ({ isSuccessful: true, data: readCheckouts() }),
 
   create: async (input: CreateTrustCheckoutInput): Promise<ApiSuccess<TrustCheckout>> => {
     const now = new Date();
@@ -43,7 +43,7 @@ export const trustCheckoutsApi = {
       expiresAt: new Date(now.getTime() + input.expiresInMinutes * 60_000).toISOString(),
     };
     writeCheckouts([checkout, ...readCheckouts()]);
-    return { success: true, data: checkout, message: 'Trust Checkout created with mock data' };
+    return { isSuccessful: true, data: checkout, message: 'Trust Checkout created with mock data' };
   },
 
   getPublic: async (publicId: string): Promise<ApiSuccess<TrustCheckout | null>> => {
@@ -51,7 +51,7 @@ export const trustCheckoutsApi = {
     if (checkout && checkout.status === 'active' && new Date(checkout.expiresAt).getTime() <= Date.now()) {
       checkout.status = 'expired';
     }
-    return { success: true, data: checkout };
+    return { isSuccessful: true, data: checkout };
   },
 
   recordEvent: async (publicId: string, eventType: string): Promise<void> => {
@@ -74,6 +74,6 @@ export const trustCheckoutsApi = {
       paymentReference: `NT-MOCK-${Date.now().toString().slice(-8)}`,
     };
     writeCheckouts(checkouts);
-    return { success: true, data: checkouts[index], message: 'Mock transfer confirmed' };
+    return { isSuccessful: true, data: checkouts[index], message: 'Mock transfer confirmed' };
   },
 };

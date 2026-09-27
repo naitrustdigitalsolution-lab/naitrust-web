@@ -34,7 +34,7 @@ interface MockUserRecord {
 }
 
 export interface MockAuthResponse {
-  success: boolean;
+  isSuccessful: boolean;
   data?: {
     user: User;
     token?: string;
@@ -108,16 +108,16 @@ export async function mockLogin(
 
   const record = findByLoginIdentifier(email);
   if (!record || record.password !== password) {
-    return { success: false, error: 'Invalid email, Naitrust ID, phone number, or password' };
+    return { isSuccessful: false, error: 'Invalid email, Naitrust ID, phone number, or password' };
   }
 
   if (record.twoFactorEnabled) {
     // Matches the real flow: no token yet, complete login via verify2FALogin.
-    return { success: true, data: { user: { ...record.user }, requires2FA: true } };
+    return { isSuccessful: true, data: { user: { ...record.user }, requires2FA: true } };
   }
 
   return {
-    success: true,
+    isSuccessful: true,
     data: { user: { ...record.user }, token: issueToken(record.user.id) },
   };
 }
@@ -131,14 +131,14 @@ export async function mockVerify2FALogin(
 
   const record = findByIdOrEmail(userIdOrEmail);
   if (!record) {
-    return { success: false, error: 'User not found' };
+    return { isSuccessful: false, error: 'User not found' };
   }
   if (code !== MOCK_2FA_CODE) {
-    return { success: false, error: 'Invalid code. Please try again.' };
+    return { isSuccessful: false, error: 'Invalid code. Please try again.' };
   }
 
   return {
-    success: true,
+    isSuccessful: true,
     data: { user: { ...record.user }, token: issueToken(record.user.id) },
   };
 }
@@ -150,7 +150,7 @@ export async function mockRegister(
   await delay(latencyMs);
 
   if (findByEmail(data.email)) {
-    return { success: false, error: 'An account with this email already exists' };
+    return { isSuccessful: false, error: 'An account with this email already exists' };
   }
 
   const user: User = {
@@ -173,7 +173,7 @@ export async function mockRegister(
 
   records.push({ password: data.password, twoFactorEnabled: false, user });
 
-  return { success: true, data: { user: { ...user }, token: issueToken(user.id) } };
+  return { isSuccessful: true, data: { user: { ...user }, token: issueToken(user.id) } };
 }
 
 export async function mockGetProfile(
@@ -185,10 +185,10 @@ export async function mockGetProfile(
   const userId = userIdFromToken(token);
   const record = userId ? records.find((r) => r.user.id === userId) : undefined;
   if (!record) {
-    return { success: false, error: 'Unauthorized: Please login again' };
+    return { isSuccessful: false, error: 'Unauthorized: Please login again' };
   }
 
-  return { success: true, data: { user: { ...record.user } } };
+  return { isSuccessful: true, data: { user: { ...record.user } } };
 }
 
 /** Test-only helper: number of registered mock users (seeded + session-registered). */

@@ -158,7 +158,7 @@ export const agreementsApi = {
       const cleanSubject = subject.replace(/[.\s]+$/, '');
       const assumptionDraft = `${cleanSubject.charAt(0).toUpperCase()}${cleanSubject.slice(1)}.`;
       const alternateDetail = `This deal covers ${cleanSubject.charAt(0).toLowerCase()}${cleanSubject.slice(1)}.`;
-      return { success: true, data: { titles: (input.requestIndex ?? 0) % 2 === 0 ? selected.titles : alternateTitles, detailDraft: (input.requestIndex ?? 0) % 2 === 0 ? assumptionDraft : alternateDetail } };
+      return { isSuccessful: true, data: { titles: (input.requestIndex ?? 0) % 2 === 0 ? selected.titles : alternateTitles, detailDraft: (input.requestIndex ?? 0) % 2 === 0 ? assumptionDraft : alternateDetail } };
     }
     const response = await httpClient.post<{ titles: string[]; detailDraft: string }>('/agreements/deal-details/suggest', input);
     return response as ApiSuccess<{ titles: string[]; detailDraft: string }>;
@@ -174,7 +174,7 @@ export const agreementsApi = {
           : input.workflowMode === 'service'
             ? `The remaining payment releases only after the provider submits final completion evidence and the buyer reviews the completed work and approves release with their transaction PIN.`
             : `The remaining payment releases only after the final milestone and its supporting evidence are completed and approved by the buyer.`;
-        return { success: true, data: { generatedByAi: true, text: finalText } };
+        return { isSuccessful: true, data: { generatedByAi: true, text: finalText } };
       }
       const standardDraft = input.workflowMode === 'service'
         ? `${input.sellerName} must complete ${subject} by ${input.deliveryDueDate} and submit evidence for review. Payment releases only when ${input.buyerName} approves the completed work with their transaction PIN.`
@@ -187,7 +187,7 @@ export const agreementsApi = {
           ? `Release the eligible stage payment after its agreed work and evidence have been reviewed and approved by ${input.buyerName}.`
           : `Release payment after ${subject} is delivered and ${input.buyerName} completes the agreed receipt check without reporting an issue.`;
       return {
-        success: true,
+        isSuccessful: true,
         data: {
           generatedByAi: true,
           text: (input.requestIndex ?? 0) % 2 === 0 ? standardDraft : alternateDraft,
@@ -204,7 +204,7 @@ export const agreementsApi = {
   draft: async (input: DraftAgreementInput, version = 1): Promise<ApiSuccess<AgreementDraft>> => {
     if (appConfig.isMock) {
       await delay(MOCK_GENERATION_MS);
-      return { success: true, data: buildMockDraft(input, version) };
+      return { isSuccessful: true, data: buildMockDraft(input, version) };
     }
     const response = await httpClient.post<AgreementDraft>(endpoints.agreements.draft, {
       ...input,

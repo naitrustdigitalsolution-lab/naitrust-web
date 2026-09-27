@@ -173,7 +173,7 @@ export const invitationsApi = {
   getPublicPreview: async (token: string): Promise<ApiSuccess<PublicInvitationPreview | null>> => {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
-      return { success: true, data: publicPreview(token) };
+      return { isSuccessful: true, data: publicPreview(token) };
     }
     const response = await httpClient.get<PublicInvitationPreview>(
       endpoints.invitations.publicPreview(token),
@@ -208,7 +208,7 @@ export const invitationsApi = {
           throw new Error('This invitation requires a verified business account.');
         }
         grantMockDealAccess(createdDeal.summary.id, user.id);
-        return { success: true, data: { invitationId: createdDeal.summary.id, destination: `/app/invitations/${createdDeal.summary.id}` } };
+        return { isSuccessful: true, data: { invitationId: createdDeal.summary.id, destination: `/app/invitations/${createdDeal.summary.id}` } };
       }
       if (
         preview.intendedAccountType === 'business' &&
@@ -217,7 +217,7 @@ export const invitationsApi = {
         throw new Error('This invitation requires a verified business account.');
       }
       return {
-        success: true,
+        isSuccessful: true,
         data: {
           invitationId: preview.invitationId,
           destination: `/app/invitations/${preview.invitationId}`,
@@ -236,7 +236,7 @@ export const invitationsApi = {
     if (appConfig.isMock) {
       await delay(MOCK_LATENCY_MS);
       const userId = useAuthStore.getState().user?.id;
-      if (!userId) return { success: true, data: [] };
+      if (!userId) return { isSuccessful: true, data: [] };
       const created = listMockCreatedDeals()
         .map((deal) => createdInvitationFor(deal, userId))
         .filter((invitation): invitation is DealInvitation => Boolean(invitation));
@@ -245,7 +245,7 @@ export const invitationsApi = {
         .map((invitation) => invitation.status === 'pending' && Date.now() > new Date(invitation.expiresAt).getTime()
           ? { ...invitation, status: 'expired' as const }
           : invitation);
-      return { success: true, data: [...created, ...seeded].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) };
+      return { isSuccessful: true, data: [...created, ...seeded].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) };
     }
     const response = await httpClient.get<DealInvitation[]>(endpoints.invitations.list);
     return response as ApiSuccess<DealInvitation[]>;
@@ -265,9 +265,9 @@ export const invitationsApi = {
         ? { ...rawFound, status: 'expired' as const }
         : rawFound;
       if (!found) {
-        return { success: true, data: undefined as unknown as DealInvitation };
+        return { isSuccessful: true, data: undefined as unknown as DealInvitation };
       }
-      return { success: true, data: found };
+      return { isSuccessful: true, data: found };
     }
     const response = await httpClient.get<DealInvitation>(endpoints.invitations.getOne(id));
     return response as ApiSuccess<DealInvitation>;
@@ -285,7 +285,7 @@ export const invitationsApi = {
       if (!['pending_counterparty', 'terms_negotiation'].includes(runtime?.status ?? createdDeal.summary.status)) throw new Error('This invitation is no longer pending.');
       const now = new Date().toISOString();
       patchMockDealRuntime(id, { activity: [...(runtime?.activity ?? []), { id: `invite_resent_${crypto.randomUUID()}`, kind: 'message', message: 'You resent the deal invitation.', createdAt: now }] });
-      return { success: true, data: { publicInvitePath: createdDeal.summary.publicInvitePath } };
+      return { isSuccessful: true, data: { publicInvitePath: createdDeal.summary.publicInvitePath } };
     }
     const response = await httpClient.post<{ publicInvitePath?: string }>(endpoints.invitations.resend(id));
     return response as ApiSuccess<{ publicInvitePath?: string }>;
@@ -335,7 +335,7 @@ export const invitationsApi = {
           notificationsApi.pushLocal({ userId: ownerUserId, type: 'deal', title: 'Deal invitation declined', message: `${createdDeal.summary.counterpartyName} declined ${createdDeal.summary.title}${reason?.trim() ? `: ${reason.trim()}` : '.'}`, link: `/app/deals/${id}` });
         }
       }
-      return { success: true, data: { id, status: action } };
+      return { isSuccessful: true, data: { id, status: action } };
     }
     const endpoint = action === 'accepted'
       ? endpoints.invitations.accept(id)

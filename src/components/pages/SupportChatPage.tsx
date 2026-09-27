@@ -30,7 +30,7 @@ export function SupportChatPage() {
     setSending(true); setError('');
     try {
       const result = await homeApi.contactUs({ name: user?.name, email: email.trim(), subject: reference.trim() ? `Deal support · ${reference.trim()}` : 'Naitrust account support', message: message.trim() });
-      if (!result.success) throw new Error('Your message could not be sent.');
+      if (!result.isSuccessful) throw new Error('Your message could not be sent.');
       setSent(true); setMessage('');
     } catch { setError('We couldn’t send your message. Try again, or copy the email address below to contact us directly.'); }
     finally { setSending(false); }
